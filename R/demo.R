@@ -11,7 +11,7 @@ initPackage()
 
 # wird alle bekannte software-pakete suchen also SVMperf, libSVM, ...
 #FIXME: allow path like ~/
-findSVMSoftware (searchPath = "../svm_large_scale/software/", verbose = FALSE) 
+findSVMSoftware (searchPath = "../../../../svm_large_scale/software/", verbose = FALSE) 
 outputAllSVMSoftwarePaths ()
 
 
@@ -41,7 +41,7 @@ outputAllSVMSoftwarePaths ()
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
-        verbose = TRUE
+        verbose = FALSE
     )  
     
 
@@ -53,7 +53,7 @@ outputAllSVMSoftwarePaths ()
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
-        verbose = TRUE
+        verbose = FALSE
     )  
 
     
@@ -65,7 +65,7 @@ outputAllSVMSoftwarePaths ()
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
-        verbose = TRUE,
+        verbose = FALSE
     )  
 
 
@@ -77,7 +77,7 @@ outputAllSVMSoftwarePaths ()
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
-        verbose = TRUE,
+        verbose = FALSE,
         modelFile = "./tmp/libsvm_model.txt"
     )  
 
@@ -90,8 +90,8 @@ outputAllSVMSoftwarePaths ()
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
-        verbose = TRUE,
-        modelFile = svmObj$model
+        verbose = FALSE,
+        model = svmObj$model
     )  
     
     
@@ -103,8 +103,30 @@ outputAllSVMSoftwarePaths ()
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
-        verbose = TRUE,
+        verbose = FALSE,
         modelFile = "./tmp/libsvm_model.txt"
     )  
 
     
+# train only
+    svmObj =  callSVM(
+		method = "LIBSVM",
+		trainDataFile = './datasets/australian/australian.combined.scaled', 
+		cost = 1, 
+		gamma = 1, 
+		epsilon = 0.01, 
+        verbose = FALSE
+    )  
+
+    
+# predict only from disk, model from memory
+    svmObj =  callSVM(
+		method = "LIBSVM",
+		testDataFile = './datasets/australian/australian.combined.scaled',
+		cost = 1, 
+		gamma = 1, 
+		epsilon = 0.01, 
+        verbose = FALSE,
+        model = svmObj$model
+    )  
+

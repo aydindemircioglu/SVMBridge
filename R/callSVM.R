@@ -65,7 +65,7 @@ callSVM <- function (
     if (is.na(returnValue)) {
 		stopf("Either there was a severe error executing the SVM wrapper, or you misspelled the method name.")
 	}
-    print(returnValue)
+    return(returnValue)
 }
 
 

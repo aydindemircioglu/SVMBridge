@@ -10,8 +10,6 @@ loadThings <- function ()
   library(e1071)
   
   source ("./system3.R")
-  source ("./subsampleData.R")
-  source ("./models/readModel.R")
 }
 suppressMessages(loadThings())
 
@@ -50,13 +48,16 @@ universalWrapper = function(
 	# rest
 	method = NA,
 	extraParameter = "",
-	modelFile = NA,
+	modelFilePath = NA,
+	model = NA,
 	verbose = FALSE,
 
 	# call backs
 	trainingParameterCallBack = trainingParameterCallBack(),
 	testParameterCallBack = testParameterCallBack(),
 	extractInformationCallBack = extractInformationCallBack(),
+	readModelCallBack = readModelCallBack(),
+	writeModelCallBack = writeModelCallBack(),
 	...) {
 
 	trainBinary = basename(trainBinaryPath)
@@ -84,16 +85,21 @@ universalWrapper = function(
 		stopf("No method name is given, this should never happen.")
 	}
 	
-	readModelFile = FALSE
-	if (is.na(modelFile) == TRUE) {
-		# user did not specify modelfile
+	# user cannot give us a model in memory and train a model. (<-- in that case he should call callSVM twice)
+	if ((is.na(modelFilePath) == FALSE) && (is.na(model) == FALSE)) {
+		stopf ("A model in memory as well a model path was given. Please call twice, if test with different model is needed.")
+	}
+			
+ 	readModelFile = TRUE
+	if (is.na(modelFilePath) == TRUE) {
+		# user did not specify a modelfile
 		# so we will write the model in a temp file
 		# and read it back after training
 		readModelFile = TRUE
-		modelFile = tempfile()
+		modelFilePath = tempfile()
 	}
+		
 
-	
 	# take care of data. if testdata or traindata is given,
 	# the corresponding filename must be empty.
 	# finally, everything is dumped to disk.
@@ -123,7 +129,8 @@ universalWrapper = function(
 		messagef("  Train Data is now in %s", trainDataFile)
 	
 	if (doTraining == TRUE)
-		messagef("  Will TRAIN")
+		if (verbose == TRUE)
+			messagef("  Will perform Training")
 
 		
 		
@@ -151,10 +158,17 @@ universalWrapper = function(
 		messagef("  Test data is now in %s", testDataFile)
 	
 	if (doTesting == TRUE)
-		messagef("  Will TEST")
+		if (verbose == TRUE)
+			messagef("  Will perform Testing")
 
 
-		
+	# given us a model in memory makes only sense,
+	# if the user does not want to train, but to test
+	if ((is.na(model) == FALSE) && (doTraining == TRUE)) {
+		stopf ("Cannot train, if given a memory model. Would need to discard that.")
+	}
+
+	
 		
 	# make sure epsilon works (technical problem)
 	epsilon = as.numeric(as.character(epsilon))
@@ -164,7 +178,7 @@ universalWrapper = function(
 	if (doTraining == TRUE) {
 		args = eval (trainingParameterCallBack( 
 			trainDataFile = trainDataFile, 
-			modelFile = modelFile,
+			modelFile = modelFilePath,
 			extraParameter = extraParameter,
 			...))
 
@@ -178,10 +192,16 @@ universalWrapper = function(
 
 	
 	if (doTesting == TRUE) {
+	
+		# if the user specified a model in memory, we first need to write that
+		if (is.na(model) == FALSE) {
+			writeModelCallBack (model, modelFilePath, verbose = verbose)
+		}
+	
 		# retrieve test parameters
 		args = eval (testParameterCallBack( 
 			testDataFile = testDataFile, 
-			modelFile = modelFile, ...))
+			modelFile = modelFilePath, ...))
     
 		testTime = microbenchmark(s <- system3(testBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
     
@@ -194,7 +214,9 @@ universalWrapper = function(
 
 	
 	if (readModelFile == TRUE) {
-		model = readModel (modelFilePath = modelFile, method = method, verbose = verbose)
+		if (verbose == TRUE) 
+			messagef( "Will read model back from %s", modelFilePath)
+		model = readModelCallBack (modelFilePath = modelFilePath, verbose = verbose)
 		results[["model"]] = model
 	}
   
@@ -208,10 +230,10 @@ extractInformationCallBack = function (output) {
 }
 
 
-# dummy, must be overwritten
+# dummies, must be overwritten
 trainingParameterCallBack <- function (...) {}
-
-
-# dummy, must be overwritten
 testParameterCallBack <- function (...) {}
+readModelCallBack <- function (...) {} 
+writeModelCallBack <- function (...) {} 
+
 
