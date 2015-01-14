@@ -1,5 +1,5 @@
 library(testthat)
-library(mlrMBO)
+library(SVMBridge)
 library(checkmate)
 
-test_check("mlrMBO")
+test_check("SVMBridge")

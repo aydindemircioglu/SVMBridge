@@ -19,11 +19,7 @@
  
 loadThings <- function ()
 {
-	library(BBmisc)
-	library(stringr)
-	library(R.utils)
 	library(microbenchmark)
-	library(e1071)
 
 	source ("./system3.R")
 }
