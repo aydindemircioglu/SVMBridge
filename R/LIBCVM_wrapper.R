@@ -5,6 +5,25 @@ source ("./universalWrapper.R")
 library(BBmisc)
 
 
+# add functions to allow for searching the binaries
+LIBCVMTrainBinary <- function() {
+    return ("svm-train")
+}
+
+
+LIBCVMTestBinary <- function() {
+    return ("svm-predict")
+}
+
+
+LIBCVMTrainBinaryOutputPattern <- function() {
+    return ("outputPattern = '6 -- CVM \\(sqr. hinge-loss")
+}
+
+
+LIBCVMTestBinaryOutputPattern <- function() {
+    return ("bvm-predict")
+}
 
 
 evalLibCVM = function(...)  {   
@@ -140,60 +159,4 @@ LibCVMExtractInformationCallBack = function (output) {
 }
 
 
-
-LibCVMTrainBinary <- function() {
-    return ("svm-train")
-}
-
-
-LibCVMTestBinary <- function() {
-    return ("svm-predict")
-}
-
-
-LibCVMBinDir <- function() {
-    return ("software/libCVM/bin/")
-}
-
-
-
-# stupid R check for pythons cool "name == __main__"
-if (length(sys.frames()) == 0) 
-{
-  #  file = "software/libSVM/src/heart_scale"
-#    file = "datasets/australian/australian.combined.scaled"
- #   file = "datasets/arthrosis/arthrosis.combined.scaled"
-    file = "datasets/poker/poker.combined.scaled"
-
-#    file = getMCData("dna")
-
-    err = evalLibBVM(file, file, cost = 1, gamma = 1.0496346230004575, 
-		epsilon = 0.00000001, 
-        primalTime = -1,
-#        subsamplingRate = 0.25,
-        wallTime = 30,
-        verbose = TRUE,
-        modelFile = "~/libbvm.model",
-        computePrimal = FALSE
-    )  
-
-    messagef("Error Rate: %s", err$err) 
-    messagef("Dual: %s", err$dual) 
-    messagef("Primal: %s", err$primal)
-
-    
-    err = evalLibCVM(file, file, cost = 1, gamma = 1.0496346230004575, 
-		epsilon = 0.00000001, 
-        primalTime = -1,
-        wallTime = 30,
-        verbose = TRUE,
-        modelFile = "~/libcvm.model",
-        computePrimal = FALSE
-    )  
-
-    messagef("Error Rate: %s", err$err) 
-    messagef("Dual: %s", err$dual) 
-    messagef("Primal: %s", err$primal)
-    
-}
 

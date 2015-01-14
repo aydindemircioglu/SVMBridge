@@ -31,6 +31,18 @@ loadThings <- function ()
 suppressMessages(loadThings())
 
 
+# global object :/
+# our array of objects
+SVMPackages = c()
+
+
+initPackage = function () {
+	# load all wrapper 
+	# TODO: activate
+#	addSVMPackage (filePath = "./LIBSVM_wrapper.R")
+#	addSVMPackage (filePath = "./LIBCVM_wrapper.R")
+}
+
 
 
 # every wrapper has its own object that is derived from the universalWrapper.
@@ -59,18 +71,6 @@ addSVMPackage <- function (filePath = NA, softwarePath = NA, verbose = TRUE)
 	if (is.na(softwarePath) == FALSE) {
 		findSVMSoftware (method = methodName, searchPath = softwarePath, verbose = verbose) 
 	}
-}
-
-
-# global object :/
-# our array of objects
-SVMPackages = c()
-
-
-initPackage = function () {
-	# load all wrapper
-	addSVMPackage (filePath = "./LIBSVM_wrapper.R")
-	addSVMPackage (filePath = "./LIBCVM_wrapper.R")
 }
 
 
@@ -127,6 +127,15 @@ findBinary <- function (searchPath, pattern, outputPattern, solver, verbose = FA
 
 
 
+findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
+	for (package in SVMPackages) {
+		messagef("  Searching for software for SVM package %s:", package)
+		findSVMSoftware (method = package, searchPath = searchPath, verbose = verbose)
+	}
+}
+
+
+
 findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 	if (is.na(searchPath)) {
 		stopf("No search path is given!")
@@ -136,28 +145,26 @@ findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 		stopf ("No method name is given")
 	}
 	
-	# TODO: move these into the   lib.._wrapper.R
-	
 	# TODO: to get better tests, maybe we need an option like "TEST = true", which will
 	# take a demo-data-file and compute the model. so actuallly its like a unittest, but
 	# it is executed during use, to make sure everything is as it should be.
 
-	pattern = '^svm-train$'
-	outputPattern = 'Usage: svm-train .options. training_set_file .model_file.'
-	binaryPath = findBinary (searchPath, pattern, outputPattern, method, verbose = verbose)
+	trainBinaryPattern = paste ("^", do.call(paste(method, "TrainBinary", sep = ""), args = list()), "$", sep = '')
+	trainBinaryOutputPattern = do.call(paste(method, "TrainBinaryOutputPattern", sep = ""), args = list())
+	binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, method, verbose = verbose)
 	if (verbose == TRUE) {
-		messagef("Found binary at %s", binaryPath) 
+		messagef("--> Found train binary at %s", binaryPath) 
 	}
 	trainOptionName = paste('SVMBridge', method, "trainBinary", sep = ".")
 	tmpList = list()
 	tmpList[[trainOptionName]] = binaryPath
 	do.call(options, tmpList)
-
-	pattern = '^svm-predict$'
-	outputPattern = 'for one-class SVM only 0 is supported'
-	binaryPath = findBinary (searchPath, pattern, outputPattern, method, verbose = verbose)
+	
+	testBinaryPattern = paste ("^", do.call(paste(method, "TestBinary", sep = ""), args = list()), "$", sep = '')
+	testBinaryOutputPattern = do.call(paste(method, "TestBinaryOutputPattern", sep = ""), args = list())
+	binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, method, verbose = verbose)
 	if (verbose == TRUE) {
-		messagef("Found binary at %s", binaryPath) 
+		messagef("--> Found test binary at %s", binaryPath) 
 	}
 	testOptionName = paste('SVMBridge', method, "testBinary", sep = ".")
 	tmpList = list()

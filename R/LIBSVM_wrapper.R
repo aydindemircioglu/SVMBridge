@@ -7,7 +7,28 @@ library(stringr)
 library(plyr)
 
 
+# add functions to allow for searching the binaries
+LIBSVMTrainBinary <- function() {
+    return ("svm-train")
+}
 
+
+LIBSVMTestBinary <- function() {
+    return ("svm-predict")
+}
+
+
+LIBSVMTrainBinaryOutputPattern <- function() {
+    return ('Usage: svm-train .options. training_set_file .model_file.')
+}
+
+
+LIBSVMTestBinaryOutputPattern <- function() {
+    return ('for one-class SVM only 0 is supported')
+}
+
+
+	
 evalLIBSVM = function(...)  {   
 
 	parameterList = list(..., 
@@ -89,17 +110,6 @@ LIBSVMExtractInformationCallBack = function (output) {
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 
     return(err)
-}
-
-
-
-LIBSVMTrainBinary <- function() {
-    return ("./software/LIBSVM/bin/svm-train")
-}
-
-
-LIBSVMTestBinary <- function() {
-    return ("./software/LIBSVM/bin/svm-predict")
 }
 
 

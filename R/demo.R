@@ -6,15 +6,17 @@ source ("./callSVM.R")
 # should be called by itself
 initPackage()
 
-# TODO: allow for user-provided wrappers? i.e. addSVMPackage ("mySVM", mySVM_wrapper.R)????
-
+# add new wrappers -- this is done in initPackage for wrappers known to the package
+# (so this is currently done twice)
 addSVMPackage (filePath = "./LIBSVM_wrapper.R", softwarePath = "../../../../svm_large_scale/software/libSVM")
 addSVMPackage (filePath = "./LIBCVM_wrapper.R", softwarePath = "../../../../svm_large_scale/software/libCVM")
+
+# alternatively, addSVMPackage without softwarePath and search all in a given path
+findAllSVMSoftware (searchPath = "../../../../svm_large_scale/software/", verbose = FALSE) 
 
 
 # wird alle bekannte software-pakete suchen also SVMperf, libSVM, ...
 #FIXME: allow path like ~/
-#findSVMSoftware (searchPath = "../../../../svm_large_scale/software/", verbose = FALSE) 
 outputAllSVMSoftwarePackages ()
 
 
