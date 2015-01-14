@@ -270,7 +270,9 @@ dumpSparseFormat <- function (labels, data)
 
 # dummy for now
 LIBSVMWriteModelCallBack <- function (model = NA, modelFilePath = "./model", verbose = FALSE) {
-	messagef ("Writing SVM Model..")
+	if (verbose == TRUE) {
+		messagef ("Writing SVM Model..")
+	}
 	
 	# FIXME: label order
 	# TODO: support multiclass

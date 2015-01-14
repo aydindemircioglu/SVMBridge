@@ -36,11 +36,12 @@ suppressMessages(loadThings())
 SVMPackages = c()
 
 
-initPackage = function () {
+initPackage <- function () {
 	# load all wrapper 
 	# TODO: activate
 #	addSVMPackage (filePath = "./LIBSVM_wrapper.R")
 #	addSVMPackage (filePath = "./LIBCVM_wrapper.R")
+	return (NULL)
 }
 
 
@@ -50,7 +51,7 @@ initPackage = function () {
 # then, when e.g. paths are updated, we have a nice place to store these.
 
 
-addSVMPackage <- function (filePath = NA, softwarePath = NA, verbose = TRUE)
+addSVMPackage <- function (filePath = NA, softwarePath = NA, verbose = FALSE)
 {
 	if (is.na(filePath) == TRUE) {
 		stopf("Please provide a file path for SVM package to add.")
@@ -129,7 +130,9 @@ findBinary <- function (searchPath, pattern, outputPattern, solver, verbose = FA
 
 findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
 	for (package in SVMPackages) {
-		messagef("  Searching for software for SVM package %s:", package)
+		if (verbose == TRUE) {
+			messagef("  Searching for software for SVM package %s:", package)
+		}
 		findSVMSoftware (method = package, searchPath = searchPath, verbose = verbose)
 	}
 }

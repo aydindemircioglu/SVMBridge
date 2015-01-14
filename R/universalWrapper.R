@@ -8,6 +8,8 @@ loadThings <- function ()
   library(R.utils)
   library(microbenchmark)
   library(e1071)
+  library(methods)
+  library(SparseM)
   
   source ("./system3.R")
 }
@@ -21,15 +23,9 @@ suppressMessages(loadThings())
 #
 # @param[in]    trainfile       file to read training data from
 # @param[in]    testfile        file to read test data from
-# @param[in]    cost            cost parameter C
-# @param[in]    gamma           gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...)
-# @param[in]    epsilon         epsilon=precision parameter on loss
 # @param[in]    extraParameter  extra parameters for solver
 # @param[in]    bindir          relativ path to the binaries, defaults to.. default.
 # @param[in]    modelFile       path to model, defaults to a temporary file (given by R)
-# @param[in]    wallTime        walltime in minutes. solver will quit roughly at this time (-5 min spare),
-#                               default = -1, no walltime
-# @param[in]    primalTime      time in minutes to compute current primal value. default = -1, no computation.
 #
 
 universalWrapper = function(
@@ -71,14 +67,6 @@ universalWrapper = function(
 		messagef("  Binary for testing is %s", testBinary)
 	}
 
-	
-	# TODO: really?
-	# need to unpack the epsilon from the ... parameters
-	eP = list(...)
-	epsilon = 0
-	if (!is.null (eP[["epsilon"]])) {
-		epsilon = eP[["epsilon"]]
-	}
 	
 	# TODO: sanity checks for parameter
 	if (is.null (method) == TRUE) {
@@ -168,10 +156,6 @@ universalWrapper = function(
 		stopf ("Cannot train, if given a memory model. Would need to discard that.")
 	}
 
-	
-		
-	# make sure epsilon works (technical problem)
-	epsilon = as.numeric(as.character(epsilon))
   
 
 	results = list()
