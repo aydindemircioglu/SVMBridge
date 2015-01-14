@@ -8,11 +8,14 @@ initPackage()
 
 # TODO: allow for user-provided wrappers? i.e. addSVMPackage ("mySVM", mySVM_wrapper.R)????
 
+addSVMPackage (filePath = "./LIBSVM_wrapper.R", softwarePath = "../../../../svm_large_scale/software/libSVM")
+addSVMPackage (filePath = "./LIBCVM_wrapper.R", softwarePath = "../../../../svm_large_scale/software/libCVM")
+
 
 # wird alle bekannte software-pakete suchen also SVMperf, libSVM, ...
 #FIXME: allow path like ~/
-findSVMSoftware (searchPath = "../../../../svm_large_scale/software/", verbose = FALSE) 
-outputAllSVMSoftwarePaths ()
+#findSVMSoftware (searchPath = "../../../../svm_large_scale/software/", verbose = FALSE) 
+outputAllSVMSoftwarePackages ()
 
 
 # load iris  for now

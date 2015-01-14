@@ -1,41 +1,76 @@
+#
+# SVMBridge 
+#
+#		(C) 2015, by Aydin Demircioglu
+# 
+# SVMBridge is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SVMBridge is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# Please do not use this software to destroy or spy on people, environment or things.
+# All negative use is prohibited.
+#
+ 
 loadThings <- function ()
 {
-  library(BBmisc)
-  library(stringr)
-  library(R.utils)
-  library(microbenchmark)
-  library(e1071)
-  
-  source ("./system3.R")
-  source ("./subsampleData.R")
-  source ("./models/readModel.R")
+	library(BBmisc)
+	library(stringr)
+	library(R.utils)
+	library(microbenchmark)
+	library(e1071)
+
+	source ("./system3.R")
+	source ("./lsdir.R")
 }
 suppressMessages(loadThings())
 
 
 
 
-source ("./lsdir.R")
-
-
 # every wrapper has its own object that is derived from the universalWrapper.
 # we create all these at initialization time of the package.
 # then, when e.g. paths are updated, we have a nice place to store these.
 
-# load all wrapper
-source ("./wrapper/LIBSVM_wrapper.R")
-source ("./wrapper/LIBCVM_wrapper.R")
+
+addSVMPackage <- function (filePath = NA, softwarePath = NA, verbose = TRUE)
+{
+	if (is.na(filePath) == TRUE) {
+		stopf("Please provide a file path for SVM package to add.")
+	}
+	
+	source (filePath, local = FALSE)
+	
+	# now we make a crucial assumption here,
+	# to make everything 'magical',
+	# assume that the filename already denotes the
+	# method name and (all the callback names if needed)
+	# as well as the caller name (evalXXX).
+	baseName = basename (filePath)
+	methodName = strsplit(baseName, "_")[[1]][1]
+	SVMPackages <<- c(SVMPackages, methodName)
+	
+	# add software path
+	if (is.na(softwarePath) == FALSE) {
+		findSVMSoftware (method = methodName, searchPath = softwarePath, verbose = verbose) 
+	}
+}
+
+
+# global object :/
+# our array of objects
+SVMPackages = c()
 
 
 initPackage = function () {
-	# our array of objects
-	SVMObjects = c(evalLIBSVM)
-
-	# 	for (SVMObject in SVMObjects) {
-# 		print(SVMObject)
-# 	}
-	
-# 	stopf("A")
+	# load all wrapper
+	addSVMPackage (filePath = "./LIBSVM_wrapper.R")
+	addSVMPackage (filePath = "./LIBCVM_wrapper.R")
 }
 
 
@@ -43,30 +78,22 @@ initPackage = function () {
 callSVM <- function (
 	method = '', 
 	...) {
-	# depending on method, take one of the wrappers
-
+	
 	returnValue = NA
-    if (method == "libBVM") {
-      returnValue = evalLibBVM(examplePath, examplePath, cost = cost, gamma = gamma, epsilon = 0.001, 
-                       subsamplingRate = subsamplingRate,
-                      modelFile = modelFile)
-    }
-    
-    if (method == "libCVM") {
-      returnValue = evalLibCVM(examplePath, examplePath, cost = cost, gamma = gamma, epsilon = 0.001, 
-                       subsamplingRate = subsamplingRate,
-                      modelFile = modelFile)
-    }
 
-    if (method == "LIBSVM") {
-		returnValue= evalLIBSVM(method = method, ...)
-    }
-    
+	# TODO: try catch
+	
+	# depending on method, take one of the wrappers
+	callerName = paste ('eval', method, sep = "")
+	returnValue= do.call(callerName, list(method = method, ...))
+
     if (is.na(returnValue)) {
 		stopf("Either there was a severe error executing the SVM wrapper, or you misspelled the method name.")
 	}
     return(returnValue)
 }
+
+
 
 
 #
@@ -99,17 +126,14 @@ findBinary <- function (searchPath, pattern, outputPattern, solver, verbose = FA
 }
 
 
-# i do not really like R.
-	SVMBridge.LIBSVM.trainBinary <<- "." 
-	SVMBridge.LIBSVM.testBinary <<- "." 
-	SVMBridge.BVM.trainBinary <- "."
-	SVMBridge.BVM.testBinary <- "."
 
-
-
-findSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
+findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 	if (is.na(searchPath)) {
 		stopf("No search path is given!")
+	}
+	
+	if (is.na(method)) {
+		stopf ("No method name is given")
 	}
 	
 	# TODO: move these into the   lib.._wrapper.R
@@ -117,45 +141,40 @@ findSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
 	# TODO: to get better tests, maybe we need an option like "TEST = true", which will
 	# take a demo-data-file and compute the model. so actuallly its like a unittest, but
 	# it is executed during use, to make sure everything is as it should be.
-	
-	# iterate over all directories and search for the corresponding binaries
 
-	solver = "SVM"
 	pattern = '^svm-train$'
 	outputPattern = 'Usage: svm-train .options. training_set_file .model_file.'
-	binaryPath = findBinary (searchPath, pattern, outputPattern, solver, verbose = verbose)
-	#assign(SVMBridge.LIBSVM.trainBinary, binaryPath, envir = .GlobalEnv)
-	options("SVMBridge.LIBSVM.trainBinary" = binaryPath)
+	binaryPath = findBinary (searchPath, pattern, outputPattern, method, verbose = verbose)
+	if (verbose == TRUE) {
+		messagef("Found binary at %s", binaryPath) 
+	}
+	trainOptionName = paste('SVMBridge', method, "trainBinary", sep = ".")
+	tmpList = list()
+	tmpList[[trainOptionName]] = binaryPath
+	do.call(options, tmpList)
 
-	solver = "SVM"
 	pattern = '^svm-predict$'
 	outputPattern = 'for one-class SVM only 0 is supported'
-	binaryPath = findBinary (searchPath, pattern, outputPattern, solver, verbose = verbose)
-	options("SVMBridge.LIBSVM.testBinary" = binaryPath)
-
-	solver = "BVM"
-	pattern = '^svm-train$'
-	outputPattern = '6 -- CVM \\(sqr. hinge-loss'
-	binaryPath = findBinary (searchPath, pattern, outputPattern, solver, verbose = verbose)
-	options("SVMBridge.BVM.trainBinary" = binaryPath)
-
-	solver = "BVM"
-	pattern = '^svm-predict$'
-	outputPattern = 'bvm-predict'
-	binaryPath = findBinary (searchPath, pattern, outputPattern, solver, verbose = verbose)
-	options("SVMBridge.BVM.testBinary" = binaryPath)
+	binaryPath = findBinary (searchPath, pattern, outputPattern, method, verbose = verbose)
+	if (verbose == TRUE) {
+		messagef("Found binary at %s", binaryPath) 
+	}
+	testOptionName = paste('SVMBridge', method, "testBinary", sep = ".")
+	tmpList = list()
+	tmpList[[testOptionName]] = binaryPath
+	do.call(options, tmpList)
 }
 
 
 
-outputAllSVMSoftwarePaths <- function () {
-	# TODO: loop over solver
-
+outputAllSVMSoftwarePackages <- function () {
 	messagef("Currently known solver:")
-	
-	messagef("	LIBSVM Train: %s", getOption("SVMBridge.LIBSVM.trainBinary" ))
-	messagef("	LIBSVM Test: %s", getOption("SVMBridge.LIBSVM.testBinary"))
-	messagef("	BVM Train: %s", getOption("SVMBridge.BVM.trainBinary"))
-	messagef("	BVM Test: %s", getOption("SVMBridge.BVM.testBinary"))
+	for (package in SVMPackages) {
+		messagef("  %s:", package)
+		trainOptionName = paste('SVMBridge', package, "trainBinary", sep = ".")
+		messagef("    TrainBinary: %s", getOption(trainOptionName))
+		testOptionName = paste('SVMBridge', package, "testBinary", sep = ".")
+		messagef("    TestBinary: %s", getOption(testOptionName))
+	}
 }
 
