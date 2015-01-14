@@ -1,18 +1,15 @@
-Package: mlrMBO
-Title: mlr: Model-based optimization
-Description: A framework for the (sequential) model-based parameter
-    optimization. It offers methods to optimize numeric or discrete influence
-    parameters of non-linear black-box single- or multiobjective target
-    functions like an industrial simulator or a time-consuming algorithm using
-    cheap surrogate models.
-Authors@R: c(person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role =
-    c("aut", "cre")), person("Jakob", "Bossek", email =
-    "jakob.bossek@tu-dortmund.de", role = "aut"), person("Daniel", "Horn",
-    email = "daniel.horn@tu-dortmund.de", role = "aut"), person("Michel",
-    "Lang", email = "michellang@gmail.com", role = "aut"))
-License: BSD_3_clause + file LICENSE
-URL: https://github.com/berndbischl/mlrMBO
-BugReports: https://github.com/berndbischl/mlrMBO/issues
+Package: SVMBridge
+Title: A bridge to integrate different SVM solvers into R
+Description: Different SVM solvers are commonly used, e.g. LIBSVM and SVMperf.
+	Unfortunately, many of these do not come with an direct interface to R,
+	and writing such an interface might be complicated. Instead, this package
+	helps with controlling different SVM solvers by interfacing with them via
+	command line in a transparent fashion.
+Authors@R: c(person("Aydin", "Demircioglu", email = "aydin.demircioglu", role =
+    c("aut", "cre")) )
+License: LGPL-3 + file LICENSE
+URL: https://github.com/aydindemircioglu/svmBridge
+BugReports: https://github.com/aydindemircioglu/svmBridge
 Depends:
     lhs,
     mlr (>= 2.2),
@@ -43,4 +40,5 @@ Suggests:
     testthat
 LazyData: yes
 ByteCompile: yes
-Version: 1.0
+Version: 0.1
+Date: 2014-02-01
