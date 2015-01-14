@@ -26,7 +26,6 @@ loadThings <- function ()
 	library(e1071)
 
 	source ("./system3.R")
-	source ("./lsdir.R")
 }
 suppressMessages(loadThings())
 

@@ -36,7 +36,8 @@ evalLIBSVM = function(...)  {
         testParameterCallBack = LIBSVMTestParameterCallBack,
         extractInformationCallBack  = LIBSVMExtractInformationCallBack,
         readModelCallBack = LIBSVMReadModelCallBack,
-        writeModelCallBack = LIBSVMWriteModelCallBack)
+        writeModelCallBack = LIBSVMWriteModelCallBack,
+        predictionsCallBack = LIBSVMPredictionsCallBack)
     
     # we need to overwrite the template paths
     if (is.null(getOption("SVMBridge.LIBSVM.trainBinary")) == TRUE) {
@@ -91,11 +92,12 @@ LIBSVMTrainingParameterCallBack = function (
 LIBSVMTestParameterCallBack = function (
 	testDataFile = "",
     modelFile = "", 
+    predictionsFilePath = "",
     ...) {
     args = c(
         testDataFile,
         modelFile,
-        "/dev/null"                     # outfile, not needed
+        predictionsFilePath 
     )
     
     return (args)
@@ -300,3 +302,25 @@ LIBSVMWriteModelCallBack <- function (model = NA, modelFilePath = "./model", ver
 }
  
 
+#
+# @param[in]	predictionsFile		file to read predictions from
+# @return		array consisting of predictions
+#
+
+LIBSVMPredictionsCallBack <- function (predictionsFilePath = "", verbose = FALSE) {
+    # open connection
+    con  <- file(predictionsFilePath, open = "r")
+
+    predictions = c()
+	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
+		predictions = c(predictions, as.numeric(oneLine))
+    }
+    
+	if (verbose == TRUE) {
+		print(predictions)
+	}
+			
+	close (con)
+	
+    return (predictions)
+}

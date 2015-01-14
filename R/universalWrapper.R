@@ -54,6 +54,7 @@ universalWrapper = function(
 	extractInformationCallBack = extractInformationCallBack(),
 	readModelCallBack = readModelCallBack(),
 	writeModelCallBack = writeModelCallBack(),
+	predictionsCallBack = predictionsCallBack(),
 	...) {
 
 	trainBinary = basename(trainBinaryPath)
@@ -181,11 +182,16 @@ universalWrapper = function(
 		if (is.null(model) == FALSE) {
 			writeModelCallBack (model, modelFilePath, verbose = verbose)
 		}
+
+		# TODO: add prediction as an option, so people can have them permanently on disk??
+		predictionsFilePath = tempfile()
 	
 		# retrieve test parameters
 		args = eval (testParameterCallBack( 
 			testDataFile = testDataFile, 
-			modelFile = modelFilePath, ...))
+			modelFile = modelFilePath, 
+			predictionsFilePath = predictionsFilePath,
+			...))
     
 		testTime = microbenchmark(s <- system3(testBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
     
@@ -194,6 +200,10 @@ universalWrapper = function(
     
 		results[["testTime"]] = testTime
 		results[["testError"]] = eval (extractInformationCallBack(output = s$output))
+		
+		# as testing was done, we want to read out the predictions
+		predictions = predictionsCallBack(predictionsFilePath = predictionsFilePath, verbose = verbose)
+		results[["predictions"]] = predictions
 	}
 
 	
@@ -219,5 +229,5 @@ trainingParameterCallBack <- function (...) {}
 testParameterCallBack <- function (...) {}
 readModelCallBack <- function (...) {} 
 writeModelCallBack <- function (...) {} 
-
+predictionsCallBack <- function (...) {}
 

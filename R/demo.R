@@ -45,7 +45,7 @@ findAllSVMSoftware (searchPath = "../../../../svm_large_scale/software/", verbos
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
-        verbose = FALSE
+        verbose = TRUE
     )  
     
 
