@@ -34,22 +34,22 @@ suppressMessages(loadThings())
 
 universalWrapper = function(
 	# data
-	trainDataFile = NA,
-	testDataFile = NA,
-	trainDataX = NA, 
-	trainDatay = NA, 
-	testDataX = NA, 
-	testDatay = NA, 
+	trainDataFile = NULL,
+	testDataFile = NULL,
+	trainDataX = NULL, 
+	trainDatay = NULL, 
+	testDataX = NULL, 
+	testDatay = NULL, 
 
 	# full path to executable
-	trainBinaryPath = NA,
-	testBinaryPath = NA,
+	trainBinaryPath = NULL,
+	testBinaryPath = NULL,
 	
 	# rest
-	method = NA,
+	method = NULL,
 	extraParameter = "",
-	modelFilePath = NA,
-	model = NA,
+	modelFilePath = NULL,
+	model = NULL,
 	verbose = FALSE,
 
 	# call backs
@@ -81,17 +81,17 @@ universalWrapper = function(
 	}
 	
 	# TODO: sanity checks for parameter
-	if (is.na (method) == TRUE) {
+	if (is.null (method) == TRUE) {
 		stopf("No method name is given, this should never happen.")
 	}
 	
 	# user cannot give us a model in memory and train a model. (<-- in that case he should call callSVM twice)
-	if ((is.na(modelFilePath) == FALSE) && (is.na(model) == FALSE)) {
+	if ((is.null(modelFilePath) == FALSE) && (is.null(model) == FALSE)) {
 		stopf ("A model in memory as well a model path was given. Please call twice, if test with different model is needed.")
 	}
 			
  	readModelFile = TRUE
-	if (is.na(modelFilePath) == TRUE) {
+	if (is.null(modelFilePath) == TRUE) {
 		# user did not specify a modelfile
 		# so we will write the model in a temp file
 		# and read it back after training
@@ -107,9 +107,9 @@ universalWrapper = function(
   
 	# traindata given?
 	doTraining = TRUE
-	if (is.na(trainDataX) == FALSE) {
+	if (is.null(trainDataX) == FALSE) {
 		# yes, we are given in memory data
-		if (is.na(trainDataFile) == FALSE)
+		if (is.null(trainDataFile) == FALSE)
 			stopf("Given a data frame as training data and specified a training file name. Confused. Stopping.")
 			
 		# we need to get a tempfile and dump our data into there
@@ -119,7 +119,7 @@ universalWrapper = function(
 		write.matrix.csr(trainDataX, trainDataFile, trainDatay)
 	} else {
 		# no, we have no in memory data. so we need to create a data file 
-		if (is.na(trainDataFile) == TRUE)
+		if (is.null(trainDataFile) == TRUE)
 			doTraining = FALSE
 		
 		# ok, so we have a training data file, and everything is good.
@@ -136,9 +136,9 @@ universalWrapper = function(
 		
 	# testdata given?
 	doTesting = TRUE
-	if (is.na(testDataX) == FALSE) {
+	if (is.null(testDataX) == FALSE) {
 		# yes, we are given in memory data
-		if (is.na(testDataFile) == FALSE)
+		if (is.null(testDataFile) == FALSE)
 			stopf("Given a data frame as testing data and specified a testing file name. Confused. Stopping.")
 			
 		# we need to get a tempfile and dump our data into there
@@ -148,7 +148,7 @@ universalWrapper = function(
 		write.matrix.csr(testDataX, testDataFile, testDatay)
 	} else {
 		# no, we have no in memory data. so we need to create a data file 
-		if (is.na(testDataFile) == TRUE)
+		if (is.null(testDataFile) == TRUE)
 			doTesting = FALSE
 		
 		# ok, so we have a testing data file, and everything is good.
@@ -164,7 +164,7 @@ universalWrapper = function(
 
 	# given us a model in memory makes only sense,
 	# if the user does not want to train, but to test
-	if ((is.na(model) == FALSE) && (doTraining == TRUE)) {
+	if ((is.null(model) == FALSE) && (doTraining == TRUE)) {
 		stopf ("Cannot train, if given a memory model. Would need to discard that.")
 	}
 
@@ -194,7 +194,7 @@ universalWrapper = function(
 	if (doTesting == TRUE) {
 	
 		# if the user specified a model in memory, we first need to write that
-		if (is.na(model) == FALSE) {
+		if (is.null(model) == FALSE) {
 			writeModelCallBack (model, modelFilePath, verbose = verbose)
 		}
 	

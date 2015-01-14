@@ -79,7 +79,7 @@ callSVM <- function (
 	method = '', 
 	...) {
 	
-	returnValue = NA
+	returnValue = NULL
 
 	# TODO: try catch
 	
@@ -87,7 +87,7 @@ callSVM <- function (
 	callerName = paste ('eval', method, sep = "")
 	returnValue= do.call(callerName, list(method = method, ...))
 
-    if (is.na(returnValue)) {
+    if (is.null(returnValue)) {
 		stopf("Either there was a severe error executing the SVM wrapper, or you misspelled the method name.")
 	}
     return(returnValue)
