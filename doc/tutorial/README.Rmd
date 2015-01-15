@@ -1,15 +1,13 @@
 # Tutorial
 
-**mlrMBO** is a framework for the (sequential) Model Based parameter Optimization.
-The goal is to optimize numeric or discrete influence parameters
-of a non-linear black box function like an industrial simulator or  a time-consuming algorithm.
+**SVMBridge** is a small framework for the controlling several SVM packages like LIBSVM, SVMperf, CVM from inside R. 
+The goal is to allow for a rather easy way to do experiments with these different SVM packages. As the framework interacts with these packages by I/O, the focus is not on speed.
 
-In the following we provide an in-depth introduction to **mlrMBO**. An introductory example serves as a quickstart guide.
+In the following we provide a short introduction to **SVMBridge**. An introductory example serves as a quickstart guide.
 Note that our focus is on your comprehension of the basic functions and
 applications. For detailed technical information and manual pages, please refer to
-the package's [manual pages](http://berndbischl.github.io/mlrMBO/man/). They are regularly updated and reflect the documentation of the current packages on CRAN.
+the package's [manual pages](http://aydindemircioglu.github.io/SVMBridge/man/). They are regularly updated and reflect the documentation of the current package.
 
 1. [Quickstart](quickstart.md)
 2. [In Depth Introduction](introduction.md)
-3. Further advanced topics:
-  - [Parallelization](parallelization.md) Make use of multicore CPUs and other distributed computing methods.
+3. [Wrappers](wrappers.md)

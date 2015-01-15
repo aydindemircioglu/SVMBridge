@@ -13,3 +13,6 @@ src/*.so
 **/tmp/**
 *.RData
 .Rhistory
+.Rcheck
+SVMBr*tar.gz
+*.Rcheck

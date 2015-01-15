@@ -1,11 +1,5 @@
 #!/usr/bin/Rscript  --vanilla 
 
-source ("software/helpers/universalWrapper.R")
-
-library(BBmisc)
-
-
-
 
 evalSVMperf = function(...)  {   
     universalWrapper (
