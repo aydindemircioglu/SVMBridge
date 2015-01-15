@@ -20,11 +20,8 @@
 #
  
 
- source ("./universalWrapper.R")
+#source ("./universalWrapper.R")
 
-library(BBmisc)
-library(stringr)
-library(plyr)
 
 
 # add functions to allow for searching the binaries

@@ -19,23 +19,6 @@
 #
  
 
- 
-# stupid R
-loadThings <- function ()
-{
-  library(BBmisc)
-  library(stringr)
-  library(R.utils)
-  library(microbenchmark)
-  library(e1071)
-  library(methods)
-  library(SparseM)
-  
-  source ("./system3.R")
-}
-suppressMessages(loadThings())
-
-
 
 
 
