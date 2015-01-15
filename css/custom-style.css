@@ -1,0 +1,28 @@
+body,
+.stretched-layout .bgWrapper {
+    background-color: #ffffff;
+    background-position: top center;
+    background-repeat: repeat;
+    background-attachment: fixed
+}
+
+.wrapper-content {
+    width:620px; 
+}
+
+h1, h2, h3, h4, h5, h6, .special-font {
+    font-family:'Quattrocento Sans' !important; 
+}
+
+#nav > ul > li > a {
+    font-family: 'Quattrocento Sans', Verdana, Geneva, sans-serif !important; 
+}
+
+p,
+li {
+    font-family: 'Quattrocento Sans', Calibri, 'Lucida Sans Unicode', Helvetica, Arial, san-serif !important; 
+}
+
+#topbar {
+    text-align: right;
+}

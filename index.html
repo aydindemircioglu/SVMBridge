@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<!--[if IE 6]>
+<html id="ie6" dir="ltr" lang="en-US">
+<![endif]-->
+<!--[if IE 7]>
+<html id="ie7" dir="ltr" lang="en-US">
+<![endif]-->
+<!--[if IE 8]>
+<html id="ie8" dir="ltr" lang="en-US">
+<![endif]-->
+<!--[if !(IE 6) | !(IE 7) | !(IE 8)  ]><!-->
+<html dir="ltr" lang="en-US">
+    <!--<![endif]-->
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+    <title>SVMBridge</title>
+        
+        <link rel="stylesheet" type="text/css" media="all" href="style.css" />
+        <link rel="stylesheet" type="text/css" media="screen and (max-width: 960px)" href="css/lessthen800.css" />
+        <link rel="stylesheet" type="text/css" media="screen and (max-width: 600px)" href="css/lessthen600.css" />
+        <link rel="stylesheet" type="text/css" media="screen and (max-width: 480px)" href="css/lessthen480.css" />
+                                   
+        <!-- CUSTOM STYLE -->                                                                        
+        <link rel="stylesheet" type="text/css" media="all" href="css/custom-style.css" />
+        
+        <!-- [favicon] begin -->
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
+        <!-- [favicon] end -->  
+        
+        <!-- MAIN FONT STYLE -->  
+<link href='http://fonts.googleapis.com/css?family=Quattrocento+Sans:400,400italic,700' rel='stylesheet' type='text/css'>
+<!-- END MAIN FONT STYLE -->  
+    </head>
+    
+    <body class="home image-sphere-style responsive">
+    
+        <!-- START SHADOW WRAPPER -->
+        <div class="shadowBg group">
+            
+            <!-- START WRAPPER -->
+            <div class="wrapper group">
+                
+                <!-- START TOPBAR -->
+                <div id="topbar">
+                    <div class="inner">
+                        <div class="clear"></div>
+                    </div>
+                    <!-- end.inner -->
+                </div>
+                <!-- END TOPBAR -->   
+                 
+                <!-- START HEADER -->
+                <div id="header" class="group" style="z-index:1111;">
+                        SVMBridge
+                </div>
+                <!-- END HEADER -->        
+                             
+                 
+                
+                <!-- HOME SECTIONS -->   
+                <div class="home-sections">
+                
+                    <!-- SECTION #1 -->
+                    <div class="section gradient   group" style="background:#ffffff; margin-top:-55px; margin-bottom:-140px;">
+                        <div class="section-title for-not-mobile">
+                            <h2> </h2>
+                        </div>
+                        <div class="section-content">
+                            <h2 class="for-mobile"></h2>
+                            <p>an svm-wrapper package
+                        </div> 
+                    </div>               
+                    <!-- END SECTION #1 -->
+                     
+                    <div class="section gradient   group" style="background:#ffffff; margin-top:-55px; margin-bottom:60px;">
+                        <div class="section-title for-not-mobile">
+                            <h2>idea</h2>
+                        </div>
+                        <div class="section-content">
+                            <p>many svm packages have been written, but mostly they can only be controled
+                            via command line. having any other svm, besides libsvm, in R is rare.
+                            this package allows to control the more famous svm packages directly from R.
+
+                            </div> 
+                    </div>               
+
+                    <div class="section gradient   group" style="background:#ffffff; margin-top:-55px; margin-bottom:60px;">
+                        <div class="section-title for-not-mobile">
+                            <h2>notes</h2>
+                        </div>
+                        <div class="section-content">
+                            <p>-the distance to the stop is not accurate, but is measured as the distance to the <b>next</b> stop.
+                            different routes may take part from different stops, this is not considered for now. therefore the maps are only rough estimations.
+                            <br>-not always all tiles load, i am not sure why, one thing is that routing does not apply, if the goal is very near, e.g.
+                            from the 'botanischer garten' to the ruhr-universitaet stop. 
+                            <br>-this was coded during the first hackathon at the <a href="http://www.ini.rub.de">institute for neural computations, bochum, germany</a>.<br>
+                            
+                        </div> 
+                    </div>               
+
+
+                    <div class="section gradient   group">
+                        <div class="section-title for-not-mobile">
+                            <h2>usage</h2>
+                        </div>
+                        <div class="section-content">
+                            <p>for now everything is very rough at the edges. but still i tried to add a usuable command line interface.
+                            roughly you need to add the rectangle to search (in latitute/longitude coordinates),
+                            the resolution of that by specifying the number of grid points you want,
+                            add the date (not that important, it will use next weeks data, which is a reasonable choice)
+                            and the hour to consider (hours can make a huge difference, e.g. night time everything will take longer).
+                            then you just run the script. it will create a .kml file, 
+                            which you can now easily open in google earth, or use any other geo program that can overlay kml.
+
+                            <p> prerequisites for the script: VRR::EFA, Travel::Routing::DE::VRR, Geo::KML::PolyMap just to name some.
+                            i had some trouble getting everything run, no guarantee that all these libraries work out well for you.
+                            i've added local versions of VRR::EFA and Travel::Routing, that was somehow crucial for me.
+                            
+                            <p>
+  There are many options, some are from the Travel::Routing::DE package, some are new. Some of them i do not use at all.
+Those that can be reasonably used are the following:<p>
+<pre>
+	$ ./putrama.pl [options]
+
+	--arrive HH:MM
+		arrival time, e.g. 10:00 in the morning to get in time to the morning lectures.
+	--colorbins #
+		number of bins to threshold the final connection times. Defaults to 32 (if enough tiles are queried).
+	--date DD.MM.YYYY
+		date when to query the connections. weekdays should be faster than weekends,
+		day connections faster than night connections.
+	--endcolor AABBGGRR
+		color for slow connections, alpha value, blue value, green value, red value in hexadecimal.
+	--endlat #
+		end latitute of grid.
+	--endlong #
+		end longitute of grid.
+	--gridsizelat #
+		how many tiles in latitute direction should be created?
+	--gridsizelong #
+		how many tiles in longitude direction should be created?
+	--kmlfilename filename
+		filename for kml output
+	--startcolor AABBGGRR
+		color for fast connections, alpha value, blue value, green value, red value in hexadecimal.
+	--startlat #
+		start latitute of grid.
+	--startlong=f
+		start longitute of grid.
+	--to city, stop 
+		specify where the connections should go to. 
+	--verbosity #
+		verbosity level, 0 = few outputs, 100 = all outputs.
+</pre>
+
+<p>The map on this website was created with 
+<br><pre>
+$ ./putrama.pl --gridsizelong 64 --gridsizelat 64  --startlat 51.58 --endlat 51.37 --endlong 7.45 --date 6.11.2014 --verbosity 100
+</pre>
+
+                        </div> 
+                    </div>               
+
+                    <div class="section gradient   group">
+                        <div class="section-title for-not-mobile">
+                            <h2>downloads</h2>
+                        </div>
+                        <div class="section-content">
+                            <p><a href="https://github.com/aydindemircioglu/putrama">source code (on github)</a>
+
+                        </div> 
+                    </div>               
+
+                    <div class="section gradient   group">
+                        <div class="section-title for-not-mobile">
+                            <h2>example</h2>
+                        </div>
+                        <div class="section-content">
+                                <div id="map_canvas"></div>
+                        </div> 
+                    </div>               
+                    
+                    </div>   
+                <!-- END HOME SECTIONS -->   
+                 
+
+                <!-- START TWITTER -->
+                <div id="myfooter" class="" style="margin-top:100px;">
+		    <p class="center">theme template by <a href="http://www.yourinspirationweb.com/en">Your Inspiration Web</a></p>                    <div class="bird"></div>
+                </div>
+                <!-- END TWITTER -->   
+                   
+            </div>
+            <!-- END WRAPPER --> 
+            	    
+        </div>
+        <!-- END SHADOW -->       
+        
+    </body>
+</html>
