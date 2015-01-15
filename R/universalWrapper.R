@@ -1,8 +1,9 @@
 #!/usr/bin/Rscript  --vanilla 
 #
 # SVMBridge 
-#
 #		(C) 2015, by Aydin Demircioglu
+#
+#		universalWrapper.R
 # 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -19,17 +20,35 @@
 #
  
 
-
-
-
-# universalWrapper
-#
-# @param[in]    trainfile       file to read training data from
-# @param[in]    testfile        file to read test data from
-# @param[in]    extraParameter  extra parameters for solver
-# @param[in]    bindir          relativ path to the binaries, defaults to.. default.
-# @param[in]    modelFile       path to model, defaults to a temporary file (given by R)
-#
+#' universalWrapper
+#'
+#' @param     trainDataFile       file to read training data from 
+#' @param     testDataFile       file to read test data from 
+#' @param     trainDataX		matrix to read training data from 
+#' @param     trainDatay		matrix to read training label from 
+#' @param     testDataX		matrix to read test data from 
+#' @param     testDatay		matrix to read test label from 
+#'
+#' @param     trainBinaryPath		full path to the training binary to call
+#' @param     testBinaryPath		full path to the test binary to call
+#'
+#' @param     method		name of the SVM method/solver
+#' @param     extraParameter  extra parameters for solver
+#'
+#' @param     model		list containing a trained SVM model
+#' @param     modelFile       path to a model file
+#' @param     verbose		be verbose?
+#'
+#' @param     trainingParameterCallBack 		 function that returns command line for training
+#' @param     testParameterCallBack 		 function that returns command line for testing
+#' @param     extractInformationCallBack 		 function that extracts information from testing output
+#' @param     readModelCallBack 		 function that reads a model into a list
+#' @param     writeModelCallBack 		 function that writes a model to a file
+#' @param     predictionsCallBack 		 function that reads predictions from a file to a matrix
+#'
+#' @note		exclusive parameters, i.e. you cannot specify both:
+#'
+#' 
 
 universalWrapper = function(
 	# data
@@ -221,13 +240,11 @@ universalWrapper = function(
 }
 
 
+
 # dummy, should be overwritten
 extractInformationCallBack = function (output) {
-  err = 1 - as.numeric(str_extract(output, "\\d+\\.?\\d*")) / 100
+	err = 1 - as.numeric(str_extract(output, "\\d+\\.?\\d*")) / 100
 }
-
-
-# dummies, must be overwritten
 trainingParameterCallBack <- function (...) {}
 testParameterCallBack <- function (...) {}
 readModelCallBack <- function (...) {} 

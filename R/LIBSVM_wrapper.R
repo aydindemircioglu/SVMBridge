@@ -2,8 +2,9 @@
 
 #
 # SVMBridge 
-#
 #		(C) 2015, by Aydin Demircioglu
+#
+#		SVMperf_wrapper.R
 # 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -20,25 +21,43 @@
 #
  
 
-#source ("./universalWrapper.R")
+#' LIBSVMTrainBinary 
+#'
+#' return full path of training binary.
+#
 
-
-
-# add functions to allow for searching the binaries
 LIBSVMTrainBinary <- function() {
     return ("svm-train")
 }
 
+
+
+#' LIBSVMTestBinary 
+#'
+#' return full path of test binary.
+#
 
 LIBSVMTestBinary <- function() {
     return ("svm-predict")
 }
 
 
+
+#' LIBSVMTrainBinaryOutputPattern
+#'
+#' return pattern that identifies the training binary.
+#
+
 LIBSVMTrainBinaryOutputPattern <- function() {
     return ('Usage: svm-train .options. training_set_file .model_file.')
 }
 
+
+
+#' LIBSVMTestBinaryOutputPattern
+#'
+#' return pattern that identifies the test binary.
+#
 
 LIBSVMTestBinaryOutputPattern <- function() {
     return ('for one-class SVM only 0 is supported')
@@ -46,6 +65,11 @@ LIBSVMTestBinaryOutputPattern <- function() {
 
 
 	
+#' evalLIBSVM
+#'
+#' @param     ...		parameters that will be passed on training and/or test callbacks
+#
+
 evalLIBSVM = function(...)  {   
 
 	parameterList = list(..., 
