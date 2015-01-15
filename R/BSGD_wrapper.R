@@ -15,11 +15,11 @@ evalBSGD = function(...)  {
     universalWrapper (
         modelName = "BSGD",
         trainingParameterCallBack = BSGDTrainingParameterCallBack,
-        testParameterCallBack = BudgetedSVMTestParameterCallBack,
-        extractInformationCallBack = BudgetedSVMExtractInformationCallBack,
-        trainBinary = BudgetedSVMTrainBinary(),
-        testBinary = BudgetedSVMTestBinary (),
-        bindir = BudgetedSVMBinDir(),
+        testParameterCallBack = BSGDTestParameterCallBack,
+        extractInformationCallBack = BSGDExtractInformationCallBack,
+        trainBinary = BSGDTrainBinary(),
+        testBinary = BSGDTestBinary (),
+        bindir = BSGDBinDir(),
         ...
     );
 }
@@ -57,7 +57,7 @@ BSGDTrainingParameterCallBack = function (trainfile = "",
 
 
 
-BudgetedSVMTestParameterCallBack = function (testfile = "",
+BSGDTestParameterCallBack = function (testfile = "",
                                         modelFile = "", 
                                         predictionOutput = "/dev/null", ...) {
     args = c(
@@ -73,7 +73,7 @@ BudgetedSVMTestParameterCallBack = function (testfile = "",
 
 
 
-BudgetedSVMExtractInformationCallBack = function (output) {
+BSGDExtractInformationCallBack = function (output) {
     
     # ---- grep the error rate
     pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
@@ -83,23 +83,161 @@ BudgetedSVMExtractInformationCallBack = function (output) {
 }
 
 
-BudgetedSVMTrainBinary <- function() {
+BSGDTrainBinary <- function() {
     return ("budgetedsvm-train")
 }
 
 
-BudgetedSVMTestBinary <- function() {
+BSGDTestBinary <- function() {
     return ("budgetedsvm-predict")
 }
 
 
-BudgetedSVMBinDir <- function() {
-    return ("software/BudgetedSVM/bin/")
+BSGDBinDir <- function() {
+    return ("software/BSGD/bin/")
 }
 
 
-BudgetedSVMMODBinDir <- function() {
-    return ("software/BudgetedSVM/bin.org/")
+
+
+
+BSGDReadModelCallBack <- function (modelFilePath = "./model", verbose = FALSE)
+{
+    # open connection
+    con  <- file(modelFilePath, open = "r")
+
+	# do we need to invert the labels?
+	invertLabels = FALSE
+
+	# grep needed information step by step, the bias is on the threshold line
+    while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) 
+    {
+        if (grepl("MODEL", oneLine) == TRUE) break;
+      
+        # gamma value
+        if (grepl("KERNEL_GAMMA_PARAM", oneLine) == TRUE) 
+        {
+            pattern <- "KERNEL_GAMMA_PARAM: (.*)"
+            gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+        }  
+      
+        # bias
+        if (grepl("BIAS_TERM", oneLine) == TRUE) 
+        {
+            pattern <- "BIAS_TERM: (.*)"
+            bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+        }
+      
+        # order of labels
+        if (grepl("LABELS", oneLine) == TRUE) 
+        {
+            pattern <- "LABELS: (.*)"
+            order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+        
+            if ((order != "1 -1") && (order != "-1 1")) {
+                stop ("Label ordering %s is unknown!", order)
+            }
+        
+            if (order == "1 -1") {
+                invertLabels = FALSE
+            }
+
+            if (order == "-1 1") {
+                invertLabels = TRUE
+            }
+            
+            # yes, exceptions.
+            if (model == "LLSVM") {
+                invertLabels = !invertLabels
+            }
+        }  
+    }
+  
+  
+	# read and interprete data 
+	# basically all data is sparse data format, but the data around this differs
+	svmatrix = readSparseFormat(con)
+
+	# add header information
+	svmatrix$gamma = gamma
+	svmatrix$bias = bias
+	svmatrix$modelname = "BSGD"
+	
+	
+	# do we need to invert the labels? in this case we invert the coefficients
+	if (invertLabels == TRUE) {
+		if (verbose == TRUE)  
+			messagef(" Inverting Labels.")
+
+		# invert alphas
+		svmatrix$a = -svmatrix$a
+
+		# this is also needed.. 
+		svmatrix$bias = -bias
+	}
+
+	# close connection
+	close(con)
+	
+	# return
+	return (svmatrix)
 }
+ 
 
 
+# dummy for now
+BSGDWriteModelCallBack <- function (model = NA, modelFilePath = "./model", verbose = FALSE) {
+	if (verbose == TRUE) {
+		messagef ("Writing SVM Model..")
+	}
+
+	# BROKEN, FIXME
+	
+	# FIXME: label order
+	# TODO: support multiclass
+	model$nrclass = 2
+	posSV = sum(model$a > 0)
+	negSV = sum(model$a < 0)
+    # open connection
+    modelFileHandle <- file(modelFilePath, open = "w+")
+	writeLines(paste ("svm_type c_svc", sep = ""), modelFileHandle )
+	writeLines(paste ("kernel_type", "rbf", sep = " "), modelFileHandle )
+	writeLines(paste ("gamma", model$gamma, sep = " "), modelFileHandle )
+	writeLines(paste ("nr_class", model$nrclass, sep = " "), modelFileHandle )
+	writeLines(paste ("total_sv", length(model$a), sep = " "), modelFileHandle )
+	writeLines(paste ("rho", model$bias, sep = " "), modelFileHandle )
+	writeLines(paste ("label 1 -1", sep = " "), modelFileHandle )
+	writeLines(paste ("nr_sv", posSV, negSV, sep = " "), modelFileHandle )
+	writeLines(paste ("SV", sep = ""), modelFileHandle )
+
+	# basically all data is sparse data format, but the data around this differs
+	svmatrix = dumpSparseFormat(model$a, model$X)
+	writeLines(svmatrix, modelFileHandle, sep = "" )
+	
+	# close connection
+	close(modelFileHandle)
+}
+ 
+
+#
+# @param[in]	predictionsFile		file to read predictions from
+# @return		array consisting of predictions
+#
+
+BSGDPredictionsCallBack <- function (predictionsFilePath = "", verbose = FALSE) {
+    # open connection
+    con  <- file(predictionsFilePath, open = "r")
+
+    predictions = c()
+	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
+		predictions = c(predictions, as.numeric(oneLine))
+    }
+    
+	if (verbose == TRUE) {
+		print(predictions)
+	}
+			
+	close (con)
+	
+    return (predictions)
+}

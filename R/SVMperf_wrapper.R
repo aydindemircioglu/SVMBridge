@@ -312,33 +312,103 @@ SVMperfTestBinary <- function() {
 SVMperfBinDir <- function() {
     return ("software/SVMperf/bin/")
 }
-
-
-
-# stupid R check for pythons cool "name == __main__"
-if (length(sys.frames()) == 0) 
+  
+  
+  
+SVMperfReadModelCallBack <- function (modelFilePath = "./model", verbose = FALSE)
 {
-#    file = "software/libSVM/src/heart_scale"
-#    file = "datasets/australian/australian.combined.scaled"
-    file = "datasets/arthrosis/arthrosis.combined.scaled"
-#    file = "datasets/protein/protein.combined.scaled"
+    # open connection
+    con  <- file(modelFilePath, open = "r")
 
-    err = evalSVMperf(file, file, cost = 19, gamma = 0.0496346230004575, epsilon = 0.1, k = 1000,
-        primalTime = 1,
-        wallTime = 66,
-        verbose = TRUE,
-        modelFile = "~/svmperf.model",
-        method = "CPSP",
-        computePrimal = FALSE
-    )  
+    # grep needed information step by step, the bias is on the threshold line
+	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
+		if (grepl("threshold", oneLine) == TRUE) 
+			break;
+      
+		# gamma value
+		if (grepl("parameter -g", oneLine) == TRUE) {
+			pattern <- "(.*) # kernel.*"
+			gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+		}  
+    }
+    
+    # the last line read should then contain the bias/threshold
+    if (grepl("threshold", oneLine) == TRUE) {
+      pattern <- "(.*) # threshold.*"
+      bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+    }
+  
+  
+	# read and interprete data 
+	# basically all data is sparse data format, but the data around this differs
+	svmatrix = readSparseFormat(con)
 
-    messagef("Error rate: %s", err$err) 
-    messagef("Dual: %s", err$dual) 
-    messagef("Primal: %s", err$primal)
+  
+	# add header information
+	svmatrix$gamma = gamma
+	svmatrix$bias = bias
+	svmatrix$modelname = "SVMperf"
+	
+	# close connection
+	close(con)
+	
+	# return
+	return (svmatrix)
 }
 
 
-  
 
+# dummy for now
+SVMperfWriteModelCallBack <- function (model = NA, modelFilePath = "./model", verbose = FALSE) {
+	if (verbose == TRUE) {
+		messagef ("Writing SVM Model..")
+	}
+	
+	# FIXME: label order
+	# TODO: support multiclass
+	model$nrclass = 2
+	posSV = sum(model$a > 0)
+	negSV = sum(model$a < 0)
+    # open connection
+    modelFileHandle <- file(modelFilePath, open = "w+")
+	writeLines(paste ("svm_type c_svc", sep = ""), modelFileHandle )
+	writeLines(paste ("kernel_type", "rbf", sep = " "), modelFileHandle )
+	writeLines(paste ("gamma", model$gamma, sep = " "), modelFileHandle )
+	writeLines(paste ("nr_class", model$nrclass, sep = " "), modelFileHandle )
+	writeLines(paste ("total_sv", length(model$a), sep = " "), modelFileHandle )
+	writeLines(paste ("rho", model$bias, sep = " "), modelFileHandle )
+	writeLines(paste ("label 1 -1", sep = " "), modelFileHandle )
+	writeLines(paste ("nr_sv", posSV, negSV, sep = " "), modelFileHandle )
+	writeLines(paste ("SV", sep = ""), modelFileHandle )
 
+	# basically all data is sparse data format, but the data around this differs
+	svmatrix = dumpSparseFormat(model$a, model$X)
+	writeLines(svmatrix, modelFileHandle, sep = "" )
+	
+	# close connection
+	close(modelFileHandle)
+}
+ 
 
+#
+# @param[in]	predictionsFile		file to read predictions from
+# @return		array consisting of predictions
+#
+
+SVMperfPredictionsCallBack <- function (predictionsFilePath = "", verbose = FALSE) {
+    # open connection
+    con  <- file(predictionsFilePath, open = "r")
+
+    predictions = c()
+	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
+		predictions = c(predictions, as.numeric(oneLine))
+    }
+    
+	if (verbose == TRUE) {
+		print(predictions)
+	}
+			
+	close (con)
+	
+    return (predictions)
+}

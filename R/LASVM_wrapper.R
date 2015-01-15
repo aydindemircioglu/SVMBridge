@@ -91,23 +91,23 @@ LASVMBinDir <- function() {
 
 
 
-# stupid R check for pythons cool "name == __main__"
-if (length(sys.frames()) == 0) 
-{
-    file = getData ("australian")
-    testfile = file
-
-    err = evalLASVM(trainfile = file, 
-        testfile = testfile, cost = 1, gamma = 1, epsilon = 0.001, epochs = 1,
-        primalTime = -1,
-        wallTime = -1,
-        verbose = TRUE,
-        modelFile = "~/lasvm.model",
-        computePrimal = TRUE
-    )  
-
-    messagef("Accuracy: %s", err$err) 
-    messagef("Dual: %s", err$dual) 
-    messagef("Primal: %s", err$primal)
+LASVMReadModelCallBack <- function (modelFilePath = "./model", verbose = FALSE) {
+	LIBSVMReadModelCallBack (modelFilePath = modelFilePath, verbose = verbose)
 }
 
+
+
+LASVMWriteModelCallBack <- function (model = NA, modelFilePath = "./model", verbose = FALSE) {
+	LIBSVMWriteModelCallBack (model = model, modelFilePath = modelFilePath, verbose = verbose)
+}
+ 
+
+ 
+#
+# @param[in]	predictionsFile		file to read predictions from
+# @return		array consisting of predictions
+#
+
+LASVMPredictionsCallBack <- function (predictionsFilePath = "", verbose = FALSE) {
+	return (LIBSVMPredictionsCallBack (predictionsFilePath = predictionsFilePath, verbose = verbose))
+}

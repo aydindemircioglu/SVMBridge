@@ -24,42 +24,42 @@
 
 
 # add functions to allow for searching the binaries
-LIBCVMTrainBinary <- function() {
+BVMTrainBinary <- function() {
     return ("svm-train")
 }
 
 
-LIBCVMTestBinary <- function() {
+BVMTestBinary <- function() {
     return ("svm-predict")
 }
 
 
-LIBCVMTrainBinaryOutputPattern <- function() {
+BVMTrainBinaryOutputPattern <- function() {
     return ("outputPattern = '6 -- CVM \\(sqr. hinge-loss")
 }
 
 
-LIBCVMTestBinaryOutputPattern <- function() {
+BVMTestBinaryOutputPattern <- function() {
     return ("bvm-predict")
 }
 
 
-evalLibCVM = function(...)  {   
+evalBVM = function(...)  {   
     universalWrapper (
         modelName = "libCVM",
-        trainingParameterCallBack = LibCVMTrainingParameterCallBack,
-        testParameterCallBack = LibCVMTestParameterCallBack,
-        extractInformationCallBack  = LibCVMExtractInformationCallBack,
-        trainBinary = LibCVMTrainBinary(),
-        testBinary = LibCVMTestBinary (),
-        bindir = LibCVMBinDir(),
+        trainingParameterCallBack = BVMTrainingParameterCallBack,
+        testParameterCallBack = BVMTestParameterCallBack,
+        extractInformationCallBack  = BVMExtractInformationCallBack,
+        trainBinary = BVMTrainBinary(),
+        testBinary = BVMTestBinary (),
+        bindir = BVMBinDir(),
         ...
     );
 }
 
 
 
-LibCVMTrainingParameterCallBack = function (trainfile = "",
+BVMTrainingParameterCallBack = function (trainfile = "",
                                             modelFile = "",
                                             extraParameter = "",
                                             primalTime = 10, 
@@ -69,23 +69,10 @@ LibCVMTrainingParameterCallBack = function (trainfile = "",
                                             gamma = 1, 
                                             epsilon = 0.001, ...) {
 
-    # ---  take care of primal/wall time, will not be added if its turned off. 
-    primalTimeParameter =  sprintf("-a %d", floor(primalTime))
-
-    if (primalTime == -1)
-        primalTimeParameter = ""
-
-    wallTimeParameter =  sprintf("-l %d", floor(wallTime))
-
-    if (wallTime == -1)
-        wallTimeParameter = ""
-
     args = c(
         "-s 6",                         # CVM = 6, BVM = 9
         "-t 2",
         sprintf("-c %.16f", cost), 
-        primalTimeParameter,
-        wallTimeParameter,
         sprintf("-m %d", kernelCacheSize), # in MB 
         sprintf("-g %.16f", gamma),
         sprintf("-e %.16f", epsilon),
@@ -99,7 +86,7 @@ LibCVMTrainingParameterCallBack = function (trainfile = "",
 
 
 
-LibCVMTestParameterCallBack = function (testfile = "",
+BVMTestParameterCallBack = function (testfile = "",
                                         modelFile = "", ...) {
     args = c(
         testfile,
@@ -112,7 +99,7 @@ LibCVMTestParameterCallBack = function (testfile = "",
 
 
 
-LibCVMExtractInformationCallBack = function (output) {
+BVMExtractInformationCallBack = function (output) {
 
     # maybe not the best way to grep the string
     pattern <- "Accuracy = (\\d+\\.?\\d*).*"
@@ -121,3 +108,26 @@ LibCVMExtractInformationCallBack = function (output) {
     return (err)
 }
 
+
+
+
+BVMReadModelCallBack <- function (modelFilePath = "./model", verbose = FALSE) {
+	LIBSVMReadModelCallBack (modelFilePath = modelFilePath, verbose = verbose)
+}
+
+
+
+BVMWriteModelCallBack <- function (model = NA, modelFilePath = "./model", verbose = FALSE) {
+	LIBSVMWriteModelCallBack (model = model, modelFilePath = modelFilePath, verbose = verbose)
+}
+ 
+
+ 
+#
+# @param[in]	predictionsFile		file to read predictions from
+# @return		array consisting of predictions
+#
+
+BVMPredictionsCallBack <- function (predictionsFilePath = "", verbose = FALSE) {
+	return (LIBSVMPredictionsCallBack (predictionsFilePath = predictionsFilePath, verbose = verbose))
+}
