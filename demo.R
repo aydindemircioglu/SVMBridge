@@ -18,25 +18,25 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
- 
 
-# replace this by libary (SVMBridge)
-source ("./callSVM.R")
+library(devtools)
+load_all (".")
 
-# should be called by itself
-tmp = initPackage()
+#library (SVMBridge)
 
 # add new wrappers -- this is done in initPackage for wrappers known to the package
 # (so this is currently done twice)
-addSVMPackage (filePath = "./LIBSVM_wrapper.R", softwarePath = "../../../../svm_large_scale/software/libSVM", verbose = FALSE)
-addSVMPackage (filePath = "./LIBCVM_wrapper.R", softwarePath = "../../../../svm_large_scale/software/libCVM", verbose = FALSE)
+addSVMPackage (filePath = "./R/LIBSVM_wrapper.R", softwarePath = "../../../svm_large_scale/software/libSVM", verbose = TRUE)
+addSVMPackage (filePath = "./R/CVM_wrapper.R", softwarePath = "../../../svm_large_scale/software/libCVM", verbose = FALSE)
+
 
 # alternatively, addSVMPackage without softwarePath and search all in a given path
-findAllSVMSoftware (searchPath = "../../../../svm_large_scale/software/", verbose = FALSE) 
+#findAllSVMSoftware (searchPath = "../../../../svm_large_scale/software/", verbose = FALSE) 
+
 
 # wird alle bekannte software-pakete suchen also SVMperf, libSVM, ...
 #FIXME: allow path like ~/
-#outputAllSVMSoftwarePackages ()
+outputAllSVMSoftwarePackages ()
 
 
 # load iris  for now
@@ -53,48 +53,43 @@ findAllSVMSoftware (searchPath = "../../../../svm_large_scale/software/", verbos
 	trainDatay[trainDatay==2] = -1
 	testDatay[testDatay==2] = -1
 	
-#  this will train and test from memory.
+#  this will train from memory.
 # as no modelfile was given, callSVM will create a temporay model file
 # and read this after training, so it will be in svmObj$model
-    svmObj =  callSVM(
+	svmObj =  trainSVM(
 		method = "LIBSVM",
 		trainDataX = trainDataX, 
 		trainDatay = trainDatay, 
-		testDataX = testDataX, 
-		testDatay = testDatay, 
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
         verbose = TRUE
     )  
-    
+
 
 # or, if preferred, load sparse data from disk
-    svmObj =  callSVM(
+    svmObj =  trainSVM(
 		method = "LIBSVM",
-		trainDataFile = './datasets/australian/australian.combined.scaled', 
-		testDataFile = './datasets/australian/australian.combined.scaled',
+		trainDataFile = './tests/data/australian.train',
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
-        verbose = FALSE
+        verbose = TRUE
     )  
 
     
-# train only from memory (similar from disk)
-    svmObj =  callSVM(
+# now evaluate from model in memory 
+    svmObj =  testSVM(
 		method = "LIBSVM",
-		trainDataX = trainDataX, 
-		trainDatay = trainDatay, 
-		cost = 1, 
-		gamma = 1, 
-		epsilon = 0.01, 
-        verbose = FALSE
+		testDataX = testDataX, 
+		testDatay = testDatay, 
+        verbose = TRUE,
+        model = svmObj$model
     )  
 
 
 # train from memory, but save the model file to disk
-    svmObj =  callSVM(
+    svmObj =  trainSVM(
 		method = "LIBSVM",
 		trainDataX = trainDataX, 
 		trainDatay = trainDatay, 
@@ -102,55 +97,23 @@ findAllSVMSoftware (searchPath = "../../../../svm_large_scale/software/", verbos
 		gamma = 1, 
 		epsilon = 0.01, 
         verbose = FALSE,
-        modelFile = "./tmp/libsvm_model.txt"
+        modelFile = "/tmp/libsvm_model.txt"
     )  
-
-    
-# predict only from memory, model from memory
-    svmObj =  callSVM(
+		    
+# predict from memory, model from disc
+    svmObj =  testSVM(
 		method = "LIBSVM",
 		testDataX = testDataX, 
 		testDatay = testDatay, 
-		cost = 1, 
-		gamma = 1, 
-		epsilon = 0.01, 
-        verbose = FALSE,
-        model = svmObj$model
-    )  
-    
-    
-# predict only from memory (similar from disk), model from disk
-    svmObj =  callSVM(
-		method = "LIBSVM",
-		testDataX = testDataX, 
-		testDatay = testDatay, 
-		cost = 1, 
-		gamma = 1, 
-		epsilon = 0.01, 
-        verbose = FALSE,
-        modelFile = "./tmp/libsvm_model.txt"
+        modelFilePath = "/tmp/libsvm_model.txt"
     )  
 
     
-# train only
-    svmObj =  callSVM(
+# predict from file, model from file
+    svmObj =  testSVM(
 		method = "LIBSVM",
-		trainDataFile = './datasets/australian/australian.combined.scaled', 
-		cost = 1, 
-		gamma = 1, 
-		epsilon = 0.01, 
-        verbose = FALSE
+		testDataFile = './tests/data/australian.train',
+        modelFilePath = "/tmp/libsvm_model.txt",
+        verbose = TRUE
     )  
-
     
-# predict only from disk, model from memory
-    svmObj =  callSVM(
-		method = "LIBSVM",
-		testDataFile = './datasets/australian/australian.combined.scaled',
-		cost = 1, 
-		gamma = 1, 
-		epsilon = 0.01, 
-        verbose = FALSE,
-        model = svmObj$model
-    )  
-

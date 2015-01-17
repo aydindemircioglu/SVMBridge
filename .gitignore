@@ -16,3 +16,4 @@ src/*.so
 .Rcheck
 SVMBr*tar.gz
 *.Rcheck
+webpage/**
