@@ -61,7 +61,7 @@
 
 	
 	messagef("\n\n\n======= Train LIBSVM, Traindata from Memory, Model to Memory")
-	svmObj =  trainSVM(
+	trainObj =  trainSVM(
 		method = "LIBSVM",
 		trainDataX = trainDataX, 
 		trainDatay = trainDatay, 
@@ -127,7 +127,7 @@
     
     
 	messagef("\n\n\n======= Train LIBSVM, Traindata from Disk, Model to Disk")
-    svmObj =  trainSVM(
+    trainObj =  trainSVM(
 		method = "LIBSVM",
 		trainDataFile = './tests/data/australian.train',
 		cost = 1, 
@@ -137,10 +137,9 @@
         modelFile = "/tmp/libsvm_model.txt"
     )  
 
-    
 
     messagef("\n\n\n======= Train LIBSVM, Traindata from Memory, Model to Disk")
-    svmObj =  trainSVM(
+    trainObj =  trainSVM(
 		method = "LIBSVM",
 		trainDataX = trainDataX, 
 		trainDatay = trainDatay, 
@@ -152,8 +151,8 @@
     )  
 		    
 
-	messagef("\n\n\n======= Test LIBSVM, Testdata from Memory, Model from Disk")
-    svmObj =  testSVM(
+	messagef("\n\n\n======= Test LIBSVM, Testdata from Memory, Model from Disk, Predictions to Memory")
+    testObj =  testSVM(
 		method = "LIBSVM",
 		testDataX = testDataX, 
 		testDatay = testDatay, 
@@ -163,11 +162,34 @@
 
     
 
-    messagef("\n\n\n======= Test LIBSVM, Testdata from Disk, Model from Disk")
-    svmObj =  testSVM(
+    messagef("\n\n\n======= Test LIBSVM, Testdata from Disk, Model from Disk, Predictions to Memory")
+    testObj =  testSVM(
 		method = "LIBSVM",
 		testDataFile = './tests/data/australian.train',
         modelFile = "/tmp/libsvm_model.txt",
+        verbose = verbose
+    )  
+    
+
+    
+	messagef("\n\n\n======= Test LIBSVM, Testdata from Memory, Model from Disk, Predictions to Disk")
+    testObj =  testSVM(
+		method = "LIBSVM",
+		testDataX = testDataX, 
+		testDatay = testDatay, 
+        modelFile = "/tmp/libsvm_model.txt",
+        predictionsFile = "./tmp/predictions.txt",
+		verbose = verbose
+    )  
+
+    
+
+    messagef("\n\n\n======= Test LIBSVM, Testdata from Disk, Model from Disk, Predictions to Disk")
+    testObj =  testSVM(
+		method = "LIBSVM",
+		testDataFile = './tests/data/australian.train',
+        modelFile = "/tmp/libsvm_model.txt",
+        predictionsFile = "./tmp/predictions.txt",
         verbose = verbose
     )  
     
