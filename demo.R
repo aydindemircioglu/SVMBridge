@@ -61,6 +61,7 @@
 #  this will train from memory.
 # as no modelfile was given, callSVM will create a temporay model file
 # and read this after training, so it will be in svmObj$model
+	messagef("\n\n\n======= Train LIBSVM, Traindata from Memory, Model to Memory")
 	svmObj =  trainSVM(
 		method = "LIBSVM",
 		trainDataX = trainDataX, 
@@ -73,6 +74,7 @@
 
 
 # or, if preferred, load sparse data from disk
+	messagef("\n\n\n======= Train LIBSVM, Traindata from File, Model to Memory")
     svmObj =  trainSVM(
 		method = "LIBSVM",
 		trainDataFile = './tests/data/australian.train',
@@ -84,6 +86,7 @@
 
     
 # now evaluate from model in memory 
+	messagef("\n\n\n======= Test LIBSVM, Testdata from Memory, Model from Memory")
     svmObj =  testSVM(
 		method = "LIBSVM",
 		testDataX = testDataX, 
@@ -94,6 +97,7 @@
 
 
 # train from memory, but save the model file to disk
+	messagef("\n\n\n======= Train LIBSVM, Traindata from Memory, Model to Disk")
     svmObj =  trainSVM(
 		method = "LIBSVM",
 		trainDataX = trainDataX, 
@@ -101,24 +105,27 @@
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
-        verbose = FALSE,
+        verbose = TRUE,
         modelFile = "/tmp/libsvm_model.txt"
     )  
 		    
 # predict from memory, model from disc
+	messagef("\n\n\n======= Test LIBSVM, Testdata from Memory, Model from Disk")
     svmObj =  testSVM(
 		method = "LIBSVM",
 		testDataX = testDataX, 
 		testDatay = testDatay, 
-        modelFilePath = "/tmp/libsvm_model.txt"
+        modelFile = "/tmp/libsvm_model.txt",
+		verbose = TRUE
     )  
 
     
 # predict from file, model from file
+	messagef("\n\n\n======= Test LIBSVM, Testdata from Disk, Model from Disk")
     svmObj =  testSVM(
 		method = "LIBSVM",
 		testDataFile = './tests/data/australian.train',
-        modelFilePath = "/tmp/libsvm_model.txt",
+        modelFile = "/tmp/libsvm_model.txt",
         verbose = TRUE
     )  
     

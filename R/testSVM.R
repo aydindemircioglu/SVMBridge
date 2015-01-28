@@ -129,17 +129,17 @@ testSVM = function(
 		if (verbose == TRUE)
 			messagef("  Writing model in memory to disk as %s", modelFile)
 		
-		writeModel (SVMObject, modelFile = modelFile, verbose = verbose)
+		writeModel (SVMObject, model = model, modelFile = modelFile, verbose = verbose)
 	}
 
 	# TODO: add prediction as an option, so people can have them permanently on disk??
-	predictionsFilePath = tempfile()
+	predictionsFile = tempfile()
 	
 	# retrieve test parameters
 	args = createTestArguments (SVMObject, 
 		testDataFile = testDataFile, 
 		modelFile = modelFile, 
-		predictionsFilePath = predictionsFilePath,
+		predictionsFile = predictionsFile,
 		...)
     
 	testTime = microbenchmark(s <- system3(testBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
@@ -148,10 +148,10 @@ testSVM = function(
 		messagef("Testing took %f seconds.", testTime);
     
 	results[["testTime"]] = testTime
-	results[["testError"]] = extractTrainingInfo(SVMObject, output = s$output)
+	results[["testError"]] = extractTestInfo(SVMObject, output = s$output)
 		
 	# as testing was done, we want to read out the predictions
-	predictions = readPredictions (SVMObject, predictionsFilePath = predictionsFilePath, verbose = verbose)
+	predictions = readPredictions (SVMObject, predictionsFile = predictionsFile, verbose = verbose)
 	results[["predictions"]] = predictions
 	  	
 	return (results)   
