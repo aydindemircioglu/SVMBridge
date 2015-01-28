@@ -59,6 +59,9 @@ testSVM = function(
 	model = NULL,
 	modelFile = NULL,
 
+	# prediction
+	predictionsFile = NULL,
+	
 	# rest
 	extraParameter = "",
 	verbose = FALSE,
@@ -132,8 +135,12 @@ testSVM = function(
 		writeModel (SVMObject, model = model, modelFile = modelFile, verbose = verbose)
 	}
 
-	# TODO: add prediction as an option, so people can have them permanently on disk??
-	predictionsFile = tempfile()
+	# check if we need to re-read the predictions at the end
+	readPredictions = FALSE
+	if (is.null(predictionsFile) == TRUE) {
+		readPredictions = TRUE
+		predictionsFile = tempfile()
+	}
 	
 	# retrieve test parameters
 	args = createTestArguments (SVMObject, 
@@ -150,10 +157,13 @@ testSVM = function(
 	results[["testTime"]] = testTime
 	results[["testError"]] = extractTestInfo(SVMObject, output = s$output)
 		
-	# as testing was done, we want to read out the predictions
-	predictions = readPredictions (SVMObject, predictionsFile = predictionsFile, verbose = verbose)
-	results[["predictions"]] = predictions
-	  	
+		
+	# if user did not specify prediction file, we will read them back
+	if (readPredictions == TRUE) {
+		predictions = readPredictions (SVMObject, predictionsFile = predictionsFile, verbose = verbose)
+		results[["predictions"]] = predictions
+	}
+	
 	return (results)   
 }
 

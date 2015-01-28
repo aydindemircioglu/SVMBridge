@@ -62,6 +62,7 @@ We do not enforce a structure on the returned SVM Return Object. Nonetheless, we
  -error
 Depending on training or testing, this is the training or testing time, measured in wall time by microbenchmark. 
 
+
 ## Test parameters
 
 Very similar to training parameters, the test parameter callback will assemble a given model file and test data and possibly other options.
@@ -91,3 +92,7 @@ Glue code that handles controlling the SVM software is called an SVM wrapper. Th
 Finally, an SVM package is for us the internal object in the SVMBridge, that has basically consists of the wrapper and the software (e.g. a path to the binary).
 
 
+
+## Speed
+
+It is possible to bypass any extra-I/O and directly communicate with the SVM Package by specifying the training and test data as well as the model and prediction as a file. If SVMBridge gets file pathes, it will not try to reread the written model nor the predictions. Sometimes you do not need the predictions, neither on memory nor on disk. In this case you can pass "/dev/null" as prediction file. This will make the SVM Test write to null, so it will not take any I/O time,  and therefore the SVMBridge will not reread the predictions, as it was already written on disk.

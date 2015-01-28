@@ -42,7 +42,8 @@
 #FIXME: allow path like ~/
 	outputAllSVMSoftwarePackages ()
 
-	
+
+	verbose = FALSE
 	
 # load iris  for now
 	shufflediris = iris[sample(nrow(iris)),]
@@ -57,10 +58,8 @@
 	testDatay[testDatay==3] = 1
 	trainDatay[trainDatay==2] = -1
 	testDatay[testDatay==2] = -1
+
 	
-#  this will train from memory.
-# as no modelfile was given, callSVM will create a temporay model file
-# and read this after training, so it will be in svmObj$model
 	messagef("\n\n\n======= Train LIBSVM, Traindata from Memory, Model to Memory")
 	svmObj =  trainSVM(
 		method = "LIBSVM",
@@ -69,35 +68,78 @@
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
-        verbose = TRUE
+        verbose = verbose
     )  
 
 
-# or, if preferred, load sparse data from disk
 	messagef("\n\n\n======= Train LIBSVM, Traindata from File, Model to Memory")
+    trainObj =  trainSVM(
+		method = "LIBSVM",
+		trainDataFile = './tests/data/australian.train',
+		cost = 1, 
+		gamma = 1, 
+		epsilon = 0.01, 
+        verbose = verbose
+    )  
+
+    
+    messagef("\n\n\n======= Test LIBSVM, Testdata from Disk, Model from Memory, Predictions to Memory")
+    testObj =  testSVM(
+		method = "LIBSVM",
+		testDataFile = './tests/data/australian.train',
+        model = trainObj$model,
+        verbose = verbose
+    )  
+
+    
+	messagef("\n\n\n======= Test LIBSVM, Testdata from Memory, Model from Memory, Predictions to Memory")
+    testObj =  testSVM(
+		method = "LIBSVM",
+		testDataX = testDataX, 
+		testDatay = testDatay, 
+        verbose = verbose,
+        model = trainObj$model
+    )  
+
+    
+    messagef("\n\n\n======= Test LIBSVM, Testdata from Disk, Model from Memory, Predictions to Disk")
+    testObj =  testSVM(
+		method = "LIBSVM",
+		testDataFile = './tests/data/australian.train',
+        model = trainObj$model,
+        predictionsFile = "./tmp/predictions.txt",
+        verbose = verbose
+    )  
+
+    
+	messagef("\n\n\n======= Test LIBSVM, Testdata from Memory, Model from Memory, Predictions to Disk")
+    testObj =  testSVM(
+		method = "LIBSVM",
+		testDataX = testDataX, 
+		testDatay = testDatay, 
+        model = trainObj$model,
+        predictionsFile = "./tmp/predictions.txt",
+        verbose = verbose,
+    )  
+
+    
+    
+    
+    
+	messagef("\n\n\n======= Train LIBSVM, Traindata from Disk, Model to Disk")
     svmObj =  trainSVM(
 		method = "LIBSVM",
 		trainDataFile = './tests/data/australian.train',
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
-        verbose = TRUE
+        verbose = verbose,
+        modelFile = "/tmp/libsvm_model.txt"
     )  
 
     
-# now evaluate from model in memory 
-	messagef("\n\n\n======= Test LIBSVM, Testdata from Memory, Model from Memory")
-    svmObj =  testSVM(
-		method = "LIBSVM",
-		testDataX = testDataX, 
-		testDatay = testDatay, 
-        verbose = TRUE,
-        model = svmObj$model
-    )  
 
-
-# train from memory, but save the model file to disk
-	messagef("\n\n\n======= Train LIBSVM, Traindata from Memory, Model to Disk")
+    messagef("\n\n\n======= Train LIBSVM, Traindata from Memory, Model to Disk")
     svmObj =  trainSVM(
 		method = "LIBSVM",
 		trainDataX = trainDataX, 
@@ -105,27 +147,27 @@
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
-        verbose = TRUE,
+        verbose = verbose,
         modelFile = "/tmp/libsvm_model.txt"
     )  
 		    
-# predict from memory, model from disc
+
 	messagef("\n\n\n======= Test LIBSVM, Testdata from Memory, Model from Disk")
     svmObj =  testSVM(
 		method = "LIBSVM",
 		testDataX = testDataX, 
 		testDatay = testDatay, 
         modelFile = "/tmp/libsvm_model.txt",
-		verbose = TRUE
+		verbose = verbose
     )  
 
     
-# predict from file, model from file
-	messagef("\n\n\n======= Test LIBSVM, Testdata from Disk, Model from Disk")
+
+    messagef("\n\n\n======= Test LIBSVM, Testdata from Disk, Model from Disk")
     svmObj =  testSVM(
 		method = "LIBSVM",
 		testDataFile = './tests/data/australian.train',
         modelFile = "/tmp/libsvm_model.txt",
-        verbose = TRUE
+        verbose = verbose
     )  
     
