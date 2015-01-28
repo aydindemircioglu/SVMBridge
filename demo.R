@@ -19,26 +19,31 @@
 # All negative use is prohibited.
 #
 
-library(devtools)
-load_all (".")
 
 #library (SVMBridge)
+	library(devtools)
+	load_all (".")
 
-# add new wrappers -- this is done in initPackage for wrappers known to the package
-# (so this is currently done twice)
-addSVMPackage (filePath = "./R/LIBSVM_wrapper.R", softwarePath = "../../../svm_large_scale/software/libSVM", verbose = TRUE)
-addSVMPackage (filePath = "./R/CVM_wrapper.R", softwarePath = "../../../svm_large_scale/software/libCVM", verbose = FALSE)
+	
+# as the libary already loads default wrappers this works
+	addSVMPackage (method = "LIBSVM", verbose = FALSE)
+	findSVMSoftware ("LIBSVM", searchPath = "../../../svm_large_scale/software/libSVM", verbose = FALSE)
+
+# but this works also
+	addSVMPackage (method = "LIBSVM", filePath = "./R/LIBSVM_wrapper.R", softwarePath = "../../../svm_large_scale/software/libSVM", verbose = FALSE)
+	
 
 
 # alternatively, addSVMPackage without softwarePath and search all in a given path
-#findAllSVMSoftware (searchPath = "../../../../svm_large_scale/software/", verbose = FALSE) 
+	findAllSVMSoftware (searchPath = "../../../svm_large_scale/software/", verbose = FALSE) 
 
 
 # wird alle bekannte software-pakete suchen also SVMperf, libSVM, ...
 #FIXME: allow path like ~/
-outputAllSVMSoftwarePackages ()
+	outputAllSVMSoftwarePackages ()
 
-
+	
+	
 # load iris  for now
 	shufflediris = iris[sample(nrow(iris)),]
 

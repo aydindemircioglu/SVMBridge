@@ -57,7 +57,7 @@ testSVM = function(
 
 	# model 
 	model = NULL,
-	modelFilePath = NULL,
+	modelFile = NULL,
 
 	# rest
 	extraParameter = "",
@@ -68,9 +68,11 @@ testSVM = function(
 		messagef("--- Testing...")
 	}
 
-		# FIXME get the correct object
+	# get the correct object
+	SVMObject = SVMBridgeEnv$packages[[method]]
+	
 	# ask object for its path
-	testBinaryPath = SVMBridgeEnv[[method]]$testBinaryPath
+	testBinaryPath = SVMObject$testBinaryPath
 	testBinary = basename(testBinaryPath)
 	
 	
@@ -98,10 +100,10 @@ testSVM = function(
 
 
 	# test model
-	if ( (is.null(model) == FALSE) && (is.null(modelFilePath) == FALSE))
+	if ( (is.null(model) == FALSE) && (is.null(modelFile) == FALSE))
 		stopf("Given a model in memory and specified a model file name. Confused. Stopping.")
 			
-	if ( (is.null(model) == TRUE) && (is.null(modelFilePath) == TRUE))
+	if ( (is.null(model) == TRUE) && (is.null(modelFile) == TRUE))
 		stopf("Neither given a model nor given a path to the model. Stopping.")
 
 
@@ -123,19 +125,20 @@ testSVM = function(
 	
 	# if the user specified a model in memory, we first need to write that
 	if (is.null(model) == FALSE) {
-		modelFilePath = tempfile()
+		modelFile = tempfile()
 		if (verbose == TRUE)
-			messagef("  Writing model in memory to disk as %s", modelFilePath)
-		LIBSVMWriteModelCallBack (model = model, modelFilePath = modelFilePath, verbose = verbose)
+			messagef("  Writing model in memory to disk as %s", modelFile)
+		
+		writeModel (SVMObject, modelFile = modelFile, verbose = verbose)
 	}
 
 	# TODO: add prediction as an option, so people can have them permanently on disk??
 	predictionsFilePath = tempfile()
 	
 	# retrieve test parameters
-	args = LIBSVMTestParameterCallBack( 
+	args = createTestArguments (SVMObject, 
 		testDataFile = testDataFile, 
-		modelFile = modelFilePath, 
+		modelFile = modelFile, 
 		predictionsFilePath = predictionsFilePath,
 		...)
     
@@ -145,10 +148,10 @@ testSVM = function(
 		messagef("Testing took %f seconds.", testTime);
     
 	results[["testTime"]] = testTime
-	results[["testError"]] = LIBSVMExtractInformationCallBack(output = s$output)
+	results[["testError"]] = extractTrainingInfo(SVMObject, output = s$output)
 		
 	# as testing was done, we want to read out the predictions
-	predictions = LIBSVMPredictionsCallBack(predictionsFilePath = predictionsFilePath, verbose = verbose)
+	predictions = readPredictions (SVMObject, predictionsFilePath = predictionsFilePath, verbose = verbose)
 	results[["predictions"]] = predictions
 	  	
 	return (results)   

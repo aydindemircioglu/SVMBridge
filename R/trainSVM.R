@@ -61,14 +61,16 @@ trainSVM = function(
 	
 	# rest
 	extraParameter = "",
-	modelFilePath = NULL,
+	modelFile = NULL,
 	verbose = FALSE,
 
 	...) {
 
-	# FIXME get the correct object
+	# get the correct object
+	SVMObject = SVMBridgeEnv$packages[[method]]
+	
 	# ask object for its path
-	trainBinaryPath = SVMBridgeEnv[[method]]$trainBinaryPath
+	trainBinaryPath = SVMObject$trainBinaryPath
 	trainBinary = basename(trainBinaryPath)
 	
 	# general modifications
@@ -87,9 +89,9 @@ trainSVM = function(
  	readModelFile = TRUE
  	
 	# did the user specify a modelfile?
-	if (is.null(modelFilePath) == TRUE) {
+	if (is.null(modelFile) == TRUE) {
 		# if no, we will write the model from memory in a temp file
-		modelFilePath = tempfile()
+		modelFile = tempfile()
 	}
 		
 
@@ -118,10 +120,10 @@ trainSVM = function(
 
 	results = list()
 
-	#FIXME
-	args = LIBSVMTrainingParameterCallBack(
+	# create arguments for training
+	args = createTrainingArguments (SVMObject, 
 		trainDataFile = trainDataFile, 
-		modelFile = modelFilePath,
+		modelFile = modelFile,
 		extraParameter = extraParameter,
 		...)
 
@@ -135,8 +137,9 @@ trainSVM = function(
 	
 	if (readModelFile == TRUE) {
 		if (verbose == TRUE) 
-			messagef( "Will read model back from %s", modelFilePath)
-		model = LIBSVMReadModelCallBack (modelFilePath = modelFilePath, verbose = verbose)
+			messagef( "Will read model back from %s", modelFile)
+
+		model = readModel (SVMObject, modelFile = modelFile, verbose = verbose)
 		results[["model"]] = model
 	}
 

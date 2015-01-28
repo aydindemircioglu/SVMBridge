@@ -49,6 +49,9 @@ findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
 			foundBinary = binaryPath
 		}
     } 
+    
+    # TODO:: should we here throw an error? or leave it to the upper class
+    
     return (foundBinary)
 }
 
@@ -64,14 +67,19 @@ findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
 # @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
 # @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
 
-findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
-	for (package in SVMBridgeEnv$packages) {
+	findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
 		if (verbose == TRUE) {
-			messagef("  Searching for software for SVM package %s:", package)
+			messagef("API: Searching for all software packages:")
 		}
-		findSVMSoftware (method = package, searchPath = searchPath, verbose = verbose)
+		
+		for (i in seq(1, length(SVMBridgeEnv$packages))) {
+			method = SVMBridgeEnv$packages[[i]]$method
+			if (verbose == TRUE) {
+				messagef("  Searching for software for SVM package %s:", method)
+			}
+			findSVMSoftware (method = method, searchPath = searchPath, verbose = verbose)
+		}
 	}
-}
 
 
 
@@ -85,38 +93,28 @@ findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
 # @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
 # @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
 
-findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
-	if (is.na(searchPath)) {
-		stopf("No search path is given!")
-	}
-	
-	if (is.na(method)) {
-		stopf ("No method name is given")
-	}
-	
-	if (verbose == TRUE) {
-		messagef("  Try to find binaries for %s", method) 
+	findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
+		if (verbose == TRUE) {
+			messagef("API: Finding software for %s", method)
+		}
+		
+		if (is.na(searchPath)) {
+			stopf("No search path is given!")
+		}
+		
+		if (is.na(method)) {
+			stopf ("No method name is given")
+		}
+		
+		if (verbose == TRUE) {
+			messagef("  Try to find binaries for %s", method) 
+		}
+
+		# call the find software method of the solver
+		SVMBridgeEnv$packages[[method]] = findSoftware (SVMBridgeEnv$packages[[method]], searchPath = searchPath, verbose = verbose)
+		
+		# TODO: to get better tests, maybe we need an option like "TEST = true", which will
+		# take a demo-data-file and compute the model. so actuallly its like a unittest, but
+		# it is executed during use, to make sure everything is as it should be.
 	}
 
-	# TODO: to get better tests, maybe we need an option like "TEST = true", which will
-	# take a demo-data-file and compute the model. so actuallly its like a unittest, but
-	# it is executed during use, to make sure everything is as it should be.
-
-	trainBinaryPattern = paste ("^", SVMBridgeEnv[[method]]$trainBinaryPattern, "$", sep = '')
-	trainBinaryOutputPattern = SVMBridgeEnv[[method]]$trainBinaryOutputPattern
-	binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
-	if (verbose == TRUE) {
-		messagef("--> Found train binary at %s", binaryPath) 
-	}
-	SVMBridgeEnv[[method]]$trainBinaryPath = binaryPath
-
-	testBinaryPattern = paste ("^", SVMBridgeEnv[[method]]$testBinaryPattern, "$", sep = '')
-	testBinaryOutputPattern = SVMBridgeEnv[[method]]$testBinaryOutputPattern
-	binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
-	if (verbose == TRUE) {
-		messagef("--> Found test binary at %s", binaryPath) 
-	}
-	SVMBridgeEnv[[method]]$testBinaryPath = binaryPath
-}
-
- 

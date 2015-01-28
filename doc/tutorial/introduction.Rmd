@@ -12,19 +12,21 @@ LIBSVMHelp() { }
 # Training
 
 
-Training can be either performed from data in memory (probably the most useful case), from the file system or skipped altogether. 
+Training can be either performed from data in memory (probably the most useful case), from the file system by using the ```trainSVM``` function. 
 Note: In case you specify data from memory and from disc, **SVMBridge** will throw an error, as it will be confused about which source to use.
 
 
 # Testing
 
-Testing is done very similar to training. You have the option to use data from memory, from file system or skip testing. 
+Testing is done very similar to training by calling the ```testSVM``` function You have the option to use data from memory, from file system. Furthermore, predictions can be provided. By default, the predictions are written into a temporary file and are discarded after testing. 
 Note: In case you specify data from memory and from disc, **SVMBridge** will throw an error, as it will be confused about which source to use.
 
 
 # Model file
 
-If you do not specify any model file, ```callSVM``` will ask R for a temporary file and use this to write the model. After training, this model file will be read by the callback function of the wrapper. In some cases you might not need the model to be returned to you. In this case you can use the option 'skipModel'. For example:...
+If you do not specify any model file for training, ```trainSVM``` will ask R for a temporary file and will provide this path to the SVM package. Internally, the ```writeModel``` routine of the SVM package will be used to create a model file from a model in memory.  In case you have not specified a model file path, after training the model will be read from the temporary model file into the SVM Results Object. Contrary, if you did specify a model file path, then by default, the model is not read back into the SVM Results Object. To enforce reading the model, you can set the argument ```readModel``` to true. 
+
+At testing time, you must provide the trained model. If you pass this as an in-memory model, ```testSVM``` will call the ```readModel``` routine of the SVM package first to dump the model to a temporary file on the filesystem. 
 
 skipModel == TRUE
 
@@ -51,6 +53,15 @@ Your mySVM software must be split into two parts: Training and Testing. This mig
 
 You will get a bunch of parameters. You will need to decide which ones you want to handle. E.g. the LIBSVM wrapper handles $C$, $\gamma$ and $\epsilon$, but also uses $kernelCacheSize$. On the other hand, the LIBSVM wrapper currently has no option to control the shrinking, although LIBSVM has a parameter for this. Similarly you will need to decide, whether you want the user to have control over all parameters or only a relevant subset. The callback will then gather all the parameter and create a command-line string.
 
+
+# SVM Result Object
+
+Actually we do enforce that.
+We do not enforce a structure on the returned SVM Return Object. Nonetheless, we encourage you to use the same structure we have provided in our example wrapper, if that is applicable to your case. The SVM Return Object contains the following fields: 
+ -execTime
+ -error
+Depending on training or testing, this is the training or testing time, measured in wall time by microbenchmark. 
+
 ## Test parameters
 
 Very similar to training parameters, the test parameter callback will assemble a given model file and test data and possibly other options.
@@ -59,5 +70,24 @@ Very similar to training parameters, the test parameter callback will assemble a
 extraParameters for testing??
 
 
+# Data Formats
+
+As nearly all SVM Packages work with the LIBSVM/SVMlight Sparse Format, this is the basic file format in SVMBridge. Notice that SVMBridge actually does neither enforce nor check this explicitly. You can support your own data format for your own SVM wrapper. In this case, keep in mind that other SVM packages might not be able to work with your data. 
+
+To implement your own data format, recall that you have two ways to provide data to your SVM software. The first is by specifiying a path to a data file on the filesystem. In this case, SVMBridge will not explicitly work with the data, so you are free to use any format, as long as your SVM software can handle this. The second way is to pass data as a matrix to the SVMBridge. Here, SVMBridge needs to dump the given data first. By default, the SVMBridge will write the data in the LIBSVM Sparse Format. You are free to overwrite this behaviour, by rewriting the convertData function of the SVM Wrapper Object.
+
+Let us give an easy example.
+
+LABELS..
+MULTICLASS..
+
+
+# Vocabulary
+
+The SVM software is the compiled object on the file system, e.g. when you download and compile LIBSVM you will end  up with two binaries, one for training, one for testing. These files is an SVM software for us.
+
+Glue code that handles controlling the SVM software is called an SVM wrapper. This contains e.g. routines for reading and writing an SVM model.
+
+Finally, an SVM package is for us the internal object in the SVMBridge, that has basically consists of the wrapper and the software (e.g. a path to the binary).
 
 
