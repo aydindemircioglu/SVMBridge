@@ -38,12 +38,12 @@
 # @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
 
 findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
-	if (verbose == TRUE) { messagef("  Checking for pattern %s", pattern) }
+	if (verbose == TRUE) { BBmisc::messagef("  Checking for pattern %s", pattern) }
 	files <- list.files (searchPath, pattern = pattern, recursive = TRUE)
     foundBinary = ''
     for (binary in files) {
 		binaryPath = file.path(searchPath, binary)
-		if (verbose == TRUE) { messagef("    -Found binary at %s", binaryPath) }
+		if (verbose == TRUE) { BBmisc::messagef("    -Found binary at %s", binaryPath) }
 		stdout = system3(binaryPath, args = c(), verbose = FALSE)
 		if (length(grep(outputPattern, stdout$output)) != 0) {
 			foundBinary = binaryPath
@@ -69,13 +69,13 @@ findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
 
 	findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
 		if (verbose == TRUE) {
-			messagef("API: Searching for all software packages:")
+			BBmisc::messagef("API: Searching for all software packages:")
 		}
 		
 		for (i in seq(1, length(SVMBridgeEnv$packages))) {
 			method = SVMBridgeEnv$packages[[i]]$method
 			if (verbose == TRUE) {
-				messagef("  Searching for software for SVM package %s:", method)
+				BBmisc::messagef("  Searching for software for SVM package %s:", method)
 			}
 			findSVMSoftware (method = method, searchPath = searchPath, verbose = verbose)
 		}
@@ -95,19 +95,19 @@ findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
 
 	findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 		if (verbose == TRUE) {
-			messagef("API: Finding software for %s", method)
+			BBmisc::messagef("API: Finding software for %s", method)
 		}
 		
 		if (is.na(searchPath)) {
-			stopf("No search path is given!")
+			BBmisc::stopf("No search path is given!")
 		}
 		
 		if (is.na(method)) {
-			stopf ("No method name is given")
+			BBmisc::stopf ("No method name is given")
 		}
 		
 		if (verbose == TRUE) {
-			messagef("  Try to find binaries for %s", method) 
+			BBmisc::messagef("  Try to find binaries for %s", method) 
 		}
 
 		# call the find software method of the solver

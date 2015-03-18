@@ -3,7 +3,7 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		universalSVMTrainer.R
+#		testSVM.R
 # 
 # SVMBridge is free software: you can redistribtrainSVMute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -42,9 +42,9 @@
 #' @note		exclusive parameters, i.e. you cannot specify both:
 #'
 #' @return		SVM Object
-#' @export
-#' @examples
-#' 	universalSVMTrainer(trainDataFile = './data/australian.sparse') 
+#' @export	testSVM
+# #examples
+# 	testSVM(method = 'LIBSVM', testDataFile = './data/australian.test') 
 #'
 
 testSVM = function(
@@ -68,7 +68,7 @@ testSVM = function(
 	...) {
 
 	if (verbose == TRUE) {
-		messagef("--- Testing...")
+		BBmisc::messagef("--- Testing...")
 	}
 
 	# get the correct object
@@ -81,13 +81,13 @@ testSVM = function(
 	
 	# general modifications
 	if (verbose == TRUE) {
-		messagef("  Path of binary for testing is %s", testBinaryPath)
-		messagef("  Binary for testing is %s", testBinary)
+		BBmisc::messagef("  Path of binary for testing is %s", testBinaryPath)
+		BBmisc::messagef("  Binary for testing is %s", testBinary)
 	}
 
 	# TODO: sanity checks for parameter
 	if (is.null (method) == TRUE) {
-		stopf("No method name is given, this should never happen.")
+		BBmisc::stopf("No method name is given, this should never happen.")
 	}
 				
 
@@ -96,18 +96,18 @@ testSVM = function(
 	# finally, everything is dumped to disk.
   
 	if ( (is.null(testDataX) == FALSE) && (is.null(testDataFile) == FALSE))
-		stopf("Given a data frame as testing data and specified a testing file name. Confused. Stopping.")
+		BBmisc::stopf("Given a data frame as testing data and specified a testing file name. Confused. Stopping.")
 			
 	if ( (is.null(testDataX) == TRUE) && (is.null(testDataFile) == TRUE))
-		stopf("Neither specified testing data path nor given testing data. Stopping.")
+		BBmisc::stopf("Neither specified testing data path nor given testing data. Stopping.")
 
 
 	# test model
 	if ( (is.null(model) == FALSE) && (is.null(modelFile) == FALSE))
-		stopf("Given a model in memory and specified a model file name. Confused. Stopping.")
+		BBmisc::stopf("Given a model in memory and specified a model file name. Confused. Stopping.")
 			
 	if ( (is.null(model) == TRUE) && (is.null(modelFile) == TRUE))
-		stopf("Neither given a model nor given a path to the model. Stopping.")
+		BBmisc::stopf("Neither given a model nor given a path to the model. Stopping.")
 
 
 	# TODO: check for X AND y.
@@ -116,12 +116,12 @@ testSVM = function(
 	if (is.null(testDataX) == FALSE) {
 		testDataFile = tempfile()
 		if (verbose == TRUE)
-			messagef("  Writing given test data as %s", testDataFile)
-		write.matrix.csr(testDataX, testDataFile, testDatay)
+			BBmisc::messagef("  Writing given test data as %s", testDataFile)
+		e1071::write.matrix.csr(testDataX, testDataFile, testDatay)
 	} 
 
 	if (verbose == TRUE) 
-		messagef("  Test Data is now in %s", testDataFile)
+		BBmisc::messagef("  Test Data is now in %s", testDataFile)
 
 	results = list()
 
@@ -130,7 +130,7 @@ testSVM = function(
 	if (is.null(model) == FALSE) {
 		modelFile = tempfile()
 		if (verbose == TRUE)
-			messagef("  Writing model in memory to disk as %s", modelFile)
+			BBmisc::messagef("  Writing model in memory to disk as %s", modelFile)
 		
 		writeModel (SVMObject, model = model, modelFile = modelFile, verbose = verbose)
 	}
@@ -149,10 +149,10 @@ testSVM = function(
 		predictionsFile = predictionsFile,
 		...)
     
-	testTime = microbenchmark(s <- system3(testBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
+	testTime = microbenchmark::microbenchmark(s <- system3(testBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
     
 	if (verbose == TRUE) 
-		messagef("Testing took %f seconds.", testTime);
+		BBmisc::messagef("Testing took %f seconds.", testTime);
     
 	results[["testTime"]] = testTime
 	results[["testError"]] = extractTestInfo(SVMObject, output = s$output)

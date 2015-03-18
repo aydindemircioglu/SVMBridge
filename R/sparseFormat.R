@@ -1,5 +1,28 @@
 
+#' @export		readSparseFile
+#' @importMethodsFrom		SparseM		as.matrix.csr
+#'
 
+readSparseFile <- function (fileName = '', verbose = FALSE) {
+
+	if (verbose == TRUE) {
+		BBmisc::messagef("Loading sparse data from file %s.", fileName)
+	}
+	
+	# load matrix
+    dataset <- e1071::read.matrix.csr (fileName)
+
+	# convert the label 
+	y = as.numeric(as.character(dataset$y))
+	X = as.matrix.csr(dataset$x)
+
+	return (list("X" = X, "y" = y))
+}
+ 
+
+
+
+# FIXME: RENAME
 readSparseFormat <- function (con)
 {
   # these will contain the coefficients and the  svs.
@@ -16,7 +39,7 @@ readSparseFormat <- function (con)
     # so we grep for the "CPUTime" line explicitly
     
     # remove comment if necesary
-    oneLine = str_split_fixed(oneLine, pattern = '#', n = 2)[1]
+    oneLine = stringr::str_split_fixed(oneLine, pattern = '#', n = 2)[1]
     
     # split line by " "
     svec = vector(length = 1)
@@ -49,9 +72,9 @@ readSparseFormat <- function (con)
     svec[is.na(svec)] <- 0
     
     # stack matrices
-    supportvectors <- rbind.fill.matrix(supportvectors, t(svec))
-    coefficients <- rbind.fill.matrix(coefficients, t(coeff))
-    weights <- rbind.fill.matrix(weights, t(w))
+    supportvectors <- plyr::rbind.fill.matrix(supportvectors, t(svec))
+    coefficients <- plyr::rbind.fill.matrix(coefficients, t(coeff))
+    weights <- plyr::rbind.fill.matrix(weights, t(w))
   } 
  
   # crop first NA list (why does it even exist?..)
@@ -100,3 +123,11 @@ dumpSparseFormat <- function (labels, data)
 	return(sparseString)
 }
 
+
+
+
+# stupid R check for pythons cool "name == __main__"
+if (length(sys.frames()) == 0) 
+{
+
+}

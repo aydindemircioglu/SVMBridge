@@ -19,7 +19,8 @@ Depends:
     microbenchmark (>= 1.3),
     R.utils(>= 1.32.4),
     e1071 (>= 1.6),
-    SparseM (>= 1.05)
+    SparseM (>= 1.05),
+    Matrix
 Suggests:
     testthat
 LazyData: true

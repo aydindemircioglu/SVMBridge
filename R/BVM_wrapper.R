@@ -107,5 +107,5 @@ readPredictions.BVM <- function (predictionsFilePath = "", verbose = FALSE) {
 #NEW
 findSoftware.BVM = function(x, searchPath = "./", verbose = FALSE) {
 		# short way without verbose messages
-		x$trainBinaryPath  = findBinary (searchPath, "^svm-train$", "Usage: svm-train .options. training_set_file .model_file.", verbose = verbose)
+		x$trainBinaryPath  = findBinary (searchPath, "^svm-train$", "outputPattern = '6 -- CVM \\(sqr. hinge-loss", verbose = verbose)
 	}

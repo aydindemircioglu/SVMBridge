@@ -1,3 +1,4 @@
+library(devtools)
 library(methods)
 library(checkmate)
 library(testthat)

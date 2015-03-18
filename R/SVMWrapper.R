@@ -34,7 +34,7 @@
         # register the newly created object in our environment
         
         # create S3 Object
-        svmPackage = makeS3Obj(c(method, "SVMWrapper"),
+        svmPackage = BBmisc::makeS3Obj(c(method, "SVMWrapper"),
     		method = method,
             trainingBinary = trainingBinary
     	)

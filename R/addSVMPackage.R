@@ -25,7 +25,7 @@ addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA, verbos
 {
 	# we always need a method
 	if (is.na(method) == TRUE) {
-		stopf("Please provide the name of the SVM package to create")
+		BBmisc::stopf("Please provide the name of the SVM package to create")
 	}
 
 	# load definition of SVM object
@@ -39,12 +39,12 @@ addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA, verbos
 	
 	# create an object now
 	if (verbose == TRUE) {
-		messagef ("Creating SVM Wrapper for method %s: ", method)
+		BBmisc::messagef ("Creating SVM Wrapper for method %s: ", method)
 	}
 	SVMObject = createSVMWrapper( method = method)
 	SVMBridgeEnv$packages[[method]] = SVMObject
 	if (verbose == TRUE) {
-		messagef ("Registred Objects")
+		BBmisc::messagef ("Registred Objects")
 		for (i in seq(1, length(SVMBridgeEnv$packages))) {
 			s = SVMBridgeEnv$packages[i]
 			print (s)
@@ -55,7 +55,7 @@ addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA, verbos
 	# add software path
 	if (is.na(softwarePath) == FALSE) {
 		if (verbose == TRUE) {
-			messagef ("  Specified software path, so searching for software package: ")
+			BBmisc::messagef ("  Specified software path, so searching for software package: ")
 		}
 		findSVMSoftware (method = method, searchPath = softwarePath, verbose = verbose) 
 	}
@@ -64,9 +64,13 @@ addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA, verbos
 
 
 outputAllSVMSoftwarePackages <- function () {
-	messagef("Currently known solver:")
+	BBmisc::messagef("Currently known solver:")
 	for (package in SVMBridgeEnv$packages) {
 		print (package)
 	}
 }
 
+
+getSVMInstance <- function ( method = method) {
+	return (SVMBridgeEnv$packages[[method]])
+}

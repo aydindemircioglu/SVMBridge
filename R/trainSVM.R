@@ -3,7 +3,7 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		universalSVMTrainer.R
+#		trainSVM.R
 # 
 # SVMBridge is free software: you can redistribtrainSVMute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -42,9 +42,9 @@
 #' @note		exclusive parameters, i.e. you cannot specify both:
 #'
 #' @return		SVM Object
-#' @export
-#' @examples
-#' 	universalSVMTrainer(trainDataFile = './data/australian.sparse') 
+#' @export		trainSVM
+# #examples
+# #	trainSVM(model = 'LIBSVM', trainDataFile = './data/australian.train') 
 #'
 
 trainSVM = function(
@@ -75,14 +75,14 @@ trainSVM = function(
 	
 	# general modifications
 	if (verbose == TRUE) {
-		messagef("  Path of binary for training is %s", trainBinaryPath)
-		messagef("  Binary for training is %s", trainBinary)
+		BBmisc::messagef("  Path of binary for training is %s", trainBinaryPath)
+		BBmisc::messagef("  Binary for training is %s", trainBinary)
 	}
 
 	
 	# TODO: sanity checks for parameter
 	if (is.null (method) == TRUE) {
-		stopf("No method name is given, this should never happen.")
+		BBmisc::stopf("No method name is given, this should never happen.")
 	}
 				
 				# FIXME: make this an option
@@ -100,10 +100,10 @@ trainSVM = function(
 	# finally, everything is dumped to disk.
   
 	if ( (is.null(trainDataX) == FALSE) && (is.null(trainDataFile) == FALSE))
-		stopf("Given a data frame as training data and specified a training file name. Confused. Stopping.")
+		BBmisc::stopf("Given a data frame as training data and specified a training file name. Confused. Stopping.")
 			
 	if ( (is.null(trainDataX) == TRUE) && (is.null(trainDataFile) == TRUE))
-		stopf("Neither specified training data path nor given training data. Stopping.")
+		BBmisc::stopf("Neither specified training data path nor given training data. Stopping.")
 
 	# TODO: check for X AND y.
 		
@@ -111,12 +111,12 @@ trainSVM = function(
 	if (is.null(trainDataX) == FALSE) {
 		trainDataFile = tempfile()
 		if (verbose == TRUE)
-			messagef("  Writing given data as %s", trainDataFile)
-		write.matrix.csr(trainDataX, trainDataFile, trainDatay)
+			BBmisc::messagef("  Writing given data as %s", trainDataFile)
+		e1071::write.matrix.csr(trainDataX, trainDataFile, trainDatay)
 	} 
 
 	if (verbose == TRUE) 
-		messagef("  Train Data is now in %s", trainDataFile)
+		BBmisc::messagef("  Train Data is now in %s", trainDataFile)
 
 	results = list()
 
@@ -127,17 +127,17 @@ trainSVM = function(
 		extraParameter = extraParameter,
 		...)
 
-	trainTime = microbenchmark(s <- system3(trainBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
+	trainTime = microbenchmark::microbenchmark(s <- system3(trainBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
 	
 	if (verbose == TRUE) 
-		messagef("Training took %f seconds.", trainTime)
+		BBmisc::messagef("Training took %f seconds.", trainTime)
 		
 	results[["trainTime"]] = trainTime
 	
 	
 	if (readModelFile == TRUE) {
 		if (verbose == TRUE) 
-			messagef( "Will read model back from %s", modelFile)
+			BBmisc::messagef( "Will read model back from %s", modelFile)
 
 		model = readModel (SVMObject, modelFile = modelFile, verbose = verbose)
 		results[["model"]] = model
