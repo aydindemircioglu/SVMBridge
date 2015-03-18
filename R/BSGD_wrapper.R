@@ -11,22 +11,9 @@
 # @param[in]    epochs          number of epochs to run 
 # @param[in]    bindir          relativ path to the binaries, defaults to default.
 # @param[in]    modelFile       path to model, defaults to a temporary file (given by R)
-evalBSGD = function(...)  {   
-    universalWrapper (
-        modelName = "BSGD",
-        trainingParameterCallBack = BSGDTrainingParameterCallBack,
-        testParameterCallBack = BSGDTestParameterCallBack,
-        extractInformationCallBack = BSGDExtractInformationCallBack,
-        trainBinary = BSGDTrainBinary(),
-        testBinary = BSGDTestBinary (),
-        bindir = BSGDBinDir(),
-        ...
-    );
-}
 
 
-
-BSGDTrainingParameterCallBack = function (trainfile = "",
+createTrainingArguments.BSGD = function (trainfile = "",
                                             modelFile = "",
                                             extraParameter = "",
                                             primalTime = 10, 
@@ -57,7 +44,7 @@ BSGDTrainingParameterCallBack = function (trainfile = "",
 
 
 
-BSGDTestParameterCallBack = function (testfile = "",
+createTestArguments.BSGD = function (testfile = "",
                                         modelFile = "", 
                                         predictionOutput = "/dev/null", ...) {
     args = c(
@@ -73,7 +60,17 @@ BSGDTestParameterCallBack = function (testfile = "",
 
 
 
-BSGDExtractInformationCallBack = function (output) {
+extractTrainingInfo.BSGD = function (output) {
+    
+    # ---- grep the error rate
+    pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
+    err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+    
+    return (err)
+}
+
+#NEW
+extractTestInfo.BSGD = function (output) {
     
     # ---- grep the error rate
     pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
@@ -83,25 +80,7 @@ BSGDExtractInformationCallBack = function (output) {
 }
 
 
-BSGDTrainBinary <- function() {
-    return ("budgetedsvm-train")
-}
-
-
-BSGDTestBinary <- function() {
-    return ("budgetedsvm-predict")
-}
-
-
-BSGDBinDir <- function() {
-    return ("software/BSGD/bin/")
-}
-
-
-
-
-
-BSGDReadModelCallBack <- function (modelFilePath = "./model", verbose = FALSE)
+readModel.BSGD = function (modelFilePath = "./model", verbose = FALSE)
 {
     # open connection
     con  <- file(modelFilePath, open = "r")
@@ -186,7 +165,7 @@ BSGDReadModelCallBack <- function (modelFilePath = "./model", verbose = FALSE)
 
 
 # dummy for now
-BSGDWriteModelCallBack <- function (model = NA, modelFilePath = "./model", verbose = FALSE) {
+writeModel.BSGD = function (model = NA, modelFilePath = "./model", verbose = FALSE) {
 	if (verbose == TRUE) {
 		messagef ("Writing SVM Model..")
 	}
@@ -224,7 +203,7 @@ BSGDWriteModelCallBack <- function (model = NA, modelFilePath = "./model", verbo
 # @return		array consisting of predictions
 #
 
-BSGDPredictionsCallBack <- function (predictionsFilePath = "", verbose = FALSE) {
+readPredictions.BSGD <- function (predictionsFilePath = "", verbose = FALSE) {
     # open connection
     con  <- file(predictionsFilePath, open = "r")
 
@@ -241,3 +220,9 @@ BSGDPredictionsCallBack <- function (predictionsFilePath = "", verbose = FALSE) 
 	
     return (predictions)
 }
+
+#NEW
+findSoftware.BSGD = function(x, searchPath = "./", verbose = FALSE) {
+		# short way without verbose messages
+		x$trainBinaryPath  = findBinary (searchPath, "^svm-train$", "Usage: svm-train .options. training_set_file .model_file.", verbose = verbose)
+	}

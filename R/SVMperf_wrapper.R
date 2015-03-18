@@ -25,18 +25,6 @@
 #' @param     ...		parameters that will be passed on training and/or test callbacks
 #
 
-evalSVMperf = function(...)  {   
-    universalWrapper (
-        modelName = "SVMperf",
-        trainingParameterCallBack = SVMperfTrainingParameterCallBack,
-        testParameterCallBack = SVMperfTestParameterCallBack,
-        extractInformationCallBack  = SVMperfExtractInformationCallBack,
-        trainBinary = SVMperfTrainBinary(),
-        testBinary = SVMperfTestBinary (),
-        bindir = SVMperfBinDir(),
-        ...
-    );
-}
 
 
 
@@ -45,7 +33,7 @@ evalSVMperf = function(...)  {
 #' @param     ...		parameters that will be passed on training and/or test callbacks
 #
 
-SVMperfTrainingParameterCallBack = function (trainfile = "",
+createTrainingArguments.SVMperf = function (trainfile = "",
                                             modelFile = "",
                                             extraParameter = "",
                                             cost = 1, 
@@ -277,7 +265,7 @@ SVMperfTrainingParameterCallBack = function (trainfile = "",
 
 
 
-SVMperfTestParameterCallBack = function (testfile = "",
+createTestArguments.SVMperf = function (testfile = "",
                                         modelFile = "", ...) {
     args = c(
         testfile,
@@ -290,32 +278,21 @@ SVMperfTestParameterCallBack = function (testfile = "",
   
 
 
-SVMperfExtractInformationCallBack = function (output) {
+extractTrainingInfo.SVMperf = function (output) {
 
     # compute error
     pattern <- "Accuracy :\\s*(\\d+\\.?\\d*)"
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 }
 
+extractTestInfo.SVMperf = function (output) {
 
-
-SVMperfTrainBinary <- function() {
-    return ("svm_perf_learn")
+    # compute error
+    pattern <- "Accuracy :\\s*(\\d+\\.?\\d*)"
+    err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 }
 
-
-SVMperfTestBinary <- function() {
-    return ("svm_perf_classify")
-}
-
-
-SVMperfBinDir <- function() {
-    return ("software/SVMperf/bin/")
-}
-  
-  
-  
-SVMperfReadModelCallBack <- function (modelFilePath = "./model", verbose = FALSE)
+readModel.SVMperf <- function (modelFilePath = "./model", verbose = FALSE)
 {
     # open connection
     con  <- file(modelFilePath, open = "r")
@@ -359,7 +336,7 @@ SVMperfReadModelCallBack <- function (modelFilePath = "./model", verbose = FALSE
 
 
 # dummy for now
-SVMperfWriteModelCallBack <- function (model = NA, modelFilePath = "./model", verbose = FALSE) {
+writeModel.SVMperf <- function (model = NA, modelFilePath = "./model", verbose = FALSE) {
 	if (verbose == TRUE) {
 		messagef ("Writing SVM Model..")
 	}
@@ -395,7 +372,7 @@ SVMperfWriteModelCallBack <- function (model = NA, modelFilePath = "./model", ve
 # @return		array consisting of predictions
 #
 
-SVMperfPredictionsCallBack <- function (predictionsFilePath = "", verbose = FALSE) {
+readPredictions.SVMperf <- function (predictionsFilePath = "", verbose = FALSE) {
     # open connection
     con  <- file(predictionsFilePath, open = "r")
 
@@ -411,4 +388,10 @@ SVMperfPredictionsCallBack <- function (predictionsFilePath = "", verbose = FALS
 	close (con)
 	
     return (predictions)
+}
+
+#NEW
+findSoftware.SVMperf = function(x, searchPath = "./", verbose = FALSE) {
+		# short way without verbose messages
+		x$trainBinaryPath  = findBinary (searchPath, "^budgetedsvm-train$", "Usage: svm-train .options. training_set_file .model_file.", verbose = verbose)
 }
