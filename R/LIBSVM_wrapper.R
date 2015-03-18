@@ -133,7 +133,7 @@
 
 	writeModel.LIBSVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
 		if (verbose == TRUE) {
-			messagef ("Writing SVM Model..")
+			BBmisc::messagef ("Writing SVM Model..")
 		}
 		
 		# FIXME: label order
@@ -190,7 +190,7 @@
 	findSoftware.LIBSVM = function (x, searchPath = "./", verbose = FALSE) {
 
 		if (verbose == TRUE) {
-			messagef("    LIBSVM Object: Executing search for software for %s", x$method)
+			BBmisc::messagef("    LIBSVM Object: Executing search for software for %s", x$method)
 		}
 		
 		trainBinaryPattern = "^svm-train$"
@@ -199,7 +199,7 @@
 		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
 
 		if (verbose == TRUE) {
-			messagef("--> Found train binary at %s", binaryPath) 
+			BBmisc::messagef("--> Found train binary at %s", binaryPath) 
 		}
 		x$trainBinaryPath = binaryPath
 
@@ -210,7 +210,7 @@
 		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
 		
 		if (verbose == TRUE) {
-			messagef("--> Found test binary at %s", binaryPath) 
+			BBmisc::messagef("--> Found test binary at %s", binaryPath) 
 		}
 		x$testBinaryPath = binaryPath
 
@@ -220,8 +220,8 @@
 	
 	
 	print.LIBSVM = function(x) {
-		messagef("--- Object: %s", x$method)
-		messagef("       Training Binary at %s", x$trainBinaryPath)
-		messagef("       Test Binary at %s", x$testBinaryPath)
+		BBmisc::messagef("--- Object: %s", x$method)
+		BBmisc::messagef("       Training Binary at %s", x$trainBinaryPath)
+		BBmisc::messagef("       Test Binary at %s", x$testBinaryPath)
 	}
 	
