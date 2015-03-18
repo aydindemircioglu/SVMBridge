@@ -82,7 +82,7 @@
 	}
 	
 	
-	
+	#NEW
 	extractTestInfo.LASVM = function (output) {
 		pattern <- "accuracy= (\\d+\\.?\\d*).*"
 		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
@@ -90,13 +90,13 @@
 	}
 	
 
-	
+	#NEW
 	readModel.LASVM = function (modelFile = './model', verbose = FALSE) {
 		NextMethod (modelFile = modelFile, verbose = verbose)
 	}
 	
 	
-	
+	#NEW
 	writeModel.LASVM = function (model = NA, modelFile = "./model", verbose = FALSE) {
 		NextMethod (model = model, modelFile = modelFile, verbose = verbose)
 	}
@@ -107,13 +107,14 @@
 	# @param[in]	predictionsFile		file to read predictions from
 	# @return		array consisting of predictions
 	#
+	#NEW
 	readPredictions.LASVM = function (predictionsFilePath = "", verbose = FALSE) {
 		p = NextMethod (predictionsFilePath = predictionsFilePath, verbose = verbose)
 		return (p)
 	}
 
 	
-	
+	#NEW
 	findSoftware.LASVM = function(x, searchPath = "./", verbose = FALSE) {
 		# short way without verbose messages
 		x$trainBinaryPath  = findBinary (searchPath, "^svm-train$", "Usage: svm-train .options. training_set_file .model_file.", verbose = verbose)

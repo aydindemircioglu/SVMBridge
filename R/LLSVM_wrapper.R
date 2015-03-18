@@ -12,27 +12,10 @@
 # @param[in]    rank            number of landmarks
 # @param[in]    bindir          relativ path to the binaries, defaults to default.
 # @param[in]    modelFile       path to model, defaults to a temporary file (given by R)
-evalLLSVM = function(...)  {   
-    universalWrapper (
-        modelName = "LLSVM",
-        trainingParameterCallBack = LLSVMTrainingParameterCallBack,
-        testParameterCallBack = BudgetedSVMTestParameterCallBack,
-        extractInformationCallBack = BudgetedSVMExtractInformationCallBack,
-        trainBinary = BudgetedSVMTrainBinary(),
-        testBinary = BudgetedSVMTestBinary (),
-        bindir = BudgetedSVMBinDir(),
-        ...
-    );
-}
 
 
 
-  
-  
-
-  
-
-LLSVMTrainingParameterCallBack = function (trainfile = "",
+createTrainingArguments.LLSVM = function (trainfile = "",
                                             modelFile = "",
                                             extraParameter = "",
                                             primalTime = 10, 
@@ -64,7 +47,7 @@ LLSVMTrainingParameterCallBack = function (trainfile = "",
 
 
 
-BudgetedSVMTestParameterCallBack = function (testfile = "",
+createTestArguments.LLSVM = function (testfile = "",
                                         modelFile = "", 
                                         predictionOutput = "/dev/null", ...) {
     args = c(
@@ -80,7 +63,7 @@ BudgetedSVMTestParameterCallBack = function (testfile = "",
 
 
 
-BudgetedSVMExtractInformationCallBack = function (output) {
+extractTrainingInfo.LLSVM = function (output) {
     
     # ---- grep the error rate
     pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
@@ -89,22 +72,34 @@ BudgetedSVMExtractInformationCallBack = function (output) {
     return (err)
 }
 
-
-BudgetedSVMTrainBinary <- function() {
-    return ("budgetedsvm-train")
+#NEW
+extractTestInfo.LLSVM = function (output) {
+    
+    # ---- grep the error rate
+    pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
+    err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+    
+    return (err)
 }
 
-
-BudgetedSVMTestBinary <- function() {
-    return ("budgetedsvm-predict")
-}
-
-
-BudgetedSVMBinDir <- function() {
-    return ("software/BudgetedSVM/bin/")
-}
-
-
-BudgetedSVMMODBinDir <- function() {
-    return ("software/BudgetedSVM/bin.org/")
-}
+#NEW
+readModel.LLSVM= function (modelFile = './model', verbose = FALSE) {
+		NextMethod (modelFile = modelFile, verbose = verbose)
+	}
+	
+#NEW
+writeModel.LLSVM = function (model = NA, modelFile = "./model", verbose = FALSE) {
+		NextMethod (model = model, modelFile = modelFile, verbose = verbose)
+	}
+	
+#NEW
+readPredictions.LLSVM = function (predictionsFilePath = "", verbose = FALSE) {
+		p = NextMethod (predictionsFilePath = predictionsFilePath, verbose = verbose)
+		return (p)
+	}
+	
+#NEW
+findSoftware.LLSVM = function(x, searchPath = "./", verbose = FALSE) {
+		# short way without verbose messages
+		x$trainBinaryPath  = findBinary (searchPath, "^budgetedsvm-train$", "Usage: svm-train .options. training_set_file .model_file.", verbose = verbose)
+	}

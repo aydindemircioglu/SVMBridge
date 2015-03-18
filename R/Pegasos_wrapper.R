@@ -12,22 +12,9 @@
 # @param[in]    epochs          number of epochs to run pegasos
 # @param[in]    bindir          relativ path to the binaries, defaults to default.
 # @param[in]    modelFile       path to model, defaults to a temporary file (given by R)
-evalPegasos = function(...)  {   
-    universalWrapper (
-        modelName = "Pegasos",
-        trainingParameterCallBack = PegasosTrainingParameterCallBack,
-        testParameterCallBack = PegasosTestParameterCallBack,
-        extractInformationCallBack = PegasosExtractInformationCallBack,
-        trainBinary = PegasosTrainBinary(),
-        testBinary = PegasosTestBinary (),
-        bindir = PegasosBinDir(),
-        ...
-    );
-}
 
 
-
-PegasosTrainingParameterCallBack = function (trainfile = "",
+createTrainingArguments.Pegasos = function (trainfile = "",
                                             modelFile = "",
                                             extraParameter = "",
                                             primalTime = 10, 
@@ -63,7 +50,7 @@ PegasosTrainingParameterCallBack = function (trainfile = "",
 
 
 
-PegasosTestParameterCallBack = function (testfile = "",
+createTestArguments.Pegasos = function (testfile = "",
                                         modelFile = "", 
                                         predictionOutput = "/dev/null", ...) {
     args = c(
@@ -79,7 +66,7 @@ PegasosTestParameterCallBack = function (testfile = "",
 
 
 
-PegasosExtractInformationCallBack = function (output) {
+extractTrainingInfo.Pegasos = function (output) {
     
     # ---- grep the error rate
     pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
@@ -88,19 +75,37 @@ PegasosExtractInformationCallBack = function (output) {
     return (err)
 }
 
-
-PegasosTrainBinary <- function() {
-    return ("budgetedsvm-train")
+#NEW
+extractTestInfo.Pegasos = function (output) {
+    
+    # ---- grep the error rate
+    pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
+    err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+    
+    return (err)
 }
 
+#NEW
+readModel.Pegasos = function (modelFile = './model', verbose = FALSE) {
+		NextMethod (modelFile = modelFile, verbose = verbose)
+	}
+	
+#NEW
+writeModel.Pegasos = function (model = NA, modelFile = "./model", verbose = FALSE) {
+		NextMethod (model = model, modelFile = modelFile, verbose = verbose)
+	}
 
-PegasosTestBinary <- function() {
-    return ("budgetedsvm-predict")
-}
+#NEW
+readPredictions.Pegasos = function (predictionsFilePath = "", verbose = FALSE) {
+		p = NextMethod (predictionsFilePath = predictionsFilePath, verbose = verbose)
+		return (p)
+	}
 
+	
 
-PegasosBinDir <- function() {
-    return ("software/BudgetedSVM/bin/")
-}
-
+findSoftware.Pegasos = function(x, searchPath = "./", verbose = FALSE) {
+		# short way without verbose messages
+		x$trainBinaryPath  = findBinary (searchPath, "^budgetedsvm-train$", "Usage: svm-train .options. training_set_file .model_file.", verbose = verbose)
+	}
+	
 

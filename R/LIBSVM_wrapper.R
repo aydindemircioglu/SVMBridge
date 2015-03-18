@@ -26,14 +26,91 @@
         modelFile = "",
         extraParameter = "",
         kernelCacheSize = 1024,
-		cost = 1, 
+		cost = 1,
+		svmType = "-1",
         useBias = FALSE,
         gamma = 1,
         epsilon = 0.001, 
+        degree = -1,
+        coef0 = -1,
+        nu = -1,
+        shrinking = -1,
+        probabilityEstimates = -1,
+        weight = -1,
+        n = -1,
+        quietMode = FALSE,
         ...) 
 	{
+		svmTypeParameter = ""
+		if (svmType == "CSVC" || svmType == "C-SVC")
+			svmTypeParameter = "-s 0"
+		if (svmType == "nuSVC" || svmType == "nu-SVC")
+			svmTypeParameter = "-s 1"
+		if (svmType == "one-class SVM" || svmType == "oneClassSVM")
+			svmTypeParameter = "-s 2"
+		
+		kernelTypeParameter = ""
+		if(kernelType == "linear")
+			kernelTypeparameter = "-t 0"
+		if(kernelType == "polynomial")
+			kernelTypeparameter = "-t 1"
+		if(kernelType == "radial basis function" || kernelType == "RBF" || kernelType == "rbf")
+			kernelTypeparameter = "-t 2"
+		if(kernelType == "sigmoid")
+			kernelTypeparameter = "-t 3"
+		if(kernelType == "precomputed kernel" || kernelType == "precomputed")
+			kernelTypeparameter = "-t 4"
+			
+		degreeParameter = ""
+		if (degree != -1) {
+			degreeParameter = sprintf("-d %d", degree)
+		}
+		
+		gammaParameter = ""
+		if (gamma != 1)
+			gammaParameter = sprintf("-g %g", gamma)
+			
+		coef0Parameter = ""
+		if (coef0 != -1)
+			coef0Parameter = sprintf("-r %r", coef0)
+			
+		costParameter = ""
+		if (cost != 1)
+			costParameter = sprintf("-c %c", cost)
+			
+		nuParameter = ""
+		if(nu != -1) 
+			nuParameter = sprintf("-n %n", nu)
+			
+		epsilonParameter = ""
+		if(epsilon != 0.001)
+			epsilonParameter = sprintf("-p %p", epsilon)
+			
+		shrinkingParameter = ""
+		if(shrinking != -1)
+			shrinkingParameter = sprintf("-h %h", shrinking)
+			
+		probabilityEstimatesparameter = ""
+		if(probabilityEstimates != -1)
+			probabilityEstimatesparameter = sprintf("-b %b", probabilityEstimates)
+			
+		weightParameter = ""
+		if(weight != -1)
+			weightParameter = sprintf("-wi %wi", weight)
+			
+		quietModeparameter = ""
+		if(quietMode != FALSE) 
+			quietModeparameter = TRUE;
+		
+		walltimeParameter = ""
+		if(walltime != -1)
+			walltimeParameter = sprintf("-l %l", walltime)
+			
+		
+		
 		args = c(
-			"-s 0",                         # c classification
+			svmTypeParameter,
+			degreeParameter,
 			"-t 2",
 			sprintf("-m %d", kernelCacheSize), # in MB 
 			sprintf("-c %.16f", cost),         # rbf kernel

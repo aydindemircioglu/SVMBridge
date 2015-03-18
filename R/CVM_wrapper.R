@@ -24,42 +24,9 @@
 
 
 # add functions to allow for searching the binaries
-CVMTrainBinary <- function() {
-    return ("svm-train")
-}
 
 
-CVMTestBinary <- function() {
-    return ("svm-predict")
-}
-
-
-CVMTrainBinaryOutputPattern <- function() {
-    return ("outputPattern = '6 -- CVM \\(sqr. hinge-loss")
-}
-
-
-CVMTestBinaryOutputPattern <- function() {
-    return ("bvm-predict")
-}
-
-
-evalCVM = function(...)  {   
-    universalWrapper (
-        modelName = "CVM",
-        trainingParameterCallBack = CVMTrainingParameterCallBack,
-        testParameterCallBack = CVMTestParameterCallBack,
-        extractInformationCallBack  = CVMExtractInformationCallBack,
-        trainBinary = CVMTrainBinary(),
-        testBinary = CVMTestBinary (),
-        bindir = CVMBinDir(),
-        ...
-    );
-}
-
-
-
-CVMTrainingParameterCallBack = function (trainfile = "",
+createTrainingArguments.CVM = function (trainfile = "",
                                             modelFile = "",
                                             extraParameter = "",
                                             primalTime = 10, 
@@ -85,7 +52,7 @@ CVMTrainingParameterCallBack = function (trainfile = "",
 
 
 
-CVMTestParameterCallBack = function (testfile = "",
+createTestArguments.CVM = function (testfile = "",
                                         modelFile = "", ...) {
     args = c(
         testfile,
@@ -98,8 +65,7 @@ CVMTestParameterCallBack = function (testfile = "",
 
 
 
-CVMExtractInformationCallBack = function (output) {
-
+extractTrainingInfo.CVM = function (output) {
     # maybe not the best way to grep the string
     pattern <- "Accuracy = (\\d+\\.?\\d*).*"
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
@@ -108,15 +74,23 @@ CVMExtractInformationCallBack = function (output) {
 }
 
 
+#NEW
+extractTestInfo.LASVM = function (output) {
+	# maybe not the best way to grep the string
+    pattern <- "Accuracy = (\\d+\\.?\\d*).*"
+    err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+    
+    return (err)
+}
 
 
-CVMReadModelCallBack <- function (modelFilePath = "./model", verbose = FALSE) {
+readModel.CVM = function (modelFilePath = "./model", verbose = FALSE) {
 	LIBSVMReadModelCallBack (modelFilePath = modelFilePath, verbose = verbose)
 }
 
 
 
-CVMWriteModelCallBack <- function (model = NA, modelFilePath = "./model", verbose = FALSE) {
+writeModel.CVM = function (model = NA, modelFilePath = "./model", verbose = FALSE) {
 	LIBSVMWriteModelCallBack (model = model, modelFilePath = modelFilePath, verbose = verbose)
 }
  
@@ -127,6 +101,12 @@ CVMWriteModelCallBack <- function (model = NA, modelFilePath = "./model", verbos
 # @return		array consisting of predictions
 #
 
-CVMSVMPredictionsCallBack <- function (predictionsFilePath = "", verbose = FALSE) {
+readPredictions.CVM <- function (predictionsFilePath = "", verbose = FALSE) {
 	return (LIBSVMPredictionsCallBack (predictionsFilePath = predictionsFilePath, verbose = verbose))
+}
+
+#NEW
+findSoftware.CVM = function (x, searchPath = "./", verbose = FALSE) {
+	x$trainBinaryPath = findBinary (searchPath, "^svm-train$", "Usage: svm-train .options. training_set_file .model_file.", verbose = verbose)
+	
 }

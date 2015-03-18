@@ -21,45 +21,7 @@
   
 #source ("./universalWrapper.R")
 
-
-
-# add functions to allow for searching the binaries
-BVMTrainBinary <- function() {
-    return ("svm-train")
-}
-
-
-BVMTestBinary <- function() {
-    return ("svm-predict")
-}
-
-
-BVMTrainBinaryOutputPattern <- function() {
-    return ("outputPattern = '6 -- CVM \\(sqr. hinge-loss")
-}
-
-
-BVMTestBinaryOutputPattern <- function() {
-    return ("bvm-predict")
-}
-
-
-evalBVM = function(...)  {   
-    universalWrapper (
-        modelName = "libCVM",
-        trainingParameterCallBack = BVMTrainingParameterCallBack,
-        testParameterCallBack = BVMTestParameterCallBack,
-        extractInformationCallBack  = BVMExtractInformationCallBack,
-        trainBinary = BVMTrainBinary(),
-        testBinary = BVMTestBinary (),
-        bindir = BVMBinDir(),
-        ...
-    );
-}
-
-
-
-BVMTrainingParameterCallBack = function (trainfile = "",
+createTrainingArguments.BVM = function (trainfile = "",
                                             modelFile = "",
                                             extraParameter = "",
                                             primalTime = 10, 
@@ -86,7 +48,7 @@ BVMTrainingParameterCallBack = function (trainfile = "",
 
 
 
-BVMTestParameterCallBack = function (testfile = "",
+createTestArguments.BVM = function (testfile = "",
                                         modelFile = "", ...) {
     args = c(
         testfile,
@@ -99,7 +61,18 @@ BVMTestParameterCallBack = function (testfile = "",
 
 
 
-BVMExtractInformationCallBack = function (output) {
+extractTrainingInfo.BVM = function (output) {
+
+    # maybe not the best way to grep the string
+    pattern <- "Accuracy = (\\d+\\.?\\d*).*"
+    err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+    
+    return (err)
+}
+
+
+#NEW
+extractTestInfo.BVM = function (output) {
 
     # maybe not the best way to grep the string
     pattern <- "Accuracy = (\\d+\\.?\\d*).*"
@@ -110,14 +83,13 @@ BVMExtractInformationCallBack = function (output) {
 
 
 
-
-BVMReadModelCallBack <- function (modelFilePath = "./model", verbose = FALSE) {
+readModel.BVM <- function (modelFilePath = "./model", verbose = FALSE) {
 	LIBSVMReadModelCallBack (modelFilePath = modelFilePath, verbose = verbose)
 }
 
 
 
-BVMWriteModelCallBack <- function (model = NA, modelFilePath = "./model", verbose = FALSE) {
+writeModel.BVM <- function (model = NA, modelFilePath = "./model", verbose = FALSE) {
 	LIBSVMWriteModelCallBack (model = model, modelFilePath = modelFilePath, verbose = verbose)
 }
  
@@ -128,6 +100,12 @@ BVMWriteModelCallBack <- function (model = NA, modelFilePath = "./model", verbos
 # @return		array consisting of predictions
 #
 
-BVMPredictionsCallBack <- function (predictionsFilePath = "", verbose = FALSE) {
+readPredictions.BVM <- function (predictionsFilePath = "", verbose = FALSE) {
 	return (LIBSVMPredictionsCallBack (predictionsFilePath = predictionsFilePath, verbose = verbose))
 }
+
+#NEW
+findSoftware.BVM = function(x, searchPath = "./", verbose = FALSE) {
+		# short way without verbose messages
+		x$trainBinaryPath  = findBinary (searchPath, "^svm-train$", "Usage: svm-train .options. training_set_file .model_file.", verbose = verbose)
+	}
