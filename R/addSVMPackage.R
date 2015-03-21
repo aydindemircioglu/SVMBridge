@@ -18,9 +18,9 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
- 
- 
- 
+
+
+
 addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA, verbose = FALSE)
 {
 	# we always need a method
@@ -44,7 +44,7 @@ addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA, verbos
 	SVMObject = createSVMWrapper( method = method)
 	SVMBridgeEnv$packages[[method]] = SVMObject
 	if (verbose == TRUE) {
-		BBmisc::messagef ("Registred Objects")
+		BBmisc::messagef ("Registered Objects")
 		for (i in seq(1, length(SVMBridgeEnv$packages))) {
 			s = SVMBridgeEnv$packages[i]
 			print (s)

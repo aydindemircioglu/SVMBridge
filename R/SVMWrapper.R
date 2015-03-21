@@ -18,48 +18,48 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
- 
- 
+
+
 
 #' General class for any SVM wrapper.
 #'
 #' Description... 
 #'
 
-    createSVMWrapper = function(method, trainingBinary = '', ...) {
-        
-        # check that trainingBinary exists, if given
-        # ...    
-        
-        # register the newly created object in our environment
-        
-        # create S3 Object
-        svmPackage = BBmisc::makeS3Obj(c(method, "SVMWrapper"),
-    		method = method,
-            trainingBinary = trainingBinary
-    	)
+	createSVMWrapper = function(method, trainingBinary = '', ...) {
+		
+		# check that trainingBinary exists, if given
+		# ...    
+		
+		# register the newly created object in our environment
+		
+		# create S3 Object
+		svmPackage = BBmisc::makeS3Obj(c(method, "SVMWrapper"),
+			method = method,
+			trainingBinary = trainingBinary
+		)
 
-    	# TODO: replace existing object in package list
-    	
-    	# add object to our internal list of created wrappers
+		# TODO: replace existing object in package list
+		
+		# add object to our internal list of created wrappers
 	#	SVMBridgeEnv$packages = c(SVMBridgeEnv$packages, svmPackage)
 		
 		return (svmPackage)
-    }
-    
+	}
+	
 
-    
+	
 
 	createTrainingArguments = function (x,
 		trainDataFile = "",
-        modelFile = "",
-        extraParameter = "",
-        kernelCacheSize = 1024,
+		modelFile = "",
+		extraParameter = "",
+		kernelCacheSize = 1024,
 		cost = 1, 
-        useBias = FALSE,
-        gamma = 1,
-        epsilon = 0.001, 
-        ...) 
+		useBias = FALSE,
+		gamma = 1,
+		epsilon = 0.001, 
+		...) 
 	{
 		UseMethod("createTrainingArguments")
 	}
@@ -98,17 +98,17 @@
 	writeModel = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
 		UseMethod("writeModel")
 	}
- 
- 
-    
+
+
+	
 	readPredictions = function (x, predictionsFile = "", verbose = FALSE) {
-        UseMethod ("readPredictions")
-    }
+		UseMethod ("readPredictions")
+	}
 
 	
 	
-    findSoftware = function (x, searchPath = "./", verbose = FALSE) {
-        UseMethod ("findSoftware")
-    }
-    
-    
+	findSoftware = function (x, searchPath = "./", verbose = FALSE) {
+		UseMethod ("findSoftware")
+	}
+	
+	

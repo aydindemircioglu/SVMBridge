@@ -75,7 +75,7 @@
 
 
 	
-	extractTrainingInfo.LASVM = function (output) {
+	extractTrainingInfo.LASVM = function (x, output) {
 		pattern <- "accuracy= (\\d+\\.?\\d*).*"
 		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 		return (error)
@@ -83,7 +83,7 @@
 	
 	
 	#NEW
-	extractTestInfo.LASVM = function (output) {
+	extractTestInfo.LASVM = function (x, output) {
 		pattern <- "accuracy= (\\d+\\.?\\d*).*"
 		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 		return (error)
@@ -91,13 +91,13 @@
 	
 
 	#NEW
-	readModel.LASVM = function (modelFile = './model', verbose = FALSE) {
+	readModel.LASVM = function (x, modelFile = './model', verbose = FALSE) {
 		NextMethod (modelFile = modelFile, verbose = verbose)
 	}
 	
 	
 	#NEW
-	writeModel.LASVM = function (model = NA, modelFile = "./model", verbose = FALSE) {
+	writeModel.LASVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
 		NextMethod (model = model, modelFile = modelFile, verbose = verbose)
 	}
 	
@@ -108,19 +108,51 @@
 	# @return		array consisting of predictions
 	#
 	#NEW
-	readPredictions.LASVM = function (predictionsFilePath = "", verbose = FALSE) {
-		p = NextMethod (predictionsFilePath = predictionsFilePath, verbose = verbose)
-		return (p)
+	readPredictions.LASVM = function (x, predictionsFile = "", verbose = FALSE) {
+		ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
+		return (ret)
 	}
 
 	
-	#NEW
-	findSoftware.LASVM = function(x, searchPath = "./", verbose = FALSE) {
-		# short way without verbose messages
-		x$trainBinaryPath  = findBinary (searchPath, "^svm-train$", "Usage: svm-train .options. training_set_file .model_file.", verbose = verbose)
+
+	findSoftware.LASVM = function (x, searchPath = "./", verbose = FALSE) {
+
+		if (verbose == TRUE) {
+			BBmisc::messagef("    LIBSVM Object: Executing search for software for %s", x$method)
+		}
+		
+		trainBinaryPattern = "^la_svm$"
+		trainBinaryOutputPattern = 'Usage: la_svm .options. training_set_file .model_file.'
+		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
+
+		# TODO: check for empty path+handling
+		
+		if (verbose == TRUE) {
+			BBmisc::messagef("--> Found train binary at %s", binaryPath) 
+		}
+		x$trainBinaryPath = binaryPath
+
+
+		testBinaryPattern = "^la_test$"
+		testBinaryOutputPattern = 'Usage: la_test .options. test_set_file model_file output_file'
+
+		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
+		
+		# TODO: check for empty path+handling
+
+		if (verbose == TRUE) {
+			BBmisc::messagef("--> Found test binary at %s", binaryPath) 
+		}
+		x$testBinaryPath = binaryPath
+
+		return(x)
 	}
 
-
-
-
  
+ 
+	print.LASVM_walltime = function(x) {
+		BBmisc::messagef("--- Object: %s", x$method)
+		BBmisc::messagef("       Training Binary at %s", x$trainBinaryPath)
+		BBmisc::messagef("       Test Binary at %s", x$testBinaryPath)
+	}
+	
