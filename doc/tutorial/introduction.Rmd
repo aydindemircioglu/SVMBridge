@@ -44,9 +44,29 @@ skipPredictions == TRUE
 
 # Writing your own wrapper
 
-The method name will define all function names! This is very important, if you do not abide to this rule, callSVM will not find the corresponding callbacks! Suppose you want to write a wrapper for mySVM. In this case, you will need to create a file exactly called "mySVM_wrapper.R'. Please note that the filename is case-sensitive. This is also true for all the callback functions. 
+The method name will define all function names! This is very important, if you do not abide to this rule, callSVM will not find the corresponding callbacks! Suppose you want to write a wrapper for mySVM. In this case, you will need to create a file exactly called 'mySVM_wrapper.R'. Please note that the filename is case-sensitive. This is also true for all the callback functions. 
 
 Your mySVM software must be split into two parts: Training and Testing. This might be the same executable, but be aware, that testing must work without training data. In case your package needs testing data at training time (e.g. if the model only specifies the index of the support vector in the training file instead of copying them into the model), you need to perform quite heavy tricks to get this going. In general, using other packages and skip **SVMBridge** might be a good idea, as **SVMBridge** strictly follows the LIBSVM way of training and testing. 
+
+
+## Adding the wrapper
+
+After you have written a wrapper, say 'mySVM_wrapper.R', you must add your wrapper to the **SVMBridge**. This you can either manually or automatically (see the next section for information about this). There are two parts of this procedure: First you must tell **SVMBridge** where to find your wrapper 'mySVM_wrapper.R'. After this you must specify where the corresponding binaries for mySVM are to be found. Remember that the **SVMBridge** acts mainly as a convenient tool to call a SVM solver via command line.
+
+To add your wrapper to the **SVMBridge** simply call ```addSVMPackage```, e.g. if mySVM resides in the mySVM subdirectory, you can call ```addSVMPackage (method = "mySVM", filePath = "./mySVM/mySVM_wrapper.R", softwarePath = "./mySVM/bin")```. Notice that filePath is mandatory, and the **SVMBridge** will source the specified wrapper. Though you are free to name your wrapper as you wish, it is a good idea to stick to the convention chosen and name the wrapper for your SVM package by adding '_wrapper.R', e.g. the wrapper for LASVM is called 'LASVM_wrapper.R' inside **SVMBridge**. The path for the binaries of mySVM is not mandotory. Instead of specifiying it, **SVMBridge** can automatically find it (based on the code in the mySVM_wrapper.R file).
+
+
+## Automatically finding the software
+
+After you added your wrapper, if you did not specified a softwarePath, **SVMBridge** can find the corresponding binary files for you. Remember that if you forget to specifiy the softwarePath,  **SVMBridge** will not understand where to find the binaries.
+
+The corresponding function is ```findSVMSoftware```. To tell the **SVMBridge** where to find the mySVM software, call it like this: ```findSVMSoftware ("mySVM", searchPath = "./mySVM", verbose = FALSE). 
+
+For convience, there is also a findAllSVMSoftware function that will try to find the software of all registered SVM packages based on the given search path, e.g., if all your SVM software can be found inside the ./software directory, you can call ```findAllSVMSoftware(searchPath = "./software")```.
+
+## Automatically finding the wrapper
+
+Sometimes it is convenient to allow the user to specify the SVM software he needs. In this case it is no good to specify neither the wrapper nor the software by hand. Therefore **SVMBridge** allows you not only to automatically find the software, but also the wrapper. This only works, if the wrapper follows the naming convention, i.e. the wrapper for mySVM needs to be called mySVM_wrapper.R.  To initiate the search, just call ```findSVMWrapper (method = "mySVM", searchPath = "./mySVM")```. The specified searchPath will, just as ```findSVMSoftware```, be searched recursively. Notice also that if multiple such wrappers exist inside a directory (in subdirectories), **SVMBridge** will stop searching after the very first hit. 
 
 
 ## The training parameters
