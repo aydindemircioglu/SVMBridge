@@ -116,3 +116,18 @@ Finally, an SVM package is for us the internal object in the SVMBridge, that has
 ## Speed
 
 It is possible to bypass any extra-I/O and directly communicate with the SVM Package by specifying the training and test data as well as the model and prediction as a file. If SVMBridge gets file pathes, it will not try to reread the written model nor the predictions. Sometimes you do not need the predictions, neither on memory nor on disk. In this case you can pass "/dev/null" as prediction file. This will make the SVM Test write to null, so it will not take any I/O time,  and therefore the SVMBridge will not reread the predictions, as it was already written on disk.
+
+
+# FAQ
+
+## Searching for an unknown solver
+
+If you try to find a wrapper that does not exist, FIXME: fix that.
+for now the error later on:
+Class 'try-error'  atomic [1:1] Error in UseMethod("findSoftware") : 
+  no applicable method for 'findSoftware' applied to an object of class "c('CSVM_walltime', 'SVMWrapper')"
+
+## FindBinary stalls
+
+If the binary expects inputs, executing the binary will stall. Please make sure that your binary does not expect input upon being called without parameters. If necessary, turn off automatic search and provide **SVMBridge** with the direct path to the software.
+FIXME: WILL SEND 1 to the program, if the program is called SVMperf. will still stall on other wait-for-key-programs.
