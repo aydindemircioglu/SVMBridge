@@ -64,6 +64,7 @@ trainSVM = function(
 	modelFile = NULL,
 	verbose = FALSE,
 
+	readModelFile = FALSE,
 	...) {
 
 	# get the correct object
@@ -85,8 +86,6 @@ trainSVM = function(
 		BBmisc::stopf("No method name is given, this should never happen.")
 	}
 				
-				# FIXME: make this an option
- 	readModelFile = TRUE
  	
 	# did the user specify a modelfile?
 	if (is.null(modelFile) == TRUE) {
@@ -100,8 +99,11 @@ trainSVM = function(
 	# finally, everything is dumped to disk.
   
 	if ( (is.null(trainDataX) == FALSE) && (is.null(trainDataFile) == FALSE))
+	{
+		print(trainDataX)
+		print(trainDataFile)
 		BBmisc::stopf("Given a data frame as training data and specified a training file name. Confused. Stopping.")
-			
+	}		
 	if ( (is.null(trainDataX) == TRUE) && (is.null(trainDataFile) == TRUE))
 		BBmisc::stopf("Neither specified training data path nor given training data. Stopping.")
 

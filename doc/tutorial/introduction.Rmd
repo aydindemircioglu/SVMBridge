@@ -22,9 +22,15 @@ Testing is done very similar to training by calling the ```testSVM``` function Y
 Note: In case you specify data from memory and from disc, **SVMBridge** will throw an error, as it will be confused about which source to use.
 
 
-# Model file
+# Models
 
-If you do not specify any model file for training, ```trainSVM``` will ask R for a temporary file and will provide this path to the SVM package. Internally, the ```writeModel``` routine of the SVM package will be used to create a model file from a model in memory.  In case you have not specified a model file path, after training the model will be read from the temporary model file into the SVM Results Object. Contrary, if you did specify a model file path, then by default, the model is not read back into the SVM Results Object. To enforce reading the model, you can set the argument ```readModel``` to true. 
+Usually the underlying SVM solvers will create a model on disk after training. You have two options in ```trainSVM``` to work with these models: modelFile and readModel. 
+
+First assume that you provide ```trainSVM``` with a path in the modelFile argument. In that case this path will be passed to the corresponding SVM solver, which (if everything runs without an error) will create a model file at the specified path. The second option for ```trainSVM``` is readModel. If this is set to TRUE, the ```trainSVM``` routine will reread the model back into memory and put it into the resulting trainObject. This will allow you work with the model directly in R, e.g. by reading out the alpha vector of suppor vector coefficients (if the model provides these information). Contrary, if you do not want to work with the model, e.g. as you are only interested in the test results of a subsequent ```testSVM``` call, there is no need to parse the model file, and you might want to set readModel to FALSE. Note that reading a model back into memory is currently very slow and a resource-hog, so only read back the model if this is really necessary. 
+
+In the second case, you do not provide a path to ```trainSVM```. In that case ```trainSVM``` has to create a temporary path, as the SVM solver necessarily will need a place to write its model. In this case, the readModel flag work exactly as before. Note that if you set readModel to FALSE, the model will be lost, as it was only written temporarily, but not read back. This might only make sense in very rare, special applications.
+
+Note that in very rare cases you might want to train a SVM, but you are not interested in the model, e.g. you only need the time to train or want to check if the SVM will run without an error. In that case it is a good idea to pass "/dev/null" as modelFile and set readModel to FALSE. This will make the SVM solver to write its model into "/dev/null", effectively discarding it. Similarly, ```trainSVM``` will subsequently ignore the not existing model file.
 
 At testing time, you must provide the trained model. If you pass this as an in-memory model, ```testSVM``` will call the ```readModel``` routine of the SVM package first to dump the model to a temporary file on the filesystem. 
 
