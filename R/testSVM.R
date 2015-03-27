@@ -76,6 +76,10 @@ testSVM = function(
 	
 	# ask object for its path
 	testBinaryPath = SVMObject$testBinaryPath
+	
+	if (is.null(SVMObject)) {
+		BBmisc::stopf ("Cannot find the specified SVM object. Did you include the wrapper of the method %s?", method)
+	}
 	testBinary = basename(testBinaryPath)
 	
 	
