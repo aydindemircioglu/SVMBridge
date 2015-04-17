@@ -3,8 +3,8 @@
 
 
 # evalBSGD
-# @param[in]    trainfile       file to read training data from
-# @param[in]    testfile        file to read test data from
+# @param[in]    trainDataFile       file to read training data from
+# @param[in]    testDataFile        file to read test data from
 # @param[in]    cost            cost parameter C
 # @param[in]    gamma           gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...)
 # @param[in]    budget          budget parameter
@@ -13,44 +13,46 @@
 # @param[in]    modelFile       path to model, defaults to a temporary file (given by R)
 
 
-createTrainingArguments.BSGD = function (trainfile = "",
-                                            modelFile = "",
-                                            extraParameter = "",
-                                            primalTime = 10, 
-                                            wallTime = 8*60,
-                                            cost = 1, 
-                                            gamma = 1, 
-                                            budget = 128,
-                                            epochs = 1, ...) {
+createTrainingArguments.BSGD = function (x,
+	trainDataFile = "",
+	modelFile = "",
+	extraParameter = "",
+	primalTime = 10, 
+	wallTime = 8*60,
+	cost = 1, 
+	gamma = 1, 
+	budget = 128,
+	epochs = 1, ...) {
 
-    n = countLines(trainfile)
+		n = countLines(trainDataFile)
 
 
-    # arguments for training
-    args = c(
-        "-A 4",
-        "-r 0",
-        sprintf("-B %.16f", budget ),
-        sprintf("-L %.16f", (1.0 / (n * cost))),
-        sprintf("-e %.16f", epochs ),
-        sprintf("-g %.16f", 2 * gamma),
-        extraParameter,
-        trainfile,
-        modelFile
-    )
+		# arguments for training
+		args = c(
+			"-A 4",
+			"-r 0",
+			sprintf("-B %.16f", budget ),
+			sprintf("-L %.16f", (1.0 / (n * cost))),
+			sprintf("-e %.16f", epochs ),
+			sprintf("-g %.16f", 2 * gamma),
+			extraParameter,
+			trainDataFile,
+			modelFile
+		)
 
-    return (args)
+		return (args)
 }
 
 
 
-createTestArguments.BSGD = function (testfile = "",
-                                        modelFile = "", 
-                                        predictionOutput = "/dev/null", ...) {
+createTestArguments.BSGD = function (x,
+					testDataFile = "",
+					modelFile = "", 
+					predictionOutput = "/dev/null", ...) {
     args = c(
         "-v 1",
 #        "-o 1", only works for BSGD for now
-        testfile,
+        testDataFile,
         modelFile,
         predictionOutput 
     )
@@ -60,7 +62,8 @@ createTestArguments.BSGD = function (testfile = "",
 
 
 
-extractTrainingInfo.BSGD = function (output) {
+# DUMMY probably
+extractTrainingInfo.BSGD = function (x, output) {
     
     # ---- grep the error rate
     pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
@@ -69,8 +72,8 @@ extractTrainingInfo.BSGD = function (output) {
     return (err)
 }
 
-#NEW
-extractTestInfo.BSGD = function (output) {
+# DUMMY probably
+extractTestInfo.BSGD = function (x, output) {
     
     # ---- grep the error rate
     pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
@@ -80,10 +83,14 @@ extractTestInfo.BSGD = function (output) {
 }
 
 
-readModel.BSGD = function (modelFilePath = "./model", verbose = FALSE)
+readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE)
 {
+	if (verbose == TRUE) {
+		BBmisc::messagef("Reading BSGD model from %s", modelFile)
+	}
+
     # open connection
-    con  <- file(modelFilePath, open = "r")
+    con  <- file(modelFile, open = "r")
 
 	# do we need to invert the labels?
 	invertLabels = FALSE
@@ -124,11 +131,6 @@ readModel.BSGD = function (modelFilePath = "./model", verbose = FALSE)
             if (order == "-1 1") {
                 invertLabels = TRUE
             }
-            
-            # yes, exceptions.
-            if (model == "LLSVM") {
-                invertLabels = !invertLabels
-            }
         }  
     }
   
@@ -165,7 +167,7 @@ readModel.BSGD = function (modelFilePath = "./model", verbose = FALSE)
 
 
 # dummy for now
-writeModel.BSGD = function (model = NA, modelFilePath = "./model", verbose = FALSE) {
+writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
 	if (verbose == TRUE) {
 		messagef ("Writing SVM Model..")
 	}
@@ -178,7 +180,7 @@ writeModel.BSGD = function (model = NA, modelFilePath = "./model", verbose = FAL
 	posSV = sum(model$a > 0)
 	negSV = sum(model$a < 0)
     # open connection
-    modelFileHandle <- file(modelFilePath, open = "w+")
+    modelFileHandle <- file(modelFile, open = "w+")
 	writeLines(paste ("svm_type c_svc", sep = ""), modelFileHandle )
 	writeLines(paste ("kernel_type", "rbf", sep = " "), modelFileHandle )
 	writeLines(paste ("gamma", model$gamma, sep = " "), modelFileHandle )
@@ -203,7 +205,8 @@ writeModel.BSGD = function (model = NA, modelFilePath = "./model", verbose = FAL
 # @return		array consisting of predictions
 #
 
-readPredictions.BSGD <- function (predictionsFilePath = "", verbose = FALSE) {
+# dummy probably
+readPredictions.BSGD <- function (x, predictionsFilePath = "", verbose = FALSE) {
     # open connection
     con  <- file(predictionsFilePath, open = "r")
 
@@ -221,8 +224,35 @@ readPredictions.BSGD <- function (predictionsFilePath = "", verbose = FALSE) {
     return (predictions)
 }
 
-#NEW
-findSoftware.BSGD = function(x, searchPath = "./", verbose = FALSE) {
-		# short way without verbose messages
-		x$trainBinaryPath  = findBinary (searchPath, "^svm-train$", "Usage: svm-train .options. training_set_file .model_file.", verbose = verbose)
-	}
+findSoftware.BSGD = function (x, searchPath = "./", verbose = FALSE) {
+
+		if (verbose == TRUE) {
+			BBmisc::messagef("    BSGD Object: Executing search for software for %s", x$method)
+		}
+		
+		trainBinaryPattern = "^budgetedsvm-train$"
+		trainBinaryOutputPattern = "budgetedsvm-train .options. train_file .model_file."
+		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
+
+		# TODO: check for empty path+handling
+		
+		if (verbose == TRUE) {
+			BBmisc::messagef("--> Found train binary at %s", binaryPath) 
+		}
+		x$trainBinaryPath = binaryPath
+
+
+		testBinaryPattern = "^budgetedsvm-predict$"
+		testBinaryOutputPattern = "budgetedsvm-predict .options. test_file model_file output_file"
+
+		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
+		
+		# TODO: check for empty path+handling
+
+		if (verbose == TRUE) {
+			BBmisc::messagef("--> Found test binary at %s", binaryPath) 
+		}
+		x$testBinaryPath = binaryPath
+
+		return(x)
+}

@@ -19,7 +19,7 @@
 # All negative use is prohibited.
 #
 
-char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
+char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM"
 
 
 for(solver in char_vec)

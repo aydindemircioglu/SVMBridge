@@ -33,18 +33,26 @@
 #' @param     ...		parameters that will be passed on training and/or test callbacks
 #
 
-createTrainingArguments.SVMperf = function (trainfile = "",
-                                            modelFile = "",
-                                            extraParameter = "",
-                                            cost = 1, 
-                                            gamma = 1, 
-                                            kernelCacheSize = 1024,
-                                            k = 1000,
-                                            epsilon = 0.001, ...) {
+createTrainingArguments.SVMperf = function (x,
+											trainDataFile = "",
+        modelFile = "",
+        kernelCacheSize = 1024,
+		cost = 1, 
+        gamma = 1,
+		k = 1000,
+        epsilon = 0.001, 
+
+		saveFactor = -1,
+		saveExponential = -1,
+		modelPath = -1,
+		wallTime = -1,
+        primalTime = -1,
+        extraParameter = "",
+		...)  {
 
                        
     # count training examples
-    N = countLines(trainfile)
+    N = countLines(trainDataFile)
 
     # modify COST to C*N/100, as the formulation is C/n instead of C, 
     # svmperf command tells us:
@@ -121,7 +129,7 @@ createTrainingArguments.SVMperf = function (trainfile = "",
 			primalTimeParameter,
 			wallTimeParameter,
             extraParameter,
-            trainfile,
+            trainDataFile,
             modelFile
         )
     }
@@ -152,7 +160,7 @@ createTrainingArguments.SVMperf = function (trainfile = "",
 			primalTimeParameter,
 			wallTimeParameter,
 			extraParameter,
-            trainfile,
+            trainDataFile,
             modelFile
         )
     }
@@ -183,7 +191,7 @@ createTrainingArguments.SVMperf = function (trainfile = "",
 			primalTimeParameter,
 			wallTimeParameter,
             extraParameter,
-            trainfile,
+            trainDataFile,
             modelFile
         )
     }
@@ -218,7 +226,7 @@ createTrainingArguments.SVMperf = function (trainfile = "",
 			primalTimeParameter,
 			wallTimeParameter,
             extraParameter,
-            trainfile,
+            trainDataFile,
             modelFile
         )
     }
@@ -249,7 +257,7 @@ createTrainingArguments.SVMperf = function (trainfile = "",
 			primalTimeParameter,
 			wallTimeParameter,
             extraParameter,
-            trainfile,
+            trainDataFile,
             modelFile
         )
     }
@@ -265,11 +273,15 @@ createTrainingArguments.SVMperf = function (trainfile = "",
 
 
 
-createTestArguments.SVMperf = function (testfile = "",
-                                        modelFile = "", ...) {
+createTestArguments.SVMperf = function (x,
+										testDataFile = "",
+                                        modelFile = "",
+                                        predictionsFile = "", 
+                                        ...) {
     args = c(
-        testfile,
+        testDataFile,
         modelFile,
+        predictionsFile,
         "/dev/null"                     # outfile, not needed
     )
     
@@ -278,24 +290,27 @@ createTestArguments.SVMperf = function (testfile = "",
   
 
 
-extractTrainingInfo.SVMperf = function (output) {
+extractTrainingInfo.SVMperf = function (x, output) {
 
     # compute error
     pattern <- "Accuracy :\\s*(\\d+\\.?\\d*)"
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 }
 
-extractTestInfo.SVMperf = function (output) {
+extractTestInfo.SVMperf = function (x, output) {
 
     # compute error
     pattern <- "Accuracy :\\s*(\\d+\\.?\\d*)"
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 }
 
-readModel.SVMperf <- function (modelFilePath = "./model", verbose = FALSE)
+readModel.SVMperf <- function (x, modelFile = "./model", verbose = FALSE)
 {
+	if (verbose == TRUE) {
+			BBmisc::messagef ("Reading SVMperf model from %s.", modelFile)
+		}
     # open connection
-    con  <- file(modelFilePath, open = "r")
+    con  <- file(modelFile, open = "r")
 
     # grep needed information step by step, the bias is on the threshold line
 	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
@@ -335,35 +350,10 @@ readModel.SVMperf <- function (modelFilePath = "./model", verbose = FALSE)
 
 
 
-# dummy for now
-writeModel.SVMperf <- function (model = NA, modelFilePath = "./model", verbose = FALSE) {
-	if (verbose == TRUE) {
-		messagef ("Writing SVM Model..")
-	}
-	
-	# FIXME: label order
-	# TODO: support multiclass
-	model$nrclass = 2
-	posSV = sum(model$a > 0)
-	negSV = sum(model$a < 0)
-    # open connection
-    modelFileHandle <- file(modelFilePath, open = "w+")
-	writeLines(paste ("svm_type c_svc", sep = ""), modelFileHandle )
-	writeLines(paste ("kernel_type", "rbf", sep = " "), modelFileHandle )
-	writeLines(paste ("gamma", model$gamma, sep = " "), modelFileHandle )
-	writeLines(paste ("nr_class", model$nrclass, sep = " "), modelFileHandle )
-	writeLines(paste ("total_sv", length(model$a), sep = " "), modelFileHandle )
-	writeLines(paste ("rho", model$bias, sep = " "), modelFileHandle )
-	writeLines(paste ("label 1 -1", sep = " "), modelFileHandle )
-	writeLines(paste ("nr_sv", posSV, negSV, sep = " "), modelFileHandle )
-	writeLines(paste ("SV", sep = ""), modelFileHandle )
-
-	# basically all data is sparse data format, but the data around this differs
-	svmatrix = dumpSparseFormat(model$a, model$X)
-	writeLines(svmatrix, modelFileHandle, sep = "" )
-	
-	# close connection
-	close(modelFileHandle)
+# DUMMY
+writeModel.SVMperf <- function (x, model = NA, modelFile = "./model", verbose = FALSE) {
+	ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
+		return (ret)
 }
  
 
@@ -372,26 +362,44 @@ writeModel.SVMperf <- function (model = NA, modelFilePath = "./model", verbose =
 # @return		array consisting of predictions
 #
 
-readPredictions.SVMperf <- function (predictionsFilePath = "", verbose = FALSE) {
-    # open connection
-    con  <- file(predictionsFilePath, open = "r")
-
-    predictions = c()
-	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
-		predictions = c(predictions, as.numeric(oneLine))
-    }
+# DUMMY
+readPredictions.SVMperf <- function (x, predictionsFile = "", verbose = FALSE) {
+		ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
+		return (ret)
     
-	if (verbose == TRUE) {
-		print(predictions)
-	}
-			
-	close (con)
-	
-    return (predictions)
 }
 
-#NEW
+
 findSoftware.SVMperf = function(x, searchPath = "./", verbose = FALSE) {
-		# short way without verbose messages
-		x$trainBinaryPath  = findBinary (searchPath, "^budgetedsvm-train$", "Usage: svm-train .options. training_set_file .model_file.", verbose = verbose)
+		if (verbose == TRUE) {
+			BBmisc::messagef("    SVMperf_wrapper Object: Executing search for software for %s", x$method)
+		}
+		
+		trainBinaryPattern = "^svm_perf_learn$"
+		trainBinaryOutputPattern = c(
+			'saveExponential : set exponential of time interval in seconds',
+			'usage: svm_struct_learn .options. example_file model_file')
+			
+		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
+		
+		
+
+
+		if (verbose == TRUE) {
+			BBmisc::messagef("--> Found train binary at %s", binaryPath) 
+		}
+		x$trainBinaryPath = binaryPath
+
+
+		testBinaryPattern = "^svm_perf_classify$"
+		testBinaryOutputPattern = 'usage: svm_struct_classify .options. example_file model_file output_file'
+
+		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
+		
+		if (verbose == TRUE) {
+			BBmisc::messagef("--> Found test binary at %s", binaryPath) 
+		}
+		x$testBinaryPath = binaryPath
+
+		return(x)
 }

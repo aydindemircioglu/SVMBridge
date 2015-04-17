@@ -5,8 +5,8 @@
 
 
 # evalLLSVM
-# @param[in]    trainfile       file to read training data from
-# @param[in]    testfile        file to read test data from
+# @param[in]    trainDataFile       file to read training data from
+# @param[in]    testDataFile        file to read test data from
 # @param[in]    cost            cost parameter C
 # @param[in]    gamma           gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...)
 # @param[in]    rank            number of landmarks
@@ -15,16 +15,17 @@
 
 
 
-createTrainingArguments.LLSVM = function (trainfile = "",
-                                            modelFile = "",
-                                            extraParameter = "",
-                                            primalTime = 10, 
-                                            wallTime = 8*60,
-                                            cost = 1, 
-                                            gamma = 1, 
-                                            rank = 128, ...) {
+createTrainingArguments.LLSVM = function (x,
+								trainDataFile = "",
+								modelFile = "",
+								extraParameter = "",
+								primalTime = 10, 
+								wallTime = 8*60,
+								cost = 1, 
+								gamma = 1, 
+								rank = 128, ...) {
     # ---- compute general things
-    n = countLines(trainfile)
+    n = countLines(trainDataFile)
 
     # ---- sanity checks
     if(n < rank)
@@ -38,7 +39,7 @@ createTrainingArguments.LLSVM = function (trainfile = "",
         sprintf("-L %.16f", (1.0 / (n * cost))), 
         sprintf("-g %.16f", 2 * gamma),
         extraParameter,
-        trainfile,
+        trainDataFile,
         modelFile
     )
 
@@ -47,13 +48,14 @@ createTrainingArguments.LLSVM = function (trainfile = "",
 
 
 
-createTestArguments.LLSVM = function (testfile = "",
-                                        modelFile = "", 
-                                        predictionOutput = "/dev/null", ...) {
+createTestArguments.LLSVM = function (x,
+									testDataFile = "",
+									modelFile = "", 
+									predictionOutput = "/dev/null", ...) {
     args = c(
         "-v 1",
 #        "-o 1", only works for BSGD for now
-        testfile,
+        testDataFile,
         modelFile,
         predictionOutput 
     )
@@ -63,7 +65,7 @@ createTestArguments.LLSVM = function (testfile = "",
 
 
 
-extractTrainingInfo.LLSVM = function (output) {
+extractTrainingInfo.LLSVM = function (x, output) {
     
     # ---- grep the error rate
     pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
@@ -72,8 +74,8 @@ extractTrainingInfo.LLSVM = function (output) {
     return (err)
 }
 
-#NEW
-extractTestInfo.LLSVM = function (output) {
+
+extractTestInfo.LLSVM = function (x, output) {
     
     # ---- grep the error rate
     pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
@@ -82,24 +84,100 @@ extractTestInfo.LLSVM = function (output) {
     return (err)
 }
 
-#NEW
-readModel.LLSVM= function (modelFile = './model', verbose = FALSE) {
-		NextMethod (modelFile = modelFile, verbose = verbose)
+readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE)
+{
+	if (verbose == TRUE) {
+		BBmisc::messagef("Reading LLSVM model from %s", modelFile)
+	}
+
+    # open connection
+    con  <- file(modelFile, open = "r")
+
+	# do we need to invert the labels?
+	invertLabels = FALSE
+
+	# grep needed information step by step, the bias is on the threshold line
+    while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) 
+    {
+        if (grepl("MODEL", oneLine) == TRUE) break;
+      
+        # gamma value
+        if (grepl("KERNEL_GAMMA_PARAM", oneLine) == TRUE) 
+        {
+            pattern <- "KERNEL_GAMMA_PARAM: (.*)"
+            gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+        }  
+      
+        # bias
+        if (grepl("BIAS_TERM", oneLine) == TRUE) 
+        {
+            pattern <- "BIAS_TERM: (.*)"
+            bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+        }
+      
+        # order of labels
+        if (grepl("LABELS", oneLine) == TRUE) 
+        {
+            pattern <- "LABELS: (.*)"
+            order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+        
+            if ((order != "1 -1") && (order != "-1 1")) {
+                stop ("Label ordering %s is unknown!", order)
+            }
+        
+            if (order == "1 -1") {
+                invertLabels = FALSE
+            }
+
+            if (order == "-1 1") {
+                invertLabels = TRUE
+            }
+        }  
+    }
+  
+  
+	# read and interprete data 
+	# basically all data is sparse data format, but the data around this differs
+	svmatrix = readSparseFormat(con)
+
+	# add header information
+	svmatrix$gamma = gamma
+	svmatrix$bias = bias
+	svmatrix$modelname = "LLSVM"
+	
+	
+	# do we need to invert the labels? in this case we invert the coefficients
+	if (invertLabels == TRUE) {
+		if (verbose == TRUE)  
+			messagef(" Inverting Labels.")
+
+		# invert alphas
+		svmatrix$a = -svmatrix$a
+
+		# this is also needed.. 
+		svmatrix$bias = -bias
+	}
+
+	# close connection
+	close(con)
+	
+	# return
+	return (svmatrix)
+}
+	
+# dummy for now
+writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
+		ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
+		return (ret)
 	}
 	
-#NEW
-writeModel.LLSVM = function (model = NA, modelFile = "./model", verbose = FALSE) {
-		NextMethod (model = model, modelFile = modelFile, verbose = verbose)
+# dummy for now
+readPredictions.LLSVM = function (x, predictionsFile = "", verbose = FALSE) {
+		ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
+		return (ret)
 	}
 	
-#NEW
-readPredictions.LLSVM = function (predictionsFilePath = "", verbose = FALSE) {
-		p = NextMethod (predictionsFilePath = predictionsFilePath, verbose = verbose)
-		return (p)
-	}
-	
-#NEW
-findSoftware.LLSVM = function(x, searchPath = "./", verbose = FALSE) {
-		# short way without verbose messages
-		x$trainBinaryPath  = findBinary (searchPath, "^budgetedsvm-train$", "Usage: svm-train .options. training_set_file .model_file.", verbose = verbose)
+findSoftware.LLSVM = function (x, searchPath = "./", verbose = FALSE) {
+		x = findSoftware.BSGD (x, searchPath, verbose)
+		return(x)
 	}

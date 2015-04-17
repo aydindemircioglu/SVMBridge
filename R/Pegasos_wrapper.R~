@@ -77,7 +77,7 @@ extractTrainingInfo.Pegasos = function (x, output) {
     return (err)
 }
 
-
+#NEW
 extractTestInfo.Pegasos = function (x, output) {
     
     # ---- grep the error rate
@@ -87,7 +87,6 @@ extractTestInfo.Pegasos = function (x, output) {
     return (err)
 }
 
-# dummy for now
 readModel.Pegasos = function (x, modelFile = "./model", verbose = FALSE)
 {
 	if (verbose == TRUE) {
@@ -169,22 +168,21 @@ readModel.Pegasos = function (x, modelFile = "./model", verbose = FALSE)
 	return (svmatrix)
 }
 	
-# dummy for now
-writeModel.Pegasos = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
-		ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
-		return (ret)
+#NEW
+writeModel.Pegasos = function (model = NA, modelFile = "./model", verbose = FALSE) {
+		NextMethod (model = model, modelFile = modelFile, verbose = verbose)
 	}
-	
-# dummy for now
-readPredictions.Pegasos = function (x, predictionsFile = "", verbose = FALSE) {
-		ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
-		return (ret)
+
+#NEW
+readPredictions.Pegasos = function (predictionsFilePath = "", verbose = FALSE) {
+		p = NextMethod (predictionsFilePath = predictionsFilePath, verbose = verbose)
+		return (p)
 	}
+
 	
 
-# same method as for BSGD
 findSoftware.Pegasos = function (x, searchPath = "./", verbose = FALSE) {
-		x = findSoftware.BSGD (x, searchPath, verbose)
+		x = findSoftware.BSGD (searchPath, verbose)
 		return(x)
 	}
 	

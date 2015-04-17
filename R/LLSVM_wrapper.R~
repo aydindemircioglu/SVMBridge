@@ -1,20 +1,21 @@
 #!/usr/bin/Rscript  --vanilla 
 
 
-  
-  
 
-# evalPegasos
+
+
+# evalLLSVM
 # @param[in]    trainDataFile       file to read training data from
 # @param[in]    testDataFile        file to read test data from
 # @param[in]    cost            cost parameter C
 # @param[in]    gamma           gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...)
-# @param[in]    epochs          number of epochs to run pegasos
+# @param[in]    rank            number of landmarks
 # @param[in]    bindir          relativ path to the binaries, defaults to default.
 # @param[in]    modelFile       path to model, defaults to a temporary file (given by R)
 
 
-createTrainingArguments.Pegasos = function (x,
+
+createTrainingArguments.LLSVM = function (x,
 											trainDataFile = "",
                                             modelFile = "",
                                             extraParameter = "",
@@ -22,36 +23,32 @@ createTrainingArguments.Pegasos = function (x,
                                             wallTime = 8*60,
                                             cost = 1, 
                                             gamma = 1, 
-                                            epochs = 1, ...) {
-
+                                            rank = 128, ...) {
+    # ---- compute general things
     n = countLines(trainDataFile)
 
-    # we make pegasos non linear by using budgeted SVM with an
-    # excessively high budget-- i.e. n+1.
-    
-    # arguments for training
+    # ---- sanity checks
+    if(n < rank)
+        stop("Rank must not be greater or equal to size of dataset")
+
+    # ---- training
     args = c(
-        "-A 4",
+        "-A 3",
         "-r 0",
-        "-m 2", # this makes sure that an error is thrown whenever the reduce-budget routine is called. makes it extra safe.
-        sprintf("-a %d", floor(primalTime)),
-        sprintf("-l %d", floor(wallTime)),         # rbf kernel
-        sprintf("-B %.16f", n + 1 ),
-        sprintf("-L %.16f", (1.0 / (n * cost))),
-        sprintf("-e %.16f", epochs ),
+        sprintf("-B %.16f", rank),
+        sprintf("-L %.16f", (1.0 / (n * cost))), 
         sprintf("-g %.16f", 2 * gamma),
         extraParameter,
         trainDataFile,
         modelFile
     )
-  
+
     return (args)
 }
 
 
 
-
-createTestArguments.Pegasos = function (x,
+createTestArguments.LLSVM = function (x,
 										testDataFile = "",
                                         modelFile = "", 
                                         predictionOutput = "/dev/null", ...) {
@@ -68,7 +65,7 @@ createTestArguments.Pegasos = function (x,
 
 
 
-extractTrainingInfo.Pegasos = function (x, output) {
+extractTrainingInfo.LLSVM = function (x, output) {
     
     # ---- grep the error rate
     pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
@@ -77,8 +74,8 @@ extractTrainingInfo.Pegasos = function (x, output) {
     return (err)
 }
 
-
-extractTestInfo.Pegasos = function (x, output) {
+#NEW
+extractTestInfo.LLSVM = function (x, output) {
     
     # ---- grep the error rate
     pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
@@ -87,11 +84,10 @@ extractTestInfo.Pegasos = function (x, output) {
     return (err)
 }
 
-# dummy for now
-readModel.Pegasos = function (x, modelFile = "./model", verbose = FALSE)
+readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE)
 {
 	if (verbose == TRUE) {
-		BBmisc::messagef("Reading Pegasos model from %s", modelFile)
+		BBmisc::messagef("Reading LLSVM model from %s", modelFile)
 	}
 
     # open connection
@@ -147,7 +143,7 @@ readModel.Pegasos = function (x, modelFile = "./model", verbose = FALSE)
 	# add header information
 	svmatrix$gamma = gamma
 	svmatrix$bias = bias
-	svmatrix$modelname = "Pegasos"
+	svmatrix$modelname = "LLSVM"
 	
 	
 	# do we need to invert the labels? in this case we invert the coefficients
@@ -169,23 +165,46 @@ readModel.Pegasos = function (x, modelFile = "./model", verbose = FALSE)
 	return (svmatrix)
 }
 	
-# dummy for now
-writeModel.Pegasos = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
-		ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
-		return (ret)
+#NEW
+writeModel.LLSVM = function (model = NA, modelFile = "./model", verbose = FALSE) {
+		NextMethod (model = model, modelFile = modelFile, verbose = verbose)
 	}
 	
-# dummy for now
-readPredictions.Pegasos = function (x, predictionsFile = "", verbose = FALSE) {
-		ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
-		return (ret)
+#NEW
+readPredictions.LLSVM = function (predictionsFilePath = "", verbose = FALSE) {
+		p = NextMethod (predictionsFilePath = predictionsFilePath, verbose = verbose)
+		return (p)
 	}
 	
+findSoftware.LLSVM = function (x, searchPath = "./", verbose = FALSE) {
 
-# same method as for BSGD
-findSoftware.Pegasos = function (x, searchPath = "./", verbose = FALSE) {
-		x = findSoftware.BSGD (x, searchPath, verbose)
+		if (verbose == TRUE) {
+			BBmisc::messagef("    LLSVM Object: Executing search for software for %s", x$method)
+		}
+		
+		trainBinaryPattern = "^la_rank_learn$"
+		trainBinaryOutputPattern = 'la_rank_learn .options. training_set_file model_file'
+		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
+
+		# TODO: check for empty path+handling
+		
+		if (verbose == TRUE) {
+			BBmisc::messagef("--> Found train binary at %s", binaryPath) 
+		}
+		x$trainBinaryPath = binaryPath
+
+
+		testBinaryPattern = "^la_rank_classify$"
+		testBinaryOutputPattern = 'la_rank_classify .options. testing_set_file model_file'
+
+		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
+		
+		# TODO: check for empty path+handling
+
+		if (verbose == TRUE) {
+			BBmisc::messagef("--> Found test binary at %s", binaryPath) 
+		}
+		x$testBinaryPath = binaryPath
+
 		return(x)
 	}
-	
-
