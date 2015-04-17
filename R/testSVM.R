@@ -46,6 +46,9 @@
 # #examples
 # 	testSVM(method = 'LIBSVM', testDataFile = './data/australian.test') 
 #'
+#
+# NOTE: make sure the modelFile is a character string and not a factor! else you might strange modelfile arguments.
+# If no
 
 testSVM = function(
 	method = NULL,
@@ -60,6 +63,7 @@ testSVM = function(
 	modelFile = NULL,
 
 	# prediction
+	readPredictions = FALSE,
 	predictionsFile = NULL,
 	
 	# rest
@@ -137,12 +141,13 @@ testSVM = function(
 			BBmisc::messagef("  Writing model in memory to disk as %s", modelFile)
 		
 		writeModel (SVMObject, model = model, modelFile = modelFile, verbose = verbose)
+	} else {
+		if (verbose == TRUE)
+			BBmisc::messagef("  Reading model from file %s", modelFile)
 	}
 
-	# check if we need to re-read the predictions at the end
-	readPredictions = FALSE
+	# check if we need to create a temporary file
 	if (is.null(predictionsFile) == TRUE) {
-		readPredictions = TRUE
 		predictionsFile = tempfile()
 	}
 	
@@ -152,6 +157,10 @@ testSVM = function(
 		modelFile = modelFile, 
 		predictionsFile = predictionsFile,
 		...)
+    
+    if (verbose == TRUE) {
+		BBmisc::messagef("  Generated test arguments %s", args)
+	}
     
 	testTime = microbenchmark::microbenchmark(s <- system3(testBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
     
@@ -164,7 +173,8 @@ testSVM = function(
 		
 	# if user did not specify prediction file, we will read them back
 	if (readPredictions == TRUE) {
-		predictions = readPredictions (SVMObject, predictionsFile = predictionsFile, verbose = verbose)
+		# we turn off verbose here, in order not to clutter screen
+		predictions = readPredictions (SVMObject, predictionsFile = predictionsFile, verbose = FALSE)
 		results[["predictions"]] = predictions
 	}
 	
