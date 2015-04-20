@@ -131,6 +131,17 @@ trainSVM = function(
 		extraParameter = extraParameter,
 		...)
 
+	# now for some 'magic'.
+	# some solver might create their own training script,
+	# e.g. when calling matlab or similar.
+	# in this case the argument list will have an attribute
+	# called dynamicBinary. If this exists, it will override
+	# the software path as we know it.
+	
+	if (!is.null(attributes(args)$dynamicBinary)) {
+		trainBinaryPath = attributes(args)$dynamicBinary
+	}
+		
 	# if timeout is specified, we HARD kill the process. 
 	# else things like SVMperf may run to the cluster walltime
 	# instead of stopping at the walltime specified

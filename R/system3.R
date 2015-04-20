@@ -34,7 +34,7 @@ system3 <- function (binPath, args, verbose = FALSE)
 		BBmisc::messagef ("%s %s", binPath, paste(args, collapse=" "))
 	}
 
-	s = BBmisc::system3(binPath, args, stop.on.exit.code = FALSE, stdout = TRUE)
+	s = BBmisc::system3(binPath, args, stop.on.exit.code = FALSE, stderr = TRUE, stdout = TRUE)
 
 	if (verbose == TRUE) {
 		BBmisc::messagef ("----- Output:")
