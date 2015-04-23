@@ -19,17 +19,27 @@
 # All negative use is prohibited.
 #
 
+#library (SVMBridge)
+	library(devtools)
+	load_all (".")
+	document(".")
+
+		
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
+
+
+
+# first check read data function
+readSparseData ("tests/data/australian.test")
+S = readSparseData (filename = "tests/data/australian.test")
+print(S)
+
+writeSparseData (S$x, S$y, "./tmp/test.sparse.data")
+writeSparseData (x = S$x, y = S$y,  filename = "./tmp/test.sparse.data")
 
 
 for(solver in char_vec)
 {
-
-	#library (SVMBridge)
-		library(devtools)
-		load_all (".")
-
-		
 	# as the libary already loads default wrappers this works
 		addSVMPackage (method = solver, verbose = FALSE)
 		findSVMSoftware (solver, searchPath = "../svm_large_data/software/", verbose = TRUE)

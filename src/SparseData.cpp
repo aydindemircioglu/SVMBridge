@@ -27,23 +27,21 @@
 
 
 using namespace std;
-
-
-
-
 using namespace Rcpp;
 
 
-
-RcppExport SEXP readSparseData (SEXP svmParameters) {
+//' @export
+// [[Rcpp::export]] 
+RcppExport SEXP readSparseData (SEXP filename, SEXP verbose = false) {
 	
 	return R_NilValue;
 }
 
 
 
-
-RcppExport SEXP writeSparseData (SEXP x, SEXP y, SEXP svmParameters) {
+//' @export
+// [[Rcpp::export]] 
+RcppExport SEXP writeSparseData (SEXP x, SEXP y, SEXP filename, SEXP verbose = false) {
 	
 	return R_NilValue;
 }
