@@ -1,0 +1,30 @@
+# -*- mode: Makefile -*-
+#
+# SwarmSVM -- A collection of SVM solvesr.
+#
+# Copyright (C) 2015  Aydin Demircioglu, aydin.demircioglu /at/ ini.rub.de
+#
+# This file is part of the SwarmSVM library for GNU R.
+#
+
+RCPP_LDFLAGS	= `Rscript -e 'Rcpp:::LdFlags()'`
+
+BIN		= SVMBridge.dll
+CXXFLAGS	= -I$(RHOME)/include -I$(RHOME)/library/Rcpp/include -I. -I$(SHARK_ROOT)/include -Wall -O2 
+
+SOURCES		:= $(wildcard *.cpp)
+LINKOBJ		:= $(SOURCES:.cpp=.o)
+
+DLLLIBS		= -s -L$(RHOME)/bin -lR $(RCPP_LDFLAGS)
+
+
+.PHONY: 	all clean
+
+all: 		SVMBridge.dll
+
+clean:
+		rm -f $(LINKOBJ) $(BIN)
+
+$(BIN): 	$(LINKOBJ)
+		$(CXX) -shared $(LINKOBJ) $(DLLLIBS) -o $(BIN)
+
