@@ -30,13 +30,29 @@ char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LL
 
 
 # first check read data function
-readSparseData ("tests/data/australian.test")
-S = readSparseData (filename = "tests/data/australian.test")
+S = readSparseData (filename = "tests/data/australian.train")
+S = readSparseData (filename = "tests/data/australian.train", verbose = false)
+print(S)
+writeSparseData (S$x, S$y, filename = "./tmp/test.sparse.data")
+S = readSparseData (filename = "./tmp/test.sparse.data")
+writeSparseData (S$x, S$y, filename = "./tmp/test.sparse2.data")
+
+
+S = readSparseData (filename = "tests/data/a0", zeroBased = TRUE)
+print(S)
+S = readSparseData (filename = "tests/data/a0", zeroBased = FALSE)
+print(S)
+S = readSparseData (filename = "tests/data/a1", zeroBased = TRUE)
+print(S)
+S = readSparseData (filename = "tests/data/a1", zeroBased = FALSE)
 print(S)
 
-writeSparseData (S$x, S$y, "./tmp/test.sparse.data")
-writeSparseData (x = S$x, y = S$y,  filename = "./tmp/test.sparse.data")
 
+writeSparseData (S$x, S$y, "./tmp/test.sparse.data", zeroBased = TRUE)
+S = readSparseData (filename = "./tmp/test.sparse.data")
+writeSparseData (S$x, S$y, "./tmp/test.sparse2.data")
+
+die()
 
 for(solver in char_vec)
 {

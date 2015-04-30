@@ -6,28 +6,27 @@
 using namespace Rcpp;
 
 // readSparseData
-RcppExport SEXP readSparseData(SEXP filename, SEXP verbose);
-RcppExport SEXP SVMBridge_readSparseData(SEXP filenameSEXP, SEXP verboseSEXP) {
+RcppExport SEXP readSparseData(SEXP filename, SEXP parameter);
+RcppExport SEXP SVMBridge_readSparseData(SEXP filenameSEXP, SEXP parameterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< SEXP >::type filename(filenameSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type verbose(verboseSEXP);
-    __result = Rcpp::wrap(readSparseData(filename, verbose));
+    Rcpp::traits::input_parameter< SEXP >::type parameter(parameterSEXP);
+    __result = Rcpp::wrap(readSparseData(filename, parameter));
     return __result;
 END_RCPP
 }
 // writeSparseData
-RcppExport SEXP writeSparseData(SEXP x, SEXP y, SEXP filename, SEXP verbose);
-RcppExport SEXP SVMBridge_writeSparseData(SEXP xSEXP, SEXP ySEXP, SEXP filenameSEXP, SEXP verboseSEXP) {
+RcppExport SEXP writeSparseData(SEXP x, SEXP y, SEXP parameter);
+RcppExport SEXP SVMBridge_writeSparseData(SEXP xSEXP, SEXP ySEXP, SEXP parameterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
-    Rcpp::traits::input_parameter< SEXP >::type filename(filenameSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type verbose(verboseSEXP);
-    __result = Rcpp::wrap(writeSparseData(x, y, filename, verbose));
+    Rcpp::traits::input_parameter< SEXP >::type parameter(parameterSEXP);
+    __result = Rcpp::wrap(writeSparseData(x, y, parameter));
     return __result;
 END_RCPP
 }
