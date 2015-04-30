@@ -42,7 +42,6 @@ static char *line = NULL;
 static int n=0;
 static int m=0;
 static int max_line_len;
-static char buffer [33];
 
 static char* readline(FILE *input)
 {
@@ -61,9 +60,6 @@ static char* readline(FILE *input)
 	}
 	return line;
 }
-
-
-
 
 
 //' @export
@@ -91,6 +87,8 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 		int max_index = 0;
 		int inst_max_index = 0;
 		int i = 0;
+		int l = 0;
+		int featureDimension = 0;
 		FILE *fp = fopen(_filename.c_str(),"r");
 		char *endptr = NULL;
 		char *idx = NULL;
@@ -99,32 +97,20 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 		char *p = NULL;
 		stringstream s;
 		
-		if(fp == NULL)
-		{
+		if(fp == NULL){
 			s << "Can't open input file " << _filename;
 			::Rf_error(s.str().c_str());
 			return R_NilValue;
 		}
-
-		int l = 0;
-		int featureDimension = 0;
 		
 		max_line_len = 1024;
 		line = Malloc(char,max_line_len);
-		index = 0;
-		max_index = 0;
 		
-// 		if(readline(fp) != NULL)
-// 		{
-// 			p = strtok(line," \t\n"); // label
-// 			rewind(fp);
-// 		}
-		
+		//Get highest feature dimension and number of lines of chosen dataset
 		while(readline(fp)!=NULL)  //global variable line updated
 		{
-			p = strtok(line," \t"); // label
+			p = strtok(line," \t"); 
 			inst_max_index = -1;
-			//label = strtok(line," \t");
 			strtod(p,&endptr);
 			
 			if(p == NULL) // empty line
@@ -132,17 +118,15 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 			
 			if(endptr == p || *endptr != '\0')
 				break;
-			
-			// features
+		
 			while(1)
 			{
 				index = 0;
 				idx = strtok(NULL,":");
 				p = strtok(NULL," \t"); 
 				
-				if(p == NULL || *p == '\n') {  //CURRENT FAILURE
+				if(p == NULL || *p == '\n')  //CURRENT FAILURE
 					break;
-				}
 				
 				errno = 0;
 				index = (int) strtol(idx,&endptr,10); 
@@ -156,7 +140,7 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 					inst_max_index = index;
 				
 				errno = 0;
-				int c = strtod(p,&endptr); // x:y .. we dont need the right side for this step, which is defined by p
+				strtod(p,&endptr); 
 				
 				if(endptr == p || errno != 0 || (*endptr != '\0' && !isspace(*endptr))){
 					s << "Input Error" ;
@@ -164,31 +148,25 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 					return R_NilValue;
 				}
 				
-				
 				if (index > max_index)
 					max_index = index;
-				
 			}
 			++l;
 		}
 		rewind(fp);
 		
-		n=l;
-		m=max_index;
-		DEBUG printf("Max_Index: %d \n", max_index); 
 		featureDimension = max_index;
-		sprintf(buffer, "%d", max_index);
+		n=l; //set global variable n for function writeSparseData
+		m=max_index; //set global variable m for function writeSparseData
 		
 		if (_verbose == true) 
 			printf("Found data dimensions: %d x %d\n", l, featureDimension);
 
-		
-		// resize
-		//line = Malloc(char,max_line_len);
-		rewind(fp);
 		Rcpp::NumericMatrix xR(l,featureDimension);
 		Rcpp::NumericVector yR(l);
 		endptr = NULL;
+		
+		//Fill NumericMatrix xR, NumericVector yR
 		for (int i=0; i<l; i++)
 		{
 			inst_max_index = -1; 
@@ -202,7 +180,6 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 			}
 			
 			yR[i] = strtod(label, &endptr);
-			DEBUG printf("yR[%d] = %f\n", i, yR[i]);
 			if(endptr == label || *endptr != '\0'){
 					s << "Error in endptr " ;
 					::Rf_error(s.str().c_str());
@@ -217,10 +194,9 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 					break;
 		
 				errno = 0;
-				index = (int) strtol(idx,&endptr,10); 
+				index = (int) strtol(idx,&endptr,10); //errno may be updated in this step
 				
-				if(endptr == idx || errno != 0 || *endptr != '\0' || index <= inst_max_index)
-				{
+				if(endptr == idx || errno != 0 || *endptr != '\0' || index <= inst_max_index){
 					s << "Error in endptr " ;
 					::Rf_error(s.str().c_str());
 					return R_NilValue;
@@ -229,11 +205,9 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 					inst_max_index = index;
 
 				errno = 0;
-				xR(i, index - correction) = strtod(val,&endptr);
-				DEBUG printf("xR[%d, %d] = %f\n", i, index, xR(i, index));
+				xR(i, index - correction) = strtod(val,&endptr); //errno may be updated in this step
 				
-				if(endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr)))
-				{
+				if(endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr))){
 					s << "Error in endptr " ;
 					::Rf_error(s.str().c_str());
 					return R_NilValue;
@@ -241,13 +215,11 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 			}
 			if(inst_max_index > max_index)
 				max_index = inst_max_index;
-			
-			
 		}
+		
 		fclose(fp);
 		free(line);
 		Rcpp::List rl = Rcpp::List::create (Rcpp::Named ("X", xR), Rcpp::Named("Y", yR) );
-		
 		return (rl);
 	}	
 	
@@ -256,10 +228,7 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 		printf("Error: %d", e);
 		exit(1);
 	}
-	printf("Done Reading");
 } 
-
-
 
 
 //' @export
@@ -271,14 +240,17 @@ RcppExport SEXP writeSparseData (SEXP x, SEXP y, SEXP parameter) {
 		stringstream s;
 
 		Rcpp::List rparam(parameter);
+		
 		bool _verbose = false;
 		if (rparam.containsElementNamed("verbose") == true) {
 			_verbose = Rcpp::as<bool>(rparam["verbose"]);
 		} 
+		
 		bool _zeroBased = false;
 		if (rparam.containsElementNamed("zeroBased") == true) {
 			_zeroBased = Rcpp::as<bool>(rparam["zeroBased"]);
 		}
+		
 		if (rparam.containsElementNamed("filename") == false) {
 			s << "Please specify a filename." ;
 			::Rf_error(s.str().c_str());
@@ -309,8 +281,6 @@ RcppExport SEXP writeSparseData (SEXP x, SEXP y, SEXP parameter) {
 			}
 			fs << "\n";
 		}
-		
-		DEBUG printf("Done Writing");
 		fs.close();
 	}
 	catch(int e)
