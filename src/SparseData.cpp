@@ -42,7 +42,6 @@ static char *line = NULL;
 static int n=0;
 static int m=0;
 static int max_line_len;
-static char buffer [33];
 
 static char* readline(FILE *input)
 {
@@ -63,9 +62,6 @@ static char* readline(FILE *input)
 }
 
 
-
-
-
 //' @export
 // [[Rcpp::export]] 
 List readSparseData (std::string filename, bool verbose = false, bool zeroBased = false) {
@@ -81,7 +77,11 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 		int max_index = 0;
 		int inst_max_index = 0;
 		int i = 0;
+
+		int l = 0;
+		int featureDimension = 0;
 		FILE *fp = fopen(filename.c_str(),"r");
+
 		char *endptr = NULL;
 		char *idx = NULL;
 		char *val = NULL;
@@ -89,32 +89,20 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 		char *p = NULL;
 		stringstream s;
 		
-		if(fp == NULL)
-		{
+		if(fp == NULL){
 			s << "Can't open input file " << filename;
 			::Rf_error(s.str().c_str());
 			return R_NilValue;
 		}
-
-		int l = 0;
-		int featureDimension = 0;
 		
 		max_line_len = 1024;
 		line = Malloc(char,max_line_len);
-		index = 0;
-		max_index = 0;
 		
-// 		if(readline(fp) != NULL)
-// 		{
-// 			p = strtok(line," \t\n"); // label
-// 			rewind(fp);
-// 		}
-		
+		//Get highest feature dimension and number of lines of chosen dataset
 		while(readline(fp)!=NULL)  //global variable line updated
 		{
-			p = strtok(line," \t"); // label
+			p = strtok(line," \t"); 
 			inst_max_index = -1;
-			//label = strtok(line," \t");
 			strtod(p,&endptr);
 			
 			if(p == NULL) // empty line
@@ -122,17 +110,15 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 			
 			if(endptr == p || *endptr != '\0')
 				break;
-			
-			// features
+		
 			while(1)
 			{
 				index = 0;
 				idx = strtok(NULL,":");
 				p = strtok(NULL," \t"); 
 				
-				if(p == NULL || *p == '\n') {  //CURRENT FAILURE
+				if(p == NULL || *p == '\n')  //CURRENT FAILURE
 					break;
-				}
 				
 				errno = 0;
 				index = (int) strtol(idx,&endptr,10); 
@@ -146,7 +132,7 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 					inst_max_index = index;
 				
 				errno = 0;
-				int c = strtod(p,&endptr); // x:y .. we dont need the right side for this step, which is defined by p
+				strtod(p,&endptr); 
 				
 				if(endptr == p || errno != 0 || (*endptr != '\0' && !isspace(*endptr))){
 					s << "Input Error" ;
@@ -154,31 +140,27 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 					return R_NilValue;
 				}
 				
-				
 				if (index > max_index)
 					max_index = index;
-				
 			}
 			++l;
 		}
 		rewind(fp);
 		
-		n=l;
-		m=max_index;
 		DEBUG printf("Max_Index: %d \n", max_index); 
 		featureDimension = max_index + 1 - correction;
-		sprintf(buffer, "%d", max_index);
+
+		n=l; //set global variable n for function writeSparseData
+		m=max_index; //set global variable m for function writeSparseData
 		
 		if (verbose == true) 
 			printf("Found data dimensions: %d x %d\n", l, featureDimension);
 
-		
-		// resize
-		//line = Malloc(char,max_line_len);
-		rewind(fp);
 		Rcpp::NumericMatrix xR(l,featureDimension);
 		Rcpp::NumericVector yR(l);
 		endptr = NULL;
+		
+		//Fill NumericMatrix xR, NumericVector yR
 		for (int i=0; i<l; i++)
 		{
 			inst_max_index = -1; 
@@ -192,7 +174,6 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 			}
 			
 			yR[i] = strtod(label, &endptr);
-			DEBUG printf("yR[%d] = %f\n", i, yR[i]);
 			if(endptr == label || *endptr != '\0'){
 					s << "Error in endptr " ;
 					::Rf_error(s.str().c_str());
@@ -207,10 +188,9 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 					break;
 		
 				errno = 0;
-				index = (int) strtol(idx,&endptr,10); 
+				index = (int) strtol(idx,&endptr,10); //errno may be updated in this step
 				
-				if(endptr == idx || errno != 0 || *endptr != '\0' || index <= inst_max_index)
-				{
+				if(endptr == idx || errno != 0 || *endptr != '\0' || index <= inst_max_index){
 					s << "Error in endptr " ;
 					::Rf_error(s.str().c_str());
 					return R_NilValue;
@@ -219,11 +199,9 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 					inst_max_index = index;
 
 				errno = 0;
-				xR(i, index - correction) = strtod(val,&endptr);
-				DEBUG printf("xR[%d, %d] = %f\n", i, index, xR(i, index));
+				xR(i, index - correction) = strtod(val,&endptr); //errno may be updated in this step
 				
-				if(endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr)))
-				{
+				if(endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr))){
 					s << "Error in endptr " ;
 					::Rf_error(s.str().c_str());
 					return R_NilValue;
@@ -231,13 +209,11 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 			}
 			if(inst_max_index > max_index)
 				max_index = inst_max_index;
-			
-			
 		}
+		
 		fclose(fp);
 		free(line);
 		Rcpp::List rl = Rcpp::List::create (Rcpp::Named ("X", xR), Rcpp::Named("Y", yR) );
-		
 		return (rl);
 	}	
 	
@@ -246,10 +222,7 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 		printf("Error: %d", e);
 		exit(1);
 	}
-	printf("Done Reading");
 } 
-
-
 
 
 
@@ -278,8 +251,6 @@ List writeSparseData (std::string filename, NumericMatrix x, NumericVector y, bo
 			}
 			fs << "\n";
 		}
-		
-		DEBUG printf("Done Writing");
 		fs.close();
 	}
 	catch(int e)
