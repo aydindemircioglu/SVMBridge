@@ -23,24 +23,36 @@
 	library(devtools)
 	load_all (".")
 	document(".")
+	
+	# is done by document/loadall anyway?
+	library(Rcpp)
+	compileAttributes()
 
 		
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
 
 
 
+
 # first check read data function
-S = readSparseData (filename = "tests/data/australian.train")
-S = readSparseData (filename = "tests/data/australian.train", verbose = false)
+S = readSparseData ("tests/data/australian.train")
+S = readSparseData ("tests/data/australian.train", verbose = FALSE)
+S = readSparseData (filename = "tests/data/australian.train", verbose = FALSE)
 print(S)
-writeSparseData (S$x, S$y, filename = "./tmp/test.sparse.data")
-S = readSparseData (filename = "./tmp/test.sparse.data")
-writeSparseData (S$x, S$y, filename = "./tmp/test.sparse2.data")
-
-
-S = readSparseData (filename = "tests/data/a0", zeroBased = TRUE)
+S = readSparseData (filename = "tests/data/australian.train", verbose = FALSE, zeroBased = TRUE)
 print(S)
-S = readSparseData (filename = "tests/data/a0", zeroBased = FALSE)
+
+print ("CYCLE")
+writeSparseData ( "./tmp/test.sparse.data", S$X,  S$Y, verbose = TRUE, zeroBased = TRUE)
+S = readSparseData ("./tmp/test.sparse.data", zeroBased = TRUE)
+print(S)
+writeSparseData (S$X, S$Y, filename = "./tmp/test.sparse2.data", verbose = TRUE)
+
+print ("TEST")
+
+S = readSparseData ("tests/data/a0", zeroBased = TRUE, verbose = TRUE)
+print(S)
+S = readSparseData ("tests/data/a0", zeroBased = FALSE, verbose = FALSE)
 print(S)
 S = readSparseData (filename = "tests/data/a1", zeroBased = TRUE)
 print(S)

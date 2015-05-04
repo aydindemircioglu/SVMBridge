@@ -6,27 +6,30 @@
 using namespace Rcpp;
 
 // readSparseData
-RcppExport SEXP readSparseData(SEXP filename, SEXP parameter);
-RcppExport SEXP SVMBridge_readSparseData(SEXP filenameSEXP, SEXP parameterSEXP) {
+List readSparseData(std::string filename, bool verbose, bool zeroBased);
+RcppExport SEXP SVMBridge_readSparseData(SEXP filenameSEXP, SEXP verboseSEXP, SEXP zeroBasedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< SEXP >::type filename(filenameSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type parameter(parameterSEXP);
-    __result = Rcpp::wrap(readSparseData(filename, parameter));
+    Rcpp::traits::input_parameter< std::string >::type filename(filenameSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    Rcpp::traits::input_parameter< bool >::type zeroBased(zeroBasedSEXP);
+    __result = Rcpp::wrap(readSparseData(filename, verbose, zeroBased));
     return __result;
 END_RCPP
 }
 // writeSparseData
-RcppExport SEXP writeSparseData(SEXP x, SEXP y, SEXP parameter);
-RcppExport SEXP SVMBridge_writeSparseData(SEXP xSEXP, SEXP ySEXP, SEXP parameterSEXP) {
+List writeSparseData(std::string filename, NumericMatrix x, NumericVector y, bool verbose, bool zeroBased);
+RcppExport SEXP SVMBridge_writeSparseData(SEXP filenameSEXP, SEXP xSEXP, SEXP ySEXP, SEXP verboseSEXP, SEXP zeroBasedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
-    Rcpp::traits::input_parameter< SEXP >::type parameter(parameterSEXP);
-    __result = Rcpp::wrap(writeSparseData(x, y, parameter));
+    Rcpp::traits::input_parameter< std::string >::type filename(filenameSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    Rcpp::traits::input_parameter< bool >::type zeroBased(zeroBasedSEXP);
+    __result = Rcpp::wrap(writeSparseData(filename, x, y, verbose, zeroBased));
     return __result;
 END_RCPP
 }

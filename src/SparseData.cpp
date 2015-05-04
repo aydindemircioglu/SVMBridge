@@ -68,22 +68,12 @@ static char* readline(FILE *input)
 
 //' @export
 // [[Rcpp::export]] 
-RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
+List readSparseData (std::string filename, bool verbose = false, bool zeroBased = false) {
 	try
 	{
-		Rcpp::List rparam(parameter);
-		bool _verbose = false;
-		if (rparam.containsElementNamed("verbose") == true) {
-			_verbose = Rcpp::as<bool>(rparam["verbose"]);
-		} 
-		bool _zeroBased = false;
-		if (rparam.containsElementNamed("zeroBased") == true) {
-			_zeroBased = Rcpp::as<bool>(rparam["zeroBased"]);
-		}
 		
-		std::string _filename = Rcpp::as<string>(filename);
 		int correction = 1;
-		if (_zeroBased == true)
+		if (zeroBased == true)
 			correction = 0;
 		
 		// determine size
@@ -91,7 +81,7 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 		int max_index = 0;
 		int inst_max_index = 0;
 		int i = 0;
-		FILE *fp = fopen(_filename.c_str(),"r");
+		FILE *fp = fopen(filename.c_str(),"r");
 		char *endptr = NULL;
 		char *idx = NULL;
 		char *val = NULL;
@@ -101,7 +91,7 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 		
 		if(fp == NULL)
 		{
-			s << "Can't open input file " << _filename;
+			s << "Can't open input file " << filename;
 			::Rf_error(s.str().c_str());
 			return R_NilValue;
 		}
@@ -176,10 +166,10 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 		n=l;
 		m=max_index;
 		DEBUG printf("Max_Index: %d \n", max_index); 
-		featureDimension = max_index;
+		featureDimension = max_index + 1 - correction;
 		sprintf(buffer, "%d", max_index);
 		
-		if (_verbose == true) 
+		if (verbose == true) 
 			printf("Found data dimensions: %d x %d\n", l, featureDimension);
 
 		
@@ -262,50 +252,29 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 
 
 
+
 //' @export
 // [[Rcpp::export]] 
-RcppExport SEXP writeSparseData (SEXP x, SEXP y, SEXP parameter) {
+List writeSparseData (std::string filename, NumericMatrix x, NumericVector y, bool verbose = false, bool zeroBased = false) {
 	
 	try
 	{
 		stringstream s;
 
-		Rcpp::List rparam(parameter);
-		bool _verbose = false;
-		if (rparam.containsElementNamed("verbose") == true) {
-			_verbose = Rcpp::as<bool>(rparam["verbose"]);
-		} 
-		bool _zeroBased = false;
-		if (rparam.containsElementNamed("zeroBased") == true) {
-			_zeroBased = Rcpp::as<bool>(rparam["zeroBased"]);
-		}
-		if (rparam.containsElementNamed("filename") == false) {
-			s << "Please specify a filename." ;
-			::Rf_error(s.str().c_str());
-			return R_NilValue;
-		}
-		
-		printf("a\n");
-		std::string _filename = Rcpp::as<string>(rparam["filename"]);
-		printf("b\n");
-		Rcpp::NumericMatrix xR = Rcpp::NumericMatrix(x);
-		printf("c\n");
-		Rcpp::NumericVector yR = Rcpp::NumericVector(y);
-		printf("d\n");
 		std::fstream fs;
-		fs.open(_filename.c_str(), std::fstream::in | std::fstream::out |std::fstream::trunc);
+		fs.open(filename.c_str(), std::fstream::in | std::fstream::out |std::fstream::trunc);
 		
 		int correction = 0;
-		if (_zeroBased == false) {
+		if (zeroBased == false) {
 			correction = 1;
 		}
 
 		for(int i=0;i<n;i++) 
 		{
-			fs << yR(i) << " ";
+			fs << y(i) << " ";
 			for(int j=0;j<m;j++)
 			{
-				fs << j + correction << ":" << xR(i,j) << " ";
+				fs << j + correction << ":" << x(i,j) << " ";
 			}
 			fs << "\n";
 		}

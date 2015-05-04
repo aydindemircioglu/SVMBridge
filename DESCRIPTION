@@ -11,7 +11,7 @@ Maintainer: Aydin Demircioglu <aydin.demircioglu@ini.rub.de>
 License: LGPL-3 + file LICENSE
 URL: https://github.com/aydindemircioglu/svmBridge
 BugReports: https://github.com/aydindemircioglu/svmBridge
-Depends:
+Depends: 
     R (>= 3.0.0),
     BBmisc (>= 1.7),
     stringr (>= 0.6.2),
@@ -23,8 +23,9 @@ Depends:
     SparseM (>= 1.05),
     Matrix
 LinkingTo: Rcpp
-Suggests:
+Suggests: 
     testthat
 LazyData: true
 Version: 1.0
 Date: NA
+Imports: Rcpp

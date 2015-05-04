@@ -2,12 +2,12 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' @export
-readSparseData <- function(filename, parameter) {
-    .Call('SVMBridge_readSparseData', PACKAGE = 'SVMBridge', filename, parameter)
+readSparseData <- function(filename, verbose = FALSE, zeroBased = FALSE) {
+    .Call('SVMBridge_readSparseData', PACKAGE = 'SVMBridge', filename, verbose, zeroBased)
 }
 
 #' @export
-writeSparseData <- function(x, y, parameter) {
-    .Call('SVMBridge_writeSparseData', PACKAGE = 'SVMBridge', x, y, parameter)
+writeSparseData <- function(filename, x, y, verbose = FALSE, zeroBased = FALSE) {
+    .Call('SVMBridge_writeSparseData', PACKAGE = 'SVMBridge', filename, x, y, verbose, zeroBased)
 }
 

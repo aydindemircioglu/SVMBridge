@@ -18,7 +18,11 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
- 
+
+
+#' @useDynLib SVMBridge
+#' @importFrom Rcpp sourceCpp
+
  
 # create own environment
 SVMBridgeEnv = new.env(parent = emptyenv())
