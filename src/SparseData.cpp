@@ -43,6 +43,9 @@ static int n=0;
 static int m=0;
 static int max_line_len;
 
+
+// internal helper function to read a line into global variable
+//
 static char* readline(FILE *input)
 {
 	int len;
@@ -62,12 +65,21 @@ static char* readline(FILE *input)
 }
 
 
+
+//' @param 	filename		the filename of the data in sparse file format
+//' @param		verbose		show verbose output?
+//' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
+//' @keywords	IO 
+//' @note		this routine is nearly a 1:1 adoptation from the LIBSVM original code.
+//' @return		the data is read into an R matrix and an R vector, containing the data
+//'					and the labels. note, that these are not in sparse format, but are dense.
+//' @examples	
+//'					readSpareData ("./australian.data")
 //' @export
 // [[Rcpp::export]] 
 List readSparseData (std::string filename, bool verbose = false, bool zeroBased = false) {
 	try
-	{
-		
+	{	
 		int correction = 1;
 		if (zeroBased == true)
 			correction = 0;
@@ -226,9 +238,19 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 
 
 
+//' @param 	filename		the filename to write the given data to
+//' @param		verbose		show verbose output?
+//' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
+//' @note		labels can any numeric, they are not converted in any way.
+//' @keywords	IO 
+//' @return		NULL.
+//' @examples	
+//'	X = as.matrix(iris[,1:4])
+//'	Y = as.matrix(as.numeric(iris[,5]))
+//'	writeSparseData (X, Y, "./australian.data")
 //' @export
 // [[Rcpp::export]] 
-List writeSparseData (std::string filename, NumericMatrix x, NumericVector y, bool verbose = false, bool zeroBased = false) {
+List writeSparseData (std::string filename, NumericMatrix X, NumericVector Y, bool verbose = false, bool zeroBased = false) {
 	
 	try
 	{
@@ -242,12 +264,20 @@ List writeSparseData (std::string filename, NumericMatrix x, NumericVector y, bo
 			correction = 1;
 		}
 
+		// determine dimensions;
+		n = X.nrow();
+		m = X.ncol();
+		if (Y.size() != n) {
+			Rcout << "Error!\n";
+			// FIXME throw error
+		}
+		
 		for(int i=0;i<n;i++) 
 		{
-			fs << y(i) << " ";
+			fs << Y(i) << " ";
 			for(int j=0;j<m;j++)
 			{
-				fs << j + correction << ":" << x(i,j) << " ";
+				fs << j + correction << ":" << X(i,j) << " ";
 			}
 			fs << "\n";
 		}

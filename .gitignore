@@ -12,9 +12,9 @@ src/*.so
 *-swp
 **/tmp/**
 *.RData
-.Rhistory
 .Rcheck
 SVMBr*tar.gz
 *.Rcheck
 webpage/**
 *.R~
+inst/doc

@@ -20,15 +20,20 @@
 #
 
 #library (SVMBridge)
+	library(methods)
 	library(devtools)
 	load_all (".")
+	build_vignettes(".")
 	document(".")
 	
 	# is done by document/loadall anyway?
 	library(Rcpp)
 	compileAttributes()
 
-		
+	# run tests
+	devtools::test()
+#	devtools::check()
+	
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
 
 
