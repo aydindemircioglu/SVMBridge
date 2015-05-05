@@ -44,6 +44,14 @@ static int m=0;
 static int max_line_len;
 
 
+// TODOs: every X lines call Rcpp::checkUserInterrupt().
+// use Rcout ifnstead of cout, if applicable.
+// add .onUnload <- function (libpath) {
+// library.dynam.unload("mypackage", libpath)
+// } 
+// somewhere
+//
+
 // internal helper function to read a line into global variable
 //
 static char* readline(FILE *input)
@@ -65,7 +73,8 @@ static char* readline(FILE *input)
 }
 
 
-
+//' Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
+//'
 //' @param 	filename		the filename of the data in sparse file format
 //' @param		verbose		show verbose output?
 //' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
@@ -238,6 +247,8 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 
 
 
+//' Write given (dense) R matrix and R vector in sparse (LIBSVM) format to given file.
+//'
 //' @param 	filename		the filename to write the given data to
 //' @param		verbose		show verbose output?
 //' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?

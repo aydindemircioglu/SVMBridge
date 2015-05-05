@@ -1,5 +1,5 @@
 Package: SVMBridge
-Title: A bridge to integrate different SVM solvers into R
+Title: A Bridge to Integrate Different SVM Solvers into R
 Description: Different SVM solvers are commonly used, e.g. LIBSVM and SVMperf.
     Unfortunately, many of these do not come with an interface to R,
     and writing such an interface might be tedious. This package remedies the
@@ -30,5 +30,5 @@ Suggests:
     knitr
 LazyData: true
 Version: 1.0
-Date: NA
+Date: 2015-06-03
 VignetteBuilder: knitr

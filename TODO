@@ -4,5 +4,8 @@
 -tests
 -checkmate?
 -move demo to test_src.R
+-enable travis/readthedocs and other stuff on github.
+
 
 https://stat545-ubc.github.io/packages02_activity.html
+http://r-pkgs.had.co.nz/src.html

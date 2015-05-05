@@ -2,6 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{readSparseData}
 \alias{readSparseData}
+\title{Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.}
 \usage{
 readSparseData(filename, verbose = FALSE, zeroBased = FALSE)
 }
@@ -15,6 +16,9 @@ readSparseData(filename, verbose = FALSE, zeroBased = FALSE)
 \value{
 the data is read into an R matrix and an R vector, containing the data
 					and the labels. note, that these are not in sparse format, but are dense.
+}
+\description{
+Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
 }
 \note{
 this routine is nearly a 1:1 adoptation from the LIBSVM original code.

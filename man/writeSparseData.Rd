@@ -2,6 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{writeSparseData}
 \alias{writeSparseData}
+\title{Write given (dense) R matrix and R vector in sparse (LIBSVM) format to given file.}
 \usage{
 writeSparseData(filename, X, Y, verbose = FALSE, zeroBased = FALSE)
 }
@@ -15,13 +16,16 @@ writeSparseData(filename, X, Y, verbose = FALSE, zeroBased = FALSE)
 \value{
 NULL.
 }
+\description{
+Write given (dense) R matrix and R vector in sparse (LIBSVM) format to given file.
+}
 \note{
 labels can any numeric, they are not converted in any way.
 }
 \examples{
 X = as.matrix(iris[,1:4])
 	Y = as.matrix(as.numeric(iris[,5]))
-	writeSpareData (X, Y, "./australian.data")
+	writeSparseData (X, Y, "./australian.data")
 }
 \keyword{IO}
 
