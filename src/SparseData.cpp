@@ -83,7 +83,7 @@ static char* readline(FILE *input)
 //' @return		the data is read into an R matrix and an R vector, containing the data
 //'					and the labels. note, that these are not in sparse format, but are dense.
 //' @examples	
-//'					readSpareData ("./australian.data")
+//'					#readSpareData ("./australian.data")
 //' @export
 // [[Rcpp::export]] 
 List readSparseData (std::string filename, bool verbose = false, bool zeroBased = false) {
@@ -256,9 +256,9 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 //' @keywords	IO 
 //' @return		NULL.
 //' @examples	
-//'	X = as.matrix(iris[,1:4])
-//'	Y = as.matrix(as.numeric(iris[,5]))
-//'	writeSparseData (X, Y, "./australian.data")
+//'	#X = as.matrix(iris[,1:4])
+//'	#Y = as.matrix(as.numeric(iris[,5]))
+//'	#writeSparseData (X, Y, "./australian.data")
 //' @export
 // [[Rcpp::export]] 
 List writeSparseData (std::string filename, NumericMatrix X, NumericVector Y, bool verbose = false, bool zeroBased = false) {

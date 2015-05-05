@@ -11,7 +11,7 @@
 #' @return		the data is read into an R matrix and an R vector, containing the data
 #'					and the labels. note, that these are not in sparse format, but are dense.
 #' @examples	
-#'					readSpareData ("./australian.data")
+#'					#readSpareData ("./australian.data")
 #' @export
 readSparseData <- function(filename, verbose = FALSE, zeroBased = FALSE) {
     .Call('SVMBridge_readSparseData', PACKAGE = 'SVMBridge', filename, verbose, zeroBased)
@@ -26,9 +26,9 @@ readSparseData <- function(filename, verbose = FALSE, zeroBased = FALSE) {
 #' @keywords	IO 
 #' @return		NULL.
 #' @examples	
-#'	X = as.matrix(iris[,1:4])
-#'	Y = as.matrix(as.numeric(iris[,5]))
-#'	writeSparseData (X, Y, "./australian.data")
+#'	#X = as.matrix(iris[,1:4])
+#'	#Y = as.matrix(as.numeric(iris[,5]))
+#'	#writeSparseData (X, Y, "./australian.data")
 #' @export
 writeSparseData <- function(filename, X, Y, verbose = FALSE, zeroBased = FALSE) {
     .Call('SVMBridge_writeSparseData', PACKAGE = 'SVMBridge', filename, X, Y, verbose, zeroBased)

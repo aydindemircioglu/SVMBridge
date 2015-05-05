@@ -33,7 +33,8 @@
 	# run tests
 	devtools::test()
 #	devtools::check()
-	
+# R CMD check ./SVMBridge_1.0.tar.gz
+
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
 
 

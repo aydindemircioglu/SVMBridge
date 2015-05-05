@@ -24,7 +24,7 @@ Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
 this routine is nearly a 1:1 adoptation from the LIBSVM original code.
 }
 \examples{
-readSpareData ("./australian.data")
+#readSpareData ("./australian.data")
 }
 \keyword{IO}
 
