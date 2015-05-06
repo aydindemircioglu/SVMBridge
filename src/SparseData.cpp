@@ -82,7 +82,6 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 		if (_zeroBased == true)
 			correction = 0;
 		
-		// determine size
 		int index = 0;
 		int max_index = 0;
 		int inst_max_index = 0;
@@ -106,7 +105,7 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 		max_line_len = 1024;
 		line = Malloc(char,max_line_len);
 		
-		//Get highest feature dimension and number of lines of chosen dataset
+		//determine size
 		while(readline(fp)!=NULL)  //global variable line updated
 		{
 			p = strtok(line," \t"); 
@@ -125,7 +124,7 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 				idx = strtok(NULL,":");
 				p = strtok(NULL," \t"); 
 				
-				if(p == NULL || *p == '\n')  //CURRENT FAILURE
+				if(p == NULL || *p == '\n') 
 					break;
 				
 				errno = 0;
@@ -147,7 +146,6 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 					::Rf_error(s.str().c_str());
 					return R_NilValue;
 				}
-				
 				if (index > max_index)
 					max_index = index;
 			}

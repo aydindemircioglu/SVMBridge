@@ -28,6 +28,8 @@
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
 
 
+readSparseData("tests/data/a0", zeroBased = FALSE)
+die()
 
 # first check read data function
 S = readSparseData (filename = "tests/data/australian.train")
