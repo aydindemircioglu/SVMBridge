@@ -1,30 +1,34 @@
 Package: SVMBridge
-Title: A bridge to integrate different SVM solvers into R
+Title: A Bridge to Integrate Different SVM Solvers into R
 Description: Different SVM solvers are commonly used, e.g. LIBSVM and SVMperf.
-    Unfortunately, many of these do not come with an direct interface to R,
-    and writing such an interface might be complicated. Instead, this package
-    helps with controlling different SVM solvers by interfacing with them via
-    command line in a transparent fashion.
-Authors@R: c( person ("Aydin", "Demircioglu", email = "aydin.demircioglu", role = c("aut", "cre")), 
-						  person ("Hanna", "Houphouet", email = "hanna.houphouet",  role = c("aut") ) )
+    Unfortunately, many of these do not come with an interface to R,
+    and writing such an interface might be tedious. This package remedies the
+    situation by providing predefined interfaces to many SVM solvers. 
+Authors@R: c( 
+    person ("Aydin", "Demircioglu", email = "aydin.demircioglu", role = c("aut", "cre")), 
+    person ("Hanna", "Houphouet", email = "hanna.houphouet",  role = c("aut") ) )
 Maintainer: Aydin Demircioglu <aydin.demircioglu@ini.rub.de>
 License: LGPL-3 + file LICENSE
 URL: https://github.com/aydindemircioglu/svmBridge
 BugReports: https://github.com/aydindemircioglu/svmBridge
-Depends:
+Depends: 
     R (>= 3.0.0),
+Imports: 
     BBmisc (>= 1.7),
     stringr (>= 0.6.2),
     plyr (>= 1.8.1),
-	Rcpp (>= 0.8.2.12),
-	microbenchmark (>= 1.3),
+    Rcpp (>= 0.8.2.12),
+    microbenchmark (>= 1.3),
     R.utils(>= 1.32.4),
     e1071 (>= 1.6),
     SparseM (>= 1.05),
     Matrix
-LinkingTo: Rcpp
-Suggests:
-    testthat
+LinkingTo: 
+    Rcpp
+Suggests: 
+    testthat,
+    knitr
 LazyData: true
 Version: 1.0
-Date: NA
+Date: 2015-06-03
+VignetteBuilder: knitr

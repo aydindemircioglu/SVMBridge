@@ -1,6 +1,5 @@
-doc
 ^makeR
-^clement
+staticdocs
 todo-files
 tools
 
@@ -18,8 +17,14 @@ todo.txt
 src/*.o
 src/*.so
 
+testinfo.RData
+
 ^.*\.Rproj$
 ^\.Rproj\.user$
 
 ^man-roxygen
 ^.editorconfig$
+
+^travis_wait_*.log
+^tmp
+^webpage

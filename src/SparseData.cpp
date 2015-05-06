@@ -43,6 +43,17 @@ static int n=0;
 static int m=0;
 static int max_line_len;
 
+
+// TODOs: every X lines call Rcpp::checkUserInterrupt().
+// use Rcout ifnstead of cout, if applicable.
+// add .onUnload <- function (libpath) {
+// library.dynam.unload("mypackage", libpath)
+// } 
+// somewhere
+//
+
+// internal helper function to read a line into global variable
+//
 static char* readline(FILE *input)
 {
 	int len;
@@ -62,33 +73,35 @@ static char* readline(FILE *input)
 }
 
 
+//' Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
+//'
+//' @param 	filename		the filename of the data in sparse file format
+//' @param		verbose		show verbose output?
+//' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
+//' @keywords	IO 
+//' @note		this routine is nearly a 1:1 adoptation from the LIBSVM original code.
+//' @return		the data is read into an R matrix and an R vector, containing the data
+//'					and the labels. note, that these are not in sparse format, but are dense.
+//' @examples	
+//'					#readSpareData ("./australian.data")
 //' @export
 // [[Rcpp::export]] 
-RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
+List readSparseData (std::string filename, bool verbose = false, bool zeroBased = false) {
 	try
-	{
-		Rcpp::List rparam(parameter);
-		bool _verbose = false;
-		if (rparam.containsElementNamed("verbose") == true) {
-			_verbose = Rcpp::as<bool>(rparam["verbose"]);
-		} 
-		bool _zeroBased = false;
-		if (rparam.containsElementNamed("zeroBased") == true) {
-			_zeroBased = Rcpp::as<bool>(rparam["zeroBased"]);
-		}
-		
-		std::string _filename = Rcpp::as<string>(filename);
+	{	
 		int correction = 1;
-		if (_zeroBased == true)
+		if (zeroBased == true)
 			correction = 0;
 		
 		int index = 0;
 		int max_index = 0;
 		int inst_max_index = 0;
 		int i = 0;
+
 		int l = 0;
 		int featureDimension = 0;
-		FILE *fp = fopen(_filename.c_str(),"r");
+		FILE *fp = fopen(filename.c_str(),"r");
+
 		char *endptr = NULL;
 		char *idx = NULL;
 		char *val = NULL;
@@ -97,7 +110,7 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 		stringstream s;
 		
 		if(fp == NULL){
-			s << "Can't open input file " << _filename;
+			s << "Can't open input file " << filename;
 			::Rf_error(s.str().c_str());
 			return R_NilValue;
 		}
@@ -153,11 +166,13 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 		}
 		rewind(fp);
 		
-		featureDimension = max_index;
+		DEBUG printf("Max_Index: %d \n", max_index); 
+		featureDimension = max_index + 1 - correction;
+
 		n=l; //set global variable n for function writeSparseData
 		m=max_index; //set global variable m for function writeSparseData
 		
-		if (_verbose == true) 
+		if (verbose == true) 
 			printf("Found data dimensions: %d x %d\n", l, featureDimension);
 
 		Rcpp::NumericMatrix xR(l,featureDimension);
@@ -229,53 +244,49 @@ RcppExport SEXP readSparseData (SEXP filename, SEXP parameter) {
 } 
 
 
+
+//' Write given (dense) R matrix and R vector in sparse (LIBSVM) format to given file.
+//'
+//' @param 	filename		the filename to write the given data to
+//' @param		verbose		show verbose output?
+//' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
+//' @note		labels can any numeric, they are not converted in any way.
+//' @keywords	IO 
+//' @return		NULL.
+//' @examples	
+//'	#X = as.matrix(iris[,1:4])
+//'	#Y = as.matrix(as.numeric(iris[,5]))
+//'	#writeSparseData (X, Y, "./australian.data")
 //' @export
 // [[Rcpp::export]] 
-RcppExport SEXP writeSparseData (SEXP x, SEXP y, SEXP parameter) {
+List writeSparseData (std::string filename, NumericMatrix X, NumericVector Y, bool verbose = false, bool zeroBased = false) {
 	
 	try
 	{
 		stringstream s;
 
-		Rcpp::List rparam(parameter);
-		
-		bool _verbose = false;
-		if (rparam.containsElementNamed("verbose") == true) {
-			_verbose = Rcpp::as<bool>(rparam["verbose"]);
-		} 
-		
-		bool _zeroBased = false;
-		if (rparam.containsElementNamed("zeroBased") == true) {
-			_zeroBased = Rcpp::as<bool>(rparam["zeroBased"]);
-		}
-		
-		if (rparam.containsElementNamed("filename") == false) {
-			s << "Please specify a filename." ;
-			::Rf_error(s.str().c_str());
-			return R_NilValue;
-		}
-		
-		printf("a\n");
-		std::string _filename = Rcpp::as<string>(rparam["filename"]);
-		printf("b\n");
-		Rcpp::NumericMatrix xR = Rcpp::NumericMatrix(x);
-		printf("c\n");
-		Rcpp::NumericVector yR = Rcpp::NumericVector(y);
-		printf("d\n");
 		std::fstream fs;
-		fs.open(_filename.c_str(), std::fstream::in | std::fstream::out |std::fstream::trunc);
+		fs.open(filename.c_str(), std::fstream::in | std::fstream::out |std::fstream::trunc);
 		
 		int correction = 0;
-		if (_zeroBased == false) {
+		if (zeroBased == false) {
 			correction = 1;
 		}
 
+		// determine dimensions;
+		n = X.nrow();
+		m = X.ncol();
+		if (Y.size() != n) {
+			Rcout << "Error!\n";
+			// FIXME throw error
+		}
+		
 		for(int i=0;i<n;i++) 
 		{
-			fs << yR(i) << " ";
+			fs << Y(i) << " ";
 			for(int j=0;j<m;j++)
 			{
-				fs << j + correction << ":" << xR(i,j) << " ";
+				fs << j + correction << ":" << X(i,j) << " ";
 			}
 			fs << "\n";
 		}
