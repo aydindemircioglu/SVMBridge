@@ -24,7 +24,11 @@ Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
 this routine is nearly a 1:1 adoptation from the LIBSVM original code.
 }
 \examples{
-#readSpareData ("./australian.data")
+\dontrun{
+		S = readSparseData("../../../SVMBridge/tests/data/australian.train")
+		print (paste("Data has", nrow(S$X), "points."))
+		print (paste("Labels are", unique(S$Y), "."))
+	}
 }
 \keyword{IO}
 

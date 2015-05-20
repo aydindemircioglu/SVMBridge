@@ -35,7 +35,7 @@
         ...) 
 	{
 		# count training examples
-		N = countLines(trainDataFile)
+		N = R.utils::countLines(trainDataFile)
 
 		biasParameter = "-b 0"
 		if (useBias == TRUE)

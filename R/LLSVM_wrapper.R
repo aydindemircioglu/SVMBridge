@@ -25,7 +25,7 @@ createTrainingArguments.LLSVM = function (x,
 								gamma = 1, 
 								rank = 128, ...) {
     # ---- compute general things
-    n = countLines(trainDataFile)
+    n = R.utils::countLines(trainDataFile)
 
     # ---- sanity checks
     if(n < rank)
@@ -149,7 +149,7 @@ readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE)
 	# do we need to invert the labels? in this case we invert the coefficients
 	if (invertLabels == TRUE) {
 		if (verbose == TRUE)  
-			messagef(" Inverting Labels.")
+			BBmisc::messagef(" Inverting Labels.")
 
 		# invert alphas
 		svmatrix$a = -svmatrix$a

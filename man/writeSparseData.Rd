@@ -23,9 +23,9 @@ Write given (dense) R matrix and R vector in sparse (LIBSVM) format to given fil
 labels can any numeric, they are not converted in any way.
 }
 \examples{
-#X = as.matrix(iris[,1:4])
-	#Y = as.matrix(as.numeric(iris[,5]))
-	#writeSparseData (X, Y, "./australian.data")
+X = as.matrix(iris[,1:4])
+		Y = as.matrix(as.numeric(iris[,5]))
+		writeSparseData ("./australian.data", X, Y)
 }
 \keyword{IO}
 

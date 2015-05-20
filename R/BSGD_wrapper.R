@@ -24,7 +24,7 @@ createTrainingArguments.BSGD = function (x,
 	budget = 128,
 	epochs = 1, ...) {
 
-		n = countLines(trainDataFile)
+		n = R.utils::countLines(trainDataFile)
 
 
 		# arguments for training
@@ -148,7 +148,7 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE)
 	# do we need to invert the labels? in this case we invert the coefficients
 	if (invertLabels == TRUE) {
 		if (verbose == TRUE)  
-			messagef(" Inverting Labels.")
+			BBmisc::messagef(" Inverting Labels.")
 
 		# invert alphas
 		svmatrix$a = -svmatrix$a
@@ -169,7 +169,7 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE)
 # dummy for now
 writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
 	if (verbose == TRUE) {
-		messagef ("Writing SVM Model..")
+		BBmisc::messagef ("Writing SVM Model..")
 	}
 
 	# BROKEN, FIXME

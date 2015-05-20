@@ -1,2 +1,2 @@
-PKG_CXXFLAGS=-I. -fPIC
+PKG_CXXFLAGS=-I. 
 PKG_LIBS=$(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()") 

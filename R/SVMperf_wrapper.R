@@ -23,18 +23,15 @@
 #' evalSVMperf
 #'
 #' @param     ...		parameters that will be passed on training and/or test callbacks
-#
-
-
-
 
 #' SVMperfTrainingParameterCallBack
 #'
 #' @param     ...		parameters that will be passed on training and/or test callbacks
-#
 
-createTrainingArguments.SVMperf = function (x,
-											trainDataFile = "",
+
+createTrainingArguments.SVMperf = function (
+		x,
+		trainDataFile = "",
         modelFile = "",
         kernelCacheSize = 1024,
 		cost = 1, 
@@ -52,7 +49,7 @@ createTrainingArguments.SVMperf = function (x,
 
                        
     # count training examples
-    N = countLines(trainDataFile)
+    N = R.utils::countLines(trainDataFile)
 
     # modify COST to C*N/100, as the formulation is C/n instead of C, 
     # svmperf command tells us:
@@ -263,10 +260,10 @@ createTrainingArguments.SVMperf = function (x,
     }
 
     if (length(args) < 1) {
-        stopf ("Unknown method selected for SVMperf. Please use something like CPSP, CPSP_w3, etc.")
+        BBmisc::stopf ("Unknown method selected for SVMperf. Please use something like CPSP, CPSP_w3, etc.")
     }
     
-    messagef ("SVMperf will apply method %s.", method)
+    BBmisc::messagef ("SVMperf will apply method %s.", method)
 
     return (args)
 }

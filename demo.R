@@ -37,40 +37,114 @@
 
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
 
+readSparseData("tests/data/a0", zeroBased = FALSE, verbose = TRUE)
 
-readSparseData("tests/data/a0", zeroBased = FALSE)
+#In the following we are going to do a few test runs with SparseData.cpp to simulate certain scenarios
+
+# --- perform a simple reading task
+cat("Test #1 Start --- perform a simple reading task\nReading tests/data/australian.train\n")
+S = readSparseData ("tests/data/australian.train")
+print (paste("Data has", nrow(S$X), "points."))
+print (paste("Labels are", unique(S$Y), "."))
+cat("Test #1 End\n\n")
+
+# --- peform a simple writing task
+cat("Test #2 Start --- peform a simple writing task\nGetting Iris Matrix\n")
+X = as.matrix(iris[,1:4])
+Y = as.matrix(as.numeric(iris[,5]))
+cat("Write the matrix to file ./australian.data\n")
+writeSparseData ("./australian.data", X, Y)
+cat("Test #2 End\n\n")
+
+# --- perform a reading/writing task with faulty parameter zeroBased = FALSE
+#		The code should work without any error even with faulty zeroBased parameter, but it should give out a certain warning message with 			 		informations about the underlying problem. 
+cat("Test #3 Start --- perform a reading/writing task with faulty parameter zeroBased = FALSE\n")
+S = readSparseData ("tests/data/a0", zeroBased = FALSE, verbose = TRUE) #zeroBased should be TRUE here
+writeSparseData ( "./tmp/test.sparse.data", S$X,  S$Y, verbose = TRUE, zeroBased = FALSE)
+cat("test #3 End\n\n")
+
+# --- perform a reading/writing task with faulty parameter zeroBased = TRUE
+#		The code should work without any error even with faulty zeroBased parameter, but it should give out a certain warning message with 			 		informations about the underlying problem.                                                                                                     		In this scenario, the created Matrix should have one additional index value since the data starts with one while the user intended to start 		with zero.
+#		hint: if you enable zeroBased flag on data which starts with 1: you get an extra column at the beginning
+cat("Test #4 Start --- perform a reading/writing task with faulty parameter zeroBased = TRUE\n")
+S = readSparseData (filename = "tests/data/a1", zeroBased = TRUE, verbose = TRUE) #zeroBased should be FALSE here
+writeSparseData ( "./tmp/test.sparse.data", S$X,  S$Y, verbose = TRUE, zeroBased = TRUE)
+cat("test #4 End\n\n")
+
+# --- Cycle Test
+cat("Test #5 --- Cycle\n")
+S = readSparseData (filename = "tests/data/australian.train", verbose = TRUE, zeroBased = FALSE) #dataset starts with one
+writeSparseData ( "./tmp/test.sparse.data", S$X,  S$Y, verbose = TRUE, zeroBased = FALSE)
+S = readSparseData (filename = "./tmp/test.sparse.data", verbose = TRUE, zeroBased = FALSE) 
+cat("Cycle 1 Done...\n\n")
+
+S = readSparseData (filename = "tests/data/australian.train", verbose = TRUE, zeroBased = TRUE) #dataset starts with one
+writeSparseData ( "./tmp/test.sparse.data", S$X,  S$Y, verbose = TRUE, zeroBased = TRUE)
+S = readSparseData (filename = "./tmp/test.sparse.data", verbose = TRUE, zeroBased = TRUE) 
+cat("Cycle 2 Done...\n\n")
+
+S = readSparseData (filename = "tests/data/australian.train", verbose = TRUE, zeroBased = FALSE) #dataset starts with one
+writeSparseData ( "./tmp/test.sparse.data", S$X,  S$Y, verbose = TRUE, zeroBased = TRUE)
+S = readSparseData (filename = "./tmp/test.sparse.data", verbose = TRUE, zeroBased = FALSE) 
+cat("Cycle 3 Done...\n\n")
+
+S = readSparseData (filename = "tests/data/australian.train", verbose = TRUE, zeroBased = TRUE) #dataset starts with one
+writeSparseData ( "./tmp/test.sparse.data", S$X,  S$Y, verbose = TRUE, zeroBased = FALSE)
+S = readSparseData (filename = "./tmp/test.sparse.data", verbose = TRUE, zeroBased = TRUE) 
+cat("Cycle 4 Done...\n\n")
+
+
+
+
 die()
+
+
+// unittest
+// cycle: iris/lese daten -> schreibe daten -> lese sie erneut, zerobased = FALSE
+-> klappt
+// schreibe erneut mit zerobased = TRUE -> laden mit zerobased=TRUE -> klappt
+// schreibe erneut mit zerobased = FALSE -> laden mit zerobased=FALSE -> klappt
+
+
 
 
 # first check read data function
 S = readSparseData ("tests/data/australian.train")
-S = readSparseData ("tests/data/australian.train", verbose = FALSE)
-S = readSparseData (filename = "tests/data/australian.train", verbose = FALSE)
-print(S)
-S = readSparseData (filename = "tests/data/australian.train", verbose = FALSE, zeroBased = TRUE)
+
+S = readSparseData ("tests/data/australian.train", verbose = TRUE)
+
+S = readSparseData (filename = "tests/data/australian.train", verbose = TRUE)
 print(S)
 
+S = readSparseData (filename = "tests/data/australian.train", verbose = TRUE, zeroBased = FALSE) #Error: dataset != zeroBased
+print(S)
 print ("CYCLE")
+
 writeSparseData ( "./tmp/test.sparse.data", S$X,  S$Y, verbose = TRUE, zeroBased = TRUE)
+
 S = readSparseData ("./tmp/test.sparse.data", zeroBased = TRUE)
 print(S)
-writeSparseData (S$X, S$Y, filename = "./tmp/test.sparse2.data", verbose = TRUE)
 
+writeSparseData (X = S$X, Y = S$Y, filename = "./tmp/test.sparse2.data", verbose = TRUE)
 print ("TEST")
 
 S = readSparseData ("tests/data/a0", zeroBased = TRUE, verbose = TRUE)
 print(S)
-S = readSparseData ("tests/data/a0", zeroBased = FALSE, verbose = FALSE)
-print(S)
-S = readSparseData (filename = "tests/data/a1", zeroBased = TRUE)
-print(S)
-S = readSparseData (filename = "tests/data/a1", zeroBased = FALSE)
+
+S = readSparseData ("tests/data/a0", zeroBased = FALSE, verbose = TRUE)
 print(S)
 
+S = readSparseData (filename = "tests/data/a1", zeroBased = TRUE, verbose = TRUE)
+print(S)
 
-writeSparseData (S$x, S$y, "./tmp/test.sparse.data", zeroBased = TRUE)
-S = readSparseData (filename = "./tmp/test.sparse.data")
-writeSparseData (S$x, S$y, "./tmp/test.sparse2.data")
+S = readSparseData (filename = "tests/data/a1", zeroBased = TRUE, verbose = TRUE)
+print(S)
+
+writeSparseData (X = S$X, Y =  S$Y, filename = "./tmp/test.sparse.data", zeroBased = FALSE)
+
+S = readSparseData (filename = "./tmp/test.sparse.data", verbose = FALSE, zeroBase = FALSE)
+
+writeSparseData (X = S$X, Y = S$Y, filename =  "./tmp/test.sparse2.data")
 
 die()
 

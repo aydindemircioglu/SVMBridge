@@ -23,6 +23,7 @@
 // Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 // MA 02111-1307, USA
 
+#include <stdlib.h>
 #include <Rcpp.h>
 #include <errno.h>
 #include <stdio.h>
@@ -30,6 +31,8 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <iomanip>      // std::setprecision
+
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 #define Calloc(type,n) (type *)calloc(n, sizeof(type))
 
@@ -75,7 +78,7 @@ static char* readline(FILE *input)
 
 //' Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
 //'
-//' @param 	filename		the filename of the data in sparse file format
+//' @param 		filename		the filename of the data in sparse file format
 //' @param		verbose		show verbose output?
 //' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
 //' @keywords	IO 
@@ -83,7 +86,11 @@ static char* readline(FILE *input)
 //' @return		the data is read into an R matrix and an R vector, containing the data
 //'					and the labels. note, that these are not in sparse format, but are dense.
 //' @examples	
-//'					#readSpareData ("./australian.data")
+//' \dontrun{
+//'		S = readSparseData("../../../SVMBridge/tests/data/australian.train")
+//'		print (paste("Data has", nrow(S$X), "points."))
+//'		print (paste("Labels are", unique(S$Y), "."))
+//'	}
 //' @export
 // [[Rcpp::export]] 
 List readSparseData (std::string filename, bool verbose = false, bool zeroBased = false) {
@@ -97,7 +104,7 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 		int max_index = 0;
 		int inst_max_index = 0;
 		int i = 0;
-
+		int min_index = 2;
 		int l = 0;
 		int featureDimension = 0;
 		FILE *fp = fopen(filename.c_str(),"r");
@@ -143,6 +150,9 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 				errno = 0;
 				index = (int) strtol(idx,&endptr,10); 
 				
+				if(index < min_index)
+					min_index = index;
+				
 				if(endptr == idx || errno != 0 || *endptr != '\0' || index <= inst_max_index) {
 					s << "Error while loading file. " ;
 					::Rf_error(s.str().c_str());
@@ -164,16 +174,29 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 			}
 			++l;
 		}
+		
+		if(zeroBased == false && min_index == 0){
+			s << "ZeroBased is set to FALSE, dataset seems to start with zero\n"; 
+			printf("est");
+			Rcpp::stop(s.str().c_str());
+		}
+		
+		if(verbose == true){
+			if(zeroBased == true && min_index == 1){
+				Rcout << "Warning: zeroBased is set to TRUE, dataset seems to start with one\n";  
+			}
+		}
+		
 		rewind(fp);
 		
-		DEBUG printf("Max_Index: %d \n", max_index); 
+		DEBUG Rcout << "Max_Index: " <<  max_index << "\n"; 
 		featureDimension = max_index + 1 - correction;
 
 		n=l; //set global variable n for function writeSparseData
 		m=max_index; //set global variable m for function writeSparseData
 		
 		if (verbose == true) 
-			printf("Found data dimensions: %d x %d\n", l, featureDimension);
+			Rcout << "Found data dimensions: " << l << " x " << featureDimension << "\n";
 
 		Rcpp::NumericMatrix xR(l,featureDimension);
 		Rcpp::NumericVector yR(l);
@@ -221,7 +244,7 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 				xR(i, index - correction) = strtod(val,&endptr); //errno may be updated in this step
 				
 				if(endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr))){
-					s << "Error in endptr " ;
+					s << "Error in endptr ";
 					::Rf_error(s.str().c_str());
 					return R_NilValue;
 				}
@@ -238,8 +261,10 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 	
 	catch(int e)
 	{
-		printf("Error: %d", e);
-		exit(1);
+		stringstream s;
+		s << "Unknown Error: " << e << "\n";
+		::Rf_error(s.str().c_str());
+		return R_NilValue;
 	}
 } 
 
@@ -254,9 +279,9 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 //' @keywords	IO 
 //' @return		NULL.
 //' @examples	
-//'	#X = as.matrix(iris[,1:4])
-//'	#Y = as.matrix(as.numeric(iris[,5]))
-//'	#writeSparseData (X, Y, "./australian.data")
+//'		X = as.matrix(iris[,1:4])
+//'		Y = as.matrix(as.numeric(iris[,5]))
+//'		writeSparseData ("./australian.data", X, Y)
 //' @export
 // [[Rcpp::export]] 
 List writeSparseData (std::string filename, NumericMatrix X, NumericVector Y, bool verbose = false, bool zeroBased = false) {
@@ -276,6 +301,7 @@ List writeSparseData (std::string filename, NumericMatrix X, NumericVector Y, bo
 		// determine dimensions;
 		n = X.nrow();
 		m = X.ncol();
+		
 		if (Y.size() != n) {
 			Rcout << "Error!\n";
 			// FIXME throw error
@@ -286,7 +312,7 @@ List writeSparseData (std::string filename, NumericMatrix X, NumericVector Y, bo
 			fs << Y(i) << " ";
 			for(int j=0;j<m;j++)
 			{
-				fs << j + correction << ":" << X(i,j) << " ";
+				fs << j + correction << ":" << std::setprecision(16) << X(i,j) << " ";
 			}
 			fs << "\n";
 		}
@@ -294,7 +320,9 @@ List writeSparseData (std::string filename, NumericMatrix X, NumericVector Y, bo
 	}
 	catch(int e)
 	{
-		printf("Error: %d", e);
+		stringstream s;
+		s << "Unknown Error: " << e << "\n";
+		::Rf_error(s.str().c_str());
 	}
 	return R_NilValue;
 }

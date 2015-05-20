@@ -21,10 +21,16 @@
 
 
 
-#' General class for any SVM wrapper.
-#'
+# General class for any SVM wrapper.
+# 
+# Roxygen Documentation:
 #' Description... 
+#' 
+#' Details
 #'
+#' @param a Description
+#' @param b Description
+#' ...
 
 	createSVMWrapper = function(method, trainingBinary = '', ...) {
 		

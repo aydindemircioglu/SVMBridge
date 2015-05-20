@@ -24,7 +24,7 @@ createTrainingArguments.Pegasos = function (x,
                                             gamma = 1, 
                                             epochs = 1, ...) {
 
-    n = countLines(trainDataFile)
+    n = R.utils::countLines(trainDataFile)
 
     # we make pegasos non linear by using budgeted SVM with an
     # excessively high budget-- i.e. n+1.
@@ -153,7 +153,7 @@ readModel.Pegasos = function (x, modelFile = "./model", verbose = FALSE)
 	# do we need to invert the labels? in this case we invert the coefficients
 	if (invertLabels == TRUE) {
 		if (verbose == TRUE)  
-			messagef(" Inverting Labels.")
+			BBmisc::messagef(" Inverting Labels.")
 
 		# invert alphas
 		svmatrix$a = -svmatrix$a

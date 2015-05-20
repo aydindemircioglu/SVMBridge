@@ -3,7 +3,7 @@
 
 #' Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
 #'
-#' @param 	filename		the filename of the data in sparse file format
+#' @param 		filename		the filename of the data in sparse file format
 #' @param		verbose		show verbose output?
 #' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
 #' @keywords	IO 
@@ -11,7 +11,11 @@
 #' @return		the data is read into an R matrix and an R vector, containing the data
 #'					and the labels. note, that these are not in sparse format, but are dense.
 #' @examples	
-#'					#readSpareData ("./australian.data")
+#' \dontrun{
+#'		S = readSparseData("../../../SVMBridge/tests/data/australian.train")
+#'		print (paste("Data has", nrow(S$X), "points."))
+#'		print (paste("Labels are", unique(S$Y), "."))
+#'	}
 #' @export
 readSparseData <- function(filename, verbose = FALSE, zeroBased = FALSE) {
     .Call('SVMBridge_readSparseData', PACKAGE = 'SVMBridge', filename, verbose, zeroBased)
@@ -26,9 +30,9 @@ readSparseData <- function(filename, verbose = FALSE, zeroBased = FALSE) {
 #' @keywords	IO 
 #' @return		NULL.
 #' @examples	
-#'	#X = as.matrix(iris[,1:4])
-#'	#Y = as.matrix(as.numeric(iris[,5]))
-#'	#writeSparseData (X, Y, "./australian.data")
+#'		X = as.matrix(iris[,1:4])
+#'		Y = as.matrix(as.numeric(iris[,5]))
+#'		writeSparseData ("./australian.data", X, Y)
 #' @export
 writeSparseData <- function(filename, X, Y, verbose = FALSE, zeroBased = FALSE) {
     .Call('SVMBridge_writeSparseData', PACKAGE = 'SVMBridge', filename, X, Y, verbose, zeroBased)

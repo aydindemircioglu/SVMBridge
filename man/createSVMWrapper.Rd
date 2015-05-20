@@ -2,11 +2,17 @@
 % Please edit documentation in R/SVMWrapper.R
 \name{createSVMWrapper}
 \alias{createSVMWrapper}
-\title{General class for any SVM wrapper.}
+\title{Description...}
 \usage{
 createSVMWrapper(method, trainingBinary = "", ...)
 }
+\arguments{
+\item{a}{Description}
+
+\item{b}{Description
+...}
+}
 \description{
-Description...
+Details
 }
 
