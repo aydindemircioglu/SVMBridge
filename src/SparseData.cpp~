@@ -177,7 +177,7 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 		
 		if(zeroBased == false && min_index == 0){
 			s << "ZeroBased is set to FALSE, dataset seems to start with zero\n"; 
-			//printf("est");
+			printf("est");
 			Rcpp::stop(s.str().c_str());
 		}
 		
