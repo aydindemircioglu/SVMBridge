@@ -83,8 +83,7 @@ extractTestInfo.BSGD = function (x, output) {
 }
 
 
-readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE)
-{
+readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 	if (verbose == TRUE) {
 		BBmisc::messagef("Reading BSGD model from %s", modelFile)
 	}
@@ -169,7 +168,7 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE)
 # dummy for now
 writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
 	if (verbose == TRUE) {
-		BBmisc::messagef ("Writing SVM Model..")
+		BBmisc::messagef ("Writing BSGD Model..")
 	}
 
 	# BROKEN, FIXME

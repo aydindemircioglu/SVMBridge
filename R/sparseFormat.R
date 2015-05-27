@@ -125,6 +125,20 @@ dumpSparseFormat <- function (labels, data)
 
 
 
+readSparseDataFromConnection = function (con, verbose = FALSE, zeroBased = FALSE) {
+    # where are we?
+    currentPosition = seek(con)
+
+    # get filename
+    filename = summary(con)$description
+
+    # call readSparseData skipping to the current Position
+    L = readSparseData (filename, skipBytes = currentPosition, verbose = verbose, zeroBased = zeroBased)
+
+    return (L)
+}
+
+
 
 # stupid R check for pythons cool "name == __main__"
 if (length(sys.frames()) == 0) 

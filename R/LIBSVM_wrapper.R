@@ -193,7 +193,7 @@
 	
 		# read and interprete data 
 		# basically all data is sparse data format, but the data around this differs
-		svmatrix = readSparseFormat(con)
+		svmatrix = readSparseDataFromConnection(con)
 
 	
 		# add header information

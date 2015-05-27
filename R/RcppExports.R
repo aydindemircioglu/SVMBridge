@@ -3,7 +3,7 @@
 
 #' Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
 #'
-#' @param 		filename		the filename of the data in sparse file format
+#' @param 		filename		the filename of the data in sparse file format. The Tilde Character isn't supported for f filename!  
 #' @param		verbose		show verbose output?
 #' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
 #' @keywords	IO 
@@ -17,8 +17,8 @@
 #'		print (paste("Labels are", unique(S$Y), "."))
 #'	}
 #' @export
-readSparseData <- function(filename, verbose = FALSE, zeroBased = FALSE) {
-    .Call('SVMBridge_readSparseData', PACKAGE = 'SVMBridge', filename, verbose, zeroBased)
+readSparseData <- function(filename, skipBytes = 0L, verbose = FALSE, zeroBased = FALSE) {
+    .Call('SVMBridge_readSparseData', PACKAGE = 'SVMBridge', filename, skipBytes, verbose, zeroBased)
 }
 
 #' Write given (dense) R matrix and R vector in sparse (LIBSVM) format to given file.

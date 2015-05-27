@@ -32,6 +32,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>      // std::setprecision
+#include <string.h>
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 #define Calloc(type,n) (type *)calloc(n, sizeof(type))
@@ -57,6 +58,9 @@ static int max_line_len;
 
 // internal helper function to read a line into global variable
 //
+
+
+
 static char* readline(FILE *input)
 {
 	int len;
@@ -76,9 +80,10 @@ static char* readline(FILE *input)
 }
 
 
+
 //' Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
 //'
-//' @param 		filename		the filename of the data in sparse file format
+//' @param 		filename		the filename of the data in sparse file format. The Tilde Character isn't supported for f filename!  
 //' @param		verbose		show verbose output?
 //' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
 //' @keywords	IO 
@@ -93,7 +98,8 @@ static char* readline(FILE *input)
 //'	}
 //' @export
 // [[Rcpp::export]] 
-List readSparseData (std::string filename, bool verbose = false, bool zeroBased = false) {
+List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = false, bool zeroBased = false) {
+	
 	try
 	{	
 		int correction = 1;
@@ -107,8 +113,13 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 		int min_index = 2;
 		int l = 0;
 		int featureDimension = 0;
+		
+		
 		FILE *fp = fopen(filename.c_str(),"r");
-
+		//Jump to position in dataset where sparse data starts
+		fseek(fp, skipBytes, SEEK_CUR);
+		
+		
 		char *endptr = NULL;
 		char *idx = NULL;
 		char *val = NULL;
@@ -177,7 +188,6 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 		
 		if(zeroBased == false && min_index == 0){
 			s << "ZeroBased is set to FALSE, dataset seems to start with zero\n"; 
-			printf("est");
 			Rcpp::stop(s.str().c_str());
 		}
 		
@@ -186,8 +196,9 @@ List readSparseData (std::string filename, bool verbose = false, bool zeroBased 
 				Rcout << "Warning: zeroBased is set to TRUE, dataset seems to start with one\n";  
 			}
 		}
-		
 		rewind(fp);
+		fseek(fp, skipBytes, SEEK_SET);
+		
 		
 		DEBUG Rcout << "Max_Index: " <<  max_index << "\n"; 
 		featureDimension = max_index + 1 - correction;

@@ -31,11 +31,96 @@
 	compileAttributes()
 
 	# run tests
-	devtools::test()
+	#devtools::test()
 #	devtools::check()
 # R CMD check ./SVMBridge_1.0.tar.gz
 
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
+
+OldreadModel.LIBSVM = function (x, modelFile = '~/svmmodel', verbose = FALSE) {
+		if (verbose == TRUE) {
+			BBmisc::messagef ("Reading LIBSVM model from %s.", modelFile)
+		}
+		
+		# open connection
+		con  <- file(modelFile, open = "r")
+
+		while ((oneLine <- readLines(con, n = 1, warn = FALSE)) != "SV") {
+			# gamma value
+			if (grepl("gamma", oneLine) == TRUE) {
+				pattern <- "gamma (.*)"
+				gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+			}  
+		
+			# rho/bias
+			if (grepl("rho", oneLine) == TRUE) {
+				pattern <- "rho (.*)"
+			bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+			}
+			
+			# order of labels
+			if (grepl("label", oneLine) == TRUE) {
+				pattern <- "label (.*)"
+				order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+			
+				if ((order != "1 -1") && (order != "-1 1")) {
+					stop ("Label ordering %s is unknown!", order)
+				}
+				# LABEL ORDERING IS NOT USED for libsvm!
+			}  
+		}
+	
+	
+		# read and interprete data 
+		# basically all data is sparse data format, but the data around this differs
+		svmatrix = readSparseDataFromConnection(con)
+
+	
+		# add header information
+		svmatrix$gamma = gamma
+		svmatrix$bias = bias
+		svmatrix$modelname = "LIBSVM"
+		
+		# close connection
+		close(con)
+		
+		# return
+		return (svmatrix)
+	}
+	
+	die()
+
+
+
+
+	solver = "LIBSVM"
+	messagef("\n\n\n======= Train %s, Traindata from Memory, Model to Memory", solver)
+	trainObj =  trainSVM(
+		method = solver,
+		trainDataX = trainDataX, 
+		trainDatay = trainDatay, 
+		cost = 1, 
+		gamma = 1, 
+		epsilon = 0.01, 
+		readModelFile = TRUE,
+		verbose = verbose
+	)  
+
+
+die()
+#Test Function
+#ReadDummyModel(filename)
+z = file("/home/hanna/svmmodel")
+open(z)
+e = readLines(z, 9)
+print(e)
+L = readSparseDataFromConnection(z)
+print (L)
+close(z)
+die()
+
+
+
 
 readSparseData("tests/data/a0", zeroBased = FALSE, verbose = TRUE)
 

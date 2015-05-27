@@ -4,10 +4,11 @@
 \alias{readSparseData}
 \title{Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.}
 \usage{
-readSparseData(filename, verbose = FALSE, zeroBased = FALSE)
+readSparseData(filename, skipBytes = 0L, verbose = FALSE,
+  zeroBased = FALSE)
 }
 \arguments{
-\item{filename}{the filename of the data in sparse file format}
+\item{filename}{the filename of the data in sparse file format. The Tilde Character isn't supported for f filename!}
 
 \item{verbose}{show verbose output?}
 
