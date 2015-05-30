@@ -64,6 +64,10 @@ trainSVM = function(
 	modelFile = NULL,
 	verbose = FALSE,
 
+	# data
+	subsamplingRate = NULL,
+	subsamplingMethod = "cutoff",
+	
 	# SVMBridge
 	timeOut = -1,
 	readModelFile = FALSE,
@@ -124,6 +128,21 @@ trainSVM = function(
 
 	results = list()
 
+	
+	# subsample the file
+	if (subsamplingRate == NULL) {
+		
+		# depending on method
+		if (subsamplingMethod == "cutoff") {
+			# simple cut off
+			trainDataFile = subsampleDataByCutoff (trainDataFile, subsamplingRate = as.numeric(subsamplingRate)) 
+		} else {
+			# unknown method
+			stop("Unknown subsampling method.")
+		}
+	}
+
+	
 	# create arguments for training
 	args = createTrainingArguments (SVMObject, 
 		trainDataFile = trainDataFile, 
