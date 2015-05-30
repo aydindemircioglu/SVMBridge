@@ -7,6 +7,8 @@ Description: Different SVM solvers are commonly used, e.g. LIBSVM and SVMperf.
 Authors@R: c( 
     person ("Aydin", "Demircioglu", email = "aydin.demircioglu", role = c("aut", "cre")), 
     person ("Hanna", "Houphouet", email = "hanna.houphouet",  role = c("aut") ) )
+Author: Aydin Demircioglu [aut, cre],
+    Hanna Houphouet [aut]
 Maintainer: Aydin Demircioglu <aydin.demircioglu@ini.rub.de>
 License: LGPL-3 + file LICENSE
 URL: https://github.com/aydindemircioglu/svmBridge
