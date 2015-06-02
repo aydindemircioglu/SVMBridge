@@ -130,7 +130,7 @@ trainSVM = function(
 
 	
 	# subsample the file
-	if (subsamplingRate == NULL) {
+	if (is.null(subsamplingRate) == FALSE) {
 		
 		# depending on method
 		if (subsamplingMethod == "cutoff") {

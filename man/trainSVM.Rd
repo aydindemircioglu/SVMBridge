@@ -6,8 +6,8 @@
 \usage{
 trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
   trainDatay = NULL, trainBinaryPath = NULL, extraParameter = "",
-  modelFile = NULL, verbose = FALSE, timeOut = -1,
-  readModelFile = FALSE, ...)
+  modelFile = NULL, verbose = FALSE, subsamplingRate = NULL,
+  subsamplingMethod = "cutoff", timeOut = -1, readModelFile = FALSE, ...)
 }
 \arguments{
 \item{method}{name of the SVM method/solver}

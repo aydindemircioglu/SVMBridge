@@ -14,7 +14,7 @@ subsampleDataByCutoff <- function ( filepath = "", subsamplingRate = -1)
         if (subsamplingRate < 1.001)
         {
             # this is a true fraction, so  compute true number and overwrite our assumption
-            nLines = countLines (filepath)[1] 
+            nLines = R.utils::countLines (filepath)[1] 
             subsamplingSize = floor (nLines*subsamplingRate)
         }
 
