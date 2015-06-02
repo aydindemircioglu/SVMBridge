@@ -1,24 +1,52 @@
 
-
+#' Subsample Data by cutting off (a copy of) the file
+#'
+#' This is a simple routine that will do subsampling by copying the first
+#' lines to a temporary file and return this.
+#'
+#' @param 	filepath		path of the file to subsample
+#'	@param	subsamplingRate		rate to subsample. in case this is a value
+#'		between 0..1.0000000001, it will be interpreted as a fraction, e.g.
+#'		0.5 means subsampling half of the file. If the rate is above 1.0000000001,
+#'		the value is taken as the absolut number of data points, e.g. 50 will
+#'		subsample exactly 50 points (the first 50 of the file).
+#'	
+#' @note		if the subsamplingRate == 1 then no copy is done, but the
+#' file itself is returned. 
+#'
+#' @export
+#'
 subsampleDataByCutoff <- function ( filepath = "", subsamplingRate = -1)
 {
-    subsampledFile = filepath
-    if (subsamplingRate > 0.0) 
-    {
-        # create subsampled file on /tmp
-        subsampledFile = tempfile()
-        originalFile = filepath
+	# check
+	if (filepath == "")
+		stop ("No filepath is given.")
+		
+	if (subsamplingRate < 0.0) 
+		stop ("Subsampling rate cannot be negative")
 
-        # need to know how many data is there anyway
-        subsamplingSize = subsamplingRate
-        if (subsamplingRate < 1.001)
-        {
-            # this is a true fraction, so  compute true number and overwrite our assumption
-            nLines = R.utils::countLines (filepath)[1] 
-            subsamplingSize = floor (nLines*subsamplingRate)
-        }
+	subsampledFile = filepath
+	if (subsamplingRate > 0.0) 
+	{
+		# create subsampled file on /tmp
+		subsampledFile = tempfile()
+		originalFile = filepath
 
-        # subsample by read-writing, unsure if this is performant enough
+		# in case of subsamplingRate == 1.0 we do not do anything
+		if (subsamplingRate == 1) {
+			return (originalFile)
+		}
+		
+		# need to know how many data is there anyway
+		subsamplingSize = subsamplingRate
+		if (subsamplingRate < 1.0000000001)
+		{
+			# this is a true fraction, so  compute true number and overwrite our assumption
+			nLines = R.utils::countLines (filepath)[1] 
+			subsamplingSize = floor (nLines*subsamplingRate)
+		}
+
+		# subsample by read-writing, unsure if this is performant enough
 		srcConn = file (originalFile)
 		targetConn = file (subsampledFile)
 		
@@ -36,7 +64,7 @@ subsampleDataByCutoff <- function ( filepath = "", subsamplingRate = -1)
 		
 		close (srcConn)
 		close (targetConn)
-    }
-    
-    return (subsampledFile)
+	}
+	
+	return (subsampledFile)
 }
