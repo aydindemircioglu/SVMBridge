@@ -339,23 +339,23 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 					
 					switch(value){
 						case 1:{
-							xR1(t, index - correction) = xR(i, index - correction);
+							xR1(t-1, index - correction) = xR(i, index - correction);
 							break;
 						}
 						case 2:{
-							xR2(r, index - correction) = xR(i, index - correction);
+							xR2(r-1, index - correction) = xR(i, index - correction);
 							break;
 						}
 						case 3:{
-							xR3(g, index - correction) = xR(i, index - correction);
+							xR3(g-1, index - correction) = xR(i, index - correction);
 							break;
 						}
 						case 4:{
-							xR4(h, index - correction) = xR(i, index - correction);
+							xR4(h-1, index - correction) = xR(i, index - correction);
 							break;
 						}
 						case 5:{
-							xR5(j, index - correction) = xR(i, index - correction);
+							xR5(j-1, index - correction) = xR(i, index - correction);
 							break;
 						}
 						default: {break;}
