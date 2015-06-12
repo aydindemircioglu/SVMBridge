@@ -2,6 +2,7 @@
 
 export(readSparseData)
 export(readSparseFile)
+export(subsampleDataByCutoff)
 export(testSVM)
 export(trainSVM)
 export(writeSparseData)
