@@ -58,18 +58,26 @@ test_that("Test: Increased Matrix row index due to faulty zeroBased value for Re
 	
 })
 
-test_that("Test: Extracting header information from dataset and getting  the right position for readSparseData", {
-	z = file("../data/svmmodel")#contains 9 lines of header information
-	open(z)
-	e = readLines(z, 9)
-	L = readSparseDataFromConnection(z)
-	close(z)
-})
+# test_that("Test: Extracting header information from dataset and getting  the right position for readSparseData", {
+# 	z = file("../data/svmmodel")#contains 9 lines of header information
+# 	open(z)
+# 	e = readLines(z, 9)
+# 	L = readSparseDataFromConnection(z)
+# 	close(z)
+# })
 
 test_that("Test: Multiclass Data", {
 	z = "../../../svm_large_data/datasets.multiclass/dna/dna.combined.scaled"
-	r = "../data/svmmodel";
 	l = readSparseData(z)
+	print(l)
+	
+})
+
+
+test_that("Test: Multiclass Data", {
+	z = "../../../svm_large_data/datasets.multiclass/dna/dna.combined.scaled"
+	r = "../data/a1";
+	l = readSparseData(r)
 	print(l)
 	
 })

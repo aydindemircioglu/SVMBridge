@@ -34,7 +34,6 @@
 #include <iomanip>      // std::setprecision
 #include <string.h>
 
-
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 #define Calloc(type,n) (type *)calloc(n, sizeof(type))
 
@@ -114,8 +113,8 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		int min_index = 2;
 		int l = 0;
 		int featureDimension = 0;
-		int class_number = 0;
-		int class_count = 0;
+		int alphacount = 0;
+		int max_alphacount = 1;
 		
 		FILE *fp = fopen(filename.c_str(),"r");
 		//Jump to position in dataset where sparse data starts
@@ -127,8 +126,6 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		char *val = NULL;
 		char *label = NULL;
 		char *p = NULL;
-		int class_members[10] = {0,0,0,0,0,0,0,0,0,0};
-		
 		stringstream s;
 		
 		if(fp == NULL){
@@ -142,38 +139,67 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		
 		//determine size
 		while(readline(fp)!=NULL)  //global variable line updated
-		{	
+		{
 			p = strtok(line," \t"); 
+			//cout << "p: " << p << endl;
 			inst_max_index = -1;
-			class_number  = strtod(p,&endptr);
-			cout << "class " << class_number << endl;
-			//determine if dataset contains multiclass data and get their class count
-			if(class_number > class_count)
-				class_count = class_number;
-			if(class_number > 0){
-				class_members[class_number]++;
-				
-			}
-			
+			strtod(p,&endptr);
 			
 			if(p == NULL) // empty line
 				break;
 			
 			if(endptr == p || *endptr != '\0')
 				break;
-		
+
 			while(1)
 			{
 				index = 0;
 				idx = strtok(NULL,":");
 				p = strtok(NULL," \t"); 
+				string idx3 = std::string(idx);
+				string test_for_multi = std::string(&idx[1], 1);
 				
 				if(p == NULL || *p == '\n') 
-					break;
+						break;
+				
+				if(idx3.size() > 1 & test_for_multi == " "){
+					
+					//cout << "idx3: " << idx3 << endl;
+					//cout << "size of idx3: " << idx3.size() << endl;
+					int k = 1;
+					for(int j=0;j<idx3.size();j++){
+						//cout << "idx3 " << j << ": " << idx3[j] << endl;
+						string alphastring = std::string(&idx[j], 1);
+						
+						if(alphastring != " "){
+							alphacount++;
+							//cout << "alphavalue " << k << ": " << alphastring << endl;
+							k++;
+						}
+					}
+					
+					if(alphacount > max_alphacount)
+					  max_alphacount = alphacount;
+					
+					stringstream ss;
+					ss << idx3[idx3.size()-2] << idx[idx3.size()-1];
+					string tmp = ss.str();
+					char idx2[1024];				
+					strncpy(idx2, tmp.c_str(), sizeof(idx2));
+					idx2[sizeof(idx2)-1] = 0;
+					idx = idx2;
+					//cout << "New idx: " << idx2 << endl;
+					//cout << "alphacount; " << alphacount << endl;
+					alphacount = 0;
+				}
+				
+				
+				
 				
 				errno = 0;
-				index = (int) strtol(idx,&endptr,10); 
+					index = (int) strtol(idx,&endptr,10); 
 				
+				//cout << "index: " << index << endl;
 				if(index < min_index)
 					min_index = index;
 				
@@ -199,10 +225,6 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 			++l;
 		}
 		
-		for( i=0;i<10;i++){
-		  cout << "i: " << i << "class member: " << class_members[i] << endl;
-		}
-		
 		if(zeroBased == false && min_index == 0){
 			s << "ZeroBased is set to FALSE, dataset seems to start with zero\n"; 
 			Rcpp::stop(s.str().c_str());
@@ -225,219 +247,98 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		
 		if (verbose == true) 
 			Rcout << "Found data dimensions: " << l << " x " << featureDimension << "\n";
-		
-		if(class_count > 1)
-			if (verbose == true)
-				Rcout << "Found multiclass data: " << class_count << " classes\n";
-				
-		
+
 		Rcpp::NumericMatrix xR(l,featureDimension);
-		Rcpp::NumericVector yR(l);
+		Rcpp::NumericMatrix yR(l,max_alphacount);
 		endptr = NULL;
 		
-		if(class_count > 1){
-		  
-			int t = class_members[1]; 
-			int r = class_members[2];
-			int g = class_members[3];
-			int h = class_members[4];
-			int j = class_members[5];
+		//Fill NumericMatrix xR, NumericVector yR
+		for (int i=0; i<l; i++)
+		{
+			inst_max_index = -1; 
+			readline(fp);
+			label = strtok(line," \t\n");
 			
+			if(label == NULL) {
+				s << "Error: label = 0 " ;
+				::Rf_error(s.str().c_str());
+				return R_NilValue;
+			}
 			
-			Rcpp::NumericMatrix xR1(t,featureDimension);
-			Rcpp::NumericVector yR1(t);
-			
-			Rcpp::NumericMatrix xR2(r,featureDimension);
-			Rcpp::NumericVector yR2(r);
-			
-			Rcpp::NumericMatrix xR3(g,featureDimension);
-			Rcpp::NumericVector yR3(g);
-			
-			Rcpp::NumericMatrix xR4(h,featureDimension);
-			Rcpp::NumericVector yR4(h);
-			
-			Rcpp::NumericMatrix xR5(j,featureDimension);
-			Rcpp::NumericVector yR5(j);
-			
-			t = 0;
-			r = 0;
-			g = 0;
-			h = 0;
-			j = 0;
-			
-			//Fill NumericMatrix xR, NumericVector yR
-			for ( i=0; i<l; i++)
-			{
-				inst_max_index = -1; 
-				readline(fp);
-				label = strtok(line," \t\n");
-				
-				if(label == NULL) {
-					s << "Error: label = 0 " ;
+			yR(i,0) = strtod(label, &endptr);
+			if(endptr == label || *endptr != '\0'){
+					s << "Error in endptr " ;
 					::Rf_error(s.str().c_str());
 					return R_NilValue;
 				}
-				
-				yR[i] = strtod(label, &endptr);
-				int value = yR(i);
-				switch(value){
-					case 1:{
-						yR1[t] = yR(i);
-						//cout << "t" << t << endl;
-						t=t+1;break;
-					}
-					case 2:{
-						yR2[r] = yR(i);
-						//cout << "r" << r << endl;
-						r=r+1;break;
-					}
-					case 3:{
-						yR3[g] = yR(i);
-						//cout << "g" << g << endl;
-						g=g+1;break;
-					}
-					case 4:{
-						yR4[h] = yR(i);
-						//cout << "h" << h << endl;
-						h=h+1;break;
-					}
-					case 5:{
-						yR5[j] = yR(i);
-						//cout << "j" << j << endl;
-						j=j+1;break;
-					}
-					default:{break;}
-				    
-				}
-				
-				if(endptr == label || *endptr != '\0'){
-						s << "Error in endptr " ;
-						::Rf_error(s.str().c_str());
-						return R_NilValue;
-					}
-				
-				while(1)
-				{
-					idx = strtok(NULL,":");
-					val = strtok(NULL," \t");
-					if(val == NULL) //No further informations in this line.. end of line
-						break;
 			
-					errno = 0;
-					index = (int) strtol(idx,&endptr,10); //errno may be updated in this step
-					
-					if(endptr == idx || errno != 0 || *endptr != '\0' || index <= inst_max_index){
-						s << "Error in endptr " ;
-						::Rf_error(s.str().c_str());
-						return R_NilValue;
-					}
-					else
-						inst_max_index = index;
-
-					errno = 0;
-					xR(i, index - correction) = strtod(val,&endptr); //errno may be updated in this step
-					
-					switch(value){
-						case 1:{
-							xR1(t-1, index - correction) = xR(i, index - correction);
-							break;
-						}
-						case 2:{
-							xR2(r-1, index - correction) = xR(i, index - correction);
-							break;
-						}
-						case 3:{
-							xR3(g-1, index - correction) = xR(i, index - correction);
-							break;
-						}
-						case 4:{
-							xR4(h-1, index - correction) = xR(i, index - correction);
-							break;
-						}
-						case 5:{
-							xR5(j-1, index - correction) = xR(i, index - correction);
-							break;
-						}
-						default: {break;}
-					}
-					
-					
-					if(endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr))){
-						s << "Error in endptr ";
-						::Rf_error(s.str().c_str());
-						return R_NilValue;
-					}
-				}
-				if(inst_max_index > max_index)
-					max_index = inst_max_index;	
-			}
-				
-			
-			fclose(fp);
-			free(line);
-			//Rcpp::List rl = Rcpp::List::create (Rcpp::Named ("X", xR), Rcpp::Named("Y", yR) );
-			Rcpp::List rl = Rcpp::List::create (Rcpp::Named ("X1", xR1), Rcpp::Named("Y1", yR1), Rcpp::Named ("X2", xR2), Rcpp::Named("Y2", yR2), Rcpp::Named ("X3", xR3), Rcpp::Named("Y3", yR3), Rcpp::Named ("X4", xR4), Rcpp::Named("Y4", yR4), Rcpp::Named ("X5", xR5), Rcpp::Named("Y5", yR5));
-			return (rl);
-		}
-		
-		
-			
-		else{
-			//Fill NumericMatrix xR, NumericVector yR
-			for ( i=0; i<l; i++)
+			while(1)
 			{
-				inst_max_index = -1; 
-				readline(fp);
-				label = strtok(line," \t\n");
+				idx = strtok(NULL,":");
+				val = strtok(NULL," \t");
+				if(val == NULL) //No further informations in this line.. end of line
+					break;
 				
-				if(label == NULL) {
-					s << "Error: label = 0 " ;
+				string idx3 = std::string(idx);
+				string test_for_multi = std::string(&idx[1], 1);
+				//cout << "multitest: " << test_for_multi << endl;
+				
+				if(idx3.size() > 1 & test_for_multi == " "){
+					
+					//cout << "idx3: " << idx3 << endl;
+					//cout << "size of idx3: " << idx3.size() << endl;
+					int k = 1;
+					for(int j=0;j<idx3.size();j++){
+						
+						string alphastring = std::string(&idx[j], 1);
+						if(alphastring != " "){
+							int alphavalue = atoi(alphastring.c_str()) ;
+							yR(i, k) = alphavalue;  
+							k++;
+							//cout << "alphavalue " << j+1 << ": " << alphavalue << endl;
+						}
+					}
+					
+					
+					stringstream ss;
+					ss << idx3[idx3.size()-2] << idx[idx3.size()-1];
+					string tmp = ss.str();
+					char idx2[1024];				
+					strncpy(idx2, tmp.c_str(), sizeof(idx2));
+					idx2[sizeof(idx2)-1] = 0;
+					idx = idx2;
+					//cout << "New idx: " << idx2 << endl;
+					
+				}
+				
+				errno = 0;
+				index = (int) strtol(idx,&endptr,10); //errno may be updated in this step
+				
+				if(endptr == idx || errno != 0 || *endptr != '\0' || index <= inst_max_index){
+					s << "Error in endptr " ;
 					::Rf_error(s.str().c_str());
 					return R_NilValue;
 				}
-				
-				yR[i] = strtod(label, &endptr);
-				if(endptr == label || *endptr != '\0'){
-						s << "Error in endptr " ;
-						::Rf_error(s.str().c_str());
-						return R_NilValue;
-					}
-				
-				while(1)
-				{
-					idx = strtok(NULL,":");
-					val = strtok(NULL," \t");
-					if(val == NULL) //No further informations in this line.. end of line
-						break;
-			
-					errno = 0;
-					index = (int) strtol(idx,&endptr,10); //errno may be updated in this step
-					
-					if(endptr == idx || errno != 0 || *endptr != '\0' || index <= inst_max_index){
-						s << "Error in endptr " ;
-						::Rf_error(s.str().c_str());
-						return R_NilValue;
-					}
-					else
-						inst_max_index = index;
+				else
+					inst_max_index = index;
 
-					errno = 0;
-					xR(i, index - correction) = strtod(val,&endptr); //errno may be updated in this step
-					
-					if(endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr))){
-						s << "Error in endptr ";
-						::Rf_error(s.str().c_str());
-						return R_NilValue;
-					}
+				errno = 0;
+				xR(i, index - correction) = strtod(val,&endptr); //errno may be updated in this step
+				
+				if(endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr))){
+					s << "Error in endptr ";
+					::Rf_error(s.str().c_str());
+					return R_NilValue;
 				}
-				if(inst_max_index > max_index)
-					max_index = inst_max_index;
 			}
-			fclose(fp);
-			free(line);
-			Rcpp::List rl = Rcpp::List::create (Rcpp::Named ("X", xR), Rcpp::Named("Y", yR) );
-			return (rl);
+			if(inst_max_index > max_index)
+				max_index = inst_max_index;
 		}
+		
+		fclose(fp);
+		free(line);
+		Rcpp::List rl = Rcpp::List::create (Rcpp::Named ("X", xR), Rcpp::Named("Y", yR) );
+		return (rl);
 	}	
 	
 	catch(int e)
@@ -493,8 +394,7 @@ List writeSparseData (std::string filename, NumericMatrix X, NumericVector Y, bo
 			fs << Y(i) << " ";
 			for(int j=0;j<m;j++)
 			{
-				if(X(i,j) != 0)
-					fs << j + correction << ":" << std::setprecision(16) << X(i,j) << " ";
+				fs << j + correction << ":" << std::setprecision(16) << X(i,j) << " ";
 			}
 			fs << "\n";
 		}
