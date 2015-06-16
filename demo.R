@@ -37,59 +37,20 @@
 
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
 
-OldreadModel.LIBSVM = function (x, modelFile = '~/svmmodel', verbose = FALSE) {
-		if (verbose == TRUE) {
-			BBmisc::messagef ("Reading LIBSVM model from %s.", modelFile)
-		}
-		
-		# open connection
-		con  <- file(modelFile, open = "r")
+#testfunction
+cat("start\n")
+#modelfile = "../svm_large_data/datasets.multiclass/dna/dna.combined.scaled"
+#modelfile = "tests/data/australian.test"
+modelfile = "tests/data/a1"
 
-		while ((oneLine <- readLines(con, n = 1, warn = FALSE)) != "SV") {
-			# gamma value
-			if (grepl("gamma", oneLine) == TRUE) {
-				pattern <- "gamma (.*)"
-				gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
-			}  
-		
-			# rho/bias
-			if (grepl("rho", oneLine) == TRUE) {
-				pattern <- "rho (.*)"
-			bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
-			}
-			
-			# order of labels
-			if (grepl("label", oneLine) == TRUE) {
-				pattern <- "label (.*)"
-				order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
-			
-				if ((order != "1 -1") && (order != "-1 1")) {
-					stop ("Label ordering %s is unknown!", order)
-				}
-				# LABEL ORDERING IS NOT USED for libsvm!
-			}  
-		}
-	
-	
-		# read and interprete data 
-		# basically all data is sparse data format, but the data around this differs
-		svmatrix = readSparseDataFromConnection(con)
+svmmatrix = readSparseData(modelfile, verbose = TRUE)
+print(svmmatrix)
 
-	
-		# add header information
-		svmatrix$gamma = gamma
-		svmatrix$bias = bias
-		svmatrix$modelname = "LIBSVM"
-		
-		# close connection
-		close(con)
-		
-		# return
-		return (svmatrix)
-	}
-	
-	die()
+#writeSparseData("tests/data/test.txt", svmmatrix$X, svmmatrix$Y)
 
+
+
+die()
 
 
 
@@ -108,17 +69,6 @@ OldreadModel.LIBSVM = function (x, modelFile = '~/svmmodel', verbose = FALSE) {
 
 
 die()
-#Test Function
-#ReadDummyModel(filename)
-z = file("/home/hanna/svmmodel")
-open(z)
-e = readLines(z, 9)
-print(e)
-L = readSparseDataFromConnection(z)
-print (L)
-close(z)
-die()
-
 
 
 
@@ -184,12 +134,6 @@ cat("Cycle 4 Done...\n\n")
 die()
 
 
-// unittest
-// cycle: iris/lese daten -> schreibe daten -> lese sie erneut, zerobased = FALSE
--> klappt
-// schreibe erneut mit zerobased = TRUE -> laden mit zerobased=TRUE -> klappt
-// schreibe erneut mit zerobased = FALSE -> laden mit zerobased=FALSE -> klappt
-
 
 
 
@@ -238,7 +182,7 @@ for(solver in char_vec)
 	# as the libary already loads default wrappers this works
 		addSVMPackage (method = solver, verbose = FALSE)
 		findSVMSoftware (solver, searchPath = "../svm_large_data/software/", verbose = TRUE)
-print("TESH")
+
 
 	# wird alle bekannte software-pakete suchen also SVMperf, libSVM, ...
 	#FIXME: allow path like ~/

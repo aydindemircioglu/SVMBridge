@@ -5,11 +5,6 @@ context("SparseData")
 
 test_that("test if given Arguments for readSparseData are expected correct ones", {
 	expect_error(readSparseData(0), "expecting a string")
-
-#S = readSparseData(filename = "sparse.data", verbose = TRUE, zeroBased = FALSE) #dataset starts with one
-#writeSparseData("./tmp/test.sparse.data", S$X,  S$Y, verbose = TRUE, zeroBased = FALSE)
-#S = readSparseData (filename = "../../tmp/test.sparse.data", verbose = TRUE, zeroBased = FALSE) 
-
 })
 
 test_that("Test if numerous reading/writing operations with zerobased set to FALSE on the same dataset leads to precision problems", {
@@ -60,6 +55,30 @@ test_that("Test: Increased Matrix row index due to faulty zeroBased value for Re
 	column2 = ncol(S2$X)
 	#print(column2)
 	expect_true(column1 < column2)
+	
+})
+
+# test_that("Test: Extracting header information from dataset and getting  the right position for readSparseData", {
+# 	z = file("../data/svmmodel")#contains 9 lines of header information
+# 	open(z)
+# 	e = readLines(z, 9)
+# 	L = readSparseDataFromConnection(z)
+# 	close(z)
+# })
+
+test_that("Test: Multiclass Data", {
+	z = "../../../svm_large_data/datasets.multiclass/dna/dna.combined.scaled"
+	l = readSparseData(z)
+	print(l)
+	
+})
+
+
+test_that("Test: Multiclass Data", {
+	z = "../../../svm_large_data/datasets.multiclass/dna/dna.combined.scaled"
+	r = "../data/a1";
+	l = readSparseData(r)
+	print(l)
 	
 })
 

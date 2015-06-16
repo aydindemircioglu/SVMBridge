@@ -113,7 +113,8 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		int min_index = 2;
 		int l = 0;
 		int featureDimension = 0;
-		
+		int alphacount = 0;
+		int max_alphacount = 1;
 		
 		FILE *fp = fopen(filename.c_str(),"r");
 		//Jump to position in dataset where sparse data starts
@@ -140,6 +141,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		while(readline(fp)!=NULL)  //global variable line updated
 		{
 			p = strtok(line," \t"); 
+			//cout << "p: " << p << endl;
 			inst_max_index = -1;
 			strtod(p,&endptr);
 			
@@ -148,19 +150,56 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 			
 			if(endptr == p || *endptr != '\0')
 				break;
-		
+
 			while(1)
 			{
 				index = 0;
 				idx = strtok(NULL,":");
 				p = strtok(NULL," \t"); 
+				string idx3 = std::string(idx);
+				string test_for_multi = std::string(&idx[1], 1);
 				
 				if(p == NULL || *p == '\n') 
-					break;
+						break;
+				
+				if(idx3.size() > 1 & test_for_multi == " "){
+					
+					//cout << "idx3: " << idx3 << endl;
+					//cout << "size of idx3: " << idx3.size() << endl;
+					int k = 1;
+					for(int j=0;j<idx3.size();j++){
+						//cout << "idx3 " << j << ": " << idx3[j] << endl;
+						string alphastring = std::string(&idx[j], 1);
+						
+						if(alphastring != " "){
+							alphacount++;
+							//cout << "alphavalue " << k << ": " << alphastring << endl;
+							k++;
+						}
+					}
+					
+					if(alphacount > max_alphacount)
+					  max_alphacount = alphacount;
+					
+					stringstream ss;
+					ss << idx3[idx3.size()-2] << idx[idx3.size()-1];
+					string tmp = ss.str();
+					char idx2[1024];				
+					strncpy(idx2, tmp.c_str(), sizeof(idx2));
+					idx2[sizeof(idx2)-1] = 0;
+					idx = idx2;
+					//cout << "New idx: " << idx2 << endl;
+					//cout << "alphacount; " << alphacount << endl;
+					alphacount = 0;
+				}
+				
+				
+				
 				
 				errno = 0;
-				index = (int) strtol(idx,&endptr,10); 
+					index = (int) strtol(idx,&endptr,10); 
 				
+				//cout << "index: " << index << endl;
 				if(index < min_index)
 					min_index = index;
 				
@@ -210,7 +249,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 			Rcout << "Found data dimensions: " << l << " x " << featureDimension << "\n";
 
 		Rcpp::NumericMatrix xR(l,featureDimension);
-		Rcpp::NumericVector yR(l);
+		Rcpp::NumericMatrix yR(l,max_alphacount);
 		endptr = NULL;
 		
 		//Fill NumericMatrix xR, NumericVector yR
@@ -226,7 +265,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 				return R_NilValue;
 			}
 			
-			yR[i] = strtod(label, &endptr);
+			yR(i,0) = strtod(label, &endptr);
 			if(endptr == label || *endptr != '\0'){
 					s << "Error in endptr " ;
 					::Rf_error(s.str().c_str());
@@ -239,7 +278,39 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 				val = strtok(NULL," \t");
 				if(val == NULL) //No further informations in this line.. end of line
 					break;
-		
+				
+				string idx3 = std::string(idx);
+				string test_for_multi = std::string(&idx[1], 1);
+				//cout << "multitest: " << test_for_multi << endl;
+				
+				if(idx3.size() > 1 & test_for_multi == " "){
+					
+					//cout << "idx3: " << idx3 << endl;
+					//cout << "size of idx3: " << idx3.size() << endl;
+					int k = 1;
+					for(int j=0;j<idx3.size();j++){
+						
+						string alphastring = std::string(&idx[j], 1);
+						if(alphastring != " "){
+							int alphavalue = atoi(alphastring.c_str()) ;
+							yR(i, k) = alphavalue;  
+							k++;
+							//cout << "alphavalue " << j+1 << ": " << alphavalue << endl;
+						}
+					}
+					
+					
+					stringstream ss;
+					ss << idx3[idx3.size()-2] << idx[idx3.size()-1];
+					string tmp = ss.str();
+					char idx2[1024];				
+					strncpy(idx2, tmp.c_str(), sizeof(idx2));
+					idx2[sizeof(idx2)-1] = 0;
+					idx = idx2;
+					//cout << "New idx: " << idx2 << endl;
+					
+				}
+				
 				errno = 0;
 				index = (int) strtol(idx,&endptr,10); //errno may be updated in this step
 				
