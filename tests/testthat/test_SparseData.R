@@ -75,7 +75,6 @@ test_that("Test: Multiclass Data", {
 
 
 test_that("Test: Multiclass Data", {
-	z = "../../../svm_large_data/datasets.multiclass/dna/dna.combined.scaled"
 	r = "../data/a1";
 	l = readSparseData(r)
 	print(l)

@@ -32,7 +32,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>      // std::setprecision
-#include <string.h>
+#include <string>
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 #define Calloc(type,n) (type *)calloc(n, sizeof(type))
@@ -115,6 +115,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		int featureDimension = 0;
 		int alphacount = 0;
 		int max_alphacount = 1;
+		string substring = "";
 		
 		FILE *fp = fopen(filename.c_str(),"r");
 		//Jump to position in dataset where sparse data starts
@@ -159,24 +160,37 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 				string idx3 = std::string(idx);
 				string test_for_multi = std::string(&idx[1], 1);
 				
+				
 				if(p == NULL || *p == '\n') 
 						break;
 				
 				if(idx3.size() > 1 & test_for_multi == " "){
 					
+						
+				  
 					//cout << "idx3: " << idx3 << endl;
 					//cout << "size of idx3: " << idx3.size() << endl;
 					int k = 1;
+					int f = 0;
 					for(int j=0;j<idx3.size();j++){
 						//cout << "idx3 " << j << ": " << idx3[j] << endl;
 						string alphastring = std::string(&idx[j], 1);
 						
-						if(alphastring != " "){
+// 						if(alphastring != " "){
+// 							
+// 							cout << "alphavalue " << k << ": " << alphastring << endl;
+// 							k++;
+// 						}
+						
+						if(alphastring == " "){
 							alphacount++;
-							//cout << "alphavalue " << k << ": " << alphastring << endl;
-							k++;
+							//cout << "j: " << j << endl;
+							//substring = idx3.substr(f, j-f);
+							//cout << "substring:  " << substring << endl;
+							//f = j+1;
 						}
 					}
+				
 					
 					if(alphacount > max_alphacount)
 					  max_alphacount = alphacount;
@@ -189,7 +203,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 					idx2[sizeof(idx2)-1] = 0;
 					idx = idx2;
 					//cout << "New idx: " << idx2 << endl;
-					//cout << "alphacount; " << alphacount << endl;
+					//cout << "max_alphacount; " << max_alphacount << endl;
 					alphacount = 0;
 				}
 				
@@ -244,6 +258,8 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 
 		n=l; //set global variable n for function writeSparseData
 		m=max_index; //set global variable m for function writeSparseData
+		if(max_alphacount > 1)
+			max_alphacount++; //
 		
 		if (verbose == true) 
 			Rcout << "Found data dimensions: " << l << " x " << featureDimension << "\n";
@@ -283,6 +299,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 				string test_for_multi = std::string(&idx[1], 1);
 				//cout << "multitest: " << test_for_multi << endl;
 				
+				int f = 0;
 				if(idx3.size() > 1 & test_for_multi == " "){
 					
 					//cout << "idx3: " << idx3 << endl;
@@ -291,11 +308,19 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 					for(int j=0;j<idx3.size();j++){
 						
 						string alphastring = std::string(&idx[j], 1);
-						if(alphastring != " "){
-							int alphavalue = atoi(alphastring.c_str()) ;
+// 						if(alphastring != " "){
+// 							int alphavalue = atoi(alphastring.c_str()) ;
+// 							yR(i, k) = alphavalue;  
+// 							k++;
+// 							//cout << "alphavalue " << j+1 << ": " << alphavalue << endl;
+// 						}
+						char * ptrsd;
+						if(alphastring == " "){
+							substring = idx3.substr(f, j-f);
+							double alphavalue = strtod(substring.c_str(), NULL);
 							yR(i, k) = alphavalue;  
+							f = j+1;
 							k++;
-							//cout << "alphavalue " << j+1 << ": " << alphavalue << endl;
 						}
 					}
 					
