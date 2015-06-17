@@ -13,6 +13,9 @@ test_that("subsampling with specified rate does work", {
 		outputFile = subsampleDataByCutoff (orgData, i/100)
 		lines = R.utils::countLines (outputFile)[1]
 		expect_equal (i*10, lines)
+		
+		# TODO: now re-read the file and check if the data is still equal
+		
 	}
 })
 
