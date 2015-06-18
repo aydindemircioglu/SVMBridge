@@ -45,6 +45,7 @@ using namespace Rcpp;
 static char *line = NULL;
 static int n=0;
 static int m=0;
+static int y_width=0;
 static int max_line_len;
 
 
@@ -57,10 +58,6 @@ static int max_line_len;
 //
 
 // internal helper function to read a line into global variable
-//
-
-
-
 static char* readline(FILE *input)
 {
 	int len;
@@ -142,7 +139,6 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		while(readline(fp)!=NULL)  //global variable line updated
 		{
 			p = strtok(line," \t"); 
-			//cout << "p: " << p << endl;
 			inst_max_index = -1;
 			strtod(p,&endptr);
 			
@@ -157,44 +153,36 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 				index = 0;
 				idx = strtok(NULL,":");
 				p = strtok(NULL," \t"); 
-				string idx3 = std::string(idx);
-				string test_for_multi = std::string(&idx[1], 1);
-				
-				
+
 				if(p == NULL || *p == '\n') 
 						break;
 				
+				//check if column contains multiple alpha values
+				string idx3 = std::string(idx);
+				string test_for_multi = std::string(&idx[1], 1);
 				if(idx3.size() > 1 & test_for_multi == " "){
-					
-						
-				  
-					//cout << "idx3: " << idx3 << endl;
-					//cout << "size of idx3: " << idx3.size() << endl;
 					int k = 1;
 					int f = 0;
+					
+					//determine count of alpha values (check for unequal counts)
 					for(int j=0;j<idx3.size();j++){
-						//cout << "idx3 " << j << ": " << idx3[j] << endl;
 						string alphastring = std::string(&idx[j], 1);
 						
-// 						if(alphastring != " "){
-// 							
-// 							cout << "alphavalue " << k << ": " << alphastring << endl;
-// 							k++;
-// 						}
-						
-						if(alphastring == " "){
+						if(alphastring == " ")
 							alphacount++;
-							//cout << "j: " << j << endl;
-							//substring = idx3.substr(f, j-f);
-							//cout << "substring:  " << substring << endl;
-							//f = j+1;
-						}
 					}
 				
-					
 					if(alphacount > max_alphacount)
-					  max_alphacount = alphacount;
+						max_alphacount = alphacount;
 					
+					//Might not detect unequal count of alpha values of prior columns but it saves time for unequality in subsequent columns
+					if(alphacount < max_alphacount){
+						s << "Error while loading file: Unequal count of alpha values detected " ;
+						::Rf_error(s.str().c_str());
+						return R_NilValue;
+					}
+					
+					//fix idx so it doesnt contain any alpha values
 					stringstream ss;
 					ss << idx3[idx3.size()-2] << idx[idx3.size()-1];
 					string tmp = ss.str();
@@ -202,18 +190,12 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 					strncpy(idx2, tmp.c_str(), sizeof(idx2));
 					idx2[sizeof(idx2)-1] = 0;
 					idx = idx2;
-					//cout << "New idx: " << idx2 << endl;
-					//cout << "max_alphacount; " << max_alphacount << endl;
 					alphacount = 0;
 				}
-				
-				
-				
 				
 				errno = 0;
 					index = (int) strtol(idx,&endptr,10); 
 				
-				//cout << "index: " << index << endl;
 				if(index < min_index)
 					min_index = index;
 				
@@ -258,8 +240,12 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 
 		n=l; //set global variable n for function writeSparseData
 		m=max_index; //set global variable m for function writeSparseData
+		//if dataset contains multiple alpha values, max_alphacount gets incremented since the first alpha value didnt get accounted yet FIXME
 		if(max_alphacount > 1)
-			max_alphacount++; //
+			max_alphacount++; 
+			
+		if (verbose == true) 
+			Rcout << "\nCount of Alpha Values: " << max_alphacount << endl;
 		
 		if (verbose == true) 
 			Rcout << "Found data dimensions: " << l << " x " << featureDimension << "\n";
@@ -281,6 +267,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 				return R_NilValue;
 			}
 			
+			//if datasets contains multiple alpha values, this is the first one, else this is the class label FIXME
 			yR(i,0) = strtod(label, &endptr);
 			if(endptr == label || *endptr != '\0'){
 					s << "Error in endptr " ;
@@ -292,30 +279,25 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 			{
 				idx = strtok(NULL,":");
 				val = strtok(NULL," \t");
+				alphacount = 1; //correction since max_alphacount got incremented
 				if(val == NULL) //No further informations in this line.. end of line
 					break;
 				
+				//check if column contains multiple alpha values
 				string idx3 = std::string(idx);
 				string test_for_multi = std::string(&idx[1], 1);
-				//cout << "multitest: " << test_for_multi << endl;
-				
 				int f = 0;
 				if(idx3.size() > 1 & test_for_multi == " "){
-					
-					//cout << "idx3: " << idx3 << endl;
-					//cout << "size of idx3: " << idx3.size() << endl;
 					int k = 1;
+					
+					//fill yR with alpha values
 					for(int j=0;j<idx3.size();j++){
 						
 						string alphastring = std::string(&idx[j], 1);
-// 						if(alphastring != " "){
-// 							int alphavalue = atoi(alphastring.c_str()) ;
-// 							yR(i, k) = alphavalue;  
-// 							k++;
-// 							//cout << "alphavalue " << j+1 << ": " << alphavalue << endl;
-// 						}
 						char * ptrsd;
+						
 						if(alphastring == " "){
+							alphacount++;
 							substring = idx3.substr(f, j-f);
 							double alphavalue = strtod(substring.c_str(), NULL);
 							yR(i, k) = alphavalue;  
@@ -324,6 +306,14 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 						}
 					}
 					
+					//final check for unequality in alpha values count. 
+					if(alphacount < max_alphacount){
+						s << "Error while loading file: Unequal count of alpha values detected " ;
+						::Rf_error(s.str().c_str());
+						return R_NilValue;
+					}
+					
+					//fix idx so it doesnt contain any alpha values
 					
 					stringstream ss;
 					ss << idx3[idx3.size()-2] << idx[idx3.size()-1];
@@ -332,8 +322,6 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 					strncpy(idx2, tmp.c_str(), sizeof(idx2));
 					idx2[sizeof(idx2)-1] = 0;
 					idx = idx2;
-					//cout << "New idx: " << idx2 << endl;
-					
 				}
 				
 				errno = 0;
@@ -391,7 +379,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 //'		writeSparseData ("./australian.data", X, Y)
 //' @export
 // [[Rcpp::export]] 
-List writeSparseData (std::string filename, NumericMatrix X, NumericVector Y, bool verbose = false, bool zeroBased = false) {
+List writeSparseData (std::string filename, NumericMatrix X, NumericMatrix Y, bool verbose = false, bool zeroBased = false) {
 	
 	try
 	{
@@ -408,18 +396,25 @@ List writeSparseData (std::string filename, NumericMatrix X, NumericVector Y, bo
 		// determine dimensions;
 		n = X.nrow();
 		m = X.ncol();
+		y_width = Y.ncol();
 		
-		if (Y.size() != n) {
+		
+		if (Y.nrow() != n) {
 			Rcout << "Error!\n";
 			// FIXME throw error
 		}
 		
 		for(int i=0;i<n;i++) 
 		{
-			fs << Y(i) << " ";
+			for(int r=0;r<y_width;r++){
+				if(Y(i,r) != 0)
+					fs << Y(i,r) << " ";
+			}
+			
 			for(int j=0;j<m;j++)
 			{
-				fs << j + correction << ":" << std::setprecision(16) << X(i,j) << " ";
+				if(X(i,j) != 0)
+					fs << j + correction << ":" << std::setprecision(16) << X(i,j) << " ";
 			}
 			fs << "\n";
 		}

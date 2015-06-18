@@ -20,14 +20,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // writeSparseData
-List writeSparseData(std::string filename, NumericMatrix X, NumericVector Y, bool verbose, bool zeroBased);
+List writeSparseData(std::string filename, NumericMatrix X, NumericMatrix Y, bool verbose, bool zeroBased);
 RcppExport SEXP SVMBridge_writeSparseData(SEXP filenameSEXP, SEXP XSEXP, SEXP YSEXP, SEXP verboseSEXP, SEXP zeroBasedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< std::string >::type filename(filenameSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type Y(YSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< bool >::type zeroBased(zeroBasedSEXP);
     __result = Rcpp::wrap(writeSparseData(filename, X, Y, verbose, zeroBased));

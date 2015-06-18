@@ -44,6 +44,7 @@ cat("start\n")
 modelfile = "tests/data/a1"
 
 svmmatrix = readSparseData(modelfile, verbose = TRUE)
+writeSparseData("tests/data/test.txt", svmmatrix$X, svmmatrix$Y, verbose = TRUE)
 print(svmmatrix)
 
 #writeSparseData("tests/data/test.txt", svmmatrix$X, svmmatrix$Y)
