@@ -97,6 +97,8 @@ static char* readline(FILE *input)
 // [[Rcpp::export]] 
 List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = false, bool zeroBased = false) {
 	
+	std::setprecision(16);
+  
 	try
 	{	
 		int correction = 1;
@@ -112,7 +114,11 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		int featureDimension = 0;
 		int alphacount = 0;
 		int max_alphacount = 1;
+		int test_for_multi = 0;
+		
 		string substring = "";
+		string alphastring = "";
+		string first_index = "";
 		
 		FILE *fp = fopen(filename.c_str(),"r");
 		//Jump to position in dataset where sparse data starts
@@ -154,24 +160,32 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 				idx = strtok(NULL,":");
 				p = strtok(NULL," \t"); 
 
+				//cout << "Fehlertracking: " << "idx = " << idx << endl;
 				if(p == NULL || *p == '\n') 
 						break;
 				
 				//check if column contains multiple alpha values
 				string idx3 = std::string(idx);
-				string test_for_multi = std::string(&idx[1], 1);
-				if(idx3.size() > 1 & test_for_multi == " "){
-					int k = 1;
+				
+				test_for_multi = idx3.find(" ");
+				
+				
+				
+				//cout << "Fehlertracking: " << "idx3 = " << idx3 << endl;
+				//cout << "Fehlertracking: " << "test_for_multi = " << test_for_multi << endl;
+				if(idx3.size() > 1 & test_for_multi != -1){
 					int f = 0;
-					
 					//determine count of alpha values (check for unequal counts)
 					for(int j=0;j<idx3.size();j++){
-						string alphastring = std::string(&idx[j], 1);
+						alphastring = std::string(&idx[j], 1);
 						
-						if(alphastring == " ")
+						if(alphastring == " "){
 							alphacount++;
+							f=j+1;
+						}
+						first_index = idx3.substr(f, j);
 					}
-				
+					
 					if(alphacount > max_alphacount)
 						max_alphacount = alphacount;
 					
@@ -184,20 +198,23 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 					
 					//fix idx so it doesnt contain any alpha values
 					stringstream ss;
-					ss << idx3[idx3.size()-2] << idx[idx3.size()-1];
+					ss << first_index;
 					string tmp = ss.str();
 					char idx2[1024];				
 					strncpy(idx2, tmp.c_str(), sizeof(idx2));
 					idx2[sizeof(idx2)-1] = 0;
 					idx = idx2;
 					alphacount = 0;
+					//cout << "Fehlertracking: " << "idx = " << idx << endl;
 				}
 				
 				errno = 0;
-					index = (int) strtol(idx,&endptr,10); 
+				index = (int) strtol(idx,&endptr,10); 
 				
 				if(index < min_index)
 					min_index = index;
+				
+				//cout << "Fehlertracking: " << "\nindex = " << index << endl;
 				
 				if(endptr == idx || errno != 0 || *endptr != '\0' || index <= inst_max_index) {
 					s << "Error while loading file. " ;
@@ -233,9 +250,6 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		}
 		rewind(fp);
 		fseek(fp, skipBytes, SEEK_SET);
-		
-		
-		DEBUG Rcout << "Max_Index: " <<  max_index << "\n"; 
 		featureDimension = max_index + 1 - correction;
 
 		n=l; //set global variable n for function writeSparseData
@@ -269,6 +283,8 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 			
 			//if datasets contains multiple alpha values, this is the first one, else this is the class label FIXME
 			yR(i,0) = strtod(label, &endptr);
+			//cout << "label " << label << endl;
+			//cout << "endptr " << *endptr << endl;
 			if(endptr == label || *endptr != '\0'){
 					s << "Error in endptr " ;
 					::Rf_error(s.str().c_str());
@@ -277,6 +293,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 			
 			while(1)
 			{
+				std::setprecision(16);
 				idx = strtok(NULL,":");
 				val = strtok(NULL," \t");
 				alphacount = 1; //correction since max_alphacount got incremented
@@ -285,17 +302,15 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 				
 				//check if column contains multiple alpha values
 				string idx3 = std::string(idx);
-				string test_for_multi = std::string(&idx[1], 1);
+				test_for_multi = idx3.find(" ");
 				int f = 0;
-				if(idx3.size() > 1 & test_for_multi == " "){
+				if(idx3.size() > 1 & test_for_multi != -1){
 					int k = 1;
 					
 					//fill yR with alpha values
 					for(int j=0;j<idx3.size();j++){
 						
-						string alphastring = std::string(&idx[j], 1);
-						char * ptrsd;
-						
+						alphastring = std::string(&idx[j], 1);
 						if(alphastring == " "){
 							alphacount++;
 							substring = idx3.substr(f, j-f);
@@ -304,6 +319,9 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 							f = j+1;
 							k++;
 						}
+						first_index = idx3.substr(f, j);
+						//DEBUG Rcout << "first_index = " << first_index << endl;
+						//cout << "first_index = " << first_index << endl;
 					}
 					
 					//final check for unequality in alpha values count. 
@@ -316,12 +334,13 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 					//fix idx so it doesnt contain any alpha values
 					
 					stringstream ss;
-					ss << idx3[idx3.size()-2] << idx[idx3.size()-1];
+					ss << first_index;
 					string tmp = ss.str();
 					char idx2[1024];				
 					strncpy(idx2, tmp.c_str(), sizeof(idx2));
 					idx2[sizeof(idx2)-1] = 0;
 					idx = idx2;
+					//cout << "fixed idx = " << idx << endl;
 				}
 				
 				errno = 0;
@@ -336,7 +355,9 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 					inst_max_index = index;
 
 				errno = 0;
+				//cout << "Fehlertracking val2 = " << rds << endl;
 				xR(i, index - correction) = strtod(val,&endptr); //errno may be updated in this step
+				//cout  << "Fehlertracking: index = " << index << endl;
 				
 				if(endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr))){
 					s << "Error in endptr ";
@@ -407,8 +428,7 @@ List writeSparseData (std::string filename, NumericMatrix X, NumericMatrix Y, bo
 		for(int i=0;i<n;i++) 
 		{
 			for(int r=0;r<y_width;r++){
-				if(Y(i,r) != 0)
-					fs << Y(i,r) << " ";
+				fs << std::setprecision(16) << Y(i,r) << " ";
 			}
 			
 			for(int j=0;j<m;j++)

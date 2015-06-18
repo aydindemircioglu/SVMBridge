@@ -39,16 +39,14 @@ char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LL
 
 #testfunction
 cat("start\n")
-#modelfile = "../svm_large_data/datasets.multiclass/dna/dna.combined.scaled"
-#modelfile = "tests/data/australian.test"
-modelfile = "tests/data/a1"
+tmp = tempfile()
+	S1 = readSparseData (filename = "tests/data/multiclass.sparse.test")
+	writeSparseData ( tmp, S1$X,  S1$Y)
+	S2 = readSparseData (filename = tmp) 
 
-svmmatrix = readSparseData(modelfile, verbose = TRUE)
-writeSparseData("tests/data/test.txt", svmmatrix$X, svmmatrix$Y, verbose = TRUE)
-print(svmmatrix)
-
-#writeSparseData("tests/data/test.txt", svmmatrix$X, svmmatrix$Y)
-
+	
+	print(S1$Y)
+	print(S1$X)
 
 
 die()

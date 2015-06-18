@@ -3,11 +3,11 @@ context("SparseData")
 
 
 
-test_that("test if given Arguments for readSparseData are expected correct ones", {
+test_that(" if given Arguments for readSparseData are expected correct ones", {
 	expect_error(readSparseData(0), "expecting a string")
 })
 
-test_that("Test if numerous reading/writing operations with zerobased set to FALSE on the same dataset leads to precision problems", {
+test_that(" if numerous reading/writing operations with zerobased set to FALSE on the same dataset leads to precision problems", {
 	tmp = tempfile()
 	S1 = readSparseData (filename = "../data/sparse.data", verbose = FALSE, zeroBased = FALSE)
 	writeSparseData ( tmp, S1$X,  S1$Y, verbose = FALSE, zeroBased = FALSE)
@@ -25,7 +25,7 @@ test_that("Test if numerous reading/writing operations with zerobased set to FAL
 	}
 })
 
-test_that("Test if numerous reading/writing operations with zerobased set to TRUE on the same dataset leads to precision problems", {
+test_that(" if numerous reading/writing operations with zerobased set to TRUE on the same dataset leads to precision problems", {
 	tmp = tempfile()
 	S1 = readSparseData (filename = "../data/sparse.data", verbose = FALSE, zeroBased = TRUE)
 	writeSparseData ( tmp, S1$X,  S1$Y, verbose = FALSE, zeroBased = TRUE)
@@ -43,7 +43,7 @@ test_that("Test if numerous reading/writing operations with zerobased set to TRU
 	}
 })
 
-test_that("Test: Increased Matrix row index due to faulty zeroBased value for Reading/Writing", {
+test_that(" Increased Matrix row index due to faulty zeroBased value for Reading/Writing", {
 	tmp = tempfile()
 	S1 = readSparseData (filename = "../data/sparse.data", verbose = FALSE, zeroBased = TRUE)
 	column1 = ncol(S1$X)
@@ -54,20 +54,48 @@ test_that("Test: Increased Matrix row index due to faulty zeroBased value for Re
 	
 })
 
-test_that("Test: Read/Write Datasets with multiple alpha vectors", {
-	r = "../data/a1"; #FIXME
+# test_that("Test: Extracting header information from dataset and getting  the right position for readSparseData", {
+# 	z = file("../data/svmmodel")#contains 9 lines of header information
+# 	open(z)
+# 	e = readLines(z, 9)
+# 	L = readSparseDataFromConnection(z)
+# 	close(z)
+# })
+
+test_that(" Read/Write Datasets with multiple alpha vectors", {
+	f = file("../data/mnist.model") #contains 9 columns of header information
+	open(f)
+	readLines(f, 9)
 	tmp = tempfile()
+	s = readSparseDataFromConnection(f, 9)
+	writeSparseData(filename = tmp, s$X, s$Y)
+	s2 = readSparseData(filename = tmp)
+	expect_equal(s$X, s2$X)
+	expect_equal(s$Y, s2$Y)
 
  	for(i in 1:100)
 	{
-		l = readSparseData(r)
-		writeSparseData(tmp, l$X, l$Y)
-		s = readSparseData(tmp)
-		expect_equal(l$X, s$X)
-		expect_equal(l$Y, s$Y)
+		s = readSparseData(filename = tmp)
+		writeSparseData(filename = tmp, s$X, s$Y)
+		s2 = readSparseData(filename = tmp)
+		expect_equal(s$X, s2$X)
+		expect_equal(s$Y, s2$Y)
 	}
+	close(f)
+	
 })
 
+
+
+test_that(" Read/Write operations do work on datasets with non binary labels", {
+	tmp = tempfile()
+	S1 = readSparseData (filename = "../data/multiclass.sparse.test")
+	writeSparseData ( tmp, S1$X,  S1$Y)
+	S2 = readSparseData (filename = tmp) 
+	expect_equal(S1$X, S2$X)
+	expect_equal(S1$Y, S2$Y)
+	
+})
 #test_that("Test: Decreased Matrix row index due to faulty zeroBased value for Reading/Writing", {
 #	tryCatch({
 #		tmp = tempfile()
