@@ -2,9 +2,10 @@ context("subsampleDataByCutoff")
 
 
 test_that("subsampling with specified rate does work", {
-	# create a sparse file with 1000 lines
-	X = data.frame (f1 = runif(1000), f2 = runif(1000), f3 = runif(1000))
-	Y = data.frame (Y = sign (runif(1000) - 0.5))
+	# create a sparse file with 5000 lines
+	nLines = 5000
+	X = data.frame (f1 = runif(nLines), f2 = runif(nLines), f3 = runif(nLines))
+	Y = data.frame (Y = sign (runif(nLines) - 0.5))
 	orgData = tempfile()
 	writeSparseData(orgData, as.matrix(X), as.matrix(Y), verbose = TRUE, zeroBased = FALSE)
 	
@@ -12,7 +13,9 @@ test_that("subsampling with specified rate does work", {
 	for (i in seq(1,100)) {
 		outputFile = subsampleDataByCutoff (orgData, i/100)
 		lines = R.utils::countLines (outputFile)[1]
-		expect_equal (i*10, lines)
+		cat ("expect:", floor(nLines/100*i))
+		cat ("  have:", lines, "\n")
+		expect_equal (floor(nLines/100*i), lines,  tolerance = 0.01)
 		
 		# TODO: now re-read the file and check if the data is still equal
 		
@@ -21,14 +24,15 @@ test_that("subsampling with specified rate does work", {
 
 
 test_that("subsampling with specified number of lines does work", {
-	# create a sparse file with 1000 lines
-	X = data.frame (f1 = runif(1000), f2 = runif(1000), f3 = runif(1000))
-	Y = data.frame (Y = sign (runif(1000) - 0.5))
+	# create a sparse file with 5000 lines
+	nLines = 5000
+	X = data.frame (f1 = runif(nLines), f2 = runif(nLines), f3 = runif(nLines))
+	Y = data.frame (Y = sign (runif(nLines) - 0.5))
 	orgData = tempfile()
 	writeSparseData(orgData, as.matrix(X), as.matrix(Y), verbose = TRUE, zeroBased = FALSE)
 	
 	# now subsample the file
-	for (i in seq(2,999,9)) {
+	for (i in seq(2,nLines - 1,9)) {
 		outputFile = subsampleDataByCutoff (orgData, i)
 		lines = R.utils::countLines (outputFile)[1]
 		expect_equal (i, lines)

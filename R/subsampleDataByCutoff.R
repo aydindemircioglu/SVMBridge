@@ -54,13 +54,14 @@ subsampleDataByCutoff <- function ( filepath = "", subsamplingRate = -1)
 		subsampledFile = tempfile(pattern = paste("sub", subsamplingSize, "", sep = "_"))
 
 		# subsample by read-writing, unsure if this is performant enough
+		unlink (subsampledFile)
 		srcConn = file (originalFile)
-		targetConn = file (subsampledFile)
+		targetConn = file (subsampledFile, "w")
 		
 		# read in batches of 1024
 		batchSize = 1024
 		nBatches = subsamplingSize %/% batchSize
-		for (i in 1:nBatches) {
+		for (i in seq_len(nBatches)) {
 			data = readLines (con = srcConn, batchSize)
 			writeLines (data, con = targetConn)
 		}
