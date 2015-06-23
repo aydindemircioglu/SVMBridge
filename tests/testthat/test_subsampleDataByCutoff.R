@@ -13,12 +13,14 @@ test_that("subsampling with specified rate does work", {
 	for (i in seq(1,100)) {
 		outputFile = subsampleDataByCutoff (orgData, i/100)
 		lines = R.utils::countLines (outputFile)[1]
-		cat ("expect:", floor(nLines/100*i))
-		cat ("  have:", lines, "\n")
 		expect_equal (floor(nLines/100*i), lines,  tolerance = 0.01)
 		
-		# TODO: now re-read the file and check if the data is still equal
-		
+		# now re-read the file and check if the data is still equal
+		t = readSparseData (outputFile)
+		attributes(t$X) = attributes(as.matrix(X[1:lines,]))
+		attributes(t$Y) = attributes(as.matrix(Y[1:lines,]))
+		expect_equal (as.matrix(X[1:lines,]), t$X)
+		expect_equal (as.matrix(Y[1:lines,]), t$Y)
 	}
 })
 

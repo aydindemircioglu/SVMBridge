@@ -55,7 +55,7 @@ subsampleDataByCutoff <- function ( filepath = "", subsamplingRate = -1)
 
 		# subsample by read-writing, unsure if this is performant enough
 		unlink (subsampledFile)
-		srcConn = file (originalFile)
+		srcConn = file (originalFile, "r")
 		targetConn = file (subsampledFile, "w")
 		
 		# read in batches of 1024
