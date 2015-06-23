@@ -38,6 +38,13 @@ test_that("subsampling with specified number of lines does work", {
 		outputFile = subsampleDataByCutoff (orgData, i)
 		lines = R.utils::countLines (outputFile)[1]
 		expect_equal (i, lines)
+		
+		# now re-read the file and check if the data is still equal
+		t = readSparseData (outputFile)
+		attributes(t$X) = attributes(as.matrix(X[1:lines,]))
+		attributes(t$Y) = attributes(as.matrix(Y[1:lines,]))
+		expect_equal (as.matrix(X[1:lines,]), t$X)
+		expect_equal (as.matrix(Y[1:lines,]), t$Y)
 	}
 })
 
