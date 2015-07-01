@@ -400,7 +400,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 //'		writeSparseData ("./australian.data", X, Y)
 //' @export
 // [[Rcpp::export]] 
-List writeSparseData (std::string filename, NumericMatrix X, NumericMatrix Y, bool verbose = false, bool zeroBased = false) {
+List writeSparseData (std::string filename, NumericMatrix X, NumericMatrix Y, size_t skipBytes = 0, bool verbose = false, bool zeroBased = false) {
 	
 	try
 	{
@@ -408,6 +408,7 @@ List writeSparseData (std::string filename, NumericMatrix X, NumericMatrix Y, bo
 
 		std::fstream fs;
 		fs.open(filename.c_str(), std::fstream::in | std::fstream::out |std::fstream::trunc);
+		fs.seekg(skipBytes);
 		
 		int correction = 0;
 		if (zeroBased == false) {

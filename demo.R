@@ -37,17 +37,26 @@
 
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
 
+
+#Create Model Object
+	solver = "LIBSVM"
+	
+	# as the libary already loads default wrappers this works
+	addSVMPackage (method = solver, verbose = FALSE)
+	findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
+
+	# get the correct object
+	SVMObject = SVMBridgeEnv$packages[[solver]]
+	print(SVMObject)
+
 #testfunction
 cat("start\n")
 tmp = tempfile()
-	S1 = readSparseData (filename = "tests/data/multiclass.sparse.test")
-	writeSparseData ( tmp, S1$X,  S1$Y)
-	S2 = readSparseData (filename = tmp) 
-
-	
-	print(S1$Y)
-	print(S1$X)
-
+matrix = readModel.LIBSVM(SVMObject, modelFile = "tests/data/mnist.binary.model")
+#print(matrix$Y)
+cat("done\n")
+writeModel.LIBSVM(SVMObject, model = matrix, modelFile = "tests/data/test1")
+matrix2 = readModel.LIBSVM(modelFile = "tests/data/test1")
 
 die()
 

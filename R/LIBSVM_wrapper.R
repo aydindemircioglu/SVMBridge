@@ -183,11 +183,17 @@
 				pattern <- "label (.*)"
 				order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
 			
-				if ((order != "1 -1") && (order != "-1 1")) {
-					stop ("Label ordering %s is unknown!", order)
-				}
+# 				if ((order != "1 -1") && (order != "-1 1")) {
+# 					stop ("Label ordering %s is unknown!", order)
+# 				}
 				# LABEL ORDERING IS NOT USED for libsvm!
 			}  
+			
+			if (grepl("svm_type", oneLine) == TRUE) {
+				pattern <- "rho (.*)"
+				svm_type = sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])
+			}
+			
 		}
 	
 	
@@ -199,12 +205,15 @@
 		# add header information
 		svmatrix$gamma = gamma
 		svmatrix$bias = bias
-		svmatrix$modelname = "LIBSVM"
+		svmatrix$modeltype = "LIBSVM"
+		svmatrix$label = order
+		svmatrix$svm_type = toString(svm_type)
 		
 		# close connection
 		close(con)
-		
+
 		# return
+		retObj = BBmisc::makeS3Obj("SVMModel", svmatrix)
 		return (svmatrix)
 	}
 
@@ -233,8 +242,9 @@
 		writeLines(paste ("SV", sep = ""), modelFileHandle )
 
 		# basically all data is sparse data format, but the data around this differs
-		svmatrix = dumpSparseFormat(model$a, model$X)
-		writeLines(svmatrix, modelFileHandle, sep = "" )
+		#svmatrix = dumpSparseFormat(model$a, model$X)
+		#writeLines(svmatrix, modelFileHandle, sep = "" )
+		writeSparseDataToConnection(modelFileHandle, model$X, model$Y)
 		
 		# close connection
 		close(modelFileHandle)

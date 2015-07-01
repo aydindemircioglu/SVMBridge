@@ -138,6 +138,11 @@ readSparseDataFromConnection = function (con, verbose = FALSE, zeroBased = FALSE
     return (L)
 }
 
+writeSparseDataToConnection = function (con, X, Y, verbose = FALSE, zeroBased = FALSE) {
+	currentPosition = seek(con)
+	filename = summary(con)$description
+	writeSparseData(filename, X, Y, skipBytes = currentPosition, verbose = verbose, zeroBased = zeroBased)
+}
 
 
 # stupid R check for pythons cool "name == __main__"
