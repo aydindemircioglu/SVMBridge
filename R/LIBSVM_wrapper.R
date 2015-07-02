@@ -183,9 +183,9 @@
 				pattern <- "label (.*)"
 				order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
 			
-				if ((order != "1 -1") && (order != "-1 1")) {
-					stop ("Label ordering %s is unknown!", order)
-				}
+# 				if ((order != "1 -1") && (order != "-1 1")) {
+# 					stop ("Label ordering %s is unknown!", order)
+# 				}
 				#LABEL ORDERING IS NOT USED for libsvm!
 			}  
 			
@@ -222,26 +222,26 @@
 			BBmisc::messagef ("Writing SVM Model..")
 		}
 		
-		model$a = model$Y
+		model$alpha = model$Y
 		# FIXME: label order
 		# TODO: support multiclass
 		model$nrclass = 2
-		posSV = sum(model$a > 0)
-		negSV = sum(model$a < 0)
+		posSV = sum(model$alpha > 0)
+		negSV = sum(model$alpha < 0)
 		# open connection
 		modelFileHandle <- file(modelFile, open = "w+")
 		writeLines(paste ("svm_type c_svc", sep = ""), modelFileHandle )
 		writeLines(paste ("kernel_type", "rbf", sep = " "), modelFileHandle )
 		writeLines(paste ("gamma", model$gamma, sep = " "), modelFileHandle )
 		writeLines(paste ("nr_class", model$nrclass, sep = " "), modelFileHandle )
-		writeLines(paste ("total_sv", length(model$a), sep = " "), modelFileHandle )
+		writeLines(paste ("total_sv", length(model$alpha), sep = " "), modelFileHandle )
 		writeLines(paste ("rho", model$bias, sep = " "), modelFileHandle )
 		writeLines(paste ("label 1 -1", sep = " "), modelFileHandle )
 		writeLines(paste ("nr_sv", posSV, negSV, sep = " "), modelFileHandle )
 		writeLines(paste ("SV", sep = ""), modelFileHandle )
 
 		# basically all data is sparse data format, but the data around this differs
-		#svmatrix = dumpSparseFormat(model$a, model$X)
+		#svmatrix = dumpSparseFormat(model$alpha, model$X)
 		#writeLines(svmatrix, modelFileHandle, sep = "" )
 		writeSparseDataToConnection(modelFileHandle, model$X, model$Y)
 		
