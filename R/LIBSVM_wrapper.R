@@ -183,10 +183,10 @@
 				pattern <- "label (.*)"
 				order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
 			
-# 				if ((order != "1 -1") && (order != "-1 1")) {
-# 					stop ("Label ordering %s is unknown!", order)
-# 				}
-				# LABEL ORDERING IS NOT USED for libsvm!
+				if ((order != "1 -1") && (order != "-1 1")) {
+					stop ("Label ordering %s is unknown!", order)
+				}
+				#LABEL ORDERING IS NOT USED for libsvm!
 			}  
 			
 			if (grepl("svm_type", oneLine) == TRUE) {
@@ -206,8 +206,6 @@
 		svmatrix$gamma = gamma
 		svmatrix$bias = bias
 		svmatrix$modeltype = "LIBSVM"
-		svmatrix$label = order
-		svmatrix$svm_type = toString(svm_type)
 		
 		# close connection
 		close(con)
@@ -224,6 +222,7 @@
 			BBmisc::messagef ("Writing SVM Model..")
 		}
 		
+		model$a = model$Y
 		# FIXME: label order
 		# TODO: support multiclass
 		model$nrclass = 2

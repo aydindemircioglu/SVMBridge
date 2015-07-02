@@ -101,16 +101,17 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 	datasets = c("aXa")#, "protein", "poker")
 	solver = "LIBSVM"
 	verbose = FALSE
+	
 	for(d in datasets){
 		addSVMPackage (method = solver, verbose = FALSE)
-		findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
+		findSVMSoftware (solver, searchPath = "../../../svm_large_data/software/", verbose = TRUE)
 	
-		trainFile = paste ("../../shark/svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
+		trainFile = paste ("../../../svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
 		
 		cost = runif(1)
 		gamma = runif(1)
-		subsamplingrate = 0.1
-		
+		subsamplingrate = 0.05
+		cat("errorsearch1\n")
 		#No Read/Write Operations used
 		trainObj =  trainSVM(
 			method = solver,
@@ -123,7 +124,7 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 			modelFile = "/tmp/model_without.txt",
 			verbose = verbose
 		)  
-		
+		cat("errorsearch2\n")
 		testObj =  testSVM(
 			method = solver,
 			testDataFile = trainFile,
@@ -131,7 +132,7 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 			predictionsFile = "/tmp/predictions_without.txt",
 			verbose = verbose
 		) 
-		
+		cat("errorsearch3\n")
 		#Use Read/Write Operations
 		trainObj =  trainSVM(
 			method = solver,
@@ -143,17 +144,41 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 			readModelFile = TRUE,
 			verbose = verbose
 		)  
-		
+		cat("errorsearch4\n")
+	
+		# get the correct object
 		SVMObject = SVMBridgeEnv$packages[[solver]]
-		writeModel(SVMObject, "/tmp/model.txt", ...)
+		cat("errorsearch4.5\n")
+		print(SVMObject)
+		writeModel.LIBSVM(SVMObject,trainObj$model, modelFile = "/tmp/model.txt")
 		
+		cat("errorsearch5\n")
 		testObj =  testSVM(
 			method = solver,
 			testDataFile = trainFile,
-			model = trainObj$model,
+			modelFile = "/tmp/model.txt",
 			predictionsFile = "/tmp/predictions.txt",
 			verbose = verbose
 		)  
+		cat("errorsearch6\n")
+		
+		model_a = file("/tmp/model_without.txt")
+		open(model_a)
+		model_b = file("/tmp/model.txt")
+		open(model_b)
+		
+		prediction_a = file("/tmp/predictions_without.txt")
+		open(prediction_a)
+		prediction_b = file("/tmp/predictions.txt")
+		open(prediction_b)
+		
+		expect_equal(model_a, model_b)
+		#expect_equal(prediction_a, prediction_b)
+		
+		close(model_a)
+		close(model_b)
+		close(prediction_a)
+		close(prediction_b)
 	}
 	
 	

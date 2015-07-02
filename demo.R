@@ -23,8 +23,8 @@
 	library(methods)
 	library(devtools)
 	load_all (".")
-	build_vignettes(".")
-	document(".")
+	#build_vignettes(".")
+	#document(".")
 	# devtools::build_win()	
 	# is done by document/loadall anyway?
 	library(Rcpp)
@@ -45,11 +45,77 @@ char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LL
 	addSVMPackage (method = solver, verbose = FALSE)
 	findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
 
-	# get the correct object
-	SVMObject = SVMBridgeEnv$packages[[solver]]
-	print(SVMObject)
+	
 
 #testfunction
+datasets = c("aXa")#, "protein", "poker")
+	verbose = FALSE
+	for(d in datasets){
+		addSVMPackage (method = solver, verbose = FALSE)
+		findSVMSoftware (solver, searchPath = "../svm_large_data/software/", verbose = TRUE)
+	
+		trainFile = paste ("../svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
+		
+		cost = runif(1)
+		gamma = runif(1)
+		subsamplingrate = 0.1
+		cat("errorsearch1\n")
+		#No Read/Write Operations used
+		trainObj =  trainSVM(
+			method = solver,
+			trainDataFile = trainFile, 
+			subsamplingRate = subsamplingrate,
+			cost = cost, 
+			gamma = gamma, 
+			#epsilon = 0.5, 
+			readModelFile = FALSE,
+			modelFile = "/tmp/model_without.txt",
+			verbose = verbose
+		)  
+		cat("errorsearch2\n")
+		testObj =  testSVM(
+			method = solver,
+			testDataFile = trainFile,
+			modelFile = "/tmp/model_without.txt",
+			predictionsFile = "/tmp/predictions_without.txt",
+			verbose = verbose
+		) 
+		cat("errorsearch3\n")
+		#Use Read/Write Operations
+		trainObj =  trainSVM(
+			method = solver,
+			trainDataFile = trainFile, 
+			subsamplingRate = subsamplingrate,
+			cost = cost, 
+			gamma = gamma, 
+			#epsilon = 0.5, 
+			readModelFile = TRUE,
+			verbose = verbose
+		)  
+		cat("errorsearch4\n")
+	
+		# get the correct object
+		SVMObject = SVMBridgeEnv$packages[[solver]]
+		cat("errorsearch4.5\n")
+		print(SVMObject)
+		writeModel.LIBSVM(SVMObject,trainObj$model, modelFile = "/tmp/model.txt")
+		
+		cat("errorsearch5\n")
+		testObj =  testSVM(
+			method = solver,
+			testDataFile = trainFile,
+			model = trainObj$model,
+			predictionsFile = "/tmp/predictions.txt",
+			verbose = verbose
+		)  
+		cat("errorsearch6\n")
+		
+		
+	}
+
+
+die()
+
 cat("start\n")
 tmp = tempfile()
 matrix = readModel.LIBSVM(SVMObject, modelFile = "tests/data/mnist.binary.model")
