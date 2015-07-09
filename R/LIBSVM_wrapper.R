@@ -22,12 +22,12 @@
  
 	
 	createTrainingArguments.LIBSVM = function (x,
-		trainDataFile = "",
+	trainDataFile = "",
         modelFile = "",
         extraParameter = "",
         kernelCacheSize = 1024,
-		cost = 1,
-		svmType = "-1",
+	cost = 1,
+	svmType = "-1",
         useBias = FALSE,
         gamma = 1,
         epsilon = 0.001, 
@@ -164,8 +164,8 @@
 		
 		# open connection
 		con  <- file(modelFile, open = "r")
-
-		while ((oneLine <- readLines(con, n = 1, warn = FALSE)) != "SV") {
+		oneLine = readLines(con, n = 1, warn = FALSE)
+		while ( !is.na(oneLine) && oneLine != "SV") {
 			# gamma value
 			if (grepl("gamma", oneLine) == TRUE) {
 				pattern <- "gamma (.*)"
@@ -174,15 +174,37 @@
 		
 			# rho/bias
 			if (grepl("rho", oneLine) == TRUE) {
-				pattern <- "rho (.*)"
-			bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+				#print(oneLine)
+				bias = numeric()
+				rhoLine = unlist(strsplit(oneLine, split = "\\s"))
+				for(value in rhoLine){
+					if(value != "rho"){
+						bias = c(bias, value)
+					}
+				}
+				#pattern <- "rho (.*)"
+				#bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
 			}
 			
 			# order of labels
 			if (grepl("label", oneLine) == TRUE) {
-				pattern <- "label (.*)"
-				order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+				label = numeric()
+				labelLine = unlist(strsplit(oneLine, split = "\\s"))
+				for(value in labelLine){
+					if(value != "label")
+						label = c(label, value)
+				}
+				
+				print("TEST: "
+				)
+				print(label)
+				print(length(label))
 			
+			
+			
+			
+# 				pattern <- "label (.*)"
+# 				order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
 # 				if ((order != "1 -1") && (order != "-1 1")) {
 # 					stop ("Label ordering %s is unknown!", order)
 # 				}
@@ -193,7 +215,7 @@
 				pattern <- "rho (.*)"
 				svm_type = sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])
 			}
-			
+			oneLine = readLines(con, n = 1, warn = FALSE)
 		}
 	
 	
@@ -203,8 +225,12 @@
 
 	
 		# add header information
-		svmatrix$gamma = gamma
-		svmatrix$bias = bias
+		if(exists("gamma"))
+			svmatrix$gamma = gamma
+		if(exists("label"))
+			svmatrix$label = label
+		if(exists("bias"))
+			svmatrix$bias = bias
 		svmatrix$modeltype = "LIBSVM"
 		
 		# close connection
@@ -225,18 +251,22 @@
 		model$alpha = model$Y
 		# FIXME: label order
 		# TODO: support multiclass
-		model$nrclass = 2
+		model$nrclass = length(model$label)
 		posSV = sum(model$alpha > 0)
 		negSV = sum(model$alpha < 0)
 		# open connection
 		modelFileHandle <- file(modelFile, open = "w+")
 		writeLines(paste ("svm_type c_svc", sep = ""), modelFileHandle )
 		writeLines(paste ("kernel_type", "rbf", sep = " "), modelFileHandle )
-		writeLines(paste ("gamma", model$gamma, sep = " "), modelFileHandle )
+		gammaValue = model$gamma
+		if(is.numeric(gammaValue))
+			writeLines(paste ("gamma", model$gamma, sep = " "), modelFileHandle )
 		writeLines(paste ("nr_class", model$nrclass, sep = " "), modelFileHandle )
 		writeLines(paste ("total_sv", length(model$alpha), sep = " "), modelFileHandle )
-		writeLines(paste ("rho", model$bias, sep = " "), modelFileHandle )
-		writeLines(paste ("label 1 -1", sep = " "), modelFileHandle )
+		biasvalues = paste(model$bias, collapse = " ")
+		writeLines(paste ("rho", biasvalues, sep = " "), modelFileHandle )
+		labelvalues = paste(model$label, collapse = " ")
+		writeLines(paste ("label",labelvalues,  sep = " "), modelFileHandle )
 		writeLines(paste ("nr_sv", posSV, negSV, sep = " "), modelFileHandle )
 		writeLines(paste ("SV", sep = ""), modelFileHandle )
 

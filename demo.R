@@ -38,27 +38,34 @@
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
 
 
+
+
+
 #Create Model Object
 	solver = "LIBSVM"
 	
-	# as the libary already loads default wrappers this works
-	addSVMPackage (method = solver, verbose = FALSE)
-	findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
-
-	
+# 	addSVMPackage (method = solver, verbose = FALSE)
+# 	findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
+# 	SVMObject = SVMBridgeEnv$packages[[solver]]
+# 	#file = "../svm_large_data/datasets/protein/protein.combined.scaled"
+# 	file = "tests/data/mnist.model"
+# 	
+# 	svmatrix = readModel.LIBSVM(SVMObject, file)
+# 	print(svmatrix)
+# 	writeModel.LIBSVM(SVMObject, svmatrix, "/tmp/aaa.txt")
+# 	die()
 
 #testfunction
-datasets = c("aXa")#, "protein", "poker")
+datasets = c("protein")#, "protein", "poker")
 	verbose = FALSE
 	for(d in datasets){
 		addSVMPackage (method = solver, verbose = FALSE)
 		findSVMSoftware (solver, searchPath = "../svm_large_data/software/", verbose = TRUE)
 	
 		trainFile = paste ("../svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
-		
 		cost = runif(1)
 		gamma = runif(1)
-		subsamplingrate = 0.1
+		subsamplingrate = 0.01
 		cat("errorsearch1\n")
 		#No Read/Write Operations used
 		trainObj =  trainSVM(
@@ -82,7 +89,7 @@ datasets = c("aXa")#, "protein", "poker")
 		) 
 		cat("errorsearch3\n")
 		#Use Read/Write Operations
-		trainObj =  trainSVM(
+		trainObj2 =  trainSVM(
 			method = solver,
 			trainDataFile = trainFile, 
 			subsamplingRate = subsamplingrate,
@@ -98,13 +105,13 @@ datasets = c("aXa")#, "protein", "poker")
 		SVMObject = SVMBridgeEnv$packages[[solver]]
 		cat("errorsearch4.5\n")
 		print(SVMObject)
-		writeModel.LIBSVM(SVMObject,trainObj$model, modelFile = "/tmp/model.txt")
+		writeModel.LIBSVM(SVMObject,trainObj2$model, modelFile = "/tmp/model.txt")
 		
 		cat("errorsearch5\n")
 		testObj =  testSVM(
 			method = solver,
 			testDataFile = trainFile,
-			model = trainObj$model,
+			model = trainObj2$model,
 			predictionsFile = "/tmp/predictions.txt",
 			verbose = verbose
 		)  
