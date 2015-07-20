@@ -38,34 +38,27 @@
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
 
 
-
-
-
 #Create Model Object
 	solver = "LIBSVM"
 	
-# 	addSVMPackage (method = solver, verbose = FALSE)
-# 	findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
-# 	SVMObject = SVMBridgeEnv$packages[[solver]]
-# 	#file = "../svm_large_data/datasets/protein/protein.combined.scaled"
-# 	file = "tests/data/mnist.model"
-# 	
-# 	svmatrix = readModel.LIBSVM(SVMObject, file)
-# 	print(svmatrix)
-# 	writeModel.LIBSVM(SVMObject, svmatrix, "/tmp/aaa.txt")
-# 	die()
+	# as the libary already loads default wrappers this works
+	addSVMPackage (method = solver, verbose = FALSE)
+	findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
+
+	
 
 #testfunction
-datasets = c("protein")#, "protein", "poker")
+datasets = c("aXa")#, "protein", "poker")
 	verbose = FALSE
 	for(d in datasets){
 		addSVMPackage (method = solver, verbose = FALSE)
-		findSVMSoftware (solver, searchPath = "../svm_large_data/software/", verbose = TRUE)
+		findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
 	
-		trainFile = paste ("../svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
+		trainFile = paste ("../../shark/svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
+		
 		cost = runif(1)
 		gamma = runif(1)
-		subsamplingrate = 0.01
+		subsamplingrate = 0.1
 		cat("errorsearch1\n")
 		#No Read/Write Operations used
 		trainObj =  trainSVM(
@@ -89,7 +82,7 @@ datasets = c("protein")#, "protein", "poker")
 		) 
 		cat("errorsearch3\n")
 		#Use Read/Write Operations
-		trainObj2 =  trainSVM(
+		trainObj =  trainSVM(
 			method = solver,
 			trainDataFile = trainFile, 
 			subsamplingRate = subsamplingrate,
@@ -105,13 +98,13 @@ datasets = c("protein")#, "protein", "poker")
 		SVMObject = SVMBridgeEnv$packages[[solver]]
 		cat("errorsearch4.5\n")
 		print(SVMObject)
-		writeModel.LIBSVM(SVMObject,trainObj2$model, modelFile = "/tmp/model.txt")
+		writeModel.LIBSVM(SVMObject,trainObj$model, modelFile = "/tmp/model.txt")
 		
 		cat("errorsearch5\n")
 		testObj =  testSVM(
 			method = solver,
 			testDataFile = trainFile,
-			model = trainObj2$model,
+			model = trainObj$model,
 			predictionsFile = "/tmp/predictions.txt",
 			verbose = verbose
 		)  

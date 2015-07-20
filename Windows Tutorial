@@ -1,0 +1,13 @@
+***SVMBridge Windows Tutorial***
+
+1) Download R 3.2.x or later for Windows (32/64 bit) (https://cran.r-project.org/bin/windows/base/) 
+2) Download Rtools for R 3.2.x and later (https://cran.r-project.org/bin/windows/Rtools/)
+3) Download Git for Windows (https://git-scm.com/downloads)
+3) Install R and use the 32 bit option only
+4) Install Rtools and use the 32 bit option only
+5) Install Git
+6) Start up the Git console and navigate into a directory in which you want to download SVMbridge to
+7) Download the SVMBridge repository by using git clone in the git console (git clone      				 https://github.com/aydindemircioglu/SVMBridge.git)
+8) If you want to keep the makefile.win, open up your system environment and add a new system environment variable RHOME with the path where R was installed to in unix style (RHOME = c:/Users/...). Else delete the file makefile.win in src directory in SVMBridge.
+9) Start up R Gui and change to the directory where you downloaded SVMBridge to.
+10) You can now run files in SVMBridge out of your R Gui environment.
