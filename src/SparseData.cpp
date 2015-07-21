@@ -33,6 +33,10 @@
 #include <iostream>
 #include <iomanip>      // std::setprecision
 #include <string>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 #define Calloc(type,n) (type *)calloc(n, sizeof(type))
@@ -120,11 +124,6 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		string alphastring = "";
 		string first_index = "";
 		
-		FILE *fp = fopen(filename.c_str(),"r");
-		//Jump to position in dataset where sparse data starts
-		fseek(fp, skipBytes, SEEK_CUR);
-		
-		
 		char *endptr = NULL;
 		char *idx = NULL;
 		char *val = NULL;
@@ -132,11 +131,35 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		char *p = NULL;
 		stringstream s;
 		
+		int tilde = filename.find("~");
+		if(tilde != -1){
+				char* home_path;
+				home_path = getenv("HOME");
+				if(home_path == NULL){
+						struct passwd* pw = getpwuid(getuid());
+						home_path = pw->pw_dir;
+				}
+				filename.erase(tilde,1);
+				filename = home_path + filename;
+				cout << "Expanded Tilde Path: " << filename << endl;
+		}
+		
+		
+		
+		FILE *fp = fopen(filename.c_str(),"r");
 		if(fp == NULL){
 			s << "Can't open input file " << filename;
 			::Rf_error(s.str().c_str());
 			return R_NilValue;
 		}
+		
+		
+		
+		
+		//Jump to position in dataset where sparse data starts
+		fseek(fp, skipBytes, SEEK_CUR);
+		
+		
 		
 		max_line_len = 1024;
 		line = Malloc(char,max_line_len);

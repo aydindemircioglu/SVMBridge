@@ -54,7 +54,7 @@ datasets = c("aXa")#, "protein", "poker")
 		addSVMPackage (method = solver, verbose = FALSE)
 		findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
 	
-		trainFile = paste ("../../shark/svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
+		trainFile = paste ("~/../shark/svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
 		
 		cost = runif(1)
 		gamma = runif(1)

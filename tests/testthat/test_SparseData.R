@@ -10,7 +10,7 @@ test_that(" if given Arguments for readSparseData are expected correct ones", {
 #2
 test_that(" if numerous reading/writing operations with zerobased set to FALSE on the same dataset leads to precision problems", {
 	tmp = tempfile()
-	S1 = readSparseData (filename = "../data/sparse.data", verbose = FALSE, zeroBased = FALSE)
+	S1 = readSparseData (filename = "~/SVMBridge/tests/data/sparse.data", verbose = FALSE, zeroBased = FALSE)
 	writeSparseData ( tmp, S1$X,  S1$Y, verbose = FALSE, zeroBased = FALSE)
 	S2 = readSparseData (filename = tmp, verbose = FALSE, zeroBased = FALSE) 
 	expect_equal(S1$X, S2$X)
