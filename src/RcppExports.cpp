@@ -5,6 +5,26 @@
 
 using namespace Rcpp;
 
+// computeOptimizationValues
+List computeOptimizationValues(NumericMatrix X, NumericMatrix Y, double C, double gamma, NumericMatrix SV, NumericVector nSV, NumericMatrix sv_coef, NumericVector rho, NumericVector label, bool verbose);
+RcppExport SEXP SVMBridge_computeOptimizationValues(SEXP XSEXP, SEXP YSEXP, SEXP CSEXP, SEXP gammaSEXP, SEXP SVSEXP, SEXP nSVSEXP, SEXP sv_coefSEXP, SEXP rhoSEXP, SEXP labelSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< double >::type C(CSEXP);
+    Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type SV(SVSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nSV(nSVSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type sv_coef(sv_coefSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type label(labelSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    __result = Rcpp::wrap(computeOptimizationValues(X, Y, C, gamma, SV, nSV, sv_coef, rho, label, verbose));
+    return __result;
+END_RCPP
+}
 // readSparseData
 List readSparseData(std::string filename, size_t skipBytes, bool verbose, bool zeroBased);
 RcppExport SEXP SVMBridge_readSparseData(SEXP filenameSEXP, SEXP skipBytesSEXP, SEXP verboseSEXP, SEXP zeroBasedSEXP) {

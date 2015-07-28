@@ -222,8 +222,13 @@
 		# read and interprete data 
 		# basically all data is sparse data format, but the data around this differs
 		svmatrix = readSparseDataFromConnection(con)
-
-	
+		
+		# rename Y to alpha and X to SVs
+		names(svmatrix) = replace(names(svmatrix), names(svmatrix) == "Y", "alpha")
+		names(svmatrix) = replace(names(svmatrix), names(svmatrix) == "X", "SVs")
+		svmatrix$nSV = nrow(svmatrix$SVs)
+		
+		
 		# add header information
 		if(exists("gamma"))
 			svmatrix$gamma = gamma
