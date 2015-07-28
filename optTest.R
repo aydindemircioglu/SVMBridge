@@ -61,8 +61,8 @@ for(solver in char_vec)
 		trainDatay[trainDatay==2] = -1
 		testDatay[testDatay==2] = -1
 		
-		C = 2.71
-		gamma = 1.41
+		C = 0.71
+		gamma = 0.41
 		
 		messagef("\n\n\n======= Train %s, Traindata from Memory, Model to Memory", solver)
 		trainObj =  trainSVM(
@@ -71,7 +71,7 @@ for(solver in char_vec)
 			trainDatay = trainDatay, 
 			cost = C, 
 			gamma = gamma, 
-			epsilon = 0.01, 
+			epsilon = 0.0000000001, 
 			readModelFile = TRUE,
 			subsamplingRate = 0.5,
 			subsamplingMethod = "cutoff",
@@ -81,5 +81,13 @@ for(solver in char_vec)
 		# extract optimization values from model
 		optimizationValues(X = trainDataX, Y = trainDatay, model = trainObj$model, C = C, values = c(), verbose = TRUE)
 
+		source("./tests/computeOptimizationValuesLibSVM.R")
+		data = list()
+		data$x = trainDataX
+		data$y = trainDatay
+		trainObj$model$L = 1
+		trainObj$model$C = C
+		trainObj$model$X = trainObj$model$SV
+		computeOptimizationValuesLibSVM (trainObj$model, NULL, data = data,  predictionOutput = NULL, verbose = TRUE)
 }
     

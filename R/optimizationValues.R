@@ -43,7 +43,7 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 		print (bias )
 		print (label )
 	}
-	computedValues = computeOptimizationValues (X, Y, C, gamma, SV, nSV, sv_coef, bias, label)
+	computedValues = computeOptimizationValues (X, Y, C, gamma, SV, nSV, sv_coef, bias, label, verbose)
 
 	return (computedValues)
 }

@@ -182,8 +182,6 @@
 						bias = c(bias, value)
 					}
 				}
-				#pattern <- "rho (.*)"
-				#bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
 			}
 			
 			# order of labels
@@ -194,21 +192,16 @@
 					if(value != "label")
 						label = c(label, value)
 				}
-				
-				print("TEST: "
-				)
-				print(label)
-				print(length(label))
-			
-			
-			
-			
-# 				pattern <- "label (.*)"
-# 				order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
-# 				if ((order != "1 -1") && (order != "-1 1")) {
-# 					stop ("Label ordering %s is unknown!", order)
-# 				}
-				#LABEL ORDERING IS NOT USED for libsvm!
+			}  
+
+			# number of svs, needed for multiclass (i think)
+			if (grepl("nSV", oneLine) == TRUE) {
+				nSV = numeric()
+				nSVline = unlist(strsplit(oneLine, split = "\\s"))
+				for(value in nSVline ){
+					if(value != "nSV")
+						nSV = c(nSV, value)
+				}
 			}  
 			
 			if (grepl("svm_type", oneLine) == TRUE) {
@@ -228,14 +221,17 @@
 		names(svmatrix) = replace(names(svmatrix), names(svmatrix) == "X", "SVs")
 		svmatrix$nSV = nrow(svmatrix$SVs)
 		
+		# FIXME: i think this exists ansatz is broken if gamma exists beforehand. replace with a list or something
 		
 		# add header information
 		if(exists("gamma"))
 			svmatrix$gamma = gamma
 		if(exists("label"))
-			svmatrix$label = label
+			svmatrix$label = as.numeric(label)
 		if(exists("bias"))
-			svmatrix$bias = bias
+			svmatrix$bias = as.numeric(c(bias))
+		if(exists("nSV"))
+			svmatrix$nSV = as.numeric(c(nSV))
 		svmatrix$modeltype = "LIBSVM"
 		
 		# close connection

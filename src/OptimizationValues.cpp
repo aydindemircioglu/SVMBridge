@@ -303,7 +303,7 @@ double svm_predict_values(double gamma, NumericVector x, NumericMatrix SV, Numer
 	
 	double *kvalue = Malloc(double, l);
 	for (int i = 0; i < l; i++)
-		kvalue[i] = Kernel::k_function(x, SV[i], gamma);
+		kvalue[i] = Kernel::k_function(x, SV(i, _), gamma);
 	
 	int *start = Malloc (int, nr_class);
 	start [0] = 0;
@@ -329,9 +329,9 @@ double svm_predict_values(double gamma, NumericVector x, NumericMatrix SV, Numer
 // 			double *coef1 = sv_coef[0, j-1]; // FIXME!!!!!!!!!!!1
 // 			double *coef2 = sv_coef[0, i];
 			for(k=0;k<ci;k++)
-				sum += sv_coef [j-1, si+k] * kvalue[si+k];
+				sum += sv_coef (si+k, j-1) * kvalue[si+k];
 			for(k=0;k<cj;k++)
-				sum += sv_coef [i, sj+k] * kvalue[sj+k];
+				sum += sv_coef (sj+k, i)* kvalue[sj+k];
 			sum -= rho[p];
 			dec_values[p] = sum;
 			
@@ -401,15 +401,14 @@ List computeOptimizationValues (NumericMatrix X, NumericMatrix Y, double C, doub
 		primal = C * hingeLoss;
 		
 		// compute weight squared
+		int m =SV.nrow();
 		double weight = 0;
-		for(int i=0;i<l; i++)
+		for(int i = 0; i < m; i++)
 		{
-			for(int j=i;j<l;j++)
+			for(int j = i; j < m; j++)
 			{
-
-				double k = Kernel::k_function (SV[i], SV[j], gamma);
-
-				k = sv_coef[0,i] * k * sv_coef[0,j];
+				double k = Kernel::k_function (SV(i, _), SV(j, _), gamma);
+				k = sv_coef (i,0) * k * sv_coef (j,0);
 				weight += k;
 				if (j != i)
 					weight += k;
@@ -424,8 +423,8 @@ List computeOptimizationValues (NumericMatrix X, NumericMatrix Y, double C, doub
 		// compute dual
 		dual = -weight;
 		
-		for (int j=0; j<l; j++) {
-			dual += sv_coef[0,j] * Y[j];
+		for (int j = 0; j < m; j++) {
+			dual += sv_coef(j,0);
 		}
 		
 		
