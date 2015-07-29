@@ -45,7 +45,7 @@ for(solver in char_vec)
 		addSVMPackage (method = solver, verbose = FALSE)
 		findSVMSoftware (solver, searchPath = "../../../svm_large_scale/software/", verbose = TRUE)
 
-		verbose = TRUE
+		verbose = FALSE
 		
 	# load iris  for now
 		shufflediris = iris[sample(nrow(iris)),]
@@ -60,6 +60,7 @@ for(solver in char_vec)
 		testDatay[testDatay==3] = 1
 		trainDatay[trainDatay==2] = -1
 		testDatay[testDatay==2] = -1
+#		writeSparseData (X = trainDataX, Y = trainDatay, file = "iris.sparse")
 		
 		C = 0.71
 		gamma = 0.41
@@ -72,6 +73,7 @@ for(solver in char_vec)
 			cost = C, 
 			gamma = gamma, 
 			epsilon = 0.0000000001, 
+#			modelFile = "./tmpMo",
 			readModelFile = TRUE,
 			subsamplingRate = 0.5,
 			subsamplingMethod = "cutoff",
@@ -79,7 +81,7 @@ for(solver in char_vec)
 		)  
 		
 		# extract optimization values from model
-		optimizationValues(X = trainDataX, Y = trainDatay, model = trainObj$model, C = C, values = c(), verbose = TRUE)
+		oV = optimizationValues(X = trainDataX, Y = trainDatay, model = trainObj$model, C = C, values = c(), verbose = FALSE)
 
 		source("./tests/computeOptimizationValuesLibSVM.R")
 		data = list()
@@ -88,6 +90,19 @@ for(solver in char_vec)
 		trainObj$model$L = 1
 		trainObj$model$C = C
 		trainObj$model$X = trainObj$model$SV
-		computeOptimizationValuesLibSVM (trainObj$model, NULL, data = data,  predictionOutput = NULL, verbose = TRUE)
+#		trainObj$model$bias = -trainObj$model$bias
+		pV = computeOptimizationValuesLibSVM (trainObj$model, NULL, data = data,  predictionOutput = NULL, verbose = FALSE)
+		cat (oV$primal, " ", oV$dual, "\n")
+		cat (pV$primal, " ", pV$dual, "\n")
 }
     
+
+    
+   # ~/svm_large_scale/software/libSVM/bin/svm-predict -c 0.71 -o iris.sparse iris.sparse tmpMo A 
+# Obtained cost C: 0.710000
+# Obtained gamma g: 0.410000
+# Current rho: [0.064655]
+# Current hingeLoss: [83.120949]
+# Current weight: [2.025757]
+# Computed primal value: [61.067719]
+# Computed dual value: [2.171971]

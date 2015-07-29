@@ -298,12 +298,13 @@ double svm_predict_values(double gamma, NumericVector x, NumericMatrix SV, Numer
 {
 	int nr_class = nSV.length();
 	int l = SV.nrow();
-
+	
 	double* dec_values = Malloc(double, nr_class * nr_class);
 	
 	double *kvalue = Malloc(double, l);
-	for (int i = 0; i < l; i++)
+	for (int i = 0; i < l; i++) {
 		kvalue[i] = Kernel::k_function(x, SV(i, _), gamma);
+	}
 	
 	int *start = Malloc (int, nr_class);
 	start [0] = 0;
@@ -326,12 +327,12 @@ double svm_predict_values(double gamma, NumericVector x, NumericMatrix SV, Numer
 			int cj = nSV[j];
 			
 			int k;
-// 			double *coef1 = sv_coef[0, j-1]; // FIXME!!!!!!!!!!!1
-// 			double *coef2 = sv_coef[0, i];
-			for(k=0;k<ci;k++)
+			for (k=0; k<ci; k++) {
 				sum += sv_coef (si+k, j-1) * kvalue[si+k];
-			for(k=0;k<cj;k++)
+			}
+			for (k = 0; k < cj; k++) {
 				sum += sv_coef (sj+k, i)* kvalue[sj+k];
+			}
 			sum -= rho[p];
 			dec_values[p] = sum;
 			
@@ -348,13 +349,18 @@ double svm_predict_values(double gamma, NumericVector x, NumericMatrix SV, Numer
 		if (vote[i] > vote[vote_max_idx])
 			vote_max_idx = i;
 	}
-	
+
+	double ret = dec_values[0];
 	free(kvalue);
 	free(start);
 	free(vote);
 	free(dec_values);
+
+	// FiXME:
+	// multiclass is again unclear
 	
-	return label [vote_max_idx];
+//	return label [vote_max_idx];
+	return (ret);
 }
 
 
@@ -388,11 +394,11 @@ List computeOptimizationValues (NumericMatrix X, NumericMatrix Y, double C, doub
 		for (int i = 0; i < l; i++)
 		{
 			// predict value
-			double currentLoss = svm_predict_values (gamma, X, SV, nSV, sv_coef, rho, label);
-			
-			currentLoss = 1.0 - double(Y[i]) * currentLoss; 
-			if (currentLoss > 0)
-				hingeLoss += currentLoss;
+			double currentMargin = svm_predict_values (gamma, X(i,_), SV, nSV, sv_coef, rho, label);
+			currentMargin = 1.0 - double(Y[i]) * currentMargin; 
+			if (currentMargin > 0)
+				hingeLoss += currentMargin;
+//			std::cout << currentMargin << "\n";
 		}
 		
 		if (verbose == true) printf("Current hingeLoss: [%f]\n", hingeLoss);
@@ -415,7 +421,7 @@ List computeOptimizationValues (NumericMatrix X, NumericMatrix Y, double C, doub
 			}
 		}
 		weight = weight/2.0;
-		printf("Current weight: [%f]\n", sqrt(2*weight));
+		if (verbose == true) printf("Current weight: [%f]\n", sqrt(2*weight));
 		
 		// second term
 		primal += weight;
@@ -424,7 +430,7 @@ List computeOptimizationValues (NumericMatrix X, NumericMatrix Y, double C, doub
 		dual = -weight;
 		
 		for (int j = 0; j < m; j++) {
-			dual += sv_coef(j,0);
+			dual += fabs(sv_coef(j,0));
 		}
 		
 		
@@ -443,3 +449,5 @@ List computeOptimizationValues (NumericMatrix X, NumericMatrix Y, double C, doub
 	Rcpp::List rl = Rcpp::List::create (Rcpp::Named ("primal", primal), Rcpp::Named("dual", dual) );
 	return (rl);
 }
+
+

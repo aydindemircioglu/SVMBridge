@@ -19,7 +19,6 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 	# check data
 	
 	# check model
-	print (model)
 	
 	
 	# does model fit to data?

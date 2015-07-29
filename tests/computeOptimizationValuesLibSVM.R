@@ -70,11 +70,13 @@ computeOptimizationValuesLibSVM <- function (model, trainingDataPath,
     if (extraverbose)  messagef("  Max of hingeloss: %f", max(loss))
     if (extraverbose)  messagef("  Min of hingeloss: %f", min(loss))
 
+    #print (loss)
 
     # and sum all these entries  and multiply by C
     if (verbose)  messagef( "sum slacks %f", sum(loss))
     weight = L * half_wTw
     hingeLoss = C * sum(loss)
+    if (extraverbose)  messagef("  Hingeloss: %f", hingeLoss)
 
     pValue = weight + hingeLoss
     dValue = -(half_wTw - sum(a))

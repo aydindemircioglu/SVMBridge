@@ -195,11 +195,11 @@
 			}  
 
 			# number of svs, needed for multiclass (i think)
-			if (grepl("nSV", oneLine) == TRUE) {
+			if (grepl("nr_sv", oneLine) == TRUE) {
 				nSV = numeric()
 				nSVline = unlist(strsplit(oneLine, split = "\\s"))
 				for(value in nSVline ){
-					if(value != "nSV")
+					if(value != "nr_sv")
 						nSV = c(nSV, value)
 				}
 			}  
