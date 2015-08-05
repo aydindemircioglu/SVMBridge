@@ -249,7 +249,7 @@
 			BBmisc::messagef ("Writing SVM Model..")
 		}
 		
-		model$alpha = model$Y
+		#model$alpha = model$Y
 		# FIXME: label order
 		# TODO: support multiclass
 		model$nrclass = length(model$label)
@@ -263,18 +263,19 @@
 		if(is.numeric(gammaValue))
 			writeLines(paste ("gamma", model$gamma, sep = " "), modelFileHandle )
 		writeLines(paste ("nr_class", model$nrclass, sep = " "), modelFileHandle )
-		writeLines(paste ("total_sv", length(model$alpha), sep = " "), modelFileHandle )
+		writeLines(paste ("total_sv", length(model$nSV), sep = " "), modelFileHandle )
 		biasvalues = paste(model$bias, collapse = " ")
 		writeLines(paste ("rho", biasvalues, sep = " "), modelFileHandle )
 		labelvalues = paste(model$label, collapse = " ")
 		writeLines(paste ("label",labelvalues,  sep = " "), modelFileHandle )
-		writeLines(paste ("nr_sv", posSV, negSV, sep = " "), modelFileHandle )
+		nr_svValues = paste(model$nSV,  collapse =  " ")
+		writeLines(paste ("nr_sv", nr_svValues, sep = " "), modelFileHandle )
 		writeLines(paste ("SV", sep = ""), modelFileHandle )
 
 		# basically all data is sparse data format, but the data around this differs
 		#svmatrix = dumpSparseFormat(model$alpha, model$X)
 		#writeLines(svmatrix, modelFileHandle, sep = "" )
-		writeSparseDataToConnection(modelFileHandle, model$X, model$Y)
+		writeSparseDataToConnection(modelFileHandle, model$SVs, model$alpha)
 		
 		# close connection
 		close(modelFileHandle)

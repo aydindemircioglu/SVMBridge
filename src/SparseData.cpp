@@ -33,15 +33,20 @@
 #include <iostream>
 #include <iomanip>      // std::setprecision
 #include <string>
-#include <unistd.h>
-#include <sys/types.h>
-#include <pwd.h>
-
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 #define Calloc(type,n) (type *)calloc(n, sizeof(type))
 
 #define DEBUG if (1 == 0) 
+
+#ifdef __linux
+	#define OS (const char*)("linux")
+	#include <unistd.h>
+	#include <sys/types.h>
+	#include <pwd.h>
+#elif _WIN32
+	#define OS (const char*)("windows")
+#endif
 
 using namespace std;
 using namespace Rcpp;
@@ -105,6 +110,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
   
 	try
 	{	
+		cout << "TEST : " << OS << endl;
 		int correction = 1;
 		if (zeroBased == true)
 			correction = 0;
@@ -123,6 +129,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		string substring = "";
 		string alphastring = "";
 		string first_index = "";
+		string os = "";
 		
 		char *endptr = NULL;
 		char *idx = NULL;
@@ -131,8 +138,11 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		char *p = NULL;
 		stringstream s;
 		
+		//tilde handling
 		int tilde = filename.find("~");
 		if(tilde != -1){
+			if(OS == "linux"){
+			
 				char* home_path;
 				home_path = getenv("HOME");
 				if(home_path == NULL){
@@ -142,6 +152,15 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 				filename.erase(tilde,1);
 				filename = home_path + filename;
 				cout << "Expanded Tilde Path: " << filename << endl;
+			}
+			else if(OS == "windows"){
+				char* home_path;
+				home_path = getenv("HOMEPATH");
+				filename.erase(tilde,1);
+				filename = home_path + filename;
+				cout << "Expanded Tilde Path: " << filename << endl;
+			}
+			
 		}
 		
 		
