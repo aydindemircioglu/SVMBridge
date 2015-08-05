@@ -44,7 +44,7 @@
 	#include <unistd.h>
 	#include <sys/types.h>
 	#include <pwd.h>
-#elif _WIN32
+#else
 	#define OS (const char*)("windows")
 #endif
 
@@ -157,6 +157,11 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 				char* home_path;
 				home_path = getenv("HOMEPATH");
 				filename.erase(tilde,1);
+				int slash = filename.find("\");
+				while(slash != -1){
+						filename.replace(slash, 1, "/");
+						slash = filename.find("\");
+				}
 				filename = home_path + filename;
 				cout << "Expanded Tilde Path: " << filename << endl;
 			}
