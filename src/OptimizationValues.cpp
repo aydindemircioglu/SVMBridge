@@ -33,9 +33,11 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include <unistd.h>
-#include <sys/types.h>
-#include <pwd.h>
+#ifdef __linux
+	#include <unistd.h>
+	#include <sys/types.h>
+	#include <pwd.h>
+#endif
 
 
 #define DEBUG if (1 == 0) 
