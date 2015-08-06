@@ -76,10 +76,26 @@ testSVM = function(
 		BBmisc::messagef("--- Testing...")
 	}
 	
-	if(is.null(method) == TRUE){
+		# TODO: sanity checks for parameter
+	if ( (is.null(model) == TRUE) && (is.null(modelFile) == TRUE))
+			BBmisc::stopf("Neither given a model nor given a path to the model. Stopping.")	
+	
+	if ( (is.null(model) == FALSE) && (is.null(modelFile) == FALSE))
+			BBmisc::stopf("Given a model in memory and specified a model file name. Confused. Stopping.")
+			
+	if (is.null (method) == TRUE) {
+			# test model
+		if  (is.null(model) == FALSE){
+			method = model$modeltype
+		}
+			
+		else{
+		print("enter")
+			method = detectModelTypeFromFile(modelFile)
+		}
 		
 	}
-
+print(method)
 	# get the correct object
 	SVMObject = SVMBridgeEnv$packages[[method]]
 	
@@ -98,11 +114,6 @@ testSVM = function(
 		BBmisc::messagef("  Binary for testing is %s", testBinary)
 	}
 
-	# TODO: sanity checks for parameter
-	if (is.null (method) == TRUE) {
-		BBmisc::stopf("No method name is given, this should never happen.")
-	}
-				
 
 	# take care of data. if testdata or traindata is given,
 	# the corresponding filename must be empty.
@@ -113,15 +124,6 @@ testSVM = function(
 			
 	if ( (is.null(testDataX) == TRUE) && (is.null(testDataFile) == TRUE))
 		BBmisc::stopf("Neither specified testing data path nor given testing data. Stopping.")
-
-
-	# test model
-	if ( (is.null(model) == FALSE) && (is.null(modelFile) == FALSE))
-		BBmisc::stopf("Given a model in memory and specified a model file name. Confused. Stopping.")
-			
-	if ( (is.null(model) == TRUE) && (is.null(modelFile) == TRUE))
-		BBmisc::stopf("Neither given a model nor given a path to the model. Stopping.")
-
 
 	# TODO: check for X AND y.
 		

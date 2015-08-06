@@ -74,7 +74,7 @@ datasets = c("aXa")#, "protein", "poker")
 		)  
 		cat("errorsearch2\n")
 		testObj =  testSVM(
-			method = solver,
+			#method = solver,
 			testDataFile = trainFile,
 			modelFile = "/tmp/model_without.txt",
 			predictionsFile = "/tmp/predictions_without.txt",
