@@ -36,7 +36,6 @@
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 #define Calloc(type,n) (type *)calloc(n, sizeof(type))
-
 #define DEBUG if (1 == 0) 
 
 #ifdef __linux
@@ -141,8 +140,8 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		//tilde handling
 		int tilde = filename.find("~");
 		if(tilde != -1){
-			if(OS == "linux"){
 			
+			#ifdef __linux
 				char* home_path;
 				home_path = getenv("HOME");
 				if(home_path == NULL){
@@ -152,19 +151,20 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 				filename.erase(tilde,1);
 				filename = home_path + filename;
 				cout << "Expanded Tilde Path: " << filename << endl;
-			}
-			else if(OS == "windows"){
+			#elif defined _WIN32
 				char* home_path;
 				home_path = getenv("HOMEPATH");
 				filename.erase(tilde,1);
-				int slash = filename.find("\");
+				int slash = filename.find("\\");
 				while(slash != -1){
-						filename.replace(slash, 1, "/");
-						slash = filename.find("\");
+						filename.replace(slash, 1, "//");
+						slash = filename.find("\\");
 				}
 				filename = home_path + filename;
 				cout << "Expanded Tilde Path: " << filename << endl;
-			}
+			#else
+			#error "Error"
+			#endif
 			
 		}
 		

@@ -74,6 +74,10 @@ testSVM = function(
 	if (verbose == TRUE) {
 		BBmisc::messagef("--- Testing...")
 	}
+	
+	if(is.null(method) == TRUE){
+		
+	}
 
 	# get the correct object
 	SVMObject = SVMBridgeEnv$packages[[method]]
