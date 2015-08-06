@@ -72,7 +72,8 @@ trainSVM = function(
 	timeOut = -1,
 	readModelFile = FALSE,
 	...) {
-	print("TEST")
+	trainDataFile = path.expand(trainDataFile)
+	trainDataFile = gsub("[\\]", "/", trainDataFile)
 	# get the correct object
 	SVMObject = SVMBridgeEnv$packages[[method]]
 	

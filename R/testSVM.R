@@ -70,7 +70,8 @@ testSVM = function(
 	extraParameter = "",
 	verbose = FALSE,
 	...) {
-
+	testDataFile = path.expand(testDataFile)
+	testDataFile = gsub("[\\]", "/", testDataFile)
 	if (verbose == TRUE) {
 		BBmisc::messagef("--- Testing...")
 	}
