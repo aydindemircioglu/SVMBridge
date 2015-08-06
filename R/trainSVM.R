@@ -72,7 +72,7 @@ trainSVM = function(
 	timeOut = -1,
 	readModelFile = FALSE,
 	...) {
-	Print("TEST")
+	print("TEST")
 	# get the correct object
 	SVMObject = SVMBridgeEnv$packages[[method]]
 	
