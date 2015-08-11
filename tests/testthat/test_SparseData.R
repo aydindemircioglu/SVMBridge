@@ -119,8 +119,8 @@ test_that(" readModel.LIBSM (read/write operations) work with multiclass models"
 	SVMObject = SVMBridgeEnv$packages[[solver]]
 	
 	svmatrix = readModel.LIBSVM(SVMObject, modelFile = dataset)
-	writeModel.LIBSVM(SVMObject, svmatrix, "/tmp/multitest.txt")
-	svmatrix2 = readModel.LIBSVM(SVMObject, modelFile = "/tmp/multitest.txt")
+	writeModel.LIBSVM(SVMObject, svmatrix, modelFile =tmp)
+	svmatrix2 = readModel.LIBSVM(SVMObject, modelFile = tmp)
 
 	expect_equal(svmatrix, svmatrix2)
 })
@@ -133,6 +133,10 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 	verbose = TRUE
 	
 	for(d in datasets){
+		tmpModel_Without = tempfile()
+		tmpModel = tempfile()
+		tmpPredictions_Without = tempfile()
+		tmpPredictions = tempfile()
 		addSVMPackage (method = solver, verbose = FALSE)
 		findSVMSoftware (solver, searchPath = "../../../../shark/svm_large_data/software/", verbose = FALSE)
 	
@@ -151,14 +155,14 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 			gamma = gamma, 
 			#epsilon = 0.5, 
 			readModelFile = FALSE,
-			modelFile = "/tmp/model_without.txt",
+			modelFile = tmpModel_Without,
 			verbose = verbose
 		)  
 		testObj =  testSVM(
 			method = solver,
 			testDataFile = trainFile,
-			modelFile = "/tmp/model_without.txt",
-			predictionsFile = "/tmp/predictions_without.txt",
+			modelFile = tmpModel_Without,
+			predictionsFile = tmpPredictions_Without,
 			verbose = verbose
 		) 
 		
@@ -172,7 +176,7 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 			cost = cost, 
 			gamma = gamma, 
 			#epsilon = 0.5, 
-			modelFile = "/tmp/model.txt",
+			modelFile = tmpModel,
 			readModelFile = TRUE,
 			verbose = verbose
 		)
@@ -181,27 +185,27 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 		# get the correct object
 		SVMObject = SVMBridgeEnv$packages[[solver]]
 		#print(SVMObject)
-		writeModel.LIBSVM(SVMObject,trainObj2$model, modelFile = "/tmp/model.txt")
+		writeModel.LIBSVM(SVMObject,trainObj2$model, modelFile = tmpModel)
 		
 	
 		testObj =  testSVM(
 			method = solver,
 			testDataFile = trainFile,
-			modelFile = "/tmp/model.txt",
-			predictionsFile = "/tmp/predictions.txt",
+			modelFile = tmpModel,
+			predictionsFile = tmpPredictions,
 			verbose = verbose
 		)  
 
-		mod_a = file("/tmp/model_without.txt", open = "rt")
+		mod_a = file(tmpModel_Without, open = "rt")
 		model_a = readLines(mod_a)
 		
-		mod_b = file("/tmp/model.txt", open = "rt")
+		mod_b = file(tmpModel, open = "rt")
 		model_b = readLines(mod_b)
 		
-		pred_a = file("/tmp/predictions_without.txt", open = "rt")
+		pred_a = file(tmpPredictions_Without, open = "rt")
 		prediction_a = readLines(pred_a)
 		
-		pred_b = file("/tmp/predictions.txt", open = "rt")
+		pred_b = file(tmpPredictions, open = "rt")
 		prediction_b = readLines(pred_b)
 		
 		#expect_equal(model_a, model_b)
@@ -216,6 +220,21 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 	}
 })
 
+#10
+test_that(" method autodetection in testSVM is working.", {
+	tmp = tempfile()
+	solver = "LIBSVM"
+	dataset = ("../data/mnist.multi.model")
+	addSVMPackage (method = solver, verbose = FALSE)
+	findSVMSoftware (solver, searchPath = "../../../../shark/svm_large_data/software/", verbose = TRUE)
+	SVMObject = SVMBridgeEnv$packages[[solver]]
+	
+	svmatrix = readModel.LIBSVM(SVMObject, modelFile = dataset)
+	writeModel.LIBSVM(SVMObject, svmatrix, "/tmp/multitest.txt")
+	svmatrix2 = readModel.LIBSVM(SVMObject, modelFile = "/tmp/multitest.txt")
+
+	expect_equal(svmatrix, svmatrix2)
+})
 
 
 

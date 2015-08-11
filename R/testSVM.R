@@ -70,11 +70,14 @@ testSVM = function(
 	extraParameter = "",
 	verbose = FALSE,
 	...) {
-	testDataFile = path.expand(testDataFile)
-	testDataFile = gsub("[\\]", "/", testDataFile)
+	
 	if (verbose == TRUE) {
 		BBmisc::messagef("--- Testing...")
 	}
+	
+	#expand possible tilde characters in the path and get rid of backslashes
+	testDataFile = path.expand(testDataFile)
+	testDataFile = gsub("[\\]", "/", testDataFile)
 	
 		# TODO: sanity checks for parameter
 	if ( (is.null(model) == TRUE) && (is.null(modelFile) == TRUE))
@@ -85,17 +88,12 @@ testSVM = function(
 			
 	if (is.null (method) == TRUE) {
 			# test model
-		if  (is.null(model) == FALSE){
+		if  (is.null(model) == FALSE)
 			method = model$modeltype
-		}
-			
-		else{
-		print("enter")
+		else
 			method = detectModelTypeFromFile(modelFile)
-		}
-		
 	}
-print(method)
+
 	# get the correct object
 	SVMObject = SVMBridgeEnv$packages[[method]]
 	

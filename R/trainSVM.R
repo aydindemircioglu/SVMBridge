@@ -72,8 +72,11 @@ trainSVM = function(
 	timeOut = -1,
 	readModelFile = FALSE,
 	...) {
+	
+	#expand possible tilde characters in the path and get rid of backslashes
 	trainDataFile = path.expand(trainDataFile)
 	trainDataFile = gsub("[\\]", "/", trainDataFile)
+	
 	# get the correct object
 	SVMObject = SVMBridgeEnv$packages[[method]]
 	
