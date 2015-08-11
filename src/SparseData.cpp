@@ -109,7 +109,6 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
   
 	try
 	{	
-		cout << "TEST : " << OS << endl;
 		int correction = 1;
 		if (zeroBased == true)
 			correction = 0;

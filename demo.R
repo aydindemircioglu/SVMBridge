@@ -55,6 +55,10 @@ datasets = c("aXa")#, "protein", "poker")
 		findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
 	
 		trainFile = paste ("~/../shark/svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
+		tmpModel_Without = tempfile()
+		tmpModel = tempfile()
+		tmpPredictions_Without = tempfile()
+		tmpPredictions = tempfile()
 		
 		cost = runif(1)
 		gamma = runif(1)
@@ -69,15 +73,15 @@ datasets = c("aXa")#, "protein", "poker")
 			gamma = gamma, 
 			#epsilon = 0.5, 
 			readModelFile = FALSE,
-			modelFile = "/tmp/model_without.txt",
+			modelFile = tmpModel_Without,
 			verbose = verbose
 		)  
 		cat("errorsearch2\n")
 		testObj =  testSVM(
 			#method = solver,
 			testDataFile = trainFile,
-			modelFile = "/tmp/model_without.txt",
-			predictionsFile = "/tmp/predictions_without.txt",
+			modelFile = tmpModel_Without,
+			predictionsFile = tmpPredictions_Without,
 			verbose = verbose
 		) 
 		cat("errorsearch3\n")

@@ -171,19 +171,21 @@ trainSVM = function(
 	# Careful! On windows systems, this function will not work since 
 	# certain necessities are not preinstalled. 
 	
-	if(.Platform$OS.type == "unix") {
+#	if(.Platform$OS.type == "unix") {
 	
 		if (timeOut != -1) {
 			timeOutArgs = c(sprintf("%d", timeOut), trainBinaryPath, args)
 			timeOutPath = "/usr/bin/timeout"
+			
 			verbose = TRUE
 			if (verbose == TRUE) 
 				BBmisc::messagef("  Applying hard timeout of %f seconds.", timeOut)
 			trainTime = microbenchmark::microbenchmark(s <- system3(timeOutPath, timeOutArgs, verbose = verbose), times = 1L)$time / 1e9
-		} else {
+			}
+		 else {
 			trainTime = microbenchmark::microbenchmark(s <- system3(trainBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
 		}
-	}
+	
 	
 	if (verbose == TRUE) 
 		BBmisc::messagef("Training took %f seconds.", trainTime)

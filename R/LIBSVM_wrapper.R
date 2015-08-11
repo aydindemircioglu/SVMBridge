@@ -313,7 +313,10 @@
 			BBmisc::messagef("    LIBSVM Object: Executing search for software for %s", x$method)
 		}
 		
-		trainBinaryPattern = "^svm-train$"
+		if(.Platform$OS.type == "unix")
+			trainBinaryPattern = "^svm-train$"
+		else
+			trainBinaryPattern = "^svm-train.exe"
 		trainBinaryOutputPattern = c('saveExponential : set exponential',
 			'.q : quiet mode .no outputs')
 
