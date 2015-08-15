@@ -317,18 +317,26 @@
 			trainBinaryPattern = "^svm-train$"
 		else
 			trainBinaryPattern = "^svm-train.exe"
+			
 		trainBinaryOutputPattern = c('saveExponential : set exponential',
 			'.q : quiet mode .no outputs')
 
 		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
-
+		
+		if (verbose == TRUE) {
+			BBmisc::messagef("Executing search for binaries in:  %s", searchPath) 
+		}
+		
 		if (verbose == TRUE) {
 			BBmisc::messagef("--> Found train binary at %s", binaryPath) 
 		}
 		x$trainBinaryPath = binaryPath
 
-
-		testBinaryPattern = "^svm-predict$"
+		if(.Platform$OS.type == "unix")
+			testBinaryPattern = "^svm-predict$"
+		else
+			testBinaryPattern = "^svm-predict.exe"
+			
 		testBinaryOutputPattern = 'for one-class SVM only 0 is supported'
 
 		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)

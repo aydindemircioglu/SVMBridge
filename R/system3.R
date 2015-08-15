@@ -33,9 +33,9 @@ system3 <- function (binPath, args, verbose = FALSE)
 		BBmisc::messagef ("----- Arguments:")
 		BBmisc::messagef ("%s %s", binPath, paste(args, collapse=" "))
 	}
-
+cat("d\n")
 	s = BBmisc::system3(binPath, args, stop.on.exit.code = FALSE, stderr = TRUE, stdout = TRUE)
-
+cat("d\n")
 	if (verbose == TRUE) {
 		BBmisc::messagef ("----- Output:")
 		BBmisc::messagef ("%s %s", binPath, paste(s$output, collapse="\n"))

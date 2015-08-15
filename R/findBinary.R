@@ -32,7 +32,7 @@
 #
 # @note		To make sure that the binary is correct, it will be executed!
 # 					Furthermore, many SVM packages derive from libSVM. as such, they
-#					often do not change the prediction binary. We will try to sort these out,
+#					often do not change the prediction binasry. We will try to sort these out,
 #					but it might be hopeless. With luck, the found binary will be left untouched,
 #					and thus work, if not, you must set the path by hand.
 # @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
@@ -41,6 +41,7 @@ findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
 	if (verbose == TRUE) { BBmisc::messagef("  Checking for pattern %s", pattern) }
 	files <- list.files (searchPath, pattern = pattern, recursive = TRUE)
     foundBinary = ''
+    cat("a\n")
     for (binary in files) {
 		binaryPath = file.path(searchPath, binary)
 		if (verbose == TRUE) { BBmisc::messagef("    -Found binary at %s", binaryPath) }
@@ -48,13 +49,16 @@ findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
 		# add echo 1 to circumvent the stupid wait-for-key tactic in SVMperf. most stupid program ever.
 		# for now: implement as a HOTFIX
 		args = c()
+		cat("a\n")
 		if (length(grep( "svm_perf", binaryPath)) != 0) {
+		cat("b\n")
 			if (verbose == TRUE) { BBmisc::messagef("    -Applied SVMperf fix") }
 			stdout = system3 ("/bin/echo", args = c("1", "|", binaryPath), verbose = FALSE)
 		} else {
+		cat("c\n")
 			stdout = system3 (binaryPath, args = c(), verbose = FALSE)
 		}
-		
+		cat("a\n")
 		matches = 0
 		for (o in outputPattern) {
 			if (length(grep(o, stdout$output)) != 0) {

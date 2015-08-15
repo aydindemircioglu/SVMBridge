@@ -62,7 +62,7 @@ trainSVM = function(
 	# rest
 	extraParameter = "",
 	modelFile = NULL,
-	verbose = FALSE,
+	verbose = TRUE,
 
 	# data
 	subsamplingRate = NULL,
@@ -76,7 +76,10 @@ trainSVM = function(
 	#expand possible tilde characters in the path and get rid of backslashes
 	trainDataFile = path.expand(trainDataFile)
 	trainDataFile = gsub("[\\]", "/", trainDataFile)
-	cat(trainDataFile, "\n")
+	if(verbose == TRUE){
+		BBmisc::messagef("Expanded path to dataset: %s", trainDataFile)
+	}
+	
 	# get the correct object
 	SVMObject = SVMBridgeEnv$packages[[method]]
 	

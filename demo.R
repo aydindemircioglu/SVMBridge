@@ -42,8 +42,8 @@ char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LL
 	solver = "LIBSVM"
 	
 	# as the libary already loads default wrappers this works
-	addSVMPackage (method = solver, verbose = FALSE)
-	findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
+	#addSVMPackage (method = solver, verbose = TRUE)
+	#findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
 
 	
 
@@ -51,10 +51,10 @@ char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LL
 datasets = c("aXa")#, "protein", "poker")
 	verbose = FALSE
 	for(d in datasets){
-		addSVMPackage (method = solver, verbose = FALSE)
-		findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
+		addSVMPackage (method = solver, verbose = TRUE)
+		findSVMSoftware (solver, searchPath = "../svm_large_data/software/", verbose = TRUE)
 	
-		trainFile = paste ("~/../shark/svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
+		trainFile = paste ("~/svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
 		tmpModel_Without = tempfile()
 		tmpModel = tempfile()
 		tmpPredictions_Without = tempfile()
