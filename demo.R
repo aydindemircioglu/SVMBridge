@@ -37,17 +37,9 @@
 
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
 
+solver = "LIBSVM"
 
-#Create Model Object
-	solver = "LIBSVM"
-	
-	# as the libary already loads default wrappers this works
-	#addSVMPackage (method = solver, verbose = TRUE)
-	#findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
-
-	
-
-#testfunction
+#testfunction ----> fix file paths according to your system
 datasets = c("aXa")#, "protein", "poker")
 	verbose = FALSE
 	for(d in datasets){
@@ -63,7 +55,7 @@ datasets = c("aXa")#, "protein", "poker")
 		cost = runif(1)
 		gamma = runif(1)
 		subsamplingrate = 0.1
-		cat("errorsearch1\n")
+		cat("Block1\n")
 		#No Read/Write Operations used
 		trainObj =  trainSVM(
 			method = solver,
@@ -76,7 +68,7 @@ datasets = c("aXa")#, "protein", "poker")
 			modelFile = tmpModel_Without,
 			verbose = verbose
 		)  
-		cat("errorsearch2\n")
+		cat("Block2\n")
 		testObj =  testSVM(
 			#method = solver,
 			testDataFile = trainFile,
@@ -84,7 +76,8 @@ datasets = c("aXa")#, "protein", "poker")
 			predictionsFile = tmpPredictions_Without,
 			verbose = verbose
 		) 
-		cat("errorsearch3\n")
+		cat("Block3\n")
+		
 		#Use Read/Write Operations
 		trainObj =  trainSVM(
 			method = solver,
@@ -96,25 +89,21 @@ datasets = c("aXa")#, "protein", "poker")
 			readModelFile = TRUE,
 			verbose = verbose
 		)  
-		cat("errorsearch4\n")
+		cat("Block4\n")
 	
 		# get the correct object
 		SVMObject = SVMBridgeEnv$packages[[solver]]
-		cat("errorsearch4.5\n")
 		print(SVMObject)
-		writeModel.LIBSVM(SVMObject,trainObj$model, modelFile = "/tmp/model.txt")
+		writeModel.LIBSVM(SVMObject,trainObj$model, modelFile = tmpModel)
 		
-		cat("errorsearch5\n")
+		cat("Block5\n")
 		testObj =  testSVM(
 			method = solver,
 			testDataFile = trainFile,
 			model = trainObj$model,
-			predictionsFile = "/tmp/predictions.txt",
+			predictionsFile = tmpPredictions,
 			verbose = verbose
 		)  
-		cat("errorsearch6\n")
-		
-		
 	}
 
 

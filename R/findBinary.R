@@ -41,7 +41,7 @@ findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
 	if (verbose == TRUE) { BBmisc::messagef("  Checking for pattern %s", pattern) }
 	files <- list.files (searchPath, pattern = pattern, recursive = TRUE)
     foundBinary = ''
-    cat("a\n")
+    
     for (binary in files) {
 		binaryPath = file.path(searchPath, binary)
 		if (verbose == TRUE) { BBmisc::messagef("    -Found binary at %s", binaryPath) }
@@ -49,16 +49,13 @@ findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
 		# add echo 1 to circumvent the stupid wait-for-key tactic in SVMperf. most stupid program ever.
 		# for now: implement as a HOTFIX
 		args = c()
-		cat("a\n")
+		
 		if (length(grep( "svm_perf", binaryPath)) != 0) {
-		cat("b\n")
 			if (verbose == TRUE) { BBmisc::messagef("    -Applied SVMperf fix") }
 			stdout = system3 ("/bin/echo", args = c("1", "|", binaryPath), verbose = FALSE)
 		} else {
-		cat("c\n")
 			stdout = system3 (binaryPath, args = c(), verbose = FALSE)
 		}
-		cat("a\n")
 		matches = 0
 		for (o in outputPattern) {
 			if (length(grep(o, stdout$output)) != 0) {
