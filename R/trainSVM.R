@@ -74,10 +74,14 @@ trainSVM = function(
 	...) {
 	
 	#expand possible tilde characters in the path and get rid of backslashes
+	path_length = nchar(trainDataFile)
 	trainDataFile = path.expand(trainDataFile)
 	trainDataFile = gsub("[\\]", "/", trainDataFile)
-	if(.Platform$OS.type == "windows")
-		trainDataFile = substr(trainDataFile, 0, -10)
+	if(.Platform$OS.type == "windows"){
+		firstPart = substr(trainDataFile, 1, nchar(trainDataFile)-path_length-8)
+		secondPart = substr(trainDataFile, nchar(firstPart) + 11, nchar(trainDataFile) )
+		trainDataFile = paste(firstPart, secondPart, sep="")
+	}
 	if(verbose == TRUE){
 		BBmisc::messagef("  Expanded path to dataset: %s", trainDataFile)
 	}
