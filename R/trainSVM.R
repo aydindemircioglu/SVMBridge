@@ -77,7 +77,7 @@ trainSVM = function(
 	trainDataFile = path.expand(trainDataFile)
 	trainDataFile = gsub("[\\]", "/", trainDataFile)
 	if(verbose == TRUE){
-		BBmisc::messagef("Expanded path to dataset: %s", trainDataFile)
+		BBmisc::messagef("  Expanded path to dataset: %s", trainDataFile)
 	}
 	
 	# get the correct object

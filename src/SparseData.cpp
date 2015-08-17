@@ -149,7 +149,6 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 				}
 				filename.erase(tilde,1);
 				filename = home_path + filename;
-				cout << "Expanded Tilde Path: " << filename << endl;
 			#elif defined _WIN32
 				char* home_path;
 				home_path = getenv("HOMEPATH");
@@ -160,11 +159,12 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 						slash = filename.find("\\");
 				}
 				filename = home_path + filename;
-				cout << "Expanded Tilde Path: " << filename << endl;
 			#else
 			#error "Error"
 			#endif
-			
+			if(verbose == TRUE){
+				BBmisc::messagef("  Expanded path to dataset: %s", filename)
+			}
 		}
 		
 		

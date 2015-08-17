@@ -78,6 +78,9 @@ testSVM = function(
 	#expand possible tilde characters in the path and get rid of backslashes
 	testDataFile = path.expand(testDataFile)
 	testDataFile = gsub("[\\]", "/", testDataFile)
+	if(verbose == TRUE){
+		BBmisc::messagef("  Expanded path to dataset: %s", testDataFile)
+	}
 	
 		# TODO: sanity checks for parameter
 	if ( (is.null(model) == TRUE) && (is.null(modelFile) == TRUE))
