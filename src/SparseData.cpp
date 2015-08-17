@@ -163,7 +163,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 			#error "Error"
 			#endif
 			if(verbose == TRUE){
-				BBmisc::messagef("  Expanded path to dataset: %s", filename)
+				Rcout << "  Expanded path to dataset: " << filename << "\n";
 			}
 		}
 		
