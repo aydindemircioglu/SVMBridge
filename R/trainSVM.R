@@ -76,6 +76,8 @@ trainSVM = function(
 	#expand possible tilde characters in the path and get rid of backslashes
 	trainDataFile = path.expand(trainDataFile)
 	trainDataFile = gsub("[\\]", "/", trainDataFile)
+	if(.Platform$OS.type == "windows")
+		trainDataFile = substr(trainDataFile, 0, -10)
 	if(verbose == TRUE){
 		BBmisc::messagef("  Expanded path to dataset: %s", trainDataFile)
 	}
@@ -184,7 +186,7 @@ trainSVM = function(
 			if (verbose == TRUE) 
 				BBmisc::messagef("  Applying hard timeout of %f seconds.", timeOut)
 			trainTime = microbenchmark::microbenchmark(s <- system3(timeOutPath, timeOutArgs, verbose = verbose), times = 1L)$time / 1e9
-			}
+		}
 		 else {
 			trainTime = microbenchmark::microbenchmark(s <- system3(trainBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
 		}

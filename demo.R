@@ -34,7 +34,37 @@
 	#devtools::test()
 #	devtools::check()
 # R CMD check ./SVMBridge_1.0.tar.gz
+#10 Currently there are possible tilde character inputs for testSVM, trainSVM, readSparseData. Thus these functions will be tested.
 
+	solver = "LIBSVM"
+	verbose = TRUE
+	cost = runif(1)
+	gamma = runif(1)
+	addSVMPackage (method = solver, verbose = TRUE)
+	findSVMSoftware (solver, searchPath = "../shark/svm_large_data/software/", verbose = TRUE)
+	trainFile = ("~/SVMBridge/tests/data/sparse.data")
+	cat("Block1\n")
+	obj1 =  trainSVM(
+			method = solver,
+			trainDataFile = trainFile, 
+			cost = cost, 
+			gamma = gamma, 
+			readModelFile = TRUE,
+			verbose = verbose
+		)  
+	cat("Block2\n")
+	obj2 =  testSVM(
+			method = solver,
+			testDataFile = trainFile,
+			model = obj1$model,
+			verbose = verbose
+		) 
+	cat("Block3\n")
+	obj3 = readSparseData(filename = trainFile,
+			      verbose = verbose
+		)
+	
+die()
 char_vec = c("Pegasos") #"LASVM", "LIBSVM", "SVMperf" ,"BSGD", "BVM", "CVM", "LLSVM", "Pegasos"
 
 solver = "LIBSVM"

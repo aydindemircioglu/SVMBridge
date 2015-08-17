@@ -138,9 +138,9 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 		tmpPredictions_Without = tempfile()
 		tmpPredictions = tempfile()
 		addSVMPackage (method = solver, verbose = FALSE)
-		findSVMSoftware (solver, searchPath = "../../../svm_large_data/software/", verbose = FALSE)
+		findSVMSoftware (solver, searchPath = "../../../shark/svm_large_data/software/", verbose = FALSE)
 	
-		trainFile = paste ("../../../svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
+		trainFile = paste ("../../../shark/svm_large_data/datasets/", d, "/", d, ".combined.scaled", sep = "")
 		
 		print(trainFile)
 		cost = runif(1)
@@ -227,9 +227,9 @@ test_that(" tilde characters are expanded correctly.", {
 	cost = runif(1)
 	gamma = runif(1)
 	addSVMPackage (method = solver, verbose = TRUE)
-	findSVMSoftware (solver, searchPath = "../../../svm_large_data/software/", verbose = TRUE)
+	findSVMSoftware (solver, searchPath = "../../../shark/svm_large_data/software/", verbose = TRUE)
 	trainFile = ("~/SVMBridge/tests/data/sparse.data")
-	
+	cat("Block1\n")
 	obj1 =  trainSVM(
 			method = solver,
 			trainDataFile = trainFile, 
@@ -238,14 +238,14 @@ test_that(" tilde characters are expanded correctly.", {
 			readModelFile = TRUE,
 			verbose = verbose
 		)  
-	
+	cat("Block2\n")
 	obj2 =  testSVM(
 			method = solver,
 			testDataFile = trainFile,
 			model = obj1$model,
 			verbose = verbose
 		) 
-		
+	cat("Block3\n")
 	obj3 = readSparseData(filename = trainFile,
 			      verbose = verbose
 		)
@@ -262,8 +262,8 @@ test_that(" method autodetection in testSVM is working.", {
 	SVMObject = SVMBridgeEnv$packages[[solver]]
 	
 	svmatrix = readModel.LIBSVM(SVMObject, modelFile = dataset)
-	writeModel.LIBSVM(SVMObject, svmatrix, "/tmp/multitest.txt")
-	svmatrix2 = readModel.LIBSVM(SVMObject, modelFile = "/tmp/multitest.txt")
+	writeModel.LIBSVM(SVMObject, svmatrix, tmp)
+	svmatrix2 = readModel.LIBSVM(SVMObject, modelFile = tmp)
 
 	expect_equal(svmatrix, svmatrix2)
 })
