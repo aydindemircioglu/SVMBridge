@@ -80,7 +80,7 @@ testSVM = function(
 	
 		if(.Platform$OS.type == "windows"){
 			firstPart = path.expand("~")
-			firstPart = substr(firstPart, 1, nchar(firstPart) - 8)
+			firstPart = substr(firstPart, 1, nchar(firstPart) - 10)
 			secondPart = substr(testDataFile, 2, nchar(testDataFile))
 			testDataFile = paste(firstPart, secondPart, sep="")
 		

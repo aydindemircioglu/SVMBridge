@@ -78,7 +78,7 @@ trainSVM = function(
 	
 		if(.Platform$OS.type == "windows"){
 			firstPart = path.expand("~")
-			firstPart = substr(firstPart, 1, nchar(firstPart) - 8)
+			firstPart = substr(firstPart, 1, nchar(firstPart) - 10)
 			secondPart = substr(trainDataFile, 2, nchar(trainDataFile))
 			trainDataFile = paste(firstPart, secondPart, sep="")
 		
