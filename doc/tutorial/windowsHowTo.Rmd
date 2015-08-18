@@ -12,17 +12,20 @@
 
 5) Install Git
 
-6) Start up the Git Bash and navigate into a directory in which you want to download SVMbridge to
+6) Start up the Git Bash and navigate into a directory in which you want to download SVMbridge to. For best compatibility,
+   install SVMBridge into your home directory. Some tests may fail if you put it elsewhere.
 
 7) Download the SVMBridge repository by using git clone in the git console 
    (git clone https://github.com/aydindemircioglu/SVMBridge.git)
    
 8) Delete the makefile.win file, which is located in the src directory in SVMBridge.
 
-9) Download and install the latest version of the SVM you want to use. In this directory you will find 
-   executables with names like "svm-train.exe" and "svm-predict.exe" for each SVM.(By example if you use LIBSVM and downloaded 
-   the latest version from "https://www.csie.ntu.edu.tw/~cjlin/libsvm/"). At this point you have to look into some files, which 
-   are located in the SVMBridge\R folder. The file you need is called *_wrapper.R whereas the * stands for the SVM you're using.
+9) Create a folder structure "shark/svm_large_data/software/" in your home directory, download and install the latest version of the SVM you want to use in 
+   the newly created shark folder. In this directory you will find executables with names like "svm-train.exe" and "svm-predict.exe" 
+   for each SVM.(By example if you use LIBSVM and downloaded the latest version from "https://www.csie.ntu.edu.tw/~cjlin/libsvm/"). 
+   At this point you have to look into some files, which are located in the SVMBridge\R folder. 
+   
+   The file you need is called *_wrapper.R whereas the * stands for the SVM you're using.
    In this file, look for a function called findSoftware.* whereas the * stands for the SVM you're using. A few lines below, two variables
    called trainBinaryPattern and testBinaryPattern are defined with a certain string for the windows platform. Be sure that the binaries 
    of the SVM you are using are named the same way, or else the function won't be able to find them. Be sure as well to remember the path 
@@ -39,14 +42,15 @@
 
 12) Type in the following small demo into your R console for a quick start in how to use the wrapper. This demo uses the LIBSV machine as stated earlier. (More demos can be found in demo.R in SVMBridge).
 
+trainFile = "*realtive path to the directory where your R executable lies in, to the directory of your dataset (e.g for c:/ProgramData/R-3.2.1/bin/ you need to jump three directories
+			back to be in directory c:/) or absolute path to your dataset. For this example you can use the file sparse.data located in SVMBridge/tests/data/. (You may also use
+			tilde character.)*"
+
 addSVMPackage(method="LIBSVM", verbose=TRUE)
 
 findSVMSoftware(
 	"LIBSVM", 
 	searchPath = "*relative path or path to some parent directory of the used SVM binaries*", 	
-	trainFile = "*realtive path to the directory where your R executable lies in, to the directory of your dataset (e.g for c:/ProgramData/R-3.2.1/bin/ you need to jump three directories
-			back to be in directory c:/) or absolute path to your dataset. For this example you can use the file sparse.data located in SVMBridge/tests/data/. (You may also use
-			tilde character.)*"
 	verbose = TRUE
 )
 
