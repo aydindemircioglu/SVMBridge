@@ -73,6 +73,23 @@
 		if (verbose == TRUE) {
 			BBmisc::messagef("  Try to find binaries for %s", method) 
 		}
+		
+		#look for tile characters and expand them
+		if(grepl("~", searchPath) == TRUE){
+			if(.Platform$OS.type == "windows"){
+				firstPart = path.expand("~")
+				firstPart = substr(firstPart, 1, nchar(firstPart) - 10)
+				secondPart = substr(searchPath, 2, nchar(searchPath))
+				searchPath = paste(firstPart, secondPart, sep="")
+			}
+			else
+				searchPath = path.expand(searchPath)
+			searchPath = gsub("[\\]", "/", searchPath)
+			
+			if(verbose == TRUE){
+				BBmisc::messagef("  Expanded path to dataset: %s", searchPath)
+			}
+		}
 
 		# call the find software method of the solver
 		SVMBridgeEnv$packages[[method]] = findSoftware (SVMBridgeEnv$packages[[method]], searchPath = searchPath, verbose = verbose)

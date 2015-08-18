@@ -81,13 +81,6 @@ trainSVM = function(
 			firstPart = substr(firstPart, 1, nchar(firstPart) - 10)
 			secondPart = substr(trainDataFile, 2, nchar(trainDataFile))
 			trainDataFile = paste(firstPart, secondPart, sep="")
-		
-		
-		
-# 		path_length = nchar(trainDataFile)
-# 			firstPart = substr(trainDataFile, 1, nchar(trainDataFile)-path_length-8)
-# 			secondPart = substr(trainDataFile, nchar(firstPart) + 11, nchar(trainDataFile) )
-# 			trainDataFile = paste(firstPart, secondPart, sep="")
 		}
 		else
 			trainDataFile = path.expand(trainDataFile)

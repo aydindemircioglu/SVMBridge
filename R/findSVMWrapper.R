@@ -39,6 +39,23 @@
 			BBmisc::stopf("No search path is given!")
 		}
 		
+		#look for tile characters and expand them
+		if(grepl("~", searchPath) == TRUE){
+			if(.Platform$OS.type == "windows"){
+				firstPart = path.expand("~")
+				firstPart = substr(firstPart, 1, nchar(firstPart) - 10)
+				secondPart = substr(searchPath, 2, nchar(searchPath))
+				searchPath = paste(firstPart, secondPart, sep="")
+			}
+			else
+				searchPath = path.expand(searchPath)
+			searchPath = gsub("[\\]", "/", searchPath)
+			
+			if(verbose == TRUE){
+				BBmisc::messagef("  Expanded path to dataset: %s", searchPath)
+			}
+		}
+		
 		if (is.na(method)) {
 			BBmisc::stopf ("No method name is given")
 		}

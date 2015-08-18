@@ -83,13 +83,6 @@ testSVM = function(
 			firstPart = substr(firstPart, 1, nchar(firstPart) - 10)
 			secondPart = substr(testDataFile, 2, nchar(testDataFile))
 			testDataFile = paste(firstPart, secondPart, sep="")
-		
-		
-		
-# 		path_length = nchar(testDataFile)
-# 			firstPart = substr(testDataFile, 1, nchar(testDataFile)-path_length-8)
-# 			secondPart = substr(testDataFile, nchar(firstPart) + 11, nchar(testDataFile) )
-# 			testDataFile = paste(firstPart, secondPart, sep="")
 		}
 		else
 			testDataFile = path.expand(testDataFile)

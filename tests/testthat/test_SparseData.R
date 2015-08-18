@@ -208,7 +208,7 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 		pred_b = file(tmpPredictions, open = "rt")
 		prediction_b = readLines(pred_b)
 		
-		#expect_equal(model_a, model_b)
+# 		expect_equal(model_a, model_b)
 # 		expect_equal(prediction_a, prediction_b)
 
 		
@@ -227,7 +227,7 @@ test_that(" tilde characters are expanded correctly.", {
 	cost = runif(1)
 	gamma = runif(1)
 	addSVMPackage (method = solver, verbose = TRUE)
-	findSVMSoftware (solver, searchPath = "../../../shark/svm_large_data/software/", verbose = TRUE)
+	findSVMSoftware (solver, searchPath = "~/shark/svm_large_data/software/", verbose = TRUE)
 	trainFile = ("~/SVMBridge/tests/data/sparse.data")
 	cat("Block1\n")
 	obj1 =  trainSVM(
