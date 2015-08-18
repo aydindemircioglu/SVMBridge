@@ -39,7 +39,7 @@
 			BBmisc::stopf("No search path is given!")
 		}
 		
-		#look for tile characters and expand them
+		#look for tilde characters and expand them
 		if(grepl("~", searchPath) == TRUE){
 			if(.Platform$OS.type == "windows"){
 				firstPart = path.expand("~")

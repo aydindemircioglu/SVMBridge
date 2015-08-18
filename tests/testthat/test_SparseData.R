@@ -220,7 +220,7 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 	}
 })
 
-#10 Currently there are possible tilde character inputs for testSVM, trainSVM, readSparseData. Thus these functions will be tested.
+#10 Currently there are possible tilde character inputs for testSVM, trainSVM, readSparseData, findSVMSoftware, findSVMWrapper. Thus these functions will be tested.
 test_that(" tilde characters are expanded correctly.", {
 	solver = "LIBSVM"
 	verbose = TRUE
@@ -229,7 +229,6 @@ test_that(" tilde characters are expanded correctly.", {
 	addSVMPackage (method = solver, verbose = TRUE)
 	findSVMSoftware (solver, searchPath = "~/shark/svm_large_data/software/", verbose = TRUE)
 	trainFile = ("~/SVMBridge/tests/data/sparse.data")
-	cat("Block1\n")
 	obj1 =  trainSVM(
 			method = solver,
 			trainDataFile = trainFile, 
@@ -238,18 +237,15 @@ test_that(" tilde characters are expanded correctly.", {
 			readModelFile = TRUE,
 			verbose = verbose
 		)  
-	cat("Block2\n")
 	obj2 =  testSVM(
 			method = solver,
 			testDataFile = trainFile,
 			model = obj1$model,
 			verbose = verbose
 		) 
-	cat("Block3\n")
 	obj3 = readSparseData(filename = trainFile,
 			      verbose = verbose
 		)
-	
 })
 
 #11
