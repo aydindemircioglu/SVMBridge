@@ -32,7 +32,7 @@
 #' @param b Description
 #' ...
 
-	createSVMWrapper = function(method, trainingBinary = '', ...) {
+	createSVMWrapper = function(method, ...) {
 		
 		# check that trainingBinary exists, if given
 		# ...    
@@ -41,8 +41,7 @@
 		
 		# create S3 Object
 		svmPackage = BBmisc::makeS3Obj(c(method, "SVMWrapper"),
-			method = method,
-			trainingBinary = trainingBinary
+			method = method
 		)
 
 		# TODO: replace existing object in package list

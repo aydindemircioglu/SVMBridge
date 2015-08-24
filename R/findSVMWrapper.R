@@ -21,16 +21,17 @@
  
 
 
-# findSVMWrapper
-#		given a search path, it will try to find the corresponding wrapper for the given method.
-#
-# @param 	searchPath	 	search the given path for the SVM binaries of all known SVM packages.
-# @param	verbose			print messages while searching?
-#
-# @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
-# @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
-
-	findSVMWrapper <- function (method = NA, name = NA, searchPath = NA, verbose = FALSE) {
+#' findSVMWrapper
+#'		given a search path, it will try to find the corresponding wrapper for the given method.
+#'
+#' @param 	searchPath	 	search the given path for the SVM binaries of all known SVM packages.
+#' @param	verbose			print messages while searching?
+#'
+#' @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
+#' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
+#'
+#' @export
+findSVMWrapper <- function (method = NA, name = NA, searchPath = NA, verbose = FALSE) {
 		if (verbose == TRUE) {
 			BBmisc::messagef("API: Finding wrapper for %s", method)
 		}
@@ -95,17 +96,18 @@
 
 	
 
-# findAllSVMWrapper
-#		given a search path, it will try to find the corresponding wrapper
-#		for all registered SVM packages.
-#
-# @param 	searchPath	 	search the given path for the SVM wrappers of all known SVM packages.
-# @param	verbose			print messages while searching?
-#
-# @note		There is no extra check on the found wrapper. It will simply be sourced.
-# @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
-
-	findAllSVMWrapper <- function (searchPath = NA, verbose = FALSE) {
+#' findAllSVMWrapper
+#'		given a search path, it will try to find the corresponding wrapper
+#'		for all registered SVM packages.
+#'
+#' @param 	searchPath	 	search the given path for the SVM wrappers of all known SVM packages.
+#' @param	verbose			print messages while searching?
+#'
+#' @note		There is no extra check on the found wrapper. It will simply be sourced.
+#' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
+#' 
+#' @export
+findAllSVMWrapper <- function (searchPath = NA, verbose = FALSE) {
 		if (verbose == TRUE) {
 			BBmisc::messagef("API: Searching for all software wrappers:")
 		}

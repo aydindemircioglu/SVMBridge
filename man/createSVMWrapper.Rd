@@ -4,7 +4,7 @@
 \alias{createSVMWrapper}
 \title{Description...}
 \usage{
-createSVMWrapper(method, trainingBinary = "", ...)
+createSVMWrapper(method, ...)
 }
 \arguments{
 \item{a}{Description}

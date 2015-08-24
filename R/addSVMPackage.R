@@ -20,8 +20,24 @@
 #
 
 
-
-addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA, verbose = FALSE)
+#' add package to the bridge
+#'
+#' @param 	method		name of solver
+#' @param	filePath		path to wrapper
+#' @param	softwarePath		path where to find the solver.
+#' @param 	trainBinaryPath		if not NULL this will override any search option
+#' @param 	testBinaryPath		if not NULL this will override any search option
+#' @param	wrapperPath		if not NULL this will override any search option
+#' @param	verbose		be verbose?
+#'
+#' @note	 	first the given train and testBinaryPaths will be directly checked.
+#' if the binary does not exist there, the softwarePath will be added and rechecked
+#' and only if this does not work, the software will be searched via softwarePath.
+#' so one can override the search by specifiying train-/testBinaryPath.
+#'
+#' @export
+addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA, 
+	trainBinaryPath = NA, testBinaryPath = NA, wrapperPath = NA, verbose = FALSE)
 {
 	# we always need a method
 	if (is.na(method) == TRUE) {
@@ -51,18 +67,100 @@ addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA, verbos
 		}
 	}
 
-	
-	# add software path
-	if (is.na(softwarePath) == FALSE) {
-		if (verbose == TRUE) {
-			BBmisc::messagef ("  Specified software path, so searching for software package: ")
+	# check for test and train binaries
+	if ( (is.null (trainBinaryPath) == FALSE) && (is.na(trainBinaryPath) == FALSE)) {
+		if (file.exists (trainBinaryPath) == FALSE) {
+			# append software path to it
+			if (is.na(softwarePath) == FALSE) {
+				if (verbose == TRUE)
+					cat ("Appending softwarePath to train binary")
+					
+				trainBinaryPath = file.path (softwarePath, trainBinaryPath)
+				if (file.exists (trainBinaryPath) == FALSE) {
+					# ok nothing helped. do a search
+					if (verbose == TRUE) {
+						cat ("  Specified software path, so searching for software package: ")
+					}
+					findSVMSoftware (method = method, searchPath = softwarePath, verbose = verbose) 
+				}
+			} else {
+				if (verbose == TRUE)
+					cat ("Did not find training binary.\n")
+			}
+		} else {
+			if (verbose == TRUE)
+				cat ("Found train binary", trainBinaryPath, "\n")
 		}
-		findSVMSoftware (method = method, searchPath = softwarePath, verbose = verbose) 
 	}
+
+	
+	# check for test and test binaries
+	if ( (is.null (testBinaryPath) == FALSE) && (is.na(testBinaryPath) == FALSE)) {
+		if (file.exists (testBinaryPath) == FALSE) {
+			# append software path to it
+			if (is.na(softwarePath) == FALSE) {
+				if (verbose == TRUE)
+					cat ("Appending softwarePath to test binary")
+					
+				testBinaryPath = file.path (softwarePath, testBinaryPath)
+				if (file.exists (testBinaryPath) == FALSE) {
+					# ok nothing helped. do a search
+					if (verbose == TRUE) {
+						cat ("  Specified software path, so searching for software package: ")
+					}
+					findSVMSoftware (method = method, searchPath = softwarePath, verbose = verbose) 
+				}
+			} else {
+				if (verbose == TRUE)
+					cat ("Did not find testing binary.\n")
+			}
+		} else {
+			if (verbose == TRUE)
+				cat ("Found test binary", testBinaryPath, "\n")
+		}
+	}
+	
+	
+	# check for wrapper
+	if ((is.null(wrapperPath) == FALSE) && (is.na(wrapperPath) == FALSE) ) {
+		if (file.exists(wrapperPath) == FALSE) {
+			if (verbose == TRUE)
+				cat ("Did not find wrapper, appending softwarePath.\n")
+					
+			wrapperPath = file.path (softwarePath, wrapperPath)
+			if (file.exists (wrapperPath) == FALSE) {
+				# ok nothing helped. do a search
+				if (verbose == TRUE) 
+					cat ("Specified software path, so searching for wrapper: ")
+				findSVMWrapper (method = method, searchPath = softwarePath, verbose = verbose) 
+			} else {
+				if (verbose == TRUE)
+					cat ("Found wrapper at", wrapperPath, "\n")
+			}
+		} else {
+			if (verbose == TRUE)
+				cat ("Found wrapper at", wrapperPath, "\n")
+		}
+	}
+	
+
+	if ( (is.null(wrapperPath) == FALSE) & (is.na(wrapperPath) == FALSE)) {
+		if (verbose == TRUE)
+			cat ("Sourcing wrapper..\n")
+		source (wrapperPath, local = FALSE)
+	}
+	
+	# TODO: correct?
+	# what ever the outcome, we put the binary into our structure
+	SVMBridgeEnv$packages[[method]]$trainBinaryPath = trainBinaryPath
+	SVMBridgeEnv$packages[[method]]$testBinaryPath = testBinaryPath
 }
 
 
 
+#' dump all known package infos
+#'
+#' @export
 outputAllSVMSoftwarePackages <- function () {
 	BBmisc::messagef("Currently known solver:")
 	for (package in SVMBridgeEnv$packages) {
@@ -71,6 +169,12 @@ outputAllSVMSoftwarePackages <- function () {
 }
 
 
+
+#' dump specific package info
+#'
+#' @param	method		name of package/method
+#'
+#' @export
 getSVMInstance <- function ( method = method) {
 	return (SVMBridgeEnv$packages[[method]])
 }

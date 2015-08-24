@@ -6,7 +6,7 @@
 \usage{
 trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
   trainDatay = NULL, trainBinaryPath = NULL, extraParameter = "",
-  modelFile = NULL, verbose = FALSE, subsamplingRate = NULL,
+  modelFile = NULL, verbose = TRUE, subsamplingRate = NULL,
   subsamplingMethod = "cutoff", timeOut = -1, readModelFile = FALSE, ...)
 }
 \arguments{

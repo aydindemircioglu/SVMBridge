@@ -98,6 +98,11 @@ trainSVM = function(
 	
 	# ask object for its path
 	trainBinaryPath = SVMObject$trainBinaryPath
+	
+	if (is.null (trainBinaryPath) == TRUE) {
+		stop ("Sorry, no train binary was given. Cannot train an SVM without an executable.\n")
+	}
+	
 	trainBinary = basename(trainBinaryPath)
 	
 	# general modifications
