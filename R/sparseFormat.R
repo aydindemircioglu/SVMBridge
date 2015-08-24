@@ -125,6 +125,13 @@ dumpSparseFormat <- function (labels, data)
 
 
 
+#' read spase data from an open connection 
+#'
+#' @param	con  	connection
+#' @param 	verbose		be verbose?
+#' @param	zeroBased		features start with 0?
+#' 
+#' @export 
 readSparseDataFromConnection = function (con, verbose = FALSE, zeroBased = FALSE) {
     # where are we?
     currentPosition = seek(con)
