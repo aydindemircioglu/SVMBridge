@@ -39,7 +39,7 @@
 
 findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
 	if (verbose == TRUE) { BBmisc::messagef("  Checking for pattern %s", pattern) }
-	files <- list.files (searchPath, pattern = pattern, recursive = TRUE)
+	files <- listFiles (searchPath, pattern = pattern, recursive = TRUE)
     foundBinary = ''
     
     for (binary in files) {

@@ -75,7 +75,7 @@ findSVMWrapper <- function (method = NA, name = NA, searchPath = NA, verbose = F
 			BBmisc::messagef("  Looking for a wrapper with regex %s.", pattern)
 		}
 		
-		files <- list.files (searchPath, pattern = pattern, recursive = TRUE)
+		files <- listFiles (searchPath, pattern = pattern, recursive = TRUE)
 		foundWrapper = ''
 		for (file in files) {
 			wrapperPath = file.path(searchPath, file)
