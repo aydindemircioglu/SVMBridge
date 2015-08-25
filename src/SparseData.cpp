@@ -35,7 +35,6 @@
 #include <string>
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
-#define Calloc(type,n) (type *)calloc(n, sizeof(type))
 #define DEBUG if (1 == 0) 
 
 #ifdef __linux
@@ -116,7 +115,6 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 		int index = 0;
 		int max_index = 0;
 		int inst_max_index = 0;
-		int i = 0;
 		int min_index = 2;
 		int l = 0;
 		int featureDimension = 0;
