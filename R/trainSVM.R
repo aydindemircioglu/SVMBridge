@@ -74,23 +74,8 @@ trainSVM = function(
 	...) {
 	
 	#expand possible tilde characters in the path and get rid of backslashes
-	if (is.null (trainDataFile) == FALSE) {
-		if(grepl("~", trainDataFile) == TRUE){
-		
-			if(.Platform$OS.type == "windows"){
-				firstPart = path.expand("~")
-				firstPart = substr(firstPart, 1, nchar(firstPart) - 10)
-				secondPart = substr(trainDataFile, 2, nchar(trainDataFile))
-				trainDataFile = paste(firstPart, secondPart, sep="")
-			}
-			else
-				trainDataFile = path.expand(trainDataFile)
-			trainDataFile = gsub("[\\]", "/", trainDataFile)
-			
-			if(verbose == TRUE){
-				BBmisc::messagef("  Expanded path to dataset: %s", trainDataFile)
-			}
-		}
+	if(is.null(trainDataFile) == FALSE && grepl("~", trainDataFile) == TRUE){
+		trainDataFile = expandTilde(path = trainDataFile, verbose = verbose)
 	}
 	
 	# get the correct object

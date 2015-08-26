@@ -43,7 +43,7 @@ for(solver in char_vec)
 {
 	# as the libary already loads default wrappers this works
 		addSVMPackage (method = solver, verbose = FALSE)
-		findSVMSoftware (solver, searchPath = "../../../svm_large_scale/software/", verbose = TRUE)
+		findSVMSoftware (solver, searchPath = "../../shark/svm_large_data/software/", verbose = TRUE)
 
 		verbose = FALSE
 		
@@ -83,7 +83,7 @@ for(solver in char_vec)
 		# extract optimization values from model
 		oV = optimizationValues(X = trainDataX, Y = trainDatay, model = trainObj$model, C = C, values = c(), verbose = FALSE)
 
-		source("./tests/computeOptimizationValuesLibSVM.R")
+		source("./computeOptimizationValuesLibSVM.R")
 		data = list()
 		data$x = trainDataX
 		data$y = trainDatay

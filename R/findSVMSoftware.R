@@ -76,19 +76,7 @@
 		
 		#look for tilde characters and expand them
 		if(grepl("~", searchPath) == TRUE){
-			if(.Platform$OS.type == "windows"){
-				firstPart = path.expand("~")
-				firstPart = substr(firstPart, 1, nchar(firstPart) - 10)
-				secondPart = substr(searchPath, 2, nchar(searchPath))
-				searchPath = paste(firstPart, secondPart, sep="")
-			}
-			else
-				searchPath = path.expand(searchPath)
-			searchPath = gsub("[\\]", "/", searchPath)
-			
-			if(verbose == TRUE){
-				BBmisc::messagef("  Expanded path to dataset: %s", searchPath)
-			}
+			searchPath = expandTilde(path = searchPath, verbose = verbose)
 		}
 
 		# call the find software method of the solver
@@ -97,5 +85,25 @@
 		# TODO: to get better tests, maybe we need an option like "TEST = true", which will
 		# take a demo-data-file and compute the model. so actuallly its like a unittest, but
 		# it is executed during use, to make sure everything is as it should be.
+	}
+	
+	expandTilde <- function(path = NULL, verbose = FALSE){
+		#look for tilde characters and expand them
+		if(grepl("~", path) == TRUE){
+			if(.Platform$OS.type == "windows"){
+				firstPart = path.expand("~")
+				firstPart = substr(firstPart, 1, nchar(firstPart) - 10)
+				secondPart = substr(path, 2, nchar(path))
+				path = paste(firstPart, secondPart, sep="")
+			}
+			else
+				path = path.expand(path)
+			path = gsub("[\\]", "/", path)
+			
+			if(verbose == TRUE){
+				BBmisc::messagef("  Expanded path: %s", path)
+			}
+		}
+		return (path)
 	}
 

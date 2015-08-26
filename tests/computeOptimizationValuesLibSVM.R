@@ -3,7 +3,7 @@
 loadThings <- function ()
 {
   library(kernlab)
-  source ("./tests/computeErrorsHelper.R")
+  source ("../computeErrorsHelper.R")
 }
 suppressMessages(loadThings())
 

@@ -98,7 +98,7 @@ test_that(" readModel.LIBSM (read/write operations) work with binary models", {
 	solver = "LIBSVM"
 	dataset = ("../data/mnist.binary.model")
 	addSVMPackage (method = solver, verbose = FALSE)
-	findSVMSoftware (solver, searchPath = "../../../../shark/svm_large_data/software/", verbose = TRUE)
+	findSVMSoftware (solver, searchPath = "../../../shark/svm_large_data/software/", verbose = TRUE)
 	SVMObject = SVMBridgeEnv$packages[[solver]]
 	
 	svmatrix = readModel.LIBSVM(SVMObject, modelFile = dataset)
@@ -115,7 +115,7 @@ test_that(" readModel.LIBSM (read/write operations) work with multiclass models"
 	solver = "LIBSVM"
 	dataset = ("../data/mnist.multi.model")
 	addSVMPackage (method = solver, verbose = FALSE)
-	findSVMSoftware (solver, searchPath = "../../../../shark/svm_large_data/software/", verbose = TRUE)
+	findSVMSoftware (solver, searchPath = "../../../shark/svm_large_data/software/", verbose = TRUE)
 	SVMObject = SVMBridgeEnv$packages[[solver]]
 	
 	svmatrix = readModel.LIBSVM(SVMObject, modelFile = dataset)
@@ -254,7 +254,7 @@ test_that(" method autodetection in testSVM is working.", {
 	solver = "LIBSVM"
 	dataset = ("../data/mnist.multi.model")
 	addSVMPackage (method = solver, verbose = FALSE)
-	findSVMSoftware (solver, searchPath = "../../../../shark/svm_large_data/software/", verbose = TRUE)
+	findSVMSoftware (solver, searchPath = "../../../shark/svm_large_data/software/", verbose = TRUE)
 	SVMObject = SVMBridgeEnv$packages[[solver]]
 	
 	svmatrix = readModel.LIBSVM(SVMObject, modelFile = dataset)

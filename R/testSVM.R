@@ -75,24 +75,6 @@ testSVM = function(
 		BBmisc::messagef("--- Testing...")
 	}
 	
-	#expand possible tilde characters in the path and get rid of backslashes
-	if(grepl("~", testDataFile) == TRUE){
-	
-		if(.Platform$OS.type == "windows"){
-			firstPart = path.expand("~")
-			firstPart = substr(firstPart, 1, nchar(firstPart) - 10)
-			secondPart = substr(testDataFile, 2, nchar(testDataFile))
-			testDataFile = paste(firstPart, secondPart, sep="")
-		}
-		else
-			testDataFile = path.expand(testDataFile)
-		testDataFile = gsub("[\\]", "/", testDataFile)
-		
-		if(verbose == TRUE){
-			BBmisc::messagef("  Expanded path to dataset: %s", testDataFile)
-		}
-	}
-	
 		# TODO: sanity checks for parameter
 	if ( (is.null(model) == TRUE) && (is.null(modelFile) == TRUE))
 			BBmisc::stopf("Neither given a model nor given a path to the model. Stopping.")	
@@ -140,6 +122,12 @@ testSVM = function(
 	# TODO: check for X AND y.
 		
 	# we got 
+	
+	#expand possible tilde characters in the path and get rid of backslashes
+	if(is.null(testDataFile) == FALSE && grepl("~", testDataFile) == TRUE){
+		testDataFile = expandTilde(path = testDataFile, verbose = verbose)
+	}
+	
 	if (is.null(testDataX) == FALSE) {
 		testDataFile = tempfile()
 		if (verbose == TRUE)
