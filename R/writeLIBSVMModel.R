@@ -53,7 +53,7 @@
 		if(is.numeric(gammaValue))
 			writeLines(paste ("gamma", model$gamma, sep = " "), modelFileHandle )
 		writeLines(paste ("nr_class", model$nrclass, sep = " "), modelFileHandle )
-		writeLines(paste ("total_sv", length(model$nSV), sep = " "), modelFileHandle )
+		writeLines(paste ("total_sv", sum(model$nSV), sep = " "), modelFileHandle )
 		biasvalues = paste(model$bias, collapse = " ")
 		writeLines(paste ("rho", biasvalues, sep = " "), modelFileHandle )
 		labelvalues = paste(model$label, collapse = " ")
