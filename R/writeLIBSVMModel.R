@@ -33,17 +33,20 @@
 	#' @export
 	writeLIBSVMModel = function (model = NA, modelFile = "./model", verbose = FALSE) {
 		if (verbose == TRUE) {
-			BBmisc::messagef ("Writing SVM Model..")
+			BBmisc::messagef ("Writing SVM Model to %s", modelFile)
 		}
 		
-		#model$alpha = model$Y
-		# FIXME: label order
-		# TODO: support multiclass
+		# check of S3 object here.
+		
 		model$nrclass = length(model$label)
 		posSV = sum(model$alpha > 0)
 		negSV = sum(model$alpha < 0)
+
 		# open connection
+		if (verbose == TRUE)
+			cat ("  Writing Header\n")
 		modelFileHandle <- file(modelFile, open = "w+")
+
 		writeLines(paste ("svm_type c_svc", sep = ""), modelFileHandle )
 		writeLines(paste ("kernel_type", "rbf", sep = " "), modelFileHandle )
 		gammaValue = model$gamma
@@ -62,6 +65,8 @@
 		# basically all data is sparse data format, but the data around this differs
 		#svmatrix = dumpSparseFormat(model$alpha, model$X)
 		#writeLines(svmatrix, modelFileHandle, sep = "" )
+		if (verbose == TRUE)
+			cat ("  Writing SV\n")
 		writeSparseDataToConnection(modelFileHandle, model$SVs, model$alpha)
 		
 		# close connection
