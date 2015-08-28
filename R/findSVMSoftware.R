@@ -21,15 +21,16 @@
  
 
 
-# findAllSVMSoftware 
-#		given a search path, it will try to find the corresponding software packages
-#		for all registered SVM packages.
-#
-# @param 	searchPath	 	search the given path for the SVM binaries of all known SVM packages.
-# @param	verbose			print messages while searching?
-#
-# @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
-# @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
+#' findAllSVMSoftware 
+#'		given a search path, it will try to find the corresponding software packages
+#'		for all registered SVM packages.
+#'
+#' @param 	searchPath	 	search the given path for the SVM binaries of all known SVM packages.
+#' @param	verbose			print messages while searching?
+#'
+#' @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
+#' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
+#'
 
 	findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
 		if (verbose == TRUE) {
@@ -47,15 +48,16 @@
 
 
 
-# findAllSVMSoftware 
-#		given a search path, it will try to find the corresponding software packages
-#		for all registered SVM packages.
-#
-# @param 	searchPath	 	search the given path for the SVM binaries of all known SVM packages.
-# @param	verbose			print messages while searching?
-#
-# @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
-# @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
+#' findSVMSoftware 
+#'		given a search path, it will try to find the corresponding software packages
+#'		for the given method.
+#'
+#' @param	method		name of the method
+#' @param 	searchPath	 	search the given path for the SVM binaries of all known SVM packages.
+#' @param	verbose			print messages while searching?
+#'
+#' @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
+#' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
 
 	findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 		if (verbose == TRUE) {
@@ -87,23 +89,5 @@
 		# it is executed during use, to make sure everything is as it should be.
 	}
 	
-	expandTilde <- function(path = NULL, verbose = FALSE){
-		#look for tilde characters and expand them
-		if(grepl("~", path) == TRUE){
-			if(.Platform$OS.type == "windows"){
-				firstPart = path.expand("~")
-				firstPart = substr(firstPart, 1, nchar(firstPart) - 10)
-				secondPart = substr(path, 2, nchar(path))
-				path = paste(firstPart, secondPart, sep="")
-			}
-			else
-				path = path.expand(path)
-			path = gsub("[\\]", "/", path)
-			
-			if(verbose == TRUE){
-				BBmisc::messagef("  Expanded path: %s", path)
-			}
-		}
-		return (path)
-	}
+	
 

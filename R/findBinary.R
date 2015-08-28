@@ -19,23 +19,22 @@
 # All negative use is prohibited.
 #
  
-
-# findBinary
-#		given a file pattern and an std-out-pattern it will try to find a binary matching
-#		the file pattern (which contains std-out-pattern as output if called without arguments)
-#		in the path given.
-#
-# @param 	searchPath	 	search the given path for the SVM binaries recursively.
-# @param	pattern		pattern for the binary file
-# @param	outputPattern		pattern for the stdout output of the binary
-# @param	verbose			print messages while searching?
-#
-# @note		To make sure that the binary is correct, it will be executed!
+#' findBinary
+#'		given a file pattern and an std-out-pattern it will try to find a binary matching
+#'		the file pattern (which contains std-out-pattern as output if called without arguments)
+#'		in the path given.
+#'
+#' @param	searchPath	 	search the given path for the SVM binaries recursively.
+#' @param	pattern		pattern for the binary file
+#' @param	outputPattern		pattern for the stdout output of the binary
+#' @param	verbose			print messages while searching?
+#' @return	name of the found binary matching the pattern
+#' @note		To make sure that the binary is correct, it will be executed!
 # 					Furthermore, many SVM packages derive from libSVM. as such, they
 #					often do not change the prediction binasry. We will try to sort these out,
 #					but it might be hopeless. With luck, the found binary will be left untouched,
 #					and thus work, if not, you must set the path by hand.
-# @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
+#' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
 
 findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
 	if (verbose == TRUE) { BBmisc::messagef("  Checking for pattern %s", pattern) }

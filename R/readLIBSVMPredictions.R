@@ -19,34 +19,35 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
- 
 
+# TODO:
+# Read predictions from a file 
+#
+#' readLIBSVMPredictions
+#' 		Read predictions produced by LIBSVM, i.e. each line one label.
+#'
+#' @param	x
+#' @param	predictionsFile		file to read predictions from
+#' @param	verbose		be verbose?
+#' 
+#' @return		array consisting of predictions
+#
+#' @export
+readLIBSVMPredictions = function (x, predictionsFile = "", verbose = FALSE) {
+	# open connection
+	con  <- file(predictionsFile, open = "r")
 
-	#' Read predictions from a file 
- 	#'
- 	#' Read predictions produced by LIBSVM, i.e. each line one label.
- 	#'
-	#' @param	predictionsFile		file to read predictions from
-	#' @param	verbose		be verbose?
-	#' 
-	#' @return		array consisting of predictions
-	#
-	#' @export
-	readLIBSVMPredictions = function (x, predictionsFile = "", verbose = FALSE) {
-		# open connection
-		con  <- file(predictionsFile, open = "r")
-
-		predictions = c()
-		while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
-			predictions = c(predictions, as.numeric(oneLine))
-		}
-		
-		if (verbose == TRUE) {
-			print(predictions)
-		}
-				
-		close (con)
-		
-		return (predictions)
+	predictions = c()
+	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
+		predictions = c(predictions, as.numeric(oneLine))
 	}
+	
+	if (verbose == TRUE) {
+		print(predictions)
+	}
+			
+	close (con)
+	
+	return (predictions)
+}
 

@@ -173,6 +173,7 @@ outputAllSVMSoftwarePackages <- function () {
 #' dump specific package info
 #'
 #' @param	method		name of package/method
+#' @result	SVM object for the given method
 #'
 #' @export
 getSVMInstance <- function ( method = method) {
