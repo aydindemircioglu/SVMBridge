@@ -31,7 +31,11 @@
 #' @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
 #' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
 #'
+<<<<<<< HEAD
 
+=======
+#' @export
+>>>>>>> 31ed93e5280ab470fc98db2e90d03e1e4bf5bde6
 	findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
 		if (verbose == TRUE) {
 			BBmisc::messagef("API: Searching for all software packages:")
@@ -48,17 +52,29 @@
 
 
 
+<<<<<<< HEAD
 #' findSVMSoftware 
 #'		given a search path, it will try to find the corresponding software packages
 #'		for the given method.
 #'
 #' @param	method		name of the method
+=======
+#' findAllSVMSoftware 
+#'		given a search path, it will try to find the corresponding software packages
+#'		for all registered SVM packages.
+#'
+>>>>>>> 31ed93e5280ab470fc98db2e90d03e1e4bf5bde6
 #' @param 	searchPath	 	search the given path for the SVM binaries of all known SVM packages.
 #' @param	verbose			print messages while searching?
 #'
 #' @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
 #' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
+<<<<<<< HEAD
 
+=======
+#'
+#' @export
+>>>>>>> 31ed93e5280ab470fc98db2e90d03e1e4bf5bde6
 	findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 		if (verbose == TRUE) {
 			BBmisc::messagef("API: Finding software for %s", method)
@@ -88,6 +104,10 @@
 		# take a demo-data-file and compute the model. so actuallly its like a unittest, but
 		# it is executed during use, to make sure everything is as it should be.
 	}
+<<<<<<< HEAD
 	
 	
 
+=======
+	
+>>>>>>> 31ed93e5280ab470fc98db2e90d03e1e4bf5bde6
