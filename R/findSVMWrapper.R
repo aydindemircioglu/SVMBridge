@@ -18,12 +18,13 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
- 
 
 
 #' findSVMWrapper
 #'		given a search path, it will try to find the corresponding wrapper for the given method.
 #'
+#' @param	method		name of the SVM method
+#' @param	name		if name is given, the search pattern will not have _wrapper.R postfix 
 #' @param 	searchPath	 	search the given path for the SVM binaries of all known SVM packages.
 #' @param	verbose			print messages while searching?
 #'

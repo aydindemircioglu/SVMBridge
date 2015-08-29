@@ -47,6 +47,11 @@ readSparseFile <- function (fileName = '', verbose = FALSE) {
 
 
 # FIXME: RENAME
+#' readSparseFormat
+#'		
+#' @param	con		connection to read from
+#'
+#' @return	list of supportvectors, coefficients and weights
 readSparseFormat <- function (con)
 {
   # these will contain the coefficients and the  svs.
@@ -116,8 +121,12 @@ readSparseFormat <- function (con)
 }
 
 
-
-
+#' dumpSparseLine
+#' 
+#' @param	row		array to read data from
+#'
+#' @return	sparseLine		string with row data 
+#'
 dumpSparseLine = function (row) {
 	sparseLine = ''
 
@@ -130,7 +139,12 @@ dumpSparseLine = function (row) {
 }
 
 
-
+#' dumpSparseFormat
+#' 
+#' @param	labels		container for labels
+#' @param	data		container for data
+#' @return	sparseLine		string with all collected data
+#'
 dumpSparseFormat <- function (labels, data)
 {
 	# TODO: sanity check for length of labels and data
@@ -151,10 +165,11 @@ dumpSparseFormat <- function (labels, data)
 
 #' read spase data from an open connection 
 #'
-#' @param	con  	connection
+#' @param	con		connection
 #' @param 	verbose		be verbose?
-#' @param	zeroBased		features start with 0?
-#' 
+#' @param	zeroBased		do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
+#' @return	L		list containing input data and labels
+#'
 #' @export 
 readSparseDataFromConnection = function (con, verbose = FALSE, zeroBased = FALSE) {
     # where are we?
@@ -169,6 +184,14 @@ readSparseDataFromConnection = function (con, verbose = FALSE, zeroBased = FALSE
     return (L)
 }
 
+#' writeSparseDataToConnection
+#'
+#' @param	con		connection
+#' @param 	X		input data
+#' @param	Y		labels
+#' @param	verbose		be verbose?
+#' @param	zeroBased		do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
+#'
 writeSparseDataToConnection = function (con, X, Y, verbose = FALSE, zeroBased = FALSE) {
 	currentPosition = seek(con)
 	filename = summary(con)$description

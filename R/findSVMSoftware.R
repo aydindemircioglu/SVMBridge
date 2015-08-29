@@ -18,7 +18,6 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
- 
 
 
 #' findAllSVMSoftware 
@@ -52,7 +51,8 @@ findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
 #'		given a search path, it will try to find the corresponding software packages
 #'		for the given method.
 #'
-#' @param	method		name of the method
+#' @param	method		name of the SVM method
+#' @param 	searchPath	 	search the given path for the SVM binaries of the given SVM method.
 #' @param	verbose		print messages while searching?
 #' @export
 findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {

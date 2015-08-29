@@ -20,13 +20,16 @@
 # All negative use is prohibited.
 #
 
+
 # TODO:
 # Read predictions from a file 
 #
+
+
 #' readLIBSVMPredictions
 #' 		Read predictions produced by LIBSVM, i.e. each line one label.
 #'
-#' @param	x
+#' @param	x		SVMObject
 #' @param	predictionsFile		file to read predictions from
 #' @param	verbose		be verbose?
 #' 
