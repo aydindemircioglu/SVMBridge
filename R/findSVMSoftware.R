@@ -54,7 +54,7 @@ findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
 #' @param	method		name of the SVM method
 #' @param 	searchPath	 	search the given path for the SVM binaries of the given SVM method.
 #' @param	verbose		print messages while searching?
-#' @export
+#' @export	findSVMSoftware
 findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 	if (verbose == TRUE) {
 		BBmisc::messagef("API: Finding software for %s", method)

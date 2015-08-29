@@ -3,14 +3,15 @@
 
 
 # evalBSGD
-# @param[in]    trainDataFile       file to read training data from.
-# @param[in]    testDataFile        file to read test data from.
-# @param[in]    cost            cost parameter C.
-# @param[in]    gamma           gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...).
-# @param[in]    budget          budget parameter.
-# @param[in]    epochs          number of epochs to run.
-# @param[in]    bindir          relativ path to the binaries, defaults to default.
-# @param[in]    modelFile       path to model, defaults to a temporary file (given by R).
+# @param[in]	trainDataFile		file to read training data from.
+# @param[in]	modelFile		path to model, defaults to a temporary file (given by R).
+# @param[in]	extraParameter		extra parameters for solver
+# @param[in]	primalTime		
+# @param[in]	cost            cost parameter C.
+# @param[in]	gamma           gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...).
+# @param[in]	budget          budget parameter.
+# @param[in]	epochs          number of epochs to run.
+# @param[in]	bindir          relativ path to the binaries, defaults to default.
 
 
 createTrainingArguments.BSGD = function (x,

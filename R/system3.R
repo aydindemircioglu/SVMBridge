@@ -25,8 +25,9 @@
 #' @param     binPath		binary to execute
 #' @param     args		arguments for binary
 #' @param     verbose		verbose output? (including executed command line)
-#
-
+#'
+#' @return	s		
+#'
 system3 <- function (binPath, args, verbose = FALSE) 
 { 
 	if (verbose == TRUE) {

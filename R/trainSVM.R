@@ -22,23 +22,23 @@
 
 #' trainSVM
 #'
-#' @param     trainDataFile       file to read training data from 
-#' @param     trainDataX		matrix to read training data from 
-#' @param     trainDatay		matrix to read training label from 
+#' @param	method		name of the SVM method/solver
 #'
-#' @param     trainBinaryPath		full path to the training binary to call
+#' @param	trainDataFile		file to read training data from 
+#' @param	trainDataX		matrix to read training data from 
+#' @param	trainDatay		matrix to read training label from 
 #'
-#' @param     method		name of the SVM method/solver
-#' @param     extraParameter  extra parameters for solver
+#' @param	trainBinaryPath		full path to the training binary to call
 #'
-#' @param     model		list containing a trained SVM model
-#' @param     modelFile       path to a model file
-#' @param     verbose		be verbose?
+#' @param	extraParameter		extra parameters for solver
+#' @param	modelFile		path to a model file
+#' @param	verbose		be verbose
 #'
-#' @param     trainingParameterCallBack 		 function that returns command line for training
-#' @param     extractInformationCallBack 		 function that extracts information from testing output
-#' @param     readModelCallBack 		 function that reads a model into a list
+#' @param	subsamplingRate		rate to subsample the data at
+#' @param	subsamplingMethod		method to subsample the data with
 #'
+#' @param	timeOut		value to time out at
+#' @param	readModelFile		if TRUE, will read the model back (model is saved in the created object)
 #' @note		exclusive parameters, i.e. you cannot specify both:
 #'
 #' @return		SVM Object

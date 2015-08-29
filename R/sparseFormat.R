@@ -26,7 +26,7 @@
 #' @param	verbose		report helpful messages?
 #' @importMethodsFrom		SparseM		as.matrix.csr
 #'
-#' @export
+#' @export	readSparseFile
 readSparseFile <- function (fileName = '', verbose = FALSE) {
 
 	if (verbose == TRUE) {
@@ -170,7 +170,7 @@ dumpSparseFormat <- function (labels, data)
 #' @param	zeroBased		do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
 #' @return	L		list containing input data and labels
 #'
-#' @export 
+#' @export	readSparseDataFromConnection
 readSparseDataFromConnection = function (con, verbose = FALSE, zeroBased = FALSE) {
     # where are we?
     currentPosition = seek(con)

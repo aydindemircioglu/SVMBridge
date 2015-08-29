@@ -35,7 +35,7 @@
 #' and only if this does not work, the software will be searched via softwarePath.
 #' so one can override the search by specifiying train-/testBinaryPath.
 #'
-#' @export
+#' @export	addSVMPackage
 addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA, 
 	trainBinaryPath = NA, testBinaryPath = NA, wrapperPath = NA, verbose = FALSE)
 {
@@ -160,7 +160,7 @@ addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA,
 
 #' dump all known package infos
 #'
-#' @export
+#' @export	outputAllSVMSoftwarePackages
 outputAllSVMSoftwarePackages <- function () {
 	BBmisc::messagef("Currently known solver:")
 	for (package in SVMBridgeEnv$packages) {
@@ -175,7 +175,7 @@ outputAllSVMSoftwarePackages <- function () {
 #' @param	method		name of package/method
 #' @result	SVM object for the given method
 #'
-#' @export
+#' @export	getSVMInstance
 getSVMInstance <- function ( method = method) {
 	return (SVMBridgeEnv$packages[[method]])
 }

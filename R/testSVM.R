@@ -22,22 +22,18 @@
 
 #' testSVM
 #'
-#' @param     trainDataFile       file to read training data from 
-#' @param     trainDataX		matrix to read training data from 
-#' @param     trainDatay		matrix to read training label from 
+#' @param	testDataFile		file to read training data from 
+#' @param	testDataX		matrix to read training data from 
+#' @param	testDatay		matrix to read training label from 
 #'
-#' @param     trainBinaryPath		full path to the training binary to call
+#' @param	model		list containing a trained SVM model
+#' @param	modelFile       path to a model file
 #'
-#' @param     method		name of the SVM method/solver
-#' @param     extraParameter  extra parameters for solver
+#' @param	readPredictions		if TRUE, the prediction will be read back 
+#' @param	predictionsFile		the prediction will be written to this file or to a tempfile
 #'
-#' @param     model		list containing a trained SVM model
-#' @param     modelFile       path to a model file
-#' @param     verbose		be verbose?
-#'
-#' @param     trainingParameterCallBack 		 function that returns command line for training
-#' @param     extractInformationCallBack 		 function that extracts information from testing output
-#' @param     readModelCallBack 		 function that reads a model into a list
+#' @param	extraParameter		extra parameters for solver
+#' @param	verbose		be verbose?
 #'
 #' @note		exclusive parameters, i.e. you cannot specify both:
 #'

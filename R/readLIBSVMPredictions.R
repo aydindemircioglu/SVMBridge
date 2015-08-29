@@ -35,7 +35,7 @@
 #' 
 #' @return		array consisting of predictions
 #
-#' @export
+#' @export	readLIBSVMPredictions
 readLIBSVMPredictions = function (x, predictionsFile = "", verbose = FALSE) {
 	# open connection
 	con  <- file(predictionsFile, open = "r")

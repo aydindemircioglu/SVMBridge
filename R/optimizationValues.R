@@ -31,7 +31,7 @@
 #' @param		verbose		report certain messages?
 #' @return		a list of values and corresponding objects
 #'
-#' @export
+#' @export	optimizationValues
 optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FALSE) {
 
 	if (verbose == TRUE) {

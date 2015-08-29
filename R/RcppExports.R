@@ -15,7 +15,7 @@
 #' @note 		works with LIBSVMlike models only
 #' @note		all computations will be done in DENSE format, not sparse!
 #' @return		list of optimization values
-#' @export
+#' @export	computeOptimizationValues
 computeOptimizationValues <- function(X, Y, C, gamma, SV, nSV, sv_coef, rho, label, verbose = FALSE) {
     .Call('SVMBridge_computeOptimizationValues', PACKAGE = 'SVMBridge', X, Y, C, gamma, SV, nSV, sv_coef, rho, label, verbose)
 }
@@ -37,7 +37,7 @@ computeOptimizationValues <- function(X, Y, C, gamma, SV, nSV, sv_coef, rho, lab
 #'		print (paste("Data has", nrow(S$X), "points."))
 #'		print (paste("Labels are", unique(S$Y), "."))
 #'	}
-#' @export
+#' @export	readSparseData
 readSparseData <- function(filename, skipBytes = 0L, verbose = FALSE, zeroBased = FALSE) {
     .Call('SVMBridge_readSparseData', PACKAGE = 'SVMBridge', filename, skipBytes, verbose, zeroBased)
 }
@@ -58,7 +58,7 @@ readSparseData <- function(filename, skipBytes = 0L, verbose = FALSE, zeroBased 
 #'		X = as.matrix(iris[,1:4])
 #'		Y = as.matrix(as.numeric(iris[,5]))
 #'		writeSparseData ("./australian.data", X, Y)
-#' @export
+#' @export	writeSparseData
 writeSparseData <- function(filename, X, Y, skipBytes = 0L, verbose = FALSE, zeroBased = FALSE) {
     .Call('SVMBridge_writeSparseData', PACKAGE = 'SVMBridge', filename, X, Y, skipBytes, verbose, zeroBased)
 }
