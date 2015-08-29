@@ -31,83 +31,56 @@
 #' @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
 #' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
 #'
-<<<<<<< HEAD
-
-=======
 #' @export
->>>>>>> 31ed93e5280ab470fc98db2e90d03e1e4bf5bde6
-	findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
-		if (verbose == TRUE) {
-			BBmisc::messagef("API: Searching for all software packages:")
-		}
-		
-		for (i in seq(1, length(SVMBridgeEnv$packages))) {
-			method = SVMBridgeEnv$packages[[i]]$method
-			if (verbose == TRUE) {
-				BBmisc::messagef("  Searching for software for SVM package %s:", method)
-			}
-			findSVMSoftware (method = method, searchPath = searchPath, verbose = verbose)
-		}
+findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
+	if (verbose == TRUE) {
+		BBmisc::messagef("API: Searching for all software packages:")
 	}
+	
+	for (i in seq(1, length(SVMBridgeEnv$packages))) {
+		method = SVMBridgeEnv$packages[[i]]$method
+		if (verbose == TRUE) {
+			BBmisc::messagef("  Searching for software for SVM package %s:", method)
+		}
+		findSVMSoftware (method = method, searchPath = searchPath, verbose = verbose)
+	}
+}
 
 
 
-<<<<<<< HEAD
 #' findSVMSoftware 
 #'		given a search path, it will try to find the corresponding software packages
 #'		for the given method.
 #'
 #' @param	method		name of the method
-=======
-#' findAllSVMSoftware 
-#'		given a search path, it will try to find the corresponding software packages
-#'		for all registered SVM packages.
-#'
->>>>>>> 31ed93e5280ab470fc98db2e90d03e1e4bf5bde6
-#' @param 	searchPath	 	search the given path for the SVM binaries of all known SVM packages.
-#' @param	verbose			print messages while searching?
-#'
-#' @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
-#' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
-<<<<<<< HEAD
-
-=======
-#'
+#' @param	verbose		print messages while searching?
 #' @export
->>>>>>> 31ed93e5280ab470fc98db2e90d03e1e4bf5bde6
-	findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
-		if (verbose == TRUE) {
-			BBmisc::messagef("API: Finding software for %s", method)
-		}
-		
-		if (is.na(searchPath)) {
-			BBmisc::stopf("No search path is given!")
-		}
-		
-		if (is.na(method)) {
-			BBmisc::stopf ("No method name is given")
-		}
-		
-		if (verbose == TRUE) {
-			BBmisc::messagef("  Try to find binaries for %s", method) 
-		}
-		
-		#look for tilde characters and expand them
-		if(grepl("~", searchPath) == TRUE){
-			searchPath = expandTilde(path = searchPath, verbose = verbose)
-		}
-
-		# call the find software method of the solver
-		SVMBridgeEnv$packages[[method]] = findSoftware (SVMBridgeEnv$packages[[method]], searchPath = searchPath, verbose = verbose)
-		
-		# TODO: to get better tests, maybe we need an option like "TEST = true", which will
-		# take a demo-data-file and compute the model. so actuallly its like a unittest, but
-		# it is executed during use, to make sure everything is as it should be.
+findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
+	if (verbose == TRUE) {
+		BBmisc::messagef("API: Finding software for %s", method)
 	}
-<<<<<<< HEAD
 	
+	if (is.na(searchPath)) {
+		BBmisc::stopf("No search path is given!")
+	}
 	
+	if (is.na(method)) {
+		BBmisc::stopf ("No method name is given")
+	}
+	
+	if (verbose == TRUE) {
+		BBmisc::messagef("  Try to find binaries for %s", method) 
+	}
+	
+	#look for tilde characters and expand them
+	if(grepl("~", searchPath) == TRUE){
+		searchPath = expandTilde(path = searchPath, verbose = verbose)
+	}
 
-=======
+	# call the find software method of the solver
+	SVMBridgeEnv$packages[[method]] = findSoftware (SVMBridgeEnv$packages[[method]], searchPath = searchPath, verbose = verbose)
 	
->>>>>>> 31ed93e5280ab470fc98db2e90d03e1e4bf5bde6
+	# TODO: to get better tests, maybe we need an option like "TEST = true", which will
+	# take a demo-data-file and compute the model. so actuallly its like a unittest, but
+	# it is executed during use, to make sure everything is as it should be.
+}
