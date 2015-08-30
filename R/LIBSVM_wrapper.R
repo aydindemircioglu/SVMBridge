@@ -20,8 +20,32 @@
 # All negative use is prohibited.
 #
  
-	
-	createTrainingArguments.LIBSVM = function (x,
+#' createTrainingArguments.BSGD
+#'
+#' @param	x			SVM object
+#' @param	trainDataFile		file to read training data from.
+#' @param	modelFile		path to model, defaults to a temporary file (given by R).
+#' @param	extraParameter		extra parameters for solver
+#' @param	kernelCacheSize		kernel cache parameter
+#' @param	svmType			type of svm
+#' @param	useBias			
+#' @param	epsilon
+#' @param	degree
+#' @param	coef0
+#' @param	nu
+#' @param	shrinking
+#' @param	probabilityEstimates
+#' @param	weight
+#' @param	n
+#' @param	kernelType
+#' @param	quietMode	
+#' @param	cost			cost parameter C.
+#' @param	gamma			gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...).
+#'
+#' @return	args			arguments for training
+#'
+createTrainingArguments.LIBSVM = function (
+	x,
 	trainDataFile = "",
         modelFile = "",
         extraParameter = "",
@@ -120,16 +144,21 @@
 		)
 
 		return (args)
-	}
+}
 
 	
-	
-	createTestArguments.LIBSVM = function (x,
-		testDataFile = "",
-		modelFile = "", 
-		predictionsFile = "",
-		...) 
-	{
+#' createTestArguments.LIBSVM
+#'
+#' @param	x			SVM object
+#' @param	testDataFile		file to read training data from.
+#' @param	modelFile		path to model, defaults to a temporary file (given by R).
+#' @param	predictionsFile		
+createTestArguments.LIBSVM = function (
+	x,
+	testDataFile = "",
+	modelFile = "", 
+	predictionsFile = "",
+	...) {
 		args = c(
 			testDataFile,
 			modelFile,
@@ -137,87 +166,122 @@
 		)
     
 		return (args)
-	}
+}
 
 
-	
-	extractTrainingInfo.LIBSVM = function (x, output) {
+#' extractTrainingInfo.LIBSVM
+#' 
+#' @param	x		svm object
+#' @param	output
+#'
+#' @return	error		error value
+#'
+extractTrainingInfo.LIBSVM = function (
+	x, 
+	output) {
 		pattern <- ".*Accuracy =\\s*(\\d+\\.?\\d*).*"
 		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 		return (error)
-	}
+}
 	
 	
-	
-	extractTestInfo.LIBSVM = function (x, output) {
+#' extractTestInfo.LIBSVM
+#' 
+#' @param	x		svm object
+#' @param	output
+#'
+#' @return	error		error value
+#'	
+extractTestInfo.LIBSVM = function (
+	x,
+	output) {
 		pattern <- ".*Accuracy =\\s*(\\d+\\.?\\d*).*"
 		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 		return (error)
-	}
+}
 	
 
 	
-	#' Read LIBSVM model
-	#'
-	#' As this is a basic for all other model readers, we export it.
-	#' 
-	#' @param	x		object
-	#' @param	modelFile		model file to read
-	#' @param	verbose		be verbose?
-	#'
-	#' @return		model object
-	#'
-	#' @export
-	readModel.LIBSVM = function (x, modelFile = "./model", verbose = FALSE) {
+#' Read LIBSVM model
+#'
+#' As this is a basic for all other model readers, we export it.
+#' 
+#' @param	x		svm object
+#' @param	modelFile	model file to read
+#' @param	verbose		be verbose?
+#'
+#' @return			model object
+#'
+#' @export
+readModel.LIBSVM = function (
+	x,
+	modelFile = "./model",
+	verbose = FALSE) {
 		return (readLIBSVMModel (modelFile = modelFile, verbose = verbose) )
-	}
+}
 
 
 
 
 	
-	#' Write LIBSVM model
-	#'
-	#' As this is a basic for all other model readers, we export it.
-	#' 
-	#' @param	x		object
-	#' @param	model		model object to write
-	#' @param	modelFile		path where to write the model
-	#' @param	verbose		be verbose?
-	#'
-	#' @export
-	writeModel.LIBSVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
+#' Write LIBSVM model
+#'
+#' As this is a basic for all other model readers, we export it.
+#' 
+#' @param	x		svm object
+#' @param	model		model object to write
+#' @param	modelFile	path where to write the model
+#' @param	verbose		be verbose?
+#'
+#' @export
+writeModel.LIBSVM = function (
+	x,
+	model = NA,
+	modelFile = "./model",
+	verbose = FALSE) {
 		return (writeLIBSVMModel (model = model, modelFile = modelFile, verbose = verbose) )
+}
+
+
+#' readPredictions.LIBSVM
+#'
+#' @param	x			svm object
+#' @param	predictionsFile		file to read predictions from
+#' @param	verbose			be verbose?
+#' @return				array consisting of predictions
+#'
+readPredictions.LIBSVM = function (x, predictionsFile = "", verbose = FALSE) {
+	# open connection
+	con  <- file(predictionsFile, open = "r")
+
+	predictions = c()
+	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
+		predictions = c(predictions, as.numeric(oneLine))
 	}
-
-
 	
- 	#
-	# @param[in]	predictionsFile		file to read predictions from
-	# @return		array consisting of predictions
-	#
-	readPredictions.LIBSVM = function (x, predictionsFile = "", verbose = FALSE) {
-		# open connection
-		con  <- file(predictionsFile, open = "r")
-
-		predictions = c()
-		while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
-			predictions = c(predictions, as.numeric(oneLine))
-		}
-		
-		if (verbose == TRUE) {
-			print(predictions)
-		}
-				
-		close (con)
-		
-		return (predictions)
+	if (verbose == TRUE) {
+		print(predictions)
 	}
+			
+	close (con)
+	
+	return (predictions)
+}
 
 	
-	
-	findSoftware.LIBSVM = function (x, searchPath = "./", verbose = FALSE) {
-
+#' findSoftware.LIBSVM
+#'
+#' @param	x			svm object
+#' @param	searchPath		path to search for software
+#' @param	verbose			be verbose?
+#'
+#' @return	x			svm object
+#'	
+findSoftware.LIBSVM = function (
+	x,
+	searchPath = "./",
+	verbose = FALSE)
+	{
 		if (verbose == TRUE) {
 			BBmisc::messagef("    LIBSVM Object: Executing search for software for %s", x$method)
 		}
@@ -256,13 +320,16 @@
 		x$testBinaryPath = binaryPath
 
 		return(x)
-	}
+}
 
 	
-	
-	print.LIBSVM = function(x) {
-		BBmisc::messagef("--- Object: %s", x$method)
-		BBmisc::messagef("       Training Binary at %s", x$trainBinaryPath)
-		BBmisc::messagef("       Test Binary at %s", x$testBinaryPath)
-	}
+#' print.LIBSVM
+#'
+#' @param	x			svm object
+#'	
+print.LIBSVM = function(x) {
+	BBmisc::messagef("--- Object: %s", x$method)
+	BBmisc::messagef("       Training Binary at %s", x$trainBinaryPath)
+	BBmisc::messagef("       Test Binary at %s", x$testBinaryPath)
+}
 	

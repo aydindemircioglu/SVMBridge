@@ -1,20 +1,41 @@
 #!/usr/bin/Rscript  --vanilla 
 
+#
+# SVMBridge 
+#
+#		(C) 2015, by Aydin Demircioglu
+# 
+# SVMBridge is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SVMBridge is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# Please do not use this software to destroy or spy on people, environment or things.
+# All negative use is prohibited.
+#
 
 
-# evalBSGD
-# @param[in]	trainDataFile		file to read training data from.
-# @param[in]	modelFile		path to model, defaults to a temporary file (given by R).
-# @param[in]	extraParameter		extra parameters for solver
-# @param[in]	primalTime		
-# @param[in]	cost            cost parameter C.
-# @param[in]	gamma           gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...).
-# @param[in]	budget          budget parameter.
-# @param[in]	epochs          number of epochs to run.
-# @param[in]	bindir          relativ path to the binaries, defaults to default.
-
-
-createTrainingArguments.BSGD = function (x,
+#' createTrainingArguments.BSGD
+#'
+#' @param	x		SVM object
+#' @param	trainDataFile	file to read training data from.
+#' @param	modelFile	path to model, defaults to a temporary file (given by R).
+#' @param	extraParameter	extra parameters for solver
+#' @param	primalTime		
+#' @param	wallTime		
+#' @param	cost		cost parameter C.
+#' @param	gamma		gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...).
+#' @param	budget		budget parameter.
+#' @param	epochs		number of epochs to run.
+#'
+#' @return	args		arguments for training
+createTrainingArguments.BSGD = function (
+	x,
 	trainDataFile = "",
 	modelFile = "",
 	extraParameter = "",
@@ -44,21 +65,29 @@ createTrainingArguments.BSGD = function (x,
 		return (args)
 }
 
-
-
-createTestArguments.BSGD = function (x,
-					testDataFile = "",
-					modelFile = "", 
-					predictionOutput = "/dev/null", ...) {
-    args = c(
-        "-v 1",
-#        "-o 1", only works for BSGD for now
-        testDataFile,
-        modelFile,
-        predictionOutput 
-    )
+#' createTestArguments.BSGD
+#'
+#' @param	x			SVM object
+#' @param	testDataFile		file to read test data from.
+#' @param	modelFile		path to model, defaults to a temporary file (given by R).
+#' @param	predictionOutput	path to where to put prediction output
+#'
+#' @return	args		arguments for testing
+createTestArguments.BSGD = function (
+	x,
+	testDataFile = "",
+	modelFile = "", 
+	predictionOutput = "/dev/null", 
+	...) {
+		args = c(
+			"-v 1",
+		#        "-o 1", only works for BSGD for now
+			testDataFile,
+			modelFile,
+			predictionOutput 
+		)
   
-    return (args)
+	return (args)
 }
 
 
@@ -83,56 +112,62 @@ extractTestInfo.BSGD = function (x, output) {
     return (err)
 }
 
-
+#' readModel.BSGD
+#'
+#' @param	x			SVM object
+#' @param	modelFile		path to model, defaults to a temporary file (given by R).
+#' @param	verbose			print messages?
+#'
+#' @return	svmatrix		svmmatrix object
 readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 	if (verbose == TRUE) {
 		BBmisc::messagef("Reading BSGD model from %s", modelFile)
 	}
 
-    # open connection
-    con  <- file(modelFile, open = "r")
+	# open connection
+	con  <- file(modelFile, open = "r")
 
 	# do we need to invert the labels?
 	invertLabels = FALSE
 
 	# grep needed information step by step, the bias is on the threshold line
-    while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) 
-    {
-        if (grepl("MODEL", oneLine) == TRUE) break;
+	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) 
+	{
+		if (grepl("MODEL", oneLine) == TRUE) break;
       
-        # gamma value
-        if (grepl("KERNEL_GAMMA_PARAM", oneLine) == TRUE) 
-        {
-            pattern <- "KERNEL_GAMMA_PARAM: (.*)"
-            gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
-        }  
+		# gamma value
+		if (grepl("KERNEL_GAMMA_PARAM", oneLine) == TRUE) 
+		{
+		    pattern <- "KERNEL_GAMMA_PARAM: (.*)"
+		    gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+		}  
+	      
+		# bias
+		if (grepl("BIAS_TERM", oneLine) == TRUE) 
+		{
+		    pattern <- "BIAS_TERM: (.*)"
+		    bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+		}
       
-        # bias
-        if (grepl("BIAS_TERM", oneLine) == TRUE) 
-        {
-            pattern <- "BIAS_TERM: (.*)"
-            bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
-        }
-      
-        # order of labels
-        if (grepl("LABELS", oneLine) == TRUE) 
-        {
-            pattern <- "LABELS: (.*)"
-            order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
-        
-            if ((order != "1 -1") && (order != "-1 1")) {
-                stop ("Label ordering %s is unknown!", order)
-            }
-        
-            if (order == "1 -1") {
-                invertLabels = FALSE
-            }
+		# order of labels
+		if (grepl("LABELS", oneLine) == TRUE) 
+		{
+			pattern <- "LABELS: (.*)"
+			order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+		
+			if ((order != "1 -1") && (order != "-1 1")) {
+				stop ("Label ordering %s is unknown!", order)
+			}
+		
+			if (order == "1 -1") {
+				invertLabels = FALSE
+			}
 
-            if (order == "-1 1") {
-                invertLabels = TRUE
-            }
-        }  
-    }
+			if (order == "-1 1") {
+				invertLabels = TRUE
+			 }
+		}  
+	}
   
   
 	# read and interprete data 
@@ -201,7 +236,7 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
  
 
 #
-# @param[in]	predictionsFile		file to read predictions from
+#' @param	predictionsFile		file to read predictions from
 # @return		array consisting of predictions
 #
 
@@ -224,6 +259,14 @@ readPredictions.BSGD <- function (x, predictionsFilePath = "", verbose = FALSE) 
     return (predictions)
 }
 
+
+#' findSoftware.BSGD
+#'
+#' @param	x			SVM object
+#' @param	searchPath		path to search for software
+#' @param	verbose			print messages?
+#'
+#' @return	x			binary path for the software
 findSoftware.BSGD = function (x, searchPath = "./", verbose = FALSE) {
 
 		if (verbose == TRUE) {
