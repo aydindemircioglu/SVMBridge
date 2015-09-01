@@ -11,7 +11,10 @@ readSparseDataFromConnection(con, verbose = FALSE, zeroBased = FALSE)
 
 \item{verbose}{be verbose?}
 
-\item{zeroBased}{features start with 0?}
+\item{zeroBased}{do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?}
+}
+\value{
+L		list containing input data and labels
 }
 \description{
 read spase data from an open connection

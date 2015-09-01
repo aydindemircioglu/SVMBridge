@@ -24,15 +24,15 @@ trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
 
 \item{modelFile}{path to a model file}
 
-\item{verbose}{be verbose?}
+\item{verbose}{be verbose}
 
-\item{model}{list containing a trained SVM model}
+\item{subsamplingRate}{rate to subsample the data at}
 
-\item{trainingParameterCallBack}{function that returns command line for training}
+\item{subsamplingMethod}{method to subsample the data with}
 
-\item{extractInformationCallBack}{function that extracts information from testing output}
+\item{timeOut}{value to time out at}
 
-\item{readModelCallBack}{function that reads a model into a list}
+\item{readModelFile}{if TRUE, will read the model back (model is saved in the created object)}
 }
 \value{
 SVM Object

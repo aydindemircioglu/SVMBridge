@@ -8,6 +8,10 @@
 findSVMWrapper(method = NA, name = NA, searchPath = NA, verbose = FALSE)
 }
 \arguments{
+\item{method}{name of the SVM method}
+
+\item{name}{if name is given, the search pattern will not have _wrapper.R postfix}
+
 \item{searchPath}{search the given path for the SVM binaries of all known SVM packages.}
 
 \item{verbose}{print messages while searching?}

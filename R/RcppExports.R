@@ -3,10 +3,10 @@
 
 #' Compute several optimization values from a model like primal value
 #'
-#' @param 		X		input data
+#' @param 	X		input data
 #' @param		Y		labels
 #' @param		C		regularization value from svm problem
-#' @param		gamma		used kernel bandwidth 
+#' @param		gamma	used kernel bandwidth 
 #' @param		SV		matrix of support vectors
 #' @param		nSV		vector of number of support vectors, needed for the multiclass case
 #' @param		sv_coef		alpha of support vectors
@@ -15,19 +15,17 @@
 #' @note 		works with LIBSVMlike models only
 #' @note		all computations will be done in DENSE format, not sparse!
 #' @return		list of optimization values
-#' @export	computeOptimizationValues
+#' @export
 computeOptimizationValues <- function(X, Y, C, gamma, SV, nSV, sv_coef, rho, label, verbose = FALSE) {
     .Call('SVMBridge_computeOptimizationValues', PACKAGE = 'SVMBridge', X, Y, C, gamma, SV, nSV, sv_coef, rho, label, verbose)
 }
 
-#' readSparseData
-#' 		Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
+#' Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
 #'
-#' @param 		filename		the filename of the data in sparse file format.
-#' @param		skipBytes		Bytes to skip
+#' @param 		filename		the filename of the data in sparse file format. The Tilde Character isn't supported for f filename!  
 #' @param		verbose		show verbose output?
-#' @param		zeroBased		do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
-#' @keywords		IO 
+#' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
+#' @keywords	IO 
 #' @note		this routine is nearly a 1:1 adoptation from the LIBSVM original code.
 #' @return		the data is read into an R matrix and an R vector, containing the data
 #'					and the labels. note, that these are not in sparse format, but are dense.
@@ -37,28 +35,24 @@ computeOptimizationValues <- function(X, Y, C, gamma, SV, nSV, sv_coef, rho, lab
 #'		print (paste("Data has", nrow(S$X), "points."))
 #'		print (paste("Labels are", unique(S$Y), "."))
 #'	}
-#' @export	readSparseData
+#' @export
 readSparseData <- function(filename, skipBytes = 0L, verbose = FALSE, zeroBased = FALSE) {
     .Call('SVMBridge_readSparseData', PACKAGE = 'SVMBridge', filename, skipBytes, verbose, zeroBased)
 }
 
-#' writeSparseData
-#' 		Write given (dense) R matrix and R vector in sparse (LIBSVM) format to given file.
+#' Write given (dense) R matrix and R vector in sparse (LIBSVM) format to given file.
 #'
-#' @param 		filename		the filename to write the given data to
-#' @param 		X		input data
-#' @param		Y		labels
-#' @param		skipBytes		Bytes to skip
+#' @param 	filename		the filename to write the given data to
 #' @param		verbose		show verbose output?
 #' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
 #' @note		labels can any numeric, they are not converted in any way.
-#' @keywords		IO 
+#' @keywords	IO 
 #' @return		NULL.
 #' @examples	
 #'		X = as.matrix(iris[,1:4])
 #'		Y = as.matrix(as.numeric(iris[,5]))
 #'		writeSparseData ("./australian.data", X, Y)
-#' @export	writeSparseData
+#' @export
 writeSparseData <- function(filename, X, Y, skipBytes = 0L, verbose = FALSE, zeroBased = FALSE) {
     .Call('SVMBridge_writeSparseData', PACKAGE = 'SVMBridge', filename, X, Y, skipBytes, verbose, zeroBased)
 }

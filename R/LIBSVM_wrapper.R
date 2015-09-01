@@ -20,7 +20,7 @@
 # All negative use is prohibited.
 #
  
-#' createTrainingArguments.BSGD
+#' createTrainingArguments.LIBSVM
 #'
 #' @param	x			SVM object
 #' @param	trainDataFile		file to read training data from.
@@ -153,8 +153,7 @@ createTrainingArguments.LIBSVM = function (
 #' @param	testDataFile		file to read training data from.
 #' @param	modelFile		path to model, defaults to a temporary file (given by R).
 #' @param	predictionsFile		
-createTestArguments.LIBSVM = function (
-	x,
+createTestArguments.LIBSVM = function (x,
 	testDataFile = "",
 	modelFile = "", 
 	predictionsFile = "",
@@ -213,8 +212,7 @@ extractTestInfo.LIBSVM = function (
 #' @return			model object
 #'
 #' @export
-readModel.LIBSVM = function (
-	x,
+readModel.LIBSVM = function (x,
 	modelFile = "./model",
 	verbose = FALSE) {
 		return (readLIBSVMModel (modelFile = modelFile, verbose = verbose) )
@@ -234,8 +232,7 @@ readModel.LIBSVM = function (
 #' @param	verbose		be verbose?
 #'
 #' @export
-writeModel.LIBSVM = function (
-	x,
+writeModel.LIBSVM = function (x,
 	model = NA,
 	modelFile = "./model",
 	verbose = FALSE) {

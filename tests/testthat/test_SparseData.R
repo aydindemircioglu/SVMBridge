@@ -226,8 +226,8 @@ test_that(" tilde characters are expanded correctly.", {
 	verbose = TRUE
 	cost = runif(1)
 	gamma = runif(1)
-	addSVMPackage (method = solver, verbose = TRUE)
-	findSVMSoftware (solver, searchPath = "~/shark/svm_large_data/software/", verbose = TRUE)
+	addSVMPackage (method = solver, verbose = FALSE)
+	findSVMSoftware (solver, searchPath = "~/shark/svm_large_data/software/", verbose = FALSE)
 	trainFile = ("~/SVMBridge/tests/data/sparse.data")
 	obj1 =  trainSVM(
 			method = solver,
@@ -257,7 +257,7 @@ test_that(" method autodetection in testSVM is working.", {
 	cost = runif(1)
 	gamma = runif(1)
 	addSVMPackage (method = solver, verbose = FALSE)
-	findSVMSoftware (solver, searchPath = "../../../shark/svm_large_data/software/", verbose = TRUE)
+	findSVMSoftware (solver, searchPath = "../../../shark/svm_large_data/software/", verbose = FALSE)
 	
 	obj1 =  trainSVM(
 			method = solver,

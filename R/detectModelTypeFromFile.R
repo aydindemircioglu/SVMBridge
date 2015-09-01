@@ -4,7 +4,7 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		detectMethodFromFile.R
+#		detectModelTypeFromFile.R
 # 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -21,43 +21,37 @@
 #
 
 
-#' detectModelTypeFromFile
-#'		auto detect type of SVM model
+#' Detect model type from file.
+#' 
+#' This will auto detect the type of SVM model from a given file.
 #' 
 #' @param	modelFile		path to model file
 #' @param	verbose		be verbose?
+#'
 #' @return	method name or NULL if no method could be detected.
+#'
+#' @export
 #'
 detectModelTypeFromFile <- function(
 	modelFile = NULL,
 	verbose = FALSE
 )
 {
-	line = readLines(modelFile, 64)
+	checkmate::checkFile (modelFile)
+	checkmate::checkFlag (verbose)
+	line = readLines(modelFile, n = 12)
 
 	# BSGD
-	pattern = "KERNEL_GAMMA_PARAM:"
-	if (sum(grepl(pattern, line)) > 0) {
-		method = "BSGD/LLSVM"
-		cat(method, "\n")
-		return (method)
-	}
-
-	# SVMperf/light
-	pattern = "SVM-light"
-	if (sum(grepl(pattern, line)) > 0) {
-		method = "SVMLight"
-		cat(method, "\n")
-		return (method)
-	}
-
-	# LibSVM
-	pattern = "total_sv"
-	if (sum(grepl(pattern, line)) > 0) {
+	method = NULL
+	if (sum(grepl("KERNEL_GAMMA_PARAM:", line)) > 0) {
+		method = "BSGD"
+	} else if (sum(grepl("SVM-light", line)) > 0) {
+		method = "SVMperf"
+	} else if (sum(grepl("total_sv", line)) > 0) {
 		method = "LIBSVM"
-		cat(method, "\n")
-		return (method)
 	}
 
-	return (NULL)
+	if (verbose == TRUE)
+		cat("Found model Type: ", method, "\n")
+	return (method)
 }

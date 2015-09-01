@@ -2,7 +2,8 @@
 % Please edit documentation in R/optimizationValues.R
 \name{optimizationValues}
 \alias{optimizationValues}
-\title{compute different optimization values for a given model}
+\title{optimizationValues
+		compute different optimization values for a given model}
 \usage{
 optimizationValues(X, Y, model, C = 0, values = c(), verbose = FALSE)
 }
@@ -16,11 +17,14 @@ optimizationValues(X, Y, model, C = 0, values = c(), verbose = FALSE)
 \item{C}{regularization parameter (if needed)}
 
 \item{values}{which values to evaluate}
+
+\item{verbose}{report certain messages?}
 }
 \value{
 a list of values and corresponding objects
 }
 \description{
-compute different optimization values for a given model
+optimizationValues
+		compute different optimization values for a given model
 }
 

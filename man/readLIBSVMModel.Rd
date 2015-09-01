@@ -2,7 +2,8 @@
 % Please edit documentation in R/readLIBSVMModel.R
 \name{readLIBSVMModel}
 \alias{readLIBSVMModel}
-\title{Read LIBSVM model}
+\title{readLIBSVMModel
+		Read LIBSVM model}
 \usage{
 readLIBSVMModel(modelFile = "./model", verbose = FALSE)
 }
@@ -15,6 +16,10 @@ readLIBSVMModel(modelFile = "./model", verbose = FALSE)
 model object
 }
 \description{
+readLIBSVMModel
+		Read LIBSVM model
+}
+\note{
 As this is a basic for all other model readers, we export it.
 }
 
