@@ -34,11 +34,10 @@
 #' @export	optimizationValues
 optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FALSE) {
 
-
 	# checkmate checks
-	checkmate::assertMatrix(x, min.rows = 1)
-	checkmate::assertVector(y, min.rows = 1)
-	checkmate::assertClass (model, "SVMModel")
+	checkmate::assertMatrix(X, min.rows = 1)
+	checkmate::assertVector(Y)
+#	checkmate::assertClass (model, "SVMModel")
 	checkmate::assertFlag (verbose)
 
 	if (verbose == TRUE) {
@@ -50,24 +49,10 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 
 	# apply our fixes-- if we do not know the model, we apply LIBSVM
 	if (model$modeltype == "LIBSVM")	{
-		# prepare model, the alphas have coefficients for 'both' classes, need simply to crop that
-		model$alpha = t(model$alpha[,1])
-
-		# adapt gamma, as BSGD has different kernel constant
-		model$gamma = model$gamma/2
-		
-		# sanity check, if we really have BSGD data
-		cl1 = model$alpha[,1]
-		cl2 = -model$alpha[,2]
-		if (!all(cl1 == cl2)) {
-			stop ("Sanity check failed: alpha_1 == -alpha_2 is violated.")
-		}
-		
-		# compute lambda and correction factor as BSGD model works with lambda-formulation
-		N = nrow(X)
 	}
 	
 	if (model$modeltype == "SVMperf")	{
+		stop ("SVMperf opt values not yet supported.")
 		# prepare model, the alphas have coefficients for 'both' classes, need simply to crop that
 		model$alpha = t(model$alpha[,1])
 
@@ -86,6 +71,7 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 	}
 	
 	if (model$modeltype == "BSGD")	{
+		stop ("BSGD opt values not yet supported.")
 		# prepare model, the alphas have coefficients for 'both' classes, need simply to crop that
 		model$alpha = t(model$alpha[,1])
 
@@ -109,21 +95,7 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 	}
 	
 	if (model$modeltype == "LASVM")	{
-		# prepare model, the alphas have coefficients for 'both' classes, need simply to crop that
-		model$alpha = t(model$alpha[,1])
-
-		# adapt gamma, as BSGD has different kernel constant
-		model$gamma = model$gamma/2
-		
-		# sanity check, if we really have BSGD data
-		cl1 = model$alpha[,1]
-		cl2 = -model$alpha[,2]
-		if (!all(cl1 == cl2)) {
-			stop ("Sanity check failed: alpha_1 == -alpha_2 is violated.")
-		}
-		
-		# compute lambda and correction factor as BSGD model works with lambda-formulation
-		N = nrow(X)
+		# nothing to be done, as LASVM and LIBSVM have the same model format.
 	}
 		
 
@@ -141,8 +113,8 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 		cat ("bias", model$bias)
 		cat ("label", model$label)
 	}
-	computedValues = computeOptimizationValues (X, Y, C, gamma, 
-		model$SVs, nSV, model$alpha, model$bias, model$label, verbose)
+	computedValues = computeOptimizationValues (X, Y, C, model$gamma, 
+		model$SVs, model$nSV, model$alpha, model$bias, model$label, verbose)
 
 	return (computedValues)
 }

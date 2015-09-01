@@ -2,7 +2,7 @@
 % Please edit documentation in R/LIBSVM_wrapper.R
 \name{createTrainingArguments.LIBSVM}
 \alias{createTrainingArguments.LIBSVM}
-\title{createTrainingArguments.BSGD}
+\title{createTrainingArguments.LIBSVM}
 \usage{
 \method{createTrainingArguments}{LIBSVM}(x, trainDataFile = "",
   modelFile = "", extraParameter = "", kernelCacheSize = 1024, cost = 1,
@@ -54,6 +54,6 @@
 args			arguments for training
 }
 \description{
-createTrainingArguments.BSGD
+createTrainingArguments.LIBSVM
 }
 

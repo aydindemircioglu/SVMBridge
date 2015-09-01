@@ -2,8 +2,7 @@
 % Please edit documentation in R/detectModelTypeFromFile.R
 \name{detectModelTypeFromFile}
 \alias{detectModelTypeFromFile}
-\title{detectModelTypeFromFile
-		auto detect type of SVM model}
+\title{Detect model type from file.}
 \usage{
 detectModelTypeFromFile(modelFile = NULL, verbose = FALSE)
 }
@@ -16,7 +15,6 @@ detectModelTypeFromFile(modelFile = NULL, verbose = FALSE)
 method name or NULL if no method could be detected.
 }
 \description{
-detectModelTypeFromFile
-		auto detect type of SVM model
+This will auto detect the type of SVM model from a given file.
 }
 

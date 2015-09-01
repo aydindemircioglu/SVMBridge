@@ -4,7 +4,7 @@
 \alias{readModel.LIBSVM}
 \title{Read LIBSVM model}
 \usage{
-readModel.LIBSVM(x, modelFile = "./model", verbose = FALSE)
+\method{readModel}{LIBSVM}(x, modelFile = "./model", verbose = FALSE)
 }
 \arguments{
 \item{x}{svm object}
