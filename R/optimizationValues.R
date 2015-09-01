@@ -106,16 +106,18 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 	
 	# compute values
 	if (verbose == TRUE) {
-		cat ("gamma", model$gamma)
-	#	cat ("SV", SV)
-		cat ("nSV", model$nSV)
-#		cat ("sv_coef", sv_coef)
-		cat ("bias", model$bias)
-		cat ("label", model$label)
+		cat ("gamma", model$gamma, "\n")
+		cat ("nSV", model$nSV, "\n")
+		cat ("bias", model$bias, "\n")
+		cat ("label", model$label, "\n")
 	}
+	
 	computedValues = computeOptimizationValues (X, Y, C, model$gamma, 
 		model$SVs, model$nSV, model$alpha, model$bias, model$label, verbose)
 
+	if (verbose == TRUE)
+		print (computedValues)
+	
 	return (computedValues)
 }
  
