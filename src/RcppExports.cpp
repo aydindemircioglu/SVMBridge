@@ -6,13 +6,13 @@
 using namespace Rcpp;
 
 // computeOptimizationValues
-List computeOptimizationValues(NumericMatrix X, NumericMatrix Y, double C, double gamma, NumericMatrix SV, NumericVector nSV, NumericMatrix sv_coef, NumericVector rho, NumericVector label, bool verbose);
+List computeOptimizationValues(NumericMatrix X, NumericVector Y, double C, double gamma, NumericMatrix SV, NumericVector nSV, NumericMatrix sv_coef, NumericVector rho, NumericVector label, bool verbose);
 RcppExport SEXP SVMBridge_computeOptimizationValues(SEXP XSEXP, SEXP YSEXP, SEXP CSEXP, SEXP gammaSEXP, SEXP SVSEXP, SEXP nSVSEXP, SEXP sv_coefSEXP, SEXP rhoSEXP, SEXP labelSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Y(YSEXP);
     Rcpp::traits::input_parameter< double >::type C(CSEXP);
     Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type SV(SVSEXP);

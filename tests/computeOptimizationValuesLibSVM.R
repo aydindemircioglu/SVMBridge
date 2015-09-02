@@ -3,9 +3,74 @@
 loadThings <- function ()
 {
   library(kernlab)
-  source ("../computeErrorsHelper.R")
 }
 suppressMessages(loadThings())
+
+
+
+computeErrors <- function (prediction = list(), labels = list(), verbose = FALSE )
+{
+    # sanity check
+    if (length(prediction) != length(labels)) {
+        # labels might be transposed
+        labels = t(labels)
+    }
+
+    # retry
+    if (length(prediction) != length(labels)) {
+        stopf ("Cannot compute error, lengths are different.")
+    }
+
+    # we take the sign as a precaution, sign is idempotent
+    prediction = sign (prediction)
+    
+    absError = sum(abs(labels - t(prediction))/2)
+    relError = absError/length(prediction)
+
+    for (i in 1:length(prediction)) {
+        #messagef ("t:%f -- p:%f", labels[i], prediction[i]) 
+    }
+    
+    pr = 2*as.numeric(prediction<= 0) - 1 
+
+    errors = list ()
+    errors$absError = absError
+    errors$relError = relError
+    if (verbose)  messagef( "Rel.Error  %f", relError)
+    if (verbose)  messagef( "Abs.Error  %f", absError)
+    
+    return (errors)
+}
+
+ 
+ 
+computeErrorsLLSVM <- function (prediction = list(), labels = list(), verbose = FALSE )
+{
+    # we take the sign as a precaution, sign is idempotent
+    PS = prediction
+    prediction = 1.0 * (prediction > 0.0) + (-1.0) * ((prediction <= 0.0))
+    
+    absError = sum(abs(labels - t(prediction))/2)
+    relError = absError/length(prediction)
+
+    #print (prediction)
+    unlink ("./PLLSV")
+    for (i in seq(1, length(prediction))) {
+      write(paste (prediction[i], PS[i]), file = "./PLLSV", append = TRUE)
+    }
+    pr = 2*as.numeric(prediction<= 0) - 1 
+    unlink ("./PLLSV")
+
+    errors = list ()
+    errors$absError = absError
+    errors$relError = relError
+
+    if (verbose)  messagef( "LLSVM Rel.Error  %f", relError)
+    if (verbose)  messagef( "LLSVM Abs.Error  %f", absError)
+    
+    return (errors)
+}
+
 
 
 # compute primary optimization minimum for LibSVM

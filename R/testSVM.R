@@ -83,7 +83,7 @@ testSVM = function(
 		if  (is.null(model) == FALSE)
 			method = model$modeltype
 		else
-			method = detectModelTypeFromFile(modelFile)
+			method = detectModelTypeFromFile (modelFile)
 	}
 
 	# get the correct object

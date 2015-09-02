@@ -383,7 +383,7 @@ double svm_predict_values(double gamma, NumericVector x, NumericMatrix SV, Numer
 //' @return		list of optimization values
 //' @export
 // [[Rcpp::export]] 
-List computeOptimizationValues (NumericMatrix X, NumericMatrix Y, double C, double gamma, 
+List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C, double gamma, 
 								NumericMatrix SV, NumericVector nSV, NumericMatrix sv_coef, NumericVector rho, NumericVector label, bool verbose = false)
 {	
 	double primal = -1;

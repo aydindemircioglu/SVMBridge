@@ -113,7 +113,7 @@ readLIBSVMModel = function (modelFile = './model', verbose = FALSE) {
 	close(con)
 
 	# return
-	retObj = BBmisc::makeS3Obj("SVMModel", svmatrix)
+#	retObj = BBmisc::makeS3Obj("SVMModel", svmatrix)
 	return (svmatrix)
 }
 

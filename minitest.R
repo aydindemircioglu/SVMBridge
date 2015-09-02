@@ -1,11 +1,7 @@
-context("OptimizationValues")
-library (SVMBridge)
+library(SVMBridge)
 
 
-test_that("OptimizationValues works as before", {
-	
-	# for now just set a fixed C
-	C = 7.74
+C = 2.0
 
 	model = readLIBSVMModel ("../data/mnist.binary.model")
 	mnist = readSparseData ("../data/mnist.data")
@@ -23,10 +19,12 @@ test_that("OptimizationValues works as before", {
 	model$X = model$SV
 #		trainObj$model$bias = -trainObj$model$bias
 	pV = computeOptimizationValuesLibSVM (model, NULL, data = data,  predictionOutput = NULL, verbose = FALSE)
+	cat (oV$primal, " ", oV$dual, "\n")
+	cat (pV$primal, " ", pV$dual, "\n")
 
-	expect_equal(oV$primal, pV$primal[1,1])
-	expect_equal(oV$dual, pV$dual[1,1])
-}	)
+	print (oV$primal)
+	print (pV$primal)
+	print (oV$dual)
+	print (pV$dual)
 	
-
 	

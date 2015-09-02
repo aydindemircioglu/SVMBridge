@@ -65,6 +65,8 @@ createTrainingArguments.BSGD = function (
 		return (args)
 }
 
+
+
 #' createTestArguments.BSGD
 #'
 #' @param	x			SVM object
@@ -92,25 +94,31 @@ createTestArguments.BSGD = function (
 
 
 
-# DUMMY probably
+#' Extract training information (error rate) from command-line output
+#'
+#' @param		x 		object
+#' @param		output		command-line output from BSGD
+#'
 extractTrainingInfo.BSGD = function (x, output) {
-    
-    # ---- grep the error rate
     pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
     err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-    
     return (err)
 }
 
-# DUMMY probably
+
+
+#' Extract test information (error rate) from command-line output
+#'
+#' @param		x 		object
+#' @param		output		command-line output from BSGD
+#'
 extractTestInfo.BSGD = function (x, output) {
-    
-    # ---- grep the error rate
     pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
     err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-    
     return (err)
 }
+
+
 
 #' readModel.BSGD
 #'
@@ -118,10 +126,10 @@ extractTestInfo.BSGD = function (x, output) {
 #' @param	modelFile		path to model, defaults to a temporary file (given by R).
 #' @param	verbose			print messages?
 #'
-#' @return	svmatrix		svmmatrix object
+#' @return	svmatrix		BSGD model
 readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 	if (verbose == TRUE) {
-		BBmisc::messagef("Reading BSGD model from %s", modelFile)
+		cat("Reading BSGD model from ", modelFile)
 	}
 
 	# open connection
@@ -172,39 +180,48 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
   
 	# read and interprete data 
 	# basically all data is sparse data format, but the data around this differs
-	svmatrix = readSparseFormat(con)
+	model = readSparseFormat(con)
 
+	print (model)
+	
 	# add header information
-	svmatrix$gamma = gamma
-	svmatrix$bias = bias
-	svmatrix$modelname = "BSGD"
+	model$gamma = gamma
+	model$bias = bias
+	model$modelname = "BSGD"
 	
 	
 	# do we need to invert the labels? in this case we invert the coefficients
 	if (invertLabels == TRUE) {
 		if (verbose == TRUE)  
-			BBmisc::messagef(" Inverting Labels.")
+			cat(" Inverting Labels.")
 
 		# invert alphas
-		svmatrix$a = -svmatrix$a
-
+		names(model) = replace(names(model), names(model) == "a", "alpha")
+		model$alpha = -model$alpha
+		
 		# this is also needed.. 
-		svmatrix$bias = -bias
+		model$bias = -bias
 	}
 
 	# close connection
 	close(con)
 	
 	# return
-	return (svmatrix)
+	return (model)
 }
  
 
 
-# dummy for now
+#' writeModel.BSGD
+#'
+#' @param	x			SVM object
+#' @param	model 			Model to write
+#' @param	modelFile		Path to write model to
+#' @param	verbose			print messages?
+#'
 writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
 	if (verbose == TRUE) {
-		BBmisc::messagef ("Writing BSGD Model..")
+		cat ("Writing BSGD Model..\n")
 	}
 
 	# BROKEN, FIXME
@@ -241,6 +258,12 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 #
 
 # dummy probably
+ 
+#' Read predictions from BSGD
+#'
+#' @param	predictionsFile		file to read predictions from
+#' @return		array consisting of predictions
+#'
 readPredictions.BSGD <- function (x, predictionsFilePath = "", verbose = FALSE) {
     # open connection
     con  <- file(predictionsFilePath, open = "r")
