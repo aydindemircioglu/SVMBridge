@@ -2,17 +2,21 @@
 % Please edit documentation in R/detectMethodFromFile.R
 \name{detectModelTypeFromFile}
 \alias{detectModelTypeFromFile}
-\title{Auto detect type of SVM model}
+\title{detectModelTypeFromFile
+		auto detect type of SVM model}
 \usage{
-detectModelTypeFromFile(filePath = NULL, verbose = FALSE)
+detectModelTypeFromFile(modelFile = NULL, verbose = FALSE)
 }
 \arguments{
-\item{..}{}
+\item{modelFile}{path to model file}
+
+\item{verbose}{be verbose?}
 }
 \value{
 method name or NULL if no method could be detected.
 }
 \description{
-Auto detect type of SVM model
+detectModelTypeFromFile
+		auto detect type of SVM model
 }
 

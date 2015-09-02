@@ -20,7 +20,9 @@
 # All negative use is prohibited.
 #
  
-#' createTrainingArguments.BSGD
+#' Create training arguments for LIBSVM
+#'
+#' 
 #'
 #' @param	x			SVM object
 #' @param	trainDataFile		file to read training data from.

@@ -159,7 +159,6 @@ addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA,
 
 
 #' dump all known package infos
-#'
 #' @export	outputAllSVMSoftwarePackages
 outputAllSVMSoftwarePackages <- function () {
 	BBmisc::messagef("Currently known solver:")
@@ -173,7 +172,7 @@ outputAllSVMSoftwarePackages <- function () {
 #' dump specific package info
 #'
 #' @param	method		name of package/method
-#' @result	SVM object for the given method
+#' @return	SVM object for the given method
 #'
 #' @export	getSVMInstance
 getSVMInstance <- function ( method = method) {

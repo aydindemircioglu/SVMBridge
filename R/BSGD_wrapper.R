@@ -236,7 +236,7 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
  
 
 #
-#' @param	predictionsFile		file to read predictions from
+# @param	predictionsFile		file to read predictions from
 # @return		array consisting of predictions
 #
 

@@ -7,7 +7,7 @@
 \method{readModel}{LIBSVM}(x, modelFile = "./model", verbose = FALSE)
 }
 \arguments{
-\item{x}{object}
+\item{x}{svm object}
 
 \item{modelFile}{model file to read}
 

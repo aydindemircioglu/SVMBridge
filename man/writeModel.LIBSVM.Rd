@@ -8,7 +8,7 @@
   verbose = FALSE)
 }
 \arguments{
-\item{x}{object}
+\item{x}{svm object}
 
 \item{model}{model object to write}
 

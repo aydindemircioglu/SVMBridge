@@ -10,29 +10,23 @@ testSVM(method = NULL, testDataFile = NULL, testDataX = NULL,
   verbose = FALSE, ...)
 }
 \arguments{
-\item{method}{name of the SVM method/solver}
+\item{testDataFile}{file to read training data from}
+
+\item{testDataX}{matrix to read training data from}
+
+\item{testDatay}{matrix to read training label from}
 
 \item{model}{list containing a trained SVM model}
 
 \item{modelFile}{path to a model file}
 
+\item{readPredictions}{if TRUE, the prediction will be read back}
+
+\item{predictionsFile}{the prediction will be written to this file or to a tempfile}
+
 \item{extraParameter}{extra parameters for solver}
 
 \item{verbose}{be verbose?}
-
-\item{trainDataFile}{file to read training data from}
-
-\item{trainDataX}{matrix to read training data from}
-
-\item{trainDatay}{matrix to read training label from}
-
-\item{trainBinaryPath}{full path to the training binary to call}
-
-\item{trainingParameterCallBack}{function that returns command line for training}
-
-\item{extractInformationCallBack}{function that extracts information from testing output}
-
-\item{readModelCallBack}{function that reads a model into a list}
 }
 \value{
 SVM Object

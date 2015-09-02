@@ -13,6 +13,9 @@ system3(binPath, args, verbose = FALSE)
 
 \item{verbose}{verbose output? (including executed command line)}
 }
+\value{
+s
+}
 \description{
 system3
 }

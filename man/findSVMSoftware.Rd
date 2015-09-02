@@ -2,25 +2,22 @@
 % Please edit documentation in R/findSVMSoftware.R
 \name{findSVMSoftware}
 \alias{findSVMSoftware}
-\title{findAllSVMSoftware
+\title{findSVMSoftware
 		given a search path, it will try to find the corresponding software packages
-		for all registered SVM packages.}
+		for the given method.}
 \usage{
 findSVMSoftware(method = NA, searchPath = NA, verbose = FALSE)
 }
 \arguments{
-\item{searchPath}{search the given path for the SVM binaries of all known SVM packages.}
+\item{method}{name of the SVM method}
+
+\item{searchPath}{search the given path for the SVM binaries of the given SVM method.}
 
 \item{verbose}{print messages while searching?}
 }
 \description{
-findAllSVMSoftware
+findSVMSoftware
 		given a search path, it will try to find the corresponding software packages
-		for all registered SVM packages.
-}
-\note{
-To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
-
-If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
+		for the given method.
 }
 

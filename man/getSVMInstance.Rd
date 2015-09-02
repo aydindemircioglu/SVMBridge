@@ -9,6 +9,9 @@ getSVMInstance(method = method)
 \arguments{
 \item{method}{name of package/method}
 }
+\value{
+SVM object for the given method
+}
 \description{
 dump specific package info
 }
