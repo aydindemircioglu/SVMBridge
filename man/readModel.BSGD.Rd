@@ -14,11 +14,7 @@
 \item{verbose}{print messages?}
 }
 \value{
-<<<<<<< HEAD
-svmatrix		svmmatrix object
-=======
 svmatrix		BSGD model
->>>>>>> e37ade4654a469965a1b7d53c236dcf03510b207
 }
 \description{
 readModel.BSGD

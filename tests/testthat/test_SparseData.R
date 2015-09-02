@@ -92,7 +92,7 @@ test_that(" Read/Write operations do work on datasets with non binary labels", {
 	
 })
 
-#7
+#7*remove*
 test_that(" readModel.LIBSM (read/write operations) work with binary models", {
 	tmp = tempfile()
 	solver = "LIBSVM"
@@ -108,8 +108,7 @@ test_that(" readModel.LIBSM (read/write operations) work with binary models", {
 	expect_equal(svmatrix, svmatrix2)
 })
 
-#8
-#FIXME
+#8*remove*
 test_that(" readModel.LIBSM (read/write operations) work with multiclass models", {
 	tmp = tempfile()
 	solver = "LIBSVM"
@@ -125,7 +124,7 @@ test_that(" readModel.LIBSM (read/write operations) work with multiclass models"
 	expect_equal(svmatrix, svmatrix2)
 })
 
-#9
+#9*remove*
 #Test for equality of model files and prediction files if using readSparseData/readSparseDataFromConnection writeSparseData/writeSparseDataToConnection and for the case without those fucntions. It may be handy to note that the test will return an error incase of evaluating datasets with entries like "3.4500000", since this value will be written out as "3.45". 
 test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 	datasets = c("aXa")#, "protein", "poker")
@@ -222,13 +221,14 @@ test_that(" Read/Write operations on different datasets do work with LIBSVM ", {
 
 #10 Currently there are possible tilde character inputs for testSVM, trainSVM, readSparseData, findSVMSoftware, findSVMWrapper. Thus these functions will be tested.
 test_that(" tilde characters are expanded correctly.", {
+	trainFile = ("~/SVMBridge/tests/data/sparse.data")
+# 	*remove*
 	solver = "LIBSVM"
 	verbose = TRUE
 	cost = runif(1)
 	gamma = runif(1)
 	addSVMPackage (method = solver, verbose = FALSE)
 	findSVMSoftware (solver, searchPath = "~/shark/svm_large_data/software/", verbose = FALSE)
-	trainFile = ("~/SVMBridge/tests/data/sparse.data")
 	obj1 =  trainSVM(
 			method = solver,
 			trainDataFile = trainFile, 
@@ -243,12 +243,13 @@ test_that(" tilde characters are expanded correctly.", {
 			model = obj1$model,
 			verbose = verbose
 		) 
+# 		*remove*
 	obj3 = readSparseData(filename = trainFile,
 			      verbose = verbose
 		)
 })
 
-#11
+#11*remove*
 test_that(" method autodetection in testSVM is working.", {
 	tmp = tempfile()
 	solver = "LIBSVM"

@@ -181,6 +181,37 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 	# read and interprete data 
 	# basically all data is sparse data format, but the data around this differs
 	model = readSparseFormat(con)
+	
+	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
+	
+		# remove comment if necesary
+		oneLine = str_split_fixed(oneLine, pattern = '#', n = 2)[1]
+		
+		# split line by " "
+		svec = vector(length = 1)
+		parts = strsplit (oneLine, " ")
+	
+		# read part for part until it is something positive
+		for (i in seq(1, length(parts[[1]]))) {
+			fparts <- strsplit (parts[[1]][i], ":")
+			if (!is.na(fparts[[1]][1])) {
+				ind = as.numeric(fparts[[1]][1])
+				value = as.numeric(fparts[[1]][2])
+		      
+				# check if we have part of some feature vector
+				if (ind > 0) {
+				# yes, so quit the whole loop
+				fvpos = i
+				break
+			}
+		      
+			# if not, we can save it in the coeff
+			coeff[-ind] = value
+		}
+		else {
+			stop ("Should never happen. Really.")
+		}
+	}
 
 	print (model)
 	
