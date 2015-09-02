@@ -9,15 +9,15 @@
 #' @param		gamma	used kernel bandwidth 
 #' @param		SV		matrix of support vectors
 #' @param		nSV		vector of number of support vectors, needed for the multiclass case
-#' @param		sv_coef		alpha of support vectors
+#' @param		alpa		alpha of support vectors
 #' @param		rho		vector of offset/bias terms
 #' @param		label		vector of label mapping
 #' @note 		works with LIBSVMlike models only
 #' @note		all computations will be done in DENSE format, not sparse!
 #' @return		list of optimization values
 #' @export
-computeOptimizationValues <- function(X, Y, C, gamma, SV, nSV, sv_coef, rho, label, verbose = FALSE) {
-    .Call('SVMBridge_computeOptimizationValues', PACKAGE = 'SVMBridge', X, Y, C, gamma, SV, nSV, sv_coef, rho, label, verbose)
+computeOptimizationValues <- function(X, Y, C, gamma, SV, nSV, alpha, rho, label, verbose = FALSE) {
+    .Call('SVMBridge_computeOptimizationValues', PACKAGE = 'SVMBridge', X, Y, C, gamma, SV, nSV, alpha, rho, label, verbose)
 }
 
 #' Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.

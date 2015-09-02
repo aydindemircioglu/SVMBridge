@@ -31,21 +31,16 @@
 #' @param		verbose		report certain messages?
 #' @return		a list of values and corresponding objects
 #'
-#' @export	optimizationValues
+#' @export
 optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FALSE) {
 
 	# checkmate checks
-	checkmate::assertMatrix(X, min.rows = 1)
-	checkmate::assertVector(Y)
-#	checkmate::assertClass (model, "SVMModel")
 	checkmate::assertFlag (verbose)
+	checkmate::assertString (model$modeltype)
 
 	if (verbose == TRUE) {
 		cat("Computing optimization values for given model.")
 	}
-
-	# TODO: extract this into each wrapper!
-	checkmate::assertString (model$modeltype)
 
 	# apply our fixes-- if we do not know the model, we apply LIBSVM
 	if (model$modeltype == "LIBSVM")	{
@@ -110,7 +105,20 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 		cat ("nSV", model$nSV, "\n")
 		cat ("bias", model$bias, "\n")
 		cat ("label", model$label, "\n")
+		cat ("C", model$C, "\n")
+		cat ("SVs", model$SVs, "\n")
+		cat ("alpha", model$alpha, "\n")
 	}
+
+	checkmate::assertMatrix(X, min.rows = 1)
+	checkmate::assertVector(Y)
+	checkmate::assertNumber (C, lower = 0)
+	checkmate::assertNumber (model$gamma, lower = 0)
+	checkmate::assertMatrix (model$SVs)
+	checkmate::assertVector (model$nSV)
+	checkmate::assertMatrix(model$alpha)
+	checkmate::assertVector (model$bias)
+	checkmate::assertVector (model$label)
 	
 	computedValues = computeOptimizationValues (X, Y, C, model$gamma, 
 		model$SVs, model$nSV, model$alpha, model$bias, model$label, verbose)
@@ -121,4 +129,3 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 	return (computedValues)
 }
  
-

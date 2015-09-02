@@ -375,7 +375,7 @@ double svm_predict_values(double gamma, NumericVector x, NumericMatrix SV, Numer
 //' @param		gamma	used kernel bandwidth 
 //' @param		SV		matrix of support vectors
 //' @param		nSV		vector of number of support vectors, needed for the multiclass case
-//' @param		sv_coef		alpha of support vectors
+//' @param		alpa		alpha of support vectors
 //' @param		rho		vector of offset/bias terms
 //' @param		label		vector of label mapping
 //' @note 		works with LIBSVMlike models only
@@ -383,8 +383,7 @@ double svm_predict_values(double gamma, NumericVector x, NumericMatrix SV, Numer
 //' @return		list of optimization values
 //' @export
 // [[Rcpp::export]] 
-List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C, double gamma, 
-								NumericMatrix SV, NumericVector nSV, NumericMatrix sv_coef, NumericVector rho, NumericVector label, bool verbose = false)
+Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C, double gamma, NumericMatrix SV, NumericVector nSV, NumericMatrix alpha, NumericVector rho, NumericVector label, bool verbose = false)
 {	
 	double primal = -1;
 	double dual = -1;
@@ -396,7 +395,7 @@ List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C, doub
 		for (int i = 0; i < l; i++)
 		{
 			// predict value
-			double currentMargin = svm_predict_values (gamma, X(i,_), SV, nSV, sv_coef, rho, label);
+			double currentMargin = svm_predict_values (gamma, X(i,_), SV, nSV, alpha, rho, label);
 			currentMargin = 1.0 - double(Y[i]) * currentMargin; 
 			if (currentMargin > 0)
 				hingeLoss += currentMargin;
@@ -416,7 +415,7 @@ List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C, doub
 			for(int j = i; j < m; j++)
 			{
 				double k = Kernel::k_function (SV(i, _), SV(j, _), gamma);
-				k = sv_coef (i,0) * k * sv_coef (j,0);
+				k = alpha (i,0) * k * alpha (j,0);
 				weight += k;
 				if (j != i)
 					weight += k;
@@ -432,7 +431,7 @@ List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C, doub
 		dual = -weight;
 		
 		for (int j = 0; j < m; j++) {
-			dual += fabs(sv_coef(j,0));
+			dual += fabs(alpha(j,0));
 		}
 		
 		

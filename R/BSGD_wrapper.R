@@ -200,19 +200,20 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 		      
 				# check if we have part of some feature vector
 				if (ind > 0) {
-				# yes, so quit the whole loop
-				fvpos = i
-				break
-			}
+					# yes, so quit the whole loop
+					fvpos = i
+					break
+				}
 		      
-			# if not, we can save it in the coeff
-			coeff[-ind] = value
-		}
-		else {
-			stop ("Should never happen. Really.")
+				# if not, we can save it in the coeff
+				coeff[-ind] = value
+			}
+			else {
+				stop ("Should never happen. Really.")
+			}
 		}
 	}
-
+	
 	print (model)
 	
 	# add header information
