@@ -36,7 +36,6 @@ readLIBSVMModel = function (modelFile = './model', verbose = FALSE) {
 	if (verbose == TRUE) {
 		BBmisc::messagef ("Reading LIBSVM model from %s.", modelFile)
 	}
-	
 	# open connection
 	con  <- file(modelFile, open = "r")
 	oneLine = readLines(con, n = 1, warn = FALSE)

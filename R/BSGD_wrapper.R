@@ -61,7 +61,7 @@ createTrainingArguments.BSGD = function (
 			trainDataFile,
 			modelFile
 		)
-
+		print(c)
 		return (args)
 }
 
@@ -180,17 +180,27 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
   
 	# read and interprete data 
 	# basically all data is sparse data format, but the data around this differs
-	model = readSparseFormat(con)
+# 	model = readSparseFormat(con)
+	
+	# these will contain the coefficients and the  svs.
+	supportvectors <- matrix()
+	coefficients <- matrix()
+	weights <- matrix()
 	
 	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
 	
 		# remove comment if necesary
-		oneLine = str_split_fixed(oneLine, pattern = '#', n = 2)[1]
+		oneLine = stringr::str_split_fixed(oneLine, pattern = '#', n = 2)[1]
 		
 		# split line by " "
 		svec = vector(length = 1)
 		parts = strsplit (oneLine, " ")
-	
+		
+		# where the support vector data starts in the row
+		fvpos = 1
+		coeff = vector(length = 1)
+		w = vector (length = 1)
+		
 		# read part for part until it is something positive
 		for (i in seq(1, length(parts[[1]]))) {
 			fparts <- strsplit (parts[[1]][i], ":")
@@ -200,20 +210,53 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 		      
 				# check if we have part of some feature vector
 				if (ind > 0) {
-				# yes, so quit the whole loop
-				fvpos = i
-				break
+					# yes, so quit the whole loop
+					fvpos = i
+					break
+				}
+				# if not, we can save it in the coeff container, which contains alpha values with negative index
+				coeff[-ind] = value
 			}
-		      
-			# if not, we can save it in the coeff
-			coeff[-ind] = value
+			else {
+				stop ("Should never happen. Really.")
+			}
 		}
-		else {
-			stop ("Should never happen. Really.")
+		
+		# grep feature vectors one by one
+		for (i in fvpos:length(parts[[1]])) {
+			# split by :
+			fparts <- strsplit (parts[[1]][i], ":")
+			
+			# if we have anything, add it to our vector
+			if (!is.na(fparts[[1]][1])) {
+				ind = as.numeric(fparts[[1]][1])
+				value = as.numeric(fparts[[1]][2])
+				svec[ind] <- value
+			}
 		}
+    
+		# make sure our vector has no NAs
+		print (svec)
+		svec[is.na(svec)] <- 0
+		
+		# stack matrices
+		supportvectors <- plyr::rbind.fill.matrix(supportvectors, t(svec))
+		coefficients <- plyr::rbind.fill.matrix(coefficients, t(coeff))
+		weights <- plyr::rbind.fill.matrix(weights, t(w))
 	}
+	
+	# crop first NA list (why does it even exist?..)
+	supportvectors = supportvectors[-1, ]
+	coefficients = coefficients[-1, ]
+	weights = weights[-1, ]
+	
+	# remove possible NA values that occur if the very last
+	# entry of a sparse vector is omitted because of sparsity
+	supportvectors[is.na(supportvectors)] <- 0
+	coefficients[is.na(coefficients)] <- 0 
+	weights[is.na(weights)] <- 0 
 
-	print (model)
+	model = list("X" = supportvectors, "a" = coefficients, "w" = weights)
 	
 	# add header information
 	model$gamma = gamma

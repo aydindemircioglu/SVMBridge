@@ -129,7 +129,6 @@ createTrainingArguments.LIBSVM = function (
 		if(quietMode != FALSE) 
 			quietModeparameter = TRUE;
 	
-			
 		
 		
 		args = c(
@@ -144,7 +143,7 @@ createTrainingArguments.LIBSVM = function (
 			trainDataFile,
 			modelFile
 		)
-
+		
 		return (args)
 }
 

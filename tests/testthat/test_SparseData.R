@@ -92,37 +92,9 @@ test_that(" Read/Write operations do work on datasets with non binary labels", {
 	
 })
 
-#7*remove*
-test_that(" readModel.LIBSM (read/write operations) work with binary models", {
-	tmp = tempfile()
-	solver = "LIBSVM"
-	dataset = ("../data/mnist.binary.model")
-	addSVMPackage (method = solver, verbose = FALSE)
-	findSVMSoftware (solver, searchPath = "../../../shark/svm_large_data/software/", verbose = TRUE)
-	SVMObject = SVMBridgeEnv$packages[[solver]]
-	
-	svmatrix = readModel.LIBSVM(SVMObject, modelFile = dataset)
-	writeModel.LIBSVM(SVMObject, svmatrix, tmp)
-	svmatrix2 = readModel.LIBSVM(SVMObject, modelFile = tmp)
 
-	expect_equal(svmatrix, svmatrix2)
-})
 
-#8*remove*
-test_that(" readModel.LIBSM (read/write operations) work with multiclass models", {
-	tmp = tempfile()
-	solver = "LIBSVM"
-	dataset = ("../data/mnist.multi.model")
-	addSVMPackage (method = solver, verbose = FALSE)
-	findSVMSoftware (solver, searchPath = "../../../shark/svm_large_data/software/", verbose = TRUE)
-	SVMObject = SVMBridgeEnv$packages[[solver]]
-	
-	svmatrix = readModel.LIBSVM(SVMObject, modelFile = dataset)
-	writeModel.LIBSVM(SVMObject, svmatrix, modelFile =tmp)
-	svmatrix2 = readModel.LIBSVM(SVMObject, modelFile = tmp)
 
-	expect_equal(svmatrix, svmatrix2)
-})
 
 #9*remove*
 #Test for equality of model files and prediction files if using readSparseData/readSparseDataFromConnection writeSparseData/writeSparseDataToConnection and for the case without those fucntions. It may be handy to note that the test will return an error incase of evaluating datasets with entries like "3.4500000", since this value will be written out as "3.45". 

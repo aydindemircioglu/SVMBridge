@@ -22,28 +22,28 @@
 #library (SVMBridge)
 	library(methods)
 	library(devtools)
-	load_all (".")
+	load_all ("../.")
 	#build_vignettes(".")
 	#document(".")
 	# devtools::build_win()	
 	# is done by document/loadall anyway?
 	library(Rcpp)
-	compileAttributes()
+	compileAttributes("../")
 
 	# run tests
 	#devtools::test()
 #	devtools::check()
 # R CMD check ./SVMBridge_1.0.tar.gz
 #10 Currently there are possible tilde character inputs for testSVM, trainSVM, readSparseData. Thus these functions will be tested.
-solver = "LIBSVM"
+solver = "BSGD"
 	addSVMPackage (method = solver, verbose = FALSE)
 	findSVMSoftware (solver, searchPath = "~/shark/svm_large_data/software/", verbose = TRUE)
 	tmp = tempfile()
 
-	verbose = FALSE
+	verbose = TRUE
 C = 0.71
 	gamma = 0.41
-	dataset = ("tests/data/mnist.binary.model")
+	dataset = ("~/SVMBridge/tests/data/mnist.data")
 	cat("\n\n\n======= Train ", solver, "Traindata from Memory, Model to Memory")
 	trainObj =  trainSVM(
 		method = solver,
@@ -54,6 +54,13 @@ C = 0.71
 		readModelFile = TRUE,
 		verbose = verbose
 	)  
+	cat("Block2\n")
+	testObj =  testSVM(
+			method = solver, 
+			testDataFile = dataset,
+			model = trainObj$model,
+			verbose = verbose
+		) 
 	
 	
 die()
