@@ -4,7 +4,7 @@
 \alias{computeOptimizationValues}
 \title{Compute several optimization values from a model like primal value}
 \usage{
-computeOptimizationValues(X, Y, C, gamma, SV, nSV, sv_coef, rho, label,
+computeOptimizationValues(X, Y, C, gamma, SV, nSV, alpha, rho, label,
   verbose = FALSE)
 }
 \arguments{
@@ -20,11 +20,11 @@ computeOptimizationValues(X, Y, C, gamma, SV, nSV, sv_coef, rho, label,
 
 \item{nSV}{vector of number of support vectors, needed for the multiclass case}
 
-\item{sv_coef}{alpha of support vectors}
-
 \item{rho}{vector of offset/bias terms}
 
 \item{label}{vector of label mapping}
+
+\item{alpa}{alpha of support vectors}
 }
 \value{
 list of optimization values

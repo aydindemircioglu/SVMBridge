@@ -6,8 +6,8 @@
 using namespace Rcpp;
 
 // computeOptimizationValues
-List computeOptimizationValues(NumericMatrix X, NumericVector Y, double C, double gamma, NumericMatrix SV, NumericVector nSV, NumericMatrix sv_coef, NumericVector rho, NumericVector label, bool verbose);
-RcppExport SEXP SVMBridge_computeOptimizationValues(SEXP XSEXP, SEXP YSEXP, SEXP CSEXP, SEXP gammaSEXP, SEXP SVSEXP, SEXP nSVSEXP, SEXP sv_coefSEXP, SEXP rhoSEXP, SEXP labelSEXP, SEXP verboseSEXP) {
+Rcpp::List computeOptimizationValues(NumericMatrix X, NumericVector Y, double C, double gamma, NumericMatrix SV, NumericVector nSV, NumericMatrix alpha, NumericVector rho, NumericVector label, bool verbose);
+RcppExport SEXP SVMBridge_computeOptimizationValues(SEXP XSEXP, SEXP YSEXP, SEXP CSEXP, SEXP gammaSEXP, SEXP SVSEXP, SEXP nSVSEXP, SEXP alphaSEXP, SEXP rhoSEXP, SEXP labelSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -17,11 +17,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type SV(SVSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type nSV(nSVSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sv_coef(sv_coefSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type label(labelSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    __result = Rcpp::wrap(computeOptimizationValues(X, Y, C, gamma, SV, nSV, sv_coef, rho, label, verbose));
+    __result = Rcpp::wrap(computeOptimizationValues(X, Y, C, gamma, SV, nSV, alpha, rho, label, verbose));
     return __result;
 END_RCPP
 }
