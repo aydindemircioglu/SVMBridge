@@ -79,9 +79,10 @@ testSVM = function(
 			BBmisc::stopf("Given a model in memory and specified a model file name. Confused. Stopping.")
 			
 	if (is.null (method) == TRUE) {
-			# test model
+		# test model
 		if  (is.null(model) == FALSE)
 			method = model$modeltype
+		# else get method from model file
 		else
 			method = detectModelTypeFromFile (modelFile)
 	}
@@ -95,15 +96,14 @@ testSVM = function(
 	if (is.null(SVMObject)) {
 		BBmisc::stopf ("Cannot find the specified SVM object. Did you include the wrapper of the method %s?", method)
 	}
-	testBinary = basename(testBinaryPath)
 	
+	testBinary = basename(testBinaryPath)
 	
 	# general modifications
 	if (verbose == TRUE) {
 		BBmisc::messagef("  Path of binary for testing is %s", testBinaryPath)
 		BBmisc::messagef("  Binary for testing is %s", testBinary)
 	}
-
 
 	# take care of data. if testdata or traindata is given,
 	# the corresponding filename must be empty.
@@ -136,7 +136,6 @@ testSVM = function(
 
 	results = list()
 
-	
 	# if the user specified a model in memory, we first need to write that
 	if (is.null(model) == FALSE) {
 		modelFile = tempfile()
@@ -164,7 +163,8 @@ testSVM = function(
     if (verbose == TRUE) {
 		BBmisc::messagef("  Generated test arguments %s", args)
 	}
-    
+      
+	# probably FIXME because of windows systems
 	testTime = microbenchmark::microbenchmark(s <- system3(testBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
     
 	if (verbose == TRUE) 

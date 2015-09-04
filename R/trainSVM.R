@@ -177,7 +177,9 @@ trainSVM = function(
 	# Careful! On windows systems, this function will not work since 
 	# certain necessities are not preinstalled. 
 	
-	if(.Platform$OS.type == "unix") {
+	
+	#Unsure if this works on windows systems, trainTime variable would not be present and other stuff.. thus FIXME probably
+# 	if(.Platform$OS.type == "unix") {
 	
 		if (timeOut != -1) {
 			timeOutArgs = c(sprintf("%d", timeOut), trainBinaryPath, args)
@@ -191,7 +193,7 @@ trainSVM = function(
 		 else {
 			trainTime = microbenchmark::microbenchmark(s <- system3(trainBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
 		}
-	}
+# 	}
 	
 	if (verbose == TRUE) 
 		BBmisc::messagef("Training took %f seconds.", trainTime)
@@ -203,8 +205,6 @@ trainSVM = function(
 		if (verbose == TRUE) 
 			BBmisc::messagef( "Will read model back from %s", modelFile)
 
-# 		if(method == "BSGD")
-# 			modelFile = trainDataFile
 		model = readModel (SVMObject, modelFile = modelFile, verbose = verbose)
 		results[["model"]] = model
 	}

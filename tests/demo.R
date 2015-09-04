@@ -22,7 +22,7 @@
 #library (SVMBridge)
 	library(methods)
 	library(devtools)
-	load_all ("../.")
+	load_all ("../")
 	#build_vignettes(".")
 	#document(".")
 	# devtools::build_win()	
@@ -50,15 +50,15 @@ C = 0.71
 		trainDataFile = dataset,
 		cost = C, 
 		gamma = gamma, 
-		modelFile = tmp,
-		readModelFile = TRUE,
+		readModelFile = FALSE,
+		modelFile = "~/SVMBridge/tests/data/modelTest",
 		verbose = verbose
 	)  
 	cat("Block2\n")
 	testObj =  testSVM(
 			method = solver, 
 			testDataFile = dataset,
-			model = trainObj$model,
+			modelFile = "~/SVMBridge/tests/data/modelTest",
 			verbose = verbose
 		) 
 	
