@@ -391,6 +391,30 @@ Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C
 	NumericVector trainingPredictions(X.nrow());
 	double weight = 0;
 	
+	// silently enlarge matrix
+	if (SV.ncol() != X.ncol ()) {
+		if (verbose == TRUE)
+			Rcout << "Dimensions of X and SV do not match.\n";
+		if (SV.ncol() > X.ncol()) {
+			NumericMatrix tmpX (X.nrow(), SV.ncol());
+			// better copy possible?
+			for (size_t i = 0; i < X.nrow(); i++) {
+				NumericMatrix::Row zzrow = X( i, _);
+				NumericMatrix::Row yyrow = tmpX( i, _);
+				std::copy (zzrow.begin(), zzrow.end(), yyrow.begin());
+			}
+			X = tmpX;
+		} else {
+			NumericMatrix tmpSV (SV.nrow(), X.ncol());
+			for (size_t i = 0; i < SV.nrow(); i++) {
+				NumericMatrix::Row zzrow = SV( i, _);
+				NumericMatrix::Row yyrow = tmpSV( i, _);
+				std::copy (zzrow.begin(), zzrow.end(), yyrow.begin());
+			}
+			SV = tmpSV;
+		}
+	}
+	
 	try
 	{
 		int l = X.nrow();

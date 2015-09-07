@@ -2,7 +2,7 @@ context("readModelFromFile")
 
 test_that("reading a model is working.", {
 
-	solvers = c("SVMperf",  "LASVM", "BVM", "CVM", "LIBSVM")
+	solvers = c("SVMperf",  "LASVM", "BVM", "CVM", "LIBSVM", "BSGD")
 	
 	for (solver in solvers) {
 		addSVMPackage (method = solver, verbose = FALSE)
@@ -21,7 +21,23 @@ test_that("reading a model is working.", {
 		model = readModelFromFile (modelFile)
 
 		# check only information that is there in all models
+		if (solver == "BSGD")
+			model$gamma = model$gamma/2
 		testthat::expect_equal (model$gamma, 1.0)
+		
+		# check that the last SV is faked
+		for (j in 1:14) {
+			testthat::expect_equal( model$SV[nrow(model$SV),j], j/10)
+		}
+		
+		if (solver == "SVMperf") {
+		}
+		# fake alpha value
+		if (solver == "BSGD") {
+			testthat::expect_equal (model$alpha[nrow(model$alpha),2], -1)
+		} else {
+			testthat::expect_equal (model$alpha[length(model$alpha)], -1)
+		}
 	}
 })
 

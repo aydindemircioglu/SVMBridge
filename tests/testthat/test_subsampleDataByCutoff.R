@@ -10,7 +10,7 @@ test_that("subsampling with specified rate does work", {
 	writeSparseData(orgData, as.matrix(X), as.matrix(Y), verbose = TRUE, zeroBased = FALSE)
 	
 	# now subsample the file
-	for (i in seq(1,100)) {
+	for (i in seq(1,100,4)) {
 		outputFile = subsampleDataByCutoff (orgData, i/100)
 		lines = R.utils::countLines (outputFile)[1]
 		expect_equal (floor(nLines/100*i), lines,  tolerance = 0.01)
@@ -34,7 +34,7 @@ test_that("subsampling with specified number of lines does work", {
 	writeSparseData(orgData, as.matrix(X), as.matrix(Y), verbose = TRUE, zeroBased = FALSE)
 	
 	# now subsample the file
-	for (i in seq(2,nLines - 1,9)) {
+	for (i in seq(2,nLines - 1,42)) {
 		outputFile = subsampleDataByCutoff (orgData, i)
 		lines = R.utils::countLines (outputFile)[1]
 		expect_equal (i, lines)

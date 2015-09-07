@@ -236,7 +236,7 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 		}
     
 		# make sure our vector has no NAs
-		print (svec)
+		#print (svec)
 		svec[is.na(svec)] <- 0
 		
 		# stack matrices
@@ -256,7 +256,9 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 	coefficients[is.na(coefficients)] <- 0 
 	weights[is.na(weights)] <- 0 
 
-	model = list("X" = supportvectors, "a" = coefficients, "w" = weights)
+	dimnames(supportvectors) = NULL
+	dimnames(coefficients ) = NULL
+	model = list("SV" = supportvectors, "alpha" = coefficients, "w" = weights)
 	
 	# add header information
 	model$gamma = gamma
@@ -269,8 +271,7 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 		if (verbose == TRUE)  
 			cat(" Inverting Labels.")
 
-		# invert alphas
-		names(model) = replace(names(model), names(model) == "a", "alpha")
+		# invert alphas 
 		model$alpha = -model$alpha
 		
 		# this is also needed.. 

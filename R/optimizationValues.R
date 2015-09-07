@@ -106,7 +106,7 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 		cat ("bias", model$bias, "\n")
 		cat ("label", model$label, "\n")
 		cat ("C", model$C, "\n")
-		cat ("SVs", model$SVs, "\n")
+		cat ("SV", model$SV, "\n")
 		cat ("alpha", model$alpha, "\n")
 	}
 
@@ -114,14 +114,14 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 	checkmate::assertVector(Y)
 	checkmate::assertNumber (C, lower = 0)
 	checkmate::assertNumber (model$gamma, lower = 0)
-	checkmate::assertMatrix (model$SVs)
+	checkmate::assertMatrix (model$SV)
 	checkmate::assertVector (model$nSV)
 	checkmate::assertMatrix(model$alpha)
 	checkmate::assertVector (model$bias)
 	checkmate::assertVector (model$label)
 	
 	computedValues = computeOptimizationValues (X, Y, C, model$gamma, 
-		model$SVs, model$nSV, model$alpha, model$bias, model$label, verbose)
+		model$SV, model$nSV, model$alpha, model$bias, model$label, verbose)
 
 	if (verbose == TRUE)
 		print (computedValues)

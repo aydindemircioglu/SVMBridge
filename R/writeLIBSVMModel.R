@@ -67,7 +67,7 @@ writeLIBSVMModel = function (model = NA, modelFile = "./model", verbose = FALSE)
 	#writeLines(svmatrix, modelFileHandle, sep = "" )
 	if (verbose == TRUE)
 		cat ("  Writing SV\n")
-	writeSparseDataToConnection(modelFileHandle, model$SVs, model$alpha)
+	writeSparseDataToConnection(modelFileHandle, model$SV, model$alpha)
 	
 	# close connection
 	close(modelFileHandle)

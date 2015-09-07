@@ -92,8 +92,8 @@ readLIBSVMModel = function (modelFile = './model', verbose = FALSE) {
 	
 	# rename Y to alpha and X to SVs
 	names(svmatrix) = replace(names(svmatrix), names(svmatrix) == "Y", "alpha")
-	names(svmatrix) = replace(names(svmatrix), names(svmatrix) == "X", "SVs")
-	svmatrix$nSV = nrow(svmatrix$SVs)
+	names(svmatrix) = replace(names(svmatrix), names(svmatrix) == "X", "SV")
+	svmatrix$nSV = nrow(svmatrix$SV)
 	
 	# FIXME: i think this exists ansatz is broken if gamma exists beforehand. replace with a list or something
 	

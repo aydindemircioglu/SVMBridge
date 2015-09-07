@@ -301,6 +301,8 @@ extractTestInfo.SVMperf = function (x, output) {
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 }
 
+
+
 readModel.SVMperf <- function (x, modelFile = "./model", verbose = FALSE)
 {
 	if (verbose == TRUE) {
@@ -330,9 +332,13 @@ readModel.SVMperf <- function (x, modelFile = "./model", verbose = FALSE)
   
 	# read and interprete data 
 	# basically all data is sparse data format, but the data around this differs
-	svmatrix = readSparseFormat(con)
+	svmatrix = readSparseDataFromConnection(con)
 
-  
+	# rename Y to alpha and X to SVs
+	names(svmatrix) = replace(names(svmatrix), names(svmatrix) == "Y", "alpha")
+	names(svmatrix) = replace(names(svmatrix), names(svmatrix) == "X", "SV")
+	svmatrix$nSV = nrow(svmatrix$SV)
+	
 	# add header information
 	svmatrix$gamma = gamma
 	svmatrix$bias = bias

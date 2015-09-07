@@ -181,6 +181,8 @@ test_that("OptimizationValues works as before", {
 	
 	# for now just set a fixed C
 	C = 7.74
+	
+	# add wrapper -- where are they?
 
 	model = readLIBSVMModel ("../data/LIBSVM.mnist.model")
 	mnist = readSparseData ("../data/mnist.data")
