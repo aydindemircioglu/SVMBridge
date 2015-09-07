@@ -40,15 +40,21 @@ SVMBridgeEnv = new.env(parent = emptyenv())
     devtools.desc = list()
   )
   toset <- !(names(op.devtools) %in% names(op))
-  if(any(toset)) options(op.devtools[toset])
   
-#  find_rtools()
-  
+  if(any(toset)) 
+	options(op.devtools[toset])
+
   invisible()
 }
 
 
 .onAttach <- function (libname, pkgname) {
 	packageStartupMessage("SVMBridge v0.1 loaded.")
+	
+	# we also  add LIBSVM as a wrapper, as we need this functionality
+	# FIXME: maybe rename it to LIBSVM_internal??
+	print (getwd())
+	if (file.exists ("wrapper/LIBSVM_wrapper.R")) 
+		addSVMPackage(method = "LIBSVM", wrapperPath="wrapper/LIBSVM_wrapper.R")
 }
 

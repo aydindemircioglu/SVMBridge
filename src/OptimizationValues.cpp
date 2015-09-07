@@ -385,8 +385,12 @@ double svm_predict_values(double gamma, NumericVector x, NumericMatrix SV, Numer
 // [[Rcpp::export]] 
 Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C, double gamma, NumericMatrix SV, NumericVector nSV, NumericMatrix alpha, NumericVector rho, NumericVector label, bool verbose = false)
 {	
-	double primal = -1;
-	double dual = -1;
+	double primal = -42;
+	double dual = -42;
+	double trainingError = 0;
+	NumericVector trainingPredictions(X.nrow());
+	double weight = 0;
+	
 	try
 	{
 		int l = X.nrow();
@@ -399,17 +403,19 @@ Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C
 			currentMargin = 1.0 - double(Y[i]) * currentMargin; 
 			if (currentMargin > 0)
 				hingeLoss += currentMargin;
+			if (currentMargin > 1)
+				trainingError += 1;
 //			std::cout << currentMargin << "\n";
 		}
 		
-		if (verbose == true) printf("Current hingeLoss: [%f]\n", hingeLoss);
+		if (verbose == true) 
+			Rcout << "Current hingeLoss: " <<  hingeLoss << "\n";
 		
 		// first term
 		primal = C * hingeLoss;
 		
 		// compute weight squared
 		int m =SV.nrow();
-		double weight = 0;
 		for(int i = 0; i < m; i++)
 		{
 			for(int j = i; j < m; j++)
@@ -422,7 +428,6 @@ Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C
 			}
 		}
 		weight = weight/2.0;
-		if (verbose == true) printf("Current weight: [%f]\n", sqrt(2*weight));
 		
 		// second term
 		primal += weight;
@@ -434,11 +439,18 @@ Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C
 			dual += fabs(alpha(j,0));
 		}
 		
+		// fix training error
+		trainingError = trainingError/X.nrow();
 		
-		// do not count computation of primal to the save times
-		if (verbose == true) printf("Computed primal value: [%f]\n", primal);
-		if (verbose == true) printf("Computed dual value: [%f]\n", dual);
-		fflush(stdout);
+		// output 
+		if (verbose == true) 
+			Rcout << "Current weight (0.5*||w||): " <<  sqrt(2*weight) << "\n";
+		if (verbose == true) 
+			Rcout << "Training error: " << trainingError << "\n";
+		if (verbose == true) 
+			Rcout <<  "Computed primal value: " << primal << "\n";
+		if (verbose == true) 
+			Rcout << "Computed dual value: " << dual << "\n";
 	}
 	catch(int e)
 	{
@@ -447,7 +459,11 @@ Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C
 		::Rf_error(s.str().c_str());
 	}
 	
-	Rcpp::List rl = Rcpp::List::create (Rcpp::Named ("primal", primal), Rcpp::Named("dual", dual) );
+	Rcpp::List rl = Rcpp::List::create (
+		Rcpp::Named ("trainingError", trainingError), 
+		Rcpp::Named ("weight", weight), 
+		Rcpp::Named ("primal", primal), 
+		Rcpp::Named("dual", dual) );
 	return (rl);
 }
 

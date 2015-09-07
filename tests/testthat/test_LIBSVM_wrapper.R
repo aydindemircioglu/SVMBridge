@@ -1,9 +1,9 @@
 context("LIBSVM")
 
-test_that(" readModel.LIBSM (read/write operations) work with binary models", {
+test_that(" readModel.LIBSVM (read/write operations) work with binary models", {
 	tmp = tempfile()
 	solver = "LIBSVM"
-	dataset = ("../data/mnist.binary.model")
+	dataset = ("../data/LIBSVM.mnist.model")
 	addSVMPackage (method = solver, verbose = FALSE)
 	SVMObject = SVMBridgeEnv$packages[[solver]]
 	
@@ -14,10 +14,10 @@ test_that(" readModel.LIBSM (read/write operations) work with binary models", {
 	expect_equal(svmatrix, svmatrix2)
 })
 
-test_that(" readModel.LIBSM (read/write operations) work with multiclass models", {
+test_that(" readModel.LIBSVM (read/write operations) work with multiclass models", {
 	tmp = tempfile()
 	solver = "LIBSVM"
-	dataset = ("../data/mnist.multi.model")
+	dataset = ("../data/LIBSVM.mnist.multiclass.model")
 	addSVMPackage (method = solver, verbose = FALSE)
 	SVMObject = SVMBridgeEnv$packages[[solver]]
 	
