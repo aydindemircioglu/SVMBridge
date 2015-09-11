@@ -152,7 +152,7 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 	      
 		if (grepl("NUMBER_OF_WEIGHTS", oneLine) == TRUE) {
 		    pattern <- "NUMBER_OF_WEIGHTS: (.*)"
-		    nSV = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+		    totalSV = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
 		}
 		
 		# bias
@@ -267,8 +267,13 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 	model$gamma = gamma
 	model$bias = bias
 	model$modelType = "BSGD"
-	model$nSV	= nSV
-	model$label = labels
+	model$nSV	= c(sum(model$alpha[,1] > 0), sum(model$alpha[,1] < 0))
+	model$label = as.numeric(labels)
+	
+	# sanity check
+	if (sum(model$nSV) != totalSV) {
+		stop ("Counted number of SV and info given in header do not fit.")
+	}
 
 	# do we need to invert the labels? in this case we invert the coefficients
 	if (invertLabels == TRUE) {

@@ -83,7 +83,6 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 	# FIXME: for now ignore values vector
 	
 	# compute values
-	verbose = TRUE
 	if (verbose == TRUE) {
 		cat ("gamma", model$gamma, "\n")
 		cat ("nSV", model$nSV, "\n")
