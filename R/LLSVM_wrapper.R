@@ -143,7 +143,7 @@ readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE)
 	# add header information
 	svmatrix$gamma = gamma
 	svmatrix$bias = bias
-	svmatrix$modelname = "LLSVM"
+	svmatrix$modelType = "LLSVM"
 	
 	
 	# do we need to invert the labels? in this case we invert the coefficients

@@ -342,7 +342,7 @@ readModel.SVMperf <- function (x, modelFile = "./model", verbose = FALSE)
 	# add header information
 	svmatrix$gamma = gamma
 	svmatrix$bias = bias
-	svmatrix$modelname = "SVMperf"
+	svmatrix$modelType = "SVMperf"
 	
 	# close connection
 	close(con)

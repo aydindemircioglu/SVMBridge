@@ -150,6 +150,11 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 		    gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
 		}  
 	      
+		if (grepl("NUMBER_OF_WEIGHTS", oneLine) == TRUE) {
+		    pattern <- "NUMBER_OF_WEIGHTS: (.*)"
+		    nSV = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+		}
+		
 		# bias
 		if (grepl("BIAS_TERM", oneLine) == TRUE) 
 		{
@@ -163,10 +168,6 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 			pattern <- "LABELS: (.*)"
 			order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
 		
-			if ((order != "1 -1") && (order != "-1 1")) {
-				stop ("Label ordering %s is unknown!", order)
-			}
-		
 			if (order == "1 -1") {
 				invertLabels = FALSE
 			}
@@ -174,6 +175,8 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 			if (order == "-1 1") {
 				invertLabels = TRUE
 			 }
+			
+			labels = unlist(strsplit(order, split = "\\s"))
 		}  
 	}
   
@@ -263,9 +266,10 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 	# add header information
 	model$gamma = gamma
 	model$bias = bias
-	model$modelname = "BSGD"
-	
-	
+	model$modelType = "BSGD"
+	model$nSV	= nSV
+	model$label = labels
+
 	# do we need to invert the labels? in this case we invert the coefficients
 	if (invertLabels == TRUE) {
 		if (verbose == TRUE)  

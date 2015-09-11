@@ -81,7 +81,7 @@ testSVM = function(
 	if (is.null (method) == TRUE) {
 		# test model
 		if  (is.null(model) == FALSE)
-			method = model$modeltype
+			method = model$modelType
 		# else get method from model file
 		else
 			method = detectModelTypeFromFile (modelFile)

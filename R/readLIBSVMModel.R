@@ -106,7 +106,7 @@ readLIBSVMModel = function (modelFile = './model', verbose = FALSE) {
 		svmatrix$bias = as.numeric(c(bias))
 	if(exists("nSV"))
 		svmatrix$nSV = as.numeric(c(nSV))
-	svmatrix$modeltype = "LIBSVM"
+	svmatrix$modelType = "LIBSVM"
 	
 	# close connection
 	close(con)
