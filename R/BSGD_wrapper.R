@@ -127,7 +127,7 @@ extractTestInfo.BSGD = function (x, output) {
 #' @param	verbose			print messages?
 #'
 #' @return	svmatrix		BSGD model
-readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
+readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBinaryColumn = FALSE) {
 	if (verbose == TRUE) {
 		cat("Reading BSGD model from ", modelFile)
 	}
@@ -289,6 +289,15 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 
 	# close connection
 	close(con)
+	
+	# remove extra row if necessary
+	if (singleBinaryColumn == TRUE) {
+		if (length (model$label) == 2) {
+			model$alpha = model$alpha[,1]
+			if (verbose == TRUE)
+				cat ("  Removing Column of extra alpha values.\n")
+		}
+	}
 	
 	# return
 	return (model)

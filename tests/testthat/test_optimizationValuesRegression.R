@@ -1,4 +1,4 @@
-context("OptimizationValues")
+context("OptimizationValuesRegression")
 library (SVMBridge)
 
 
@@ -85,7 +85,7 @@ computeOptimizationValuesLibSVM <- function (model, trainingDataPath,
     }
     
     values = list()
-    
+
     # get parameter
     gamma = model$gamma
     L = model$L
@@ -117,7 +117,6 @@ computeOptimizationValuesLibSVM <- function (model, trainingDataPath,
     if (extraverbose)  messagef( "ya %d x %d", dim(ya)[1], dim(ya)[2])
     if (extraverbose)  messagef( "k_sv %d x %d", dim(k_sv)[1], dim(k_sv)[2])
     half_wTw = 0.5 * t(ya) %*% k_sv %*% ya
-    
 
     # compute hinge loss
     k_sv_test = kernlab::kernelMatrix(rbf, testData, SV)
@@ -181,27 +180,48 @@ test_that("OptimizationValues works as before", {
 	
 	# for now just set a fixed C
 	C = 7.74
-	
-	# add wrapper -- where are they?
 
-	model = readLIBSVMModel ("../data/LIBSVM.mnist.model")
-	mnist = readSparseData ("../data/mnist.data")
-	oV = optimizationValues (X = as.matrix(mnist$X), Y = as.matrix(mnist$Y), model = model, C = C)
+	# test for each of these bunnies
+	solvers = c("BSGD", "LIBSVM", "LASVM", "CVM", "BVM")
 
-	data = list()
-	data$x = mnist$X
-	data$y = as.vector(mnist$Y)
+	for (s in solvers) {
+		# load wrapper first
+		softwarePath = "../../R"
+		wrapperPath = "../../R"
+		wrapperName = paste0 (s, "_wrapper.R")
+		
+		addSVMPackage (method = s, trainBinaryPath = NULL,
+				testBinaryPath = NULL,
+				wrapperPath  = wrapperPath ,
+				verbose = FALSE)
 
-	# make sure both are the same length -- TODO: we do it here hardcoded
-	model$SV = cbind(model$SV, 0)
-	model$L = 1
-	model$C = C
-	model$X = model$SV
-#		trainObj$model$bias = -trainObj$model$bias
-	pV = computeOptimizationValuesLibSVM (model, NULL, data = data,  predictionOutput = NULL, verbose = FALSE)
+		modelFile = file.path ("..", "data", paste (s, "australian", "model", sep = "."))
+		model = readModelFromFile(modelFile)
+		australian = readSparseData ("../data/australian.train")
 
-	expect_equal(oV$primal, pV$primal[1,1])
-	expect_equal(oV$dual, pV$dual[1,1])
+		oV = optimizationValues (X = as.matrix(australian$X), Y = as.matrix(australian$Y), model = model, C = C)
+
+		# create regression model
+		data = list()
+		data$x = australian$X
+		data$y = as.vector(australian$Y)
+		model$L = 1
+		model$C = C
+		model$X = model$SV
+
+		# special care of BSGD
+		if (s == "BSGD") {
+			model$alpha = model$alpha[,1]
+			model$gamma = model$gamma/2
+			model$L = 1
+			model$C = C
+		}
+		
+		pV = computeOptimizationValuesLibSVM (model, NULL, data = data,  predictionOutput = NULL, verbose = FALSE)
+
+		expect_equal(oV$primal, pV$primal[1,1])
+		expect_equal(oV$dual, pV$dual[1,1])
+	}
 }	)
 	
 

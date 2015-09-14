@@ -1,7 +1,5 @@
-context("OptimizationValuesOtherModels")
-# library (SVMBridge)
-# devtools::load_all(".")
-# setwd("./tests/testthat")
+context("OptimizationValues")
+
 
 test_that("OptimizationValues works for other models than LIBSVM", {
 	
