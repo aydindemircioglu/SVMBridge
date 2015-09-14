@@ -127,7 +127,7 @@ extractTestInfo.BSGD = function (x, output) {
 #' @param	verbose			print messages?
 #'
 #' @return	svmatrix		BSGD model
-readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
+readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBinaryColumn = FALSE) {
 	if (verbose == TRUE) {
 		cat("Reading BSGD model from ", modelFile)
 	}
@@ -150,6 +150,11 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 		    gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
 		}  
 	      
+		if (grepl("NUMBER_OF_WEIGHTS", oneLine) == TRUE) {
+		    pattern <- "NUMBER_OF_WEIGHTS: (.*)"
+		    totalSV = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+		}
+		
 		# bias
 		if (grepl("BIAS_TERM", oneLine) == TRUE) 
 		{
@@ -163,10 +168,6 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 			pattern <- "LABELS: (.*)"
 			order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
 		
-			if ((order != "1 -1") && (order != "-1 1")) {
-				stop ("Label ordering %s is unknown!", order)
-			}
-		
 			if (order == "1 -1") {
 				invertLabels = FALSE
 			}
@@ -174,6 +175,8 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 			if (order == "-1 1") {
 				invertLabels = TRUE
 			 }
+			
+			labels = unlist(strsplit(order, split = "\\s"))
 		}  
 	}
   
@@ -236,7 +239,7 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 		}
     
 		# make sure our vector has no NAs
-		print (svec)
+		#print (svec)
 		svec[is.na(svec)] <- 0
 		
 		# stack matrices
@@ -256,21 +259,28 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 	coefficients[is.na(coefficients)] <- 0 
 	weights[is.na(weights)] <- 0 
 
-	model = list("X" = supportvectors, "a" = coefficients, "w" = weights)
+	dimnames(supportvectors) = NULL
+	dimnames(coefficients ) = NULL
+	model = list("SV" = supportvectors, "alpha" = coefficients, "w" = weights)
 	
 	# add header information
 	model$gamma = gamma
 	model$bias = bias
-	model$modelname = "BSGD"
+	model$modelType = "BSGD"
+	model$nSV	= c(sum(model$alpha[,1] > 0), sum(model$alpha[,1] < 0))
+	model$label = as.numeric(labels)
 	
-	
+	# sanity check
+	if (sum(model$nSV) != totalSV) {
+		stop ("Counted number of SV and info given in header do not fit.")
+	}
+
 	# do we need to invert the labels? in this case we invert the coefficients
 	if (invertLabels == TRUE) {
 		if (verbose == TRUE)  
 			cat(" Inverting Labels.")
 
-		# invert alphas
-		names(model) = replace(names(model), names(model) == "a", "alpha")
+		# invert alphas 
 		model$alpha = -model$alpha
 		
 		# this is also needed.. 
@@ -279,6 +289,15 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE) {
 
 	# close connection
 	close(con)
+	
+	# remove extra row if necessary
+	if (singleBinaryColumn == TRUE) {
+		if (length (model$label) == 2) {
+			model$alpha = model$alpha[,1]
+			if (verbose == TRUE)
+				cat ("  Removing Column of extra alpha values.\n")
+		}
+	}
 	
 	# return
 	return (model)

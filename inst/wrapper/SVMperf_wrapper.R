@@ -81,10 +81,10 @@ createTrainingArguments.SVMperf = function (
 
     # need to unpack the cost from the ... parameters
     eP = list(...)
-    if (is.null (eP[["method"]])) {
+    if (is.null (eP[["submethod"]])) {
         method = "CPSP"    }
     else {
-        method = eP[["method"]]
+        method = eP[["submethod"]]
     }
         
     # ---  take care of primal/wall time, will not be added if its turned off. 
@@ -301,6 +301,8 @@ extractTestInfo.SVMperf = function (x, output) {
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 }
 
+
+
 readModel.SVMperf <- function (x, modelFile = "./model", verbose = FALSE)
 {
 	if (verbose == TRUE) {
@@ -330,19 +332,26 @@ readModel.SVMperf <- function (x, modelFile = "./model", verbose = FALSE)
   
 	# read and interprete data 
 	# basically all data is sparse data format, but the data around this differs
-	svmatrix = readSparseFormat(con)
+	model = readSparseDataFromConnection(con)
 
-  
+	# rename Y to alpha and X to SVs
+	names(model) = replace(names(model), names(model) == "Y", "alpha")
+	names(model) = replace(names(model), names(model) == "X", "SV")
+	model$nSV = nrow(model$SV)
+	
 	# add header information
-	svmatrix$gamma = gamma
-	svmatrix$bias = bias
-	svmatrix$modelname = "SVMperf"
+	model$gamma = gamma
+	model$bias = bias
+	model$modelType = "SVMperf"
+
+	model$nSV	= c(sum(model$alpha[,1] > 0), sum(model$alpha[,1] < 0))
+	model$label = as.numeric(c(1, -1)) # SVMperf is always binary?
 	
 	# close connection
 	close(con)
 	
 	# return
-	return (svmatrix)
+	return (model)
 }
 
 

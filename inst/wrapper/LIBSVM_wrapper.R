@@ -19,8 +19,8 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
- 
- 
+
+
 #' Create training arguments for LIBSVM
 #'
 #'
@@ -48,26 +48,26 @@
 #'
 createTrainingArguments.LIBSVM = function (
 	x,
+	...,
 	trainDataFile = "",
-        modelFile = "",
-        extraParameter = "",
-        kernelCacheSize = 1024,
+	modelFile = "",
+	extraParameter = "",
+	kernelCacheSize = 1024,
 	cost = 1,
 	svmType = "-1",
-        useBias = FALSE,
-        gamma = 1,
-        epsilon = 0.001, 
-        degree = -1,
-        coef0 = -1,
-        nu = -1,
-        shrinking = -1,
-        probabilityEstimates = -1,
-        weight = -1,
-        n = -1,
-        kernelType = "rbf",
-        quietMode = FALSE,
-        ...) 
-	{
+	useBias = FALSE,
+	gamma = 1,
+	epsilon = 0.001, 
+	degree = -1,
+	coef0 = -1,
+	nu = -1,
+	shrinking = -1,
+	probabilityEstimates = -1,
+	weight = -1,
+	n = -1,
+	kernelType = "rbf",
+	quietMode = FALSE)
+{
 		svmTypeParameter = ""
 		if (svmType == "CSVC" || svmType == "C-SVC")
 			svmTypeParameter = "-s 0"
@@ -164,7 +164,7 @@ createTestArguments.LIBSVM = function (x,
 			modelFile,
 			predictionsFile
 		)
-    
+	
 		return (args)
 }
 
