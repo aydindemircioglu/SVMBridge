@@ -1,0 +1,154 @@
+\documentclass[article]{jss}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% almost as usual
+\author{Ayd\i n Demircio\u{g}lu\\Ruhr-Universit\"at Bochum \And 
+Hanna Houphouet\\Ruhr-Universit\"at Bochum \And 
+        Daniel Horn\\TU Dortmund \AND
+        Tobias Glasmachers\\Ruhr-Universit\"at Bochum \And 
+        Bernd Bischl\\TU M\"unchen \And 
+        Claus Weihs\\TU Dortmund}
+\title{\pkg{SVMBridge}: Using SVM Solvers from R}
+
+%% for pretty printing and a nice hypersummary also set:
+\Plainauthor{Ayd\i n Demircio\u{g}lu, Daniel Horn} %% comma-separated
+\Plaintitle{SVMBridge: Using SVM Solvers from R} %% without formatting
+\Shorttitle{\pkg{SVMBridge}: Using SVM Solvers from R} %% a short title (if necessary)
+
+%% an abstract and keywords
+\Abstract{
+  Most SVM Solver do not come with a wrapper in R.
+  In case the SVM Solver is written in C++, it can be linked to
+  a package via Rcpp. Although possible, this entails a lot of work to do,
+  and is not possible, if the SVM Solver is written in other languages.
+  Alternatively, one can call the SVM Solver from within R by a system command.
+  SVMBridge eases this calls by providing a framework and ready wrappers
+  for several SVM Solvers like LASVM, SVMperf, LLSVM and BVM/CVM.  
+}
+\Keywords{support vector machines, command line}
+\Plainkeywords{support vector machines, command line} %% without formatting
+%% at least one keyword must be supplied
+
+%% publication information
+%% NOTE: Typically, this can be left commented and will be filled out by the technical editor
+%% \Volume{50}
+%% \Issue{9}
+%% \Month{June}
+%% \Year{2012}
+%% \Submitdate{2012-06-04}
+%% \Acceptdate{2012-06-04}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+  Ayd\i n Demircio\u{g}lu\\
+  Institut f\"ur Neuroinformatik\\
+  Ruhr-Universit\"at Bochum\\
+  44790 Bochum
+  E-mail: \email{aydin.demircioglu@ini.rub.de}\\
+  URL: \url{http://www.ini.rub.de/PEOPLE/aydind/}
+}
+%% It is also possible to add a telephone and fax number
+%% before the e-mail in the following format:
+%% Telephone: +43/512/507-7103
+%% Fax: +43/512/507-2851
+
+%% for those who use Sweave please include the following line (with % symbols):
+%% need no \usepackage{Sweave.sty}
+
+%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%% include your article here, just as usual
+%% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
+
+%% Note: If there is markup in \(sub)section, then it has to be escape as above.
+
+\section{Introduction}
+
+\subsection{Support Vector Machines}
+
+Support Vector machines in general.
+
+
+\subsection{SVM packages in R}
+
+There are only a few SVM libraries readily available from within R.
+This includes the kernlab, the e1071 and the lasvmR packages.
+All of these link existing C++ sources directly from R and need
+more or less extensive wrappers to allow the user direct access to
+the options of the underlying SVM solver.
+
+Other SVM solver, like the BudgetedSVM package, which contains
+BSGD and LLSVM, or SVMperf cannot be called directly from R.
+Instead, a system command has to be issued.
+To ease this calls, the \pkg{SVMBridge} package has been developed.
+
+
+
+\section{The SVMBridge Package}
+
+\subsection{Wrapper}
+
+A wrapper consists of several routines: It must provide routines
+for assembling the command line call for training as well as testing,
+reading and writing the model and a few general routines like searching
+the binaries and printing.
+
+Note that the search for binaries might have a huge toll on HPC clusters,
+so it is adviced to specify the paths directly instead of relying on the 
+automatism.
+
+
+\section{Examples}
+
+To use the SVMBridge, one usually perform the following steps:
+Add the external wrapper to the SVMBridge, load the data, train a model, use the
+model for prediction.
+
+Notice that the data must be written by the SVMBridge before calling 
+the corresponding SVM Solver, as there is no way to pass data via memory
+to command line tools. Therefore 
+
+\subsection{Adding the Wrapper to the SVMBridge}
+
+\subsection{Training a model}
+
+
+
+\subsection{Predicions}
+
+
+\subsection{Optimization Values}
+
+At times, some of the training values are of interest,
+e.g. when comparing different solvers, the primal value
+of the SVM problem as well as the dual value might  be of interest.
+These can be computed via the \code{optimizationValues()} routine.
+
+
+\subsection{Performance Considerations}
+
+We sum up the points to keep in mind when performance is of high priority:
+Do not use the automatism to find the binaries, specify the paths by hand.
+Do not load the data into memory, specify the path of the data when training instead.
+Do not re-read the model into memory, let it on disk.
+
+
+\section{Conclusion}
+
+We provided a simple framework to attach many SVM solvers to the R Subsystem.
+This allows for a systematic call of them.
+By providing a wrapper, linking any SVM solver to R become much easier.
+
+\section*{Acknowledgments}
+
+
+
+
+\end{document}
