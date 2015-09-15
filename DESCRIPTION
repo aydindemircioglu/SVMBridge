@@ -5,12 +5,12 @@ Description: Different SVM solvers are commonly used, e.g. LIBSVM and SVMperf.
     and writing such an interface might be tedious. This package remedies the
     situation by providing predefined interfaces to many SVM solvers. 
 Authors@R: c( 
-    person ("Aydin", "Demircioglu", email = "aydin.demircioglu", role = c("aut", "cre")), 
-    person ("Hanna", "Houphouet", email = "hanna.houphouet",  role = c("aut") ) )
+    person ("Aydin", "Demircioglu", email = "aydin.demircioglu@ini.rub.de", role = c("aut", "cre")), 
+    person ("Hanna", "Houphouet", email = "hanna.houphouet@ini.rub.de",  role = c("aut") ) )
 Author: Aydin Demircioglu [aut, cre],
     Hanna Houphouet [aut]
 Maintainer: Aydin Demircioglu <aydin.demircioglu@ini.rub.de>
-License: LGPL-3 + file LICENSE
+License: GPL-3
 URL: https://github.com/aydindemircioglu/svmBridge
 BugReports: https://github.com/aydindemircioglu/svmBridge
 Depends: 

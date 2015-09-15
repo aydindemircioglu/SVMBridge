@@ -117,11 +117,56 @@ to command line tools. Therefore
 
 \subsection{Adding the Wrapper to the SVMBridge}
 
+\subsection{Reading Sparse Data}
+
+Most SVM solver work with the sparse data format.
+This format consists of:
+Each line (delimited by a CR/LF) is given by a label
+and the non-zero components of the data point,
+e.g. to encode the vector six dimensional vector 
+$0 0 0 0.2 0 1.4$ belonging to class $3$, the sparse 
+data format would contain the line {3 4:0.2 6:1.4}.
+
+Although reading these files into R is possible via either
+the kernlab or the e1071 routines, both only provide R solutions,
+and therefore suffer from suboptimal performance.
+The SVMBridge package provides a simple sparse data format 
+reading and writing, which are implemented in C++ and
+therefore are nearly two orders of magnitudes faster than
+the corresponding e1071 routines.
+Notice, that currently only dense matrices are supported,
+TODO: work around this with the Sparse Matrix Package.
+
+
+
 \subsection{Training a model}
 
+Multiclass is supported, where possible.
+Note that several SVM packages only support binary problems.
+In these cases, training a one-vs-all machine is rather easy, if the
+data is loaded into R first. 
+
+
+Reading a model is possible via the \code{readModelFromFile ()} function.
+This will try to detect the format of the file by calling the 
+\code{isModelFile} routine of each known wrapper.
+Unluckily, several SVM solver use similar model formats, so that
+a direct detection is not possible, e.g. CVM/BVM follow the LIBSVM
+format, but add a comment (with '\#')about the running time to the
+bottom of the model file. Apart from this change, there is no difference.
+From a practical viewpoint we extended the LIBSVM model reader
+to cope with this extra line, so that there is no need for an extra CVM/BVM reader.
+This means that reading a CVM model will make the SVMBridge to detect a LIBSVM
+model (if the LIBSVM wrapper is loaded).
+In these cases, if multiple models claims ownership, a "default" model can be provided,
+which will take precedence over other models. Without a default,
+the model will be random.
 
 
 \subsection{Predicions}
+
+Predicting from a trained model is rather easy, as there are usually not many options.
+As with training, the predict routine will accept a model either in memory or from a file.
 
 
 \subsection{Optimization Values}
@@ -130,6 +175,10 @@ At times, some of the training values are of interest,
 e.g. when comparing different solvers, the primal value
 of the SVM problem as well as the dual value might  be of interest.
 These can be computed via the \code{optimizationValues()} routine.
+
+\subsection{Helper Routines}
+
+...
 
 
 \subsection{Performance Considerations}
@@ -146,8 +195,14 @@ We provided a simple framework to attach many SVM solvers to the R Subsystem.
 This allows for a systematic call of them.
 By providing a wrapper, linking any SVM solver to R become much easier.
 
+
+
 \section*{Acknowledgments}
 
+We acknowledge support by the Mercator Research Center Ruhr,
+under grant Pr-2013-0015 \textit{Support-Vektor-Maschinen f{\"u}r extrem gro{\ss}e Datenmengen} and
+partial support by the German Research Foundation (DFG) within the Collaborative Research Centers SFB 823
+\textit{Statistical modelling of nonlinear dynamic processes}, Project C2.
 
 
 
