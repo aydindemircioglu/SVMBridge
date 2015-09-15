@@ -89,8 +89,8 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 		cat ("bias", model$bias, "\n")
 		cat ("label", model$label, "\n")
 		cat ("C", model$C, "\n")
-		cat ("SV", model$SV, "\n")
-		cat ("alpha", model$alpha, "\n")
+#		cat ("SV", model$SV, "\n")
+#		cat ("alpha", model$alpha, "\n")
 	}
 
 	checkmate::assertMatrix(X, min.rows = 1)

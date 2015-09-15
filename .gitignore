@@ -18,3 +18,4 @@ SVMBr*tar.gz
 webpage/**
 *.R~
 inst/doc
+*.model

@@ -49,9 +49,14 @@ writeLIBSVMModel = function (model = NA, modelFile = "./model", verbose = FALSE)
 
 	writeLines(paste ("svm_type c_svc", sep = ""), modelFileHandle )
 	writeLines(paste ("kernel_type", "rbf", sep = " "), modelFileHandle )
+	
 	gammaValue = model$gamma
-	if(is.numeric(gammaValue))
+	if(is.numeric(gammaValue)) {
 		writeLines(paste ("gamma", model$gamma, sep = " "), modelFileHandle )
+	} else { 
+		stop ("Gamma is not numeric?")
+	}
+	
 	writeLines(paste ("nr_class", model$nrclass, sep = " "), modelFileHandle )
 	writeLines(paste ("total_sv", sum(model$nSV), sep = " "), modelFileHandle )
 	biasvalues = paste(model$bias, collapse = " ")

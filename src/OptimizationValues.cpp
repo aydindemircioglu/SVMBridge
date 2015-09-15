@@ -423,13 +423,15 @@ Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C
 		for (int i = 0; i < l; i++)
 		{
 			// predict value
-			double currentMargin = svm_predict_values (gamma, X(i,_), SV, nSV, alpha, rho, label);
-			currentMargin = 1.0 - double(Y[i]) * currentMargin; 
+			double currentMarginO = svm_predict_values (gamma, X(i,_), SV, nSV, alpha, rho, label);
+			double currentMargin = 1.0 - double(Y[i]) * currentMarginO; 
 			if (currentMargin > 0)
 				hingeLoss += currentMargin;
-			if (currentMargin > 1)
+			if ((currentMarginO <= 0.0) && (Y[i] > 0))
 				trainingError += 1;
-//			std::cout << currentMargin << "\n";
+			if ((currentMarginO > 0.0) && (Y[i] < 0))
+				trainingError += 1;
+			//			std::cout << currentMargin << "\n";
 		}
 		
 		if (verbose == true) 
@@ -463,18 +465,19 @@ Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C
 			dual += fabs(alpha(j,0));
 		}
 		
-		// fix training error
-		trainingError = trainingError/X.nrow();
-		
 		// output 
 		if (verbose == true) 
 			Rcout << "Current weight (0.5*||w||): " <<  sqrt(2*weight) << "\n";
 		if (verbose == true) 
-			Rcout << "Training error: " << trainingError << "\n";
+			Rcout << "Training error (" << trainingError << "/" << l << "): " << trainingError/X.nrow() << "\n";
 		if (verbose == true) 
 			Rcout <<  "Computed primal value: " << primal << "\n";
 		if (verbose == true) 
 			Rcout << "Computed dual value: " << dual << "\n";
+
+		// fix training error
+		trainingError = trainingError/X.nrow();
+		
 	}
 	catch(int e)
 	{
