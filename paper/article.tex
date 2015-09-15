@@ -258,11 +258,40 @@ In these cases, if multiple models claims ownership, a "default" model can be pr
 which will take precedence over other models. Without a default,
 the model will be random.
 
+\begin{CodeChunk}
+\begin{CodeInput}
+R> model = trainSVM (method = "LIBSVM", cost = 1.0, gamma = 2.0,
+			trainDataFile = "./data.sparse",
+			epsilon = 0.042,
+			modelFile = modelFile,
+			useBias = TRUE,
+			verbose = verbose
+		)
+\end{CodeInput}
+\begin{CodeOutput}
+...
+\end{CodeOutput}
+\end{CodeChunk}
+
+The training data can be passed on via a variable in memory or by specifying the path 
+of the data set file. 
+Note that there are two sets of variables: Those who belong to the SVMBridge,
+like the trainDataFile variable or verbose flag, and those that are passed further
+to the underlying SVM wrapper.
+Not all options that are provided by the underlying SVM solver
+are supported by the wrappers. As our focus lies on binary classification, because of time constraints 
+we opted  to support only these options, e.g. we dropped the one-class SVDD in LIBSVM.
+In case there is need for other options, it is 
+easy to enhance the wrappers.
+There is furthermore the subsampling option, which can be used for larger data sets.
+
 
 \subsection{Predicions}
 
 Predicting from a trained model is rather easy, as there are usually not many options.
 As with training, the predict routine will accept a model either in memory or from a file.
+The same is true for the data to predict.  Again notice that data and models in memory 
+must be written to disk prior to calling the prediction binary.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -282,9 +311,24 @@ e.g. when comparing different solvers, the primal value
 of the SVM problem as well as the dual value might  be of interest.
 These can be computed via the \code{optimizationValues()} routine.
 
+Specifically, this routine compute the following values:
+\code{weight} is given by $\frac{1}{2} w^T w$, with
+$w = \sum_i \alpha_i s_i$. Furthermore, we have
+that $C \sum_i max (0, 1 - ..) $, and 
+\code{primal} is then given by $primal = w + CHinge$.
+\code{dual} on the other hand is simply
+$w - \sum_i |\alpha_i|$. In general it must hold
+that $primal \geq dual$. 
+WHAT IF NOT? what does it mean?
+
+
 \subsection{Helper Routines}
 
-...
+A few routines have been placed into the package that were helpful
+with testing. Namely, there are several generators for synthetical data sets,
+collected from different publications. 
+WHAT ELSE? can routines be used outside? detectTilde e.g.?
+
 
 \subsection{Platform Considerations}
 
@@ -310,14 +354,55 @@ writing a S3 class with several routines. In the inst folder you will find
 a template that you can fill with your own code. Here we will go
 through the details of adding the software package ...
 
+The flow is as follows: The SVMBridge will call 
+createTrainingArguments method of any wrapper. The wrapper
+will return a string that contains all parameters that need to be
+passed to the binary of the underlying SVM solver. Note that
+this includes the model, prediction and training files.
+
+
+
 \subsection{Training Call}
 
+A simple S3 method has to be created that needs to be called
+\code{createTrainingArguments.LIBSVM}. Apart from the very
+first argument (taking the object itself), all other paramters
+can be chosen freely. After training, from the output several
+training information will be extracted by the 
+\code{extractTrainingInfo()} function. 
+
+
 \subsection{Testing Call}
+
+Similar to the training call, \code{createTestArguments()} needs to
+writen. Again, it should accept three variables called testDataFile and
+modelFile as well as predictionFile. There is also a
+\code{extractTestInfo()} that will extract the important informations
+from the output of the test binary.
+
+
 
 \subsection{Handling Models}
 
 As only LIBSVM models are being used, one can readily use the 
-inbuild functions of the SVMBridge. 
+inbuild functions of the SVMBridge. If the solver works with its
+own model, one needs to rewrite the readModel method of the wrapper.
+This will only obtain the modelFile and will return the model
+in the model format (S3 Object with XY, describe it somewhere else)
+SVMBridge needs also a writeModel functions, as models passed in
+memory needs to be written to disk. .
+Finally it is necessary to access the predictions itself. For this one
+needs to write the \code{readPredictions()} function. For LIBSVM this
+will read the prediction files that is being written by LIBSVM to disk.
+
+
+\subsection{Other functions}
+
+Every wrapper should also be able to find tiself in a given directory tree.
+For this \code{findSoftware} is provided.
+
+At last, for querying reasons, there is also a print routine
+so that wrapper can print out any further information about itself.
 
 
 \section{Conclusion}

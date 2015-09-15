@@ -31,11 +31,13 @@ C = 99.1
 	)  
 
 	model = trainedObj$model
+	writeModelToFile (model, "./libsvm.model")
+
+	model$alpha = model$alpha 
 	data = readSparseData (trainFile)
 	oV = optimizationValues (X = data$X, Y = data$Y, model = model, C = C)
 	print (oV)
 	
-	writeModelToFile (model, "./libsvm.model")
 	model2 = readModelFromFile ("./libsvm.model")
 	oV = optimizationValues (X = data$X, Y = data$Y, model = model2, C = C)
 	print (oV)
