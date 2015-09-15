@@ -4,12 +4,12 @@
 \alias{createTrainingArguments.LIBSVM}
 \title{Create training arguments for LIBSVM}
 \usage{
-\method{createTrainingArguments}{LIBSVM}(x, trainDataFile = "",
+\method{createTrainingArguments}{LIBSVM}(x, ..., trainDataFile = "",
   modelFile = "", extraParameter = "", kernelCacheSize = 1024, cost = 1,
   svmType = "-1", useBias = FALSE, gamma = 1, epsilon = 0.001,
   degree = -1, coef0 = -1, nu = -1, shrinking = -1,
   probabilityEstimates = -1, weight = -1, n = -1, kernelType = "rbf",
-  quietMode = FALSE, ...)
+  quietMode = FALSE)
 }
 \arguments{
 \item{x}{SVM object}

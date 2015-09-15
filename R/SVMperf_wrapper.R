@@ -409,3 +409,16 @@ findSoftware.SVMperf = function(x, searchPath = "./", verbose = FALSE) {
 
 		return(x)
 }
+
+
+
+#' print.SVMperf
+#'
+#' @param	x			svm object
+#'	
+print.SVMperf  = function(x) {
+	cat("--- Object: ", x$method, "\n")
+	cat("       Training Binary at ", x$trainBinaryPath, "\n")
+	cat("       Test Binary at ", x$testBinaryPath, "\n")
+}
+	

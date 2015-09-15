@@ -4,7 +4,8 @@
 \alias{readModel.BSGD}
 \title{readModel.BSGD}
 \usage{
-\method{readModel}{BSGD}(x, modelFile = "./model", verbose = FALSE)
+\method{readModel}{BSGD}(x, modelFile = "./model", verbose = FALSE,
+  singleBinaryColumn = FALSE)
 }
 \arguments{
 \item{x}{SVM object}
