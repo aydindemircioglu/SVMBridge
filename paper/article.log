@@ -1,8 +1,8 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2015.8.20)  15 SEP 2015 12:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2015.8.20)  15 SEP 2015 15:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**article.tex
+**./article.tex
 (./article.tex
 LaTeX2e <2015/01/01>
 Babel <3.9l> and hyphenation patterns for 7 languages loaded.
@@ -322,43 +322,144 @@ Package hyperref Warning: Option `hyperindex' has already been used,
 Package hyperref Info: Option `colorlinks' set `true' on input line 444.
 Package hyperref Info: Option `linktocpage' set `true' on input line 444.
 Package hyperref Info: Option `plainpages' set `false' on input line 444.
+) (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2013/01/14 v2.14 AMS math features
+\@mathmargin=\skip53
+
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks15
+\ex@=\dimen109
+))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen110
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count102
+LaTeX Info: Redefining \frac on input line 210.
+\uproot@=\count103
+\leftroot@=\count104
+LaTeX Info: Redefining \overline on input line 306.
+\classnum@=\count105
+\DOTSCASE@=\count106
+LaTeX Info: Redefining \ldots on input line 378.
+LaTeX Info: Redefining \dots on input line 381.
+LaTeX Info: Redefining \cdots on input line 466.
+\Mathstrutbox@=\box27
+\strutbox@=\box28
+\big@size=\dimen111
+LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
+\macc@depth=\count107
+\c@MaxMatrixCols=\count108
+\dotsspace@=\muskip11
+\c@parentequation=\count109
+\dspbrk@lvl=\count110
+\tag@help=\toks16
+\row@=\count111
+\column@=\count112
+\maxfields@=\count113
+\andhelp@=\toks17
+\eqnshift@=\dimen112
+\alignsep@=\dimen113
+\tagshift@=\dimen114
+\tagwidth@=\dimen115
+\totwidth@=\dimen116
+\lineht@=\dimen117
+\@envbody=\toks18
+\multlinegap=\skip54
+\multlinetaggap=\skip55
+\mathdisplay@stack=\toks19
+LaTeX Info: Redefining \[ on input line 2665.
+LaTeX Info: Redefining \] on input line 2666.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mathtools.sty
+Package: mathtools 2015/06/17 v1.17 mathematical typesetting tools
+
+(/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2014/10/28 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count114
+\calc@Bcount=\count115
+\calc@Adimen=\dimen118
+\calc@Bdimen=\dimen119
+\calc@Askip=\skip56
+\calc@Bskip=\skip57
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count116
+\calc@Cskip=\skip58
+)
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mhsetup.sty
+Package: mhsetup 2010/01/21 v1.2a programming setup (MH)
+)
+LaTeX Info: Thecontrolsequence`\('isalreadyrobust on input line 129.
+LaTeX Info: Thecontrolsequence`\)'isalreadyrobust on input line 129.
+LaTeX Info: Thecontrolsequence`\['isalreadyrobust on input line 129.
+LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 129.
+\g_MT_multlinerow_int=\count117
+\l_MT_multwidth_dim=\dimen120
+\origjot=\skip59
+\l_MT_shortvdotswithinadjustabove_dim=\dimen121
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen122
+\l_MT_above_intertext_sep=\dimen123
+\l_MT_below_intertext_sep=\dimen124
+\l_MT_above_shortintertext_sep=\dimen125
+\l_MT_below_shortintertext_sep=\dimen126
 ) (./article.aux)
 \openout1 = `article.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 65.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 65.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 103.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 103.
+
  (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count102
-\scratchdimen=\dimen109
-\scratchbox=\box27
-\nofMPsegments=\count103
-\nofMParguments=\count104
-\everyMPshowfont=\toks15
-\MPscratchCnt=\count105
-\MPscratchDim=\dimen110
-\MPnumerator=\count106
-\makeMPintoPDFobject=\count107
-\everyMPtoPDFconversion=\toks16
+\scratchcounter=\count118
+\scratchdimen=\dimen127
+\scratchbox=\box29
+\nofMPsegments=\count119
+\nofMParguments=\count120
+\everyMPshowfont=\toks20
+\MPscratchCnt=\count121
+\MPscratchDim=\dimen128
+\MPnumerator=\count122
+\makeMPintoPDFobject=\count123
+\everyMPtoPDFconversion=\toks21
 ) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
 
@@ -374,8 +475,8 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\AtBeginShipoutBox=\box28
-Package hyperref Info: Link coloring ON on input line 65.
+\AtBeginShipoutBox=\box30
+Package hyperref Info: Link coloring ON on input line 103.
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -383,11 +484,11 @@ Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count108
+\c@section@level=\count124
 )
-LaTeX Info: Redefining \ref on input line 65.
-LaTeX Info: Redefining \pageref on input line 65.
-LaTeX Info: Redefining \nameref on input line 65.
+LaTeX Info: Redefining \ref on input line 103.
+LaTeX Info: Redefining \pageref on input line 103.
+LaTeX Info: Redefining \nameref on input line 103.
 
 (./article.out) (./article.out)
 \@outlinefile=\write4
@@ -396,48 +497,59 @@ LaTeX Info: Redefining \nameref on input line 65.
 
 
 Package hyperref Warning: Glyph not defined in PD1 encoding,
-(hyperref)                removing `\u' on input line 65.
+(hyperref)                removing `\u' on input line 103.
 
-<jsslogo.jpg, id=60, 540.0175pt x 393.47pt>
+<jsslogo.jpg, id=80, 540.0175pt x 393.47pt>
 File: jsslogo.jpg Graphic file (type jpg)
  <use jsslogo.jpg>
-Package pdftex.def Info: jsslogo.jpg used on input line 65.
+Package pdftex.def Info: jsslogo.jpg used on input line 103.
 (pdftex.def)             Requested size: 89.80768pt x 65.43607pt.
-LaTeX Font Info:    Try loading font information for T1+pzc on input line 65.
+LaTeX Font Info:    Try loading font information for T1+pzc on input line 103.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pzc.fd
 File: t1pzc.fd 2001/06/04 font definitions for T1/pzc.
 )
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <28> not available
-(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 65.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 65.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 65.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 65.
- [1
+(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 103.
+LaTeX Font Info:    Try loading font information for U+msa on input line 103.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 103.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./jsslogo.jpg>]
-LaTeX Font Info:    Try loading font information for T1+aett on input line 150.
-
-
-(/usr/share/texlive/texmf-dist/tex/latex/ae/t1aett.fd
-File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
-)
 LaTeX Font Info:    Font shape `T1/aer/b/sl' in size <10.95> not available
-(Font)              Font shape `T1/aer/bx/sl' tried instead on input line 164.
+(Font)              Font shape `T1/aer/bx/sl' tried instead on input line 198.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 2 []
  []
 
 [2]
-LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 209.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 209.
+LaTeX Font Info:    Try loading font information for T1+aett on input line 207.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+ (/usr/share/texlive/texmf-dist/tex/latex/ae/t1aett.fd
+File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
+)
+LaTeX Font Info:    Try loading font information for TS1+aett on input line 269
+.
+
+(/usr/share/texmf/tex/latex/R/tex/latex/ts1aett.fd
+File: ts1aett.fd 
+)
+LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 269
+.
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmtt.fd
+File: ts1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `TS1/aett/m/sl' in size <10.95> not available
+(Font)              Font shape `TS1/cmtt/m/sl' tried instead on input line 269.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -449,37 +561,81 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 4 []
  []
 
-[4]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 209.
+[4] (./article.bbl)
+Underfull \hbox (badness 10000) in paragraph at lines 341--341
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 341--341
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 341--341
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 341--341
+
+ []
+
+LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
+(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 341.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 341.
+
+Overfull \hbox (5.47499pt too wide) has occurred while \output is active
+[] \T1/aer/m/n/10.95 5
+ []
+
+[5]
+Overfull \hbox (5.47499pt too wide) has occurred while \output is active
+\T1/aer/m/n/10.95 6 []
+ []
+
+[6]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 341.
  (./article.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 209.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 209.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 341.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 341.
 Package rerunfilecheck Info: File `article.out' has not changed.
-(rerunfilecheck)             Checksum: D98A2609A48747A4434802365F4EDE2B;1284.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 209.
+(rerunfilecheck)             Checksum: FD468027E6E2EFF9E128584DD60C2B25;1841.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 341.
  ) 
 Here is how much of TeX's memory you used:
- 6774 strings out of 494948
- 99032 string characters out of 6178809
- 175885 words of memory out of 5000000
- 9882 multiletter control sequences out of 15000+600000
- 46198 words of font info for 80 fonts, out of 8000000 for 9000
+ 8259 strings out of 494948
+ 119993 string characters out of 6178809
+ 200096 words of memory out of 5000000
+ 11287 multiletter control sequences out of 15000+600000
+ 52206 words of font info for 95 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 36i,9n,34p,248b,316s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmb10.pfb></usr/share/texlive/texmf
--dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmbxsl10.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt
-10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on article.pdf (4 pages, 160136 bytes).
+ 36i,10n,34p,250b,473s stack positions out of 5000i,500n,10000p,200000b,80000s
+ </home/drunkeneye/.texmf-var/fonts/pk/ljfour/jknappen/ec/tcst1095.600pk>{/us
+r/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmb10.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmbxsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi
+8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsltt10.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/zapfchan/uzcm
+i8a.pfb>
+Output written on article.pdf (6 pages, 254351 bytes).
 PDF statistics:
- 150 PDF objects out of 1000 (max. 8388607)
- 131 compressed objects within 2 object streams
- 33 named destinations out of 1000 (max. 500000)
- 118 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 252 PDF objects out of 1000 (max. 8388607)
+ 219 compressed objects within 3 object streams
+ 51 named destinations out of 1000 (max. 500000)
+ 158 words of extra memory for PDF output out of 10000 (max. 10000000)
 

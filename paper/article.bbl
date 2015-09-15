@@ -1,0 +1,34 @@
+\begin{thebibliography}{4}
+\newcommand{\enquote}[1]{``#1''}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{Chang and Lin(2011)}]{cc01a}
+Chang CC, Lin CJ (2011).
+\newblock \enquote{{LIBSVM}: A library for support vector machines.}
+\newblock \emph{ACM Transactions on Intelligent Systems and Technology},
+  \textbf{2}, 27:1--27:27.
+
+\bibitem[{Cortes and Vapnik(1995)}]{cortes1995support}
+Cortes C, Vapnik V (1995).
+\newblock \enquote{Support vector machine.}
+\newblock \emph{Machine learning}, \textbf{20}(3), 273--297.
+
+\bibitem[{Djuric \emph{et~al.}(2014)Djuric, Lan, Vucetic, and
+  Wang}]{djuric2014budgetedsvm}
+Djuric N, Lan L, Vucetic S, Wang Z (2014).
+\newblock \enquote{BudgetedSVM: A Toolbox for Scalable SVM Approximations.}
+\newblock \emph{Journal of Machine Learning Research}, \textbf{14}, 3813--3817.
+
+\bibitem[{Joachims and Yu(2009)}]{joachims2009sparse}
+Joachims T, Yu CNJ (2009).
+\newblock \enquote{Sparse kernel SVMs via cutting-plane training.}
+\newblock \emph{Machine Learning}, \textbf{76}(2-3), 179--193.
+
+\end{thebibliography}

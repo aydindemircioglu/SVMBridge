@@ -3,12 +3,17 @@
 \BOOKMARK [2][-]{Subsection.1.1.SVM packages in R.2}{SVM packages in R}{Section.0.Introduction.1}% 3
 \BOOKMARK [1][-]{Section.1.The SVMBridge Package.1}{The SVMBridge Package}{}% 4
 \BOOKMARK [2][-]{Subsection.2.0.Wrapper.2}{Wrapper}{Section.1.The SVMBridge Package.1}% 5
-\BOOKMARK [1][-]{Section.2.Examples.1}{Examples}{}% 6
-\BOOKMARK [2][-]{Subsection.3.0.Adding the Wrapper to the SVMBridge.2}{Adding the Wrapper to the SVMBridge}{Section.2.Examples.1}% 7
-\BOOKMARK [2][-]{Subsection.3.1.Reading Sparse Data.2}{Reading Sparse Data}{Section.2.Examples.1}% 8
-\BOOKMARK [2][-]{Subsection.3.2.Training a model.2}{Training a model}{Section.2.Examples.1}% 9
-\BOOKMARK [2][-]{Subsection.3.3.Predicions.2}{Predicions}{Section.2.Examples.1}% 10
-\BOOKMARK [2][-]{Subsection.3.4.Optimization Values.2}{Optimization Values}{Section.2.Examples.1}% 11
-\BOOKMARK [2][-]{Subsection.3.5.Helper Routines.2}{Helper Routines}{Section.2.Examples.1}% 12
-\BOOKMARK [2][-]{Subsection.3.6.Performance Considerations.2}{Performance Considerations}{Section.2.Examples.1}% 13
-\BOOKMARK [1][-]{Section.3.Conclusion.1}{Conclusion}{}% 14
+\BOOKMARK [1][-]{Section.2.Using a Wrapper.1}{Using a Wrapper}{}% 6
+\BOOKMARK [2][-]{Subsection.3.0.Adding the Wrapper to the SVMBridge.2}{Adding the Wrapper to the SVMBridge}{Section.2.Using a Wrapper.1}% 7
+\BOOKMARK [2][-]{Subsection.3.1.Reading Sparse Data.2}{Reading Sparse Data}{Section.2.Using a Wrapper.1}% 8
+\BOOKMARK [2][-]{Subsection.3.2.Training a model.2}{Training a model}{Section.2.Using a Wrapper.1}% 9
+\BOOKMARK [2][-]{Subsection.3.3.Predicions.2}{Predicions}{Section.2.Using a Wrapper.1}% 10
+\BOOKMARK [2][-]{Subsection.3.4.Optimization Values.2}{Optimization Values}{Section.2.Using a Wrapper.1}% 11
+\BOOKMARK [2][-]{Subsection.3.5.Helper Routines.2}{Helper Routines}{Section.2.Using a Wrapper.1}% 12
+\BOOKMARK [2][-]{Subsection.3.6.Platform Considerations.2}{Platform Considerations}{Section.2.Using a Wrapper.1}% 13
+\BOOKMARK [2][-]{Subsection.3.7.Performance Considerations.2}{Performance Considerations}{Section.2.Using a Wrapper.1}% 14
+\BOOKMARK [1][-]{Section.3.Creating a Wrapper.1}{Creating a Wrapper}{}% 15
+\BOOKMARK [2][-]{Subsection.4.0.Training Call.2}{Training Call}{Section.3.Creating a Wrapper.1}% 16
+\BOOKMARK [2][-]{Subsection.4.1.Testing Call.2}{Testing Call}{Section.3.Creating a Wrapper.1}% 17
+\BOOKMARK [2][-]{Subsection.4.2.Handling Models.2}{Handling Models}{Section.3.Creating a Wrapper.1}% 18
+\BOOKMARK [1][-]{Section.4.Conclusion.1}{Conclusion}{}% 19

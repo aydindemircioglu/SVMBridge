@@ -1,8 +1,23 @@
-\documentclass[article]{jss}
+\documentclass[article, shortnames]{jss}
+
+% TODO:
+% C++/R -> prolang{.}
+% SVMBridge -> pkg{.}
+
+
+\usepackage{amsmath, amssymb}
+\usepackage{mathtools}
+
+\newcommand{\sign}{\mathop{\mathrm{sign}}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Order}{\mathcal{O}}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %% almost as usual
 \author{Ayd\i n Demircio\u{g}lu\\Ruhr-Universit\"at Bochum \And 
@@ -44,13 +59,33 @@ Hanna Houphouet\\Ruhr-Universit\"at Bochum \And
 %% The address of (at least) one author should be given
 %% in the following format:
 \Address{
-  Ayd\i n Demircio\u{g}lu\\
+  Ayd\i n Demircio\u{g}lu, Hanna Houphouet, Tobias Glasmachers\\
   Institut f\"ur Neuroinformatik\\
   Ruhr-Universit\"at Bochum\\
-  44790 Bochum
-  E-mail: \email{aydin.demircioglu@ini.rub.de}\\
-  URL: \url{http://www.ini.rub.de/PEOPLE/aydind/}
+  44790 Bochum\\
+  Germany\\
+  E-mail: \email{\{aydin.demircioglu, hanna.houphouet, tobias.glasmachers\}@ini.rub.de}\\
+  URL: \url{http://www.ini.rub.de}\\
+  \\
+  
+  Daniel Horn, Claus Weihs\\
+  Fakult\"at Statistik\\
+  Technische Universit\"at Dortmund\\
+  44221 Dortmund\\
+  Germany \\ 
+  E-mail: \email{\{dhorn, bischl, weihs\}@statistik.tu-dortmund.de} \\
+  URL: \url{https://www.statistik.tu-dortmund.de/computationalstats.html}\\
+\\
+
+  Bernd Bischl\\
+Institut f\"ur Statistik \\
+Ludwig-Maximilians-Universit\"at M\"unchen\\
+80539 M\"unchen\\
+  Germany \\
+E-mail: \email{bernd.bischl@stat.uni-muenchen.de}\\
+URL: \url{http://www.statistik.lmu.de/~bischl}
 }
+
 %% It is also possible to add a telephone and fax number
 %% before the e-mail in the following format:
 %% Telephone: +43/512/507-7103
@@ -58,6 +93,9 @@ Hanna Houphouet\\Ruhr-Universit\"at Bochum \And
 
 %% for those who use Sweave please include the following line (with % symbols):
 %% need no \usepackage{Sweave.sty}
+
+
+
 
 %% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -71,9 +109,53 @@ Hanna Houphouet\\Ruhr-Universit\"at Bochum \And
 
 \section{Introduction}
 
+
+
 \subsection{Support Vector Machines}
 
-Support Vector machines in general.
+Support Vector Machines (SVM) are linear classifiers
+that try to maxime the margin of a binary problem \citep{cortes1995support}.
+As SVMs are only linear classifiers, a kernelized version
+is used for more complex data. Basically, they work by
+solving the  following convex problem:
+\begin{equation}
+        \min_{w \in \mathcal{H}, b \in \R} \quad \frac{1}{2} ||w||^2 + C \cdot \sum_{i=1}^n \max \Big( 0, 1 - y_i \big( \langle w, \varphi(x_i) \rangle_{\mathcal{H}} + b \big) \Big).
+        \label{SVMproblemPrimal}
+\end{equation}
+Here 
+$\mathcal{D}=\{(x_1, y_1), \dots, (x_n, y_n)\} \in (X \times \{ \pm 1\})^n$
+is the labeled data,
+and  $\varphi : X \to \mathcal{H}$ is a feature map into a reproducing
+kernel Hilbert space $\mathcal{H}$, corresponding to a positive definite
+(Mercer) kernel function $k : X \times X \to \R$, fulfilling
+$\langle \varphi(x), \varphi(x') \rangle_{\mathcal{H}} = k(x, x')$ for
+all $x, x' \in X$. Furthermore, $C > 0$ is a regularization parameter.
+It controls the complexity of the SVM model.
+
+Often, the problem is not directly solved, but dualized via Lagrangian theory.
+Then the problem can be stated as 
+\begin{align}
+        \max_{\alpha \in \R^n} \quad & \sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i,j=1}^n \alpha_i \alpha_j y_i y_j k(x_i, x_j) \label{SVMproblemDual} \\
+        \text{s.t.} \quad & \sum_{i=1}^{n} y_i \alpha_i = 0 \text{~~and~~} 0 \leq \alpha_i \leq C \,\,\, \forall \, i \in \{1, \dots, n\}. \notag
+        \enspace
+\end{align}
+The solution then takes the form $w = \sum_{i=1}^n \alpha_i y_i \varphi(x_i)$
+and the offset~$b$ can be computed from the Karush-Kuhn-Tucker (KKT)
+complementarity conditions.
+
+SVMs classify by using the model given by
+$h_{w,b}(x) = \textrm{sign}(\langle w, \phi(x)\rangle_{\mathcal{H}} + b)$
+
+Different kernels can be used, e.g. the polynomial kernel or the 
+RBF kernel $k(x,x') = e^{-\gamma || x-x' ||^2}$, where
+$\gamma$ and $d$ are parameters of the kernel, that must
+be tuned to the given data.
+
+SMO.
+
+On the practical side, LIBSVM can be regarded as the 
+reference implementation of the SMO and the 'golden standard'
+of SVM solvers \citep{cc01a}.
 
 
 \subsection{SVM packages in R}
@@ -84,8 +166,8 @@ All of these link existing C++ sources directly from R and need
 more or less extensive wrappers to allow the user direct access to
 the options of the underlying SVM solver.
 
-Other SVM solver, like the BudgetedSVM package, which contains
-BSGD and LLSVM, or SVMperf cannot be called directly from R.
+Other SVM solver, like the BudgetedSVM package~\citep{djuric2014budgetedsvm}, 
+which contains BSGD and LLSVM, or SVMperf~\citep{joachims2009sparse}, cannot be called directly from R.
 Instead, a system command has to be issued.
 To ease this calls, the \pkg{SVMBridge} package has been developed.
 
@@ -104,8 +186,11 @@ Note that the search for binaries might have a huge toll on HPC clusters,
 so it is adviced to specify the paths directly instead of relying on the 
 automatism.
 
+We provided default wrappers for LIBSVM, LASVM, CVM/BVM,
+SVMperf, BSGD and LLSVM. 
 
-\section{Examples}
+
+\section{Using a Wrapper}
 
 To use the SVMBridge, one usually perform the following steps:
 Add the external wrapper to the SVMBridge, load the data, train a model, use the
@@ -115,7 +200,17 @@ Notice that the data must be written by the SVMBridge before calling
 the corresponding SVM Solver, as there is no way to pass data via memory
 to command line tools. Therefore 
 
+
 \subsection{Adding the Wrapper to the SVMBridge}
+
+The first step is to make the SVMBridge aware of a new wrapper.
+This is simply done by calling \code{addSVMPackage()}.
+There are several options.
+The SVMBridge comes with an easy mechanism to search 
+the corresponding binaries (specified in the wrapper) to ease
+the usage. To use this, one can instead call \code{findSVMSoftware}.
+
+
 
 \subsection{Reading Sparse Data}
 
@@ -124,11 +219,12 @@ This format consists of:
 Each line (delimited by a CR/LF) is given by a label
 and the non-zero components of the data point,
 e.g. to encode the vector six dimensional vector 
-$0 0 0 0.2 0 1.4$ belonging to class $3$, the sparse 
+ $ ( 0 , 0 , 0 , 0.2 , 0 , 1.4 ) $
+belonging to class $3$, the sparse 
 data format would contain the line {3 4:0.2 6:1.4}.
 
 Although reading these files into R is possible via either
-the kernlab or the e1071 routines, both only provide R solutions,
+the \pkg{kernlab} or the \pkg{e1071} routines, both only provide R solutions,
 and therefore suffer from suboptimal performance.
 The SVMBridge package provides a simple sparse data format 
 reading and writing, which are implemented in C++ and
@@ -168,6 +264,16 @@ the model will be random.
 Predicting from a trained model is rather easy, as there are usually not many options.
 As with training, the predict routine will accept a model either in memory or from a file.
 
+\begin{CodeChunk}
+\begin{CodeInput}
+R> predictions = testSVM (model, data = '')
+R> head(predictions)
+\end{CodeInput}
+\begin{CodeOutput}
+...
+\end{CodeOutput}
+\end{CodeChunk}
+
 
 \subsection{Optimization Values}
 
@@ -180,6 +286,13 @@ These can be computed via the \code{optimizationValues()} routine.
 
 ...
 
+\subsection{Platform Considerations}
+
+Although the SVMBridge was meant to be cross-platform, this goal
+is hard to achieve. From a users perspective, it can be used on all three
+major platforms (Linux, MacOS, Windows). Additional tests should
+be started to make sure the package works as intended.
+
 
 \subsection{Performance Considerations}
 
@@ -187,6 +300,24 @@ We sum up the points to keep in mind when performance is of high priority:
 Do not use the automatism to find the binaries, specify the paths by hand.
 Do not load the data into memory, specify the path of the data when training instead.
 Do not re-read the model into memory, let it on disk.
+
+
+
+\section{Creating a Wrapper}
+
+Adding your own SVM solver to the SVMBridge boils down to
+writing a S3 class with several routines. In the inst folder you will find
+a template that you can fill with your own code. Here we will go
+through the details of adding the software package ...
+
+\subsection{Training Call}
+
+\subsection{Testing Call}
+
+\subsection{Handling Models}
+
+As only LIBSVM models are being used, one can readily use the 
+inbuild functions of the SVMBridge. 
 
 
 \section{Conclusion}
@@ -205,5 +336,6 @@ partial support by the German Research Foundation (DFG) within the Collaborative
 \textit{Statistical modelling of nonlinear dynamic processes}, Project C2.
 
 
+\bibliography{collected}
 
 \end{document}
