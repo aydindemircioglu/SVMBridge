@@ -158,13 +158,24 @@ addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA,
 
 
 
-#' dump all known package infos
+#' Dump all known package infos
+#'
+#' @param	verbose		be verbose in output?
+#' @return	A vector of all known SVM solvers as string.
+#'
 #' @export	outputAllSVMSoftwarePackages
-outputAllSVMSoftwarePackages <- function () {
-	BBmisc::messagef("Currently known solver:")
+
+outputAllSVMSoftwarePackages <- function (verbose = TRUE) {
+	knownPackages = c()
+	if (verbose == TRUE)
+		cat("Currently known solver:\n")
 	for (package in SVMBridgeEnv$packages) {
-		print (package)
+		if (verbose == TRUE)
+			print (package)
+		knownPackages = c(knownPackages, package)
 	}
+	
+	return (knownPackages)
 }
 
 

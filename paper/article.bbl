@@ -1,4 +1,4 @@
-\begin{thebibliography}{4}
+\begin{thebibliography}{8}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -20,15 +20,42 @@ Cortes C, Vapnik V (1995).
 \newblock \enquote{Support vector machine.}
 \newblock \emph{Machine learning}, \textbf{20}(3), 273--297.
 
+\bibitem[{Demircioglu(2015)}]{lasvmR}
+Demircioglu A (2015).
+\newblock \emph{\pkg{lasvmR}: A Simple Wrapper for the LASVM Solver}.
+\newblock \proglang{R}~package version~0.1.2,
+  \urlprefix\url{http://CRAN.R-project.org/package=lasvmR}.
+
+\bibitem[{Dimitriadou \emph{et~al.}(2008)Dimitriadou, Hornik, Leisch, Meyer,
+  and Weingessel}]{dimitriadou2008misc}
+Dimitriadou E, Hornik K, Leisch F, Meyer D, Weingessel A (2008).
+\newblock \enquote{Misc functions of the Department of Statistics (e1071), TU
+  Wien.}
+\newblock \emph{R package}, pp. 1--5.
+
 \bibitem[{Djuric \emph{et~al.}(2014)Djuric, Lan, Vucetic, and
   Wang}]{djuric2014budgetedsvm}
 Djuric N, Lan L, Vucetic S, Wang Z (2014).
 \newblock \enquote{BudgetedSVM: A Toolbox for Scalable SVM Approximations.}
 \newblock \emph{Journal of Machine Learning Research}, \textbf{14}, 3813--3817.
 
+\bibitem[{He(2015)}]{SwarmSVM}
+He T (2015).
+\newblock \emph{\pkg{SwarmSVM}: SwarmSVM: Ensemble Learning Algorithms Based on
+  Support Vector Machines}.
+\newblock \proglang{R}~package version~0.1,
+  \urlprefix\url{http://CRAN.R-project.org/package=SwarmSVM}.
+
 \bibitem[{Joachims and Yu(2009)}]{joachims2009sparse}
 Joachims T, Yu CNJ (2009).
 \newblock \enquote{Sparse kernel SVMs via cutting-plane training.}
 \newblock \emph{Machine Learning}, \textbf{76}(2-3), 179--193.
+
+\bibitem[{Karatzoglou \emph{et~al.}(2004)Karatzoglou, Smola, Hornik, and
+  Zeileis}]{kernlab}
+Karatzoglou A, Smola A, Hornik K, Zeileis A (2004).
+\newblock \enquote{kernlab -- An {S4} Package for Kernel Methods in {R}.}
+\newblock \emph{Journal of Statistical Software}, \textbf{11}(9), 1--20.
+\newblock \urlprefix\url{http://www.jstatsoft.org/v11/i09/}.
 
 \end{thebibliography}

@@ -425,6 +425,7 @@ Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C
 			// predict value
 			double currentMarginO = svm_predict_values (gamma, X(i,_), SV, nSV, alpha, rho, label);
 			double currentMargin = 1.0 - double(Y[i]) * currentMarginO; 
+//			Rcout << currentMargin << "\n";
 			if (currentMargin > 0)
 				hingeLoss += currentMargin;
 			if ((currentMarginO <= 0.0) && (Y[i] > 0))
@@ -467,7 +468,7 @@ Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C
 		
 		// output 
 		if (verbose == true) 
-			Rcout << "Current weight (0.5*||w||): " <<  sqrt(2*weight) << "\n";
+			Rcout << "Current weight (||w||): " <<  sqrt(weight) << "\n";
 		if (verbose == true) 
 			Rcout << "Training error (" << trainingError << "/" << l << "): " << trainingError/X.nrow() << "\n";
 		if (verbose == true) 

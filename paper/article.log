@@ -1,8 +1,8 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2015.8.20)  15 SEP 2015 16:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2015.8.20)  16 SEP 2015 16:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**./article.tex
+**article.tex
 (./article.tex
 LaTeX2e <2015/01/01>
 Babel <3.9l> and hyphenation patterns for 7 languages loaded.
@@ -520,40 +520,55 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 103.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    Try loading font information for T1+aess on input line 103.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/ae/t1aess.fd
+File: t1aess.fd 1997/11/16 Font definitions for T1/aess.
 ) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./jsslogo.jpg>]
+LaTeX Font Info:    Try loading font information for T1+aett on input line 164.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/ae/t1aett.fd
+File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
+)
+Overfull \hbox (10.48692pt too wide) in paragraph at lines 163--171
+\T1/aer/m/n/10.95 known pack-ages like \T1/aer/b/n/10.95 kern-lab \T1/aer/m/n/1
+0.95 (via \T1/aett/m/n/10.95 ksvm()\T1/aer/m/n/10.95 ) ([][]Karat-zoglou \T1/ae
+r/m/it/10.95 et al.[][] [][]\T1/aer/m/n/10.95 2004[][]), and \T1/aer/b/n/10.95 
+e1071 \T1/aer/m/n/10.95 (via \T1/aett/m/n/10.95 svm()\T1/aer/m/n/10.95 ) ([][]D
+im-
+ []
+
 LaTeX Font Info:    Font shape `T1/aer/b/sl' in size <10.95> not available
-(Font)              Font shape `T1/aer/bx/sl' tried instead on input line 198.
+(Font)              Font shape `T1/aer/bx/sl' tried instead on input line 199.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 2 []
  []
 
 [2]
-LaTeX Font Info:    Try loading font information for T1+aett on input line 207.
-
- (/usr/share/texlive/texmf-dist/tex/latex/ae/t1aett.fd
-File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
-)
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 3
  []
 
 [3]
-LaTeX Font Info:    Try loading font information for TS1+aett on input line 298
+LaTeX Font Info:    Try loading font information for TS1+aett on input line 314
 .
  (/usr/share/texmf/tex/latex/R/tex/latex/ts1aett.fd
 File: ts1aett.fd 
 )
-LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 298
+LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 314
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmtt.fd
 File: ts1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `TS1/aett/m/sl' in size <10.95> not available
-(Font)              Font shape `TS1/cmtt/m/sl' tried instead on input line 298.
+(Font)              Font shape `TS1/cmtt/m/sl' tried instead on input line 314.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -561,15 +576,9 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [4]
-Overfull \hbox (16.5061pt too wide) in paragraph at lines 367--373
+Overfull \hbox (16.5061pt too wide) in paragraph at lines 383--389
 []\T1/aer/m/n/10.95 A sim-ple S3 method has to be cre-ated that needs to be cal
 led \T1/aett/m/n/10.95 createTrainingArguments.LIBSVM\T1/aer/m/n/10.95 .
- []
-
-
-Overfull \hbox (2.36946pt too wide) in paragraph at lines 401--403
-[]\T1/aer/m/n/10.95 Every wrap-per should also be able to find ti-self in a giv
-en di-rec-tory tree. For this \T1/aett/m/n/10.95 findSoftware
  []
 
 
@@ -577,85 +586,92 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 5
  []
 
-[5] (./article.bbl)
-Underfull \hbox (badness 10000) in paragraph at lines 426--426
-
+[5]
+Overfull \hbox (2.36946pt too wide) in paragraph at lines 417--419
+[]\T1/aer/m/n/10.95 Every wrap-per should also be able to find ti-self in a giv
+en di-rec-tory tree. For this \T1/aett/m/n/10.95 findSoftware
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 426--426
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 426--426
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 426--426
-
- []
-
-
-Underfull \vbox (badness 1009) has occurred while \output is active []
-
+(./article.bbl
+LaTeX Font Info:    Font shape `T1/aer/b/it' in size <10.95> not available
+(Font)              Font shape `T1/aer/bx/it' tried instead on input line 25.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 6 []
  []
 
-[6]
+[6])
+Underfull \hbox (badness 10000) in paragraph at lines 442--442
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 442--442
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 442--442
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 442--442
+
+ []
+
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 426.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 426.
+(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 442.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 442.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 7
  []
 
 [7]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 426.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 442.
  (./article.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 426.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 426.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 442.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 442.
 Package rerunfilecheck Info: File `article.out' has not changed.
 (rerunfilecheck)             Checksum: C6939D4D1391AD66B13C54E7E6F3ED5D;1945.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 426.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 442.
  ) 
 Here is how much of TeX's memory you used:
- 8263 strings out of 494948
- 120082 string characters out of 6178809
- 200096 words of memory out of 5000000
- 11288 multiletter control sequences out of 15000+600000
- 52206 words of font info for 95 fonts, out of 8000000 for 9000
+ 8313 strings out of 494948
+ 120930 string characters out of 6178809
+ 201325 words of memory out of 5000000
+ 11324 multiletter control sequences out of 15000+600000
+ 59341 words of font info for 103 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 36i,10n,34p,250b,473s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,10n,34p,248b,434s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/drunkeneye/.texmf-var/fonts/pk/ljfour/jknappen/ec/tcst1095.600pk>{/us
 r/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmb10.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 public/amsfonts/cm/cmbxsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi
-8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texli
-ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmsltt10.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/zapfchan/uzcm
-i8a.pfb>
-Output written on article.pdf (7 pages, 265822 bytes).
+ic/amsfonts/cm/cmbxti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmsltt10.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt1
+0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
+Output written on article.pdf (7 pages, 296556 bytes).
 PDF statistics:
- 263 PDF objects out of 1000 (max. 8388607)
- 229 compressed objects within 3 object streams
- 54 named destinations out of 1000 (max. 500000)
+ 294 PDF objects out of 1000 (max. 8388607)
+ 257 compressed objects within 3 object streams
+ 58 named destinations out of 1000 (max. 500000)
  166 words of extra memory for PDF output out of 10000 (max. 10000000)
 
