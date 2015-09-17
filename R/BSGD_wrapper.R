@@ -343,7 +343,37 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 	# close connection
 	close(modelFileHandle)
 }
- 
+
+
+
+#' Detect whether a file is a model for BSGD
+#'
+#' @param	x		Object
+#' @param	modelFile		File to check 
+#' @param	verbose		Verbose output?
+#'
+#' @return	TRUE if the given modelFile exists and fits the BSGD model, or FALSE if not.
+#'
+#' @note	This is a very basic check, enough to distinguish the wrappers provided within the SVMBridge
+
+detectModel.BSGD = function (x, modelFile = NULL, verbose = FALSE) {
+	checkmate::checkFlag (verbose)
+	if (is.null (modelFile) == TRUE) 
+		return (FALSE)
+	
+	# read first lines and detect magic marker
+	if (file.exists (modelFile) == FALSE) 
+		return (FALSE)
+		
+	line = readLines(modelFile, n = 12)
+	if (sum(grepl("KERNEL_GAMMA_PARAM", line)) > 0) {
+		return (TRUE)
+	}
+	
+	return (FALSE)
+}
+
+
 
 #
 # @param	predictionsFile		file to read predictions from

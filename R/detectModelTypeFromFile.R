@@ -32,26 +32,26 @@
 #'
 #' @export
 #'
-detectModelTypeFromFile <- function(
-	modelFile = NULL,
-	verbose = FALSE
-)
-{
+detectModelTypeFromFile = function (modelFile = NULL, defaultModel = "LIBSVM", verbose = FALSE) {
 	checkmate::checkFile (modelFile)
 	checkmate::checkFlag (verbose)
-	line = readLines(modelFile, n = 12)
-
-	# BSGD
-	method = NULL
-	if (sum(grepl("KERNEL_GAMMA_PARAM:", line)) > 0) {
-		method = "BSGD"
-	} else if (sum(grepl("SVM-light", line)) > 0) {
-		method = "SVMperf"
-	} else if (sum(grepl("total_sv", line)) > 0) {
-		method = "LIBSVM"
+	checkmate::checkString (defaultModel)
+	
+	# iterate over all known wrapper
+	detectedModels = c()
+	for (package in names(SVMBridgeEnv$packages)) {
+		if (detectModel (SVMBridgeEnv$packages[[package]], modelFile = modelFile, verbose = verbose) == TRUE) {
+			if (verbose == TRUE)
+				cat("Detected model ", package, ".\n")
+			detectedModels = c(detectedModels, package)
+		}
 	}
 
-	if (verbose == TRUE)
-		cat("Found model Type: ", method, "\n")
-	return (method)
+	if (length(detectedModels) == 0) 
+		return (NULL)
+	
+	if (defaultModel %in% detectedModels)
+		return (defaultModel)
+	
+	return (detectedModels[1])
 }

@@ -105,7 +105,11 @@
 	}
 
 
-	
+	detectModel = function (x, modelFile = "./model", verbose = FALSE) {
+		UseMethod("detectModel")
+	}
+
+
 	readPredictions = function (x, predictionsFile = "", verbose = FALSE) {
 		UseMethod ("readPredictions")
 	}

@@ -4,7 +4,7 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		LIBSVM_wrapper.R
+#		mySVM_wrapper.R
 # 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -21,32 +21,19 @@
 #
 
 
-#' Create training arguments for LIBSVM
-#'
+#' Create training arguments for mySVM
 #'
 #' @param	x			SVM object
 #' @param	trainDataFile		file to read training data from.
 #' @param	modelFile		path to model, defaults to a temporary file (given by R).
-#' @param	extraParameter		extra parameters for solver
 #' @param	kernelCacheSize		kernel cache parameter
 #' @param	svmType			type of svm
-#' @param	useBias			
-#' @param	epsilon
-#' @param	degree
-#' @param	coef0
-#' @param	nu
-#' @param	shrinking
-#' @param	probabilityEstimates
-#' @param	weight
-#' @param	n
-#' @param	kernelType
-#' @param	quietMode	
 #' @param	cost			cost parameter C.
 #' @param	gamma			gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...).
 #'
 #' @return	args			arguments for training
 #'
-createTrainingArguments.LIBSVM = function (
+createTrainingArguments.mySVM = function (
 	x,
 	...,
 	trainDataFile = "",
@@ -148,13 +135,17 @@ createTrainingArguments.LIBSVM = function (
 }
 
 	
-#' createTestArguments.LIBSVM
+
+#' Create test arguments for mySVM
 #'
 #' @param	x			SVM object
 #' @param	testDataFile		file to read training data from.
 #' @param	modelFile		path to model, defaults to a temporary file (given by R).
 #' @param	predictionsFile		
-createTestArguments.LIBSVM = function (x,
+#'
+#' @return	args			arguments for testing
+#'
+createTestArguments.mySVM = function (x,
 	testDataFile = "",
 	modelFile = "", 
 	predictionsFile = "",
@@ -169,40 +160,38 @@ createTestArguments.LIBSVM = function (x,
 }
 
 
-#' extractTrainingInfo.LIBSVM
+
+#' Extract all necessary information from the command line output of mySVM
 #' 
-#' @param	x		svm object
-#' @param	output
+#' @param	x		SVM S3 Object
+#' @param	output		The whole command line output of mySVM
 #'
-#' @return	error		error value
+#' @return	info 		List of extracted information, i.e. info$error for training accuracy
 #'
-extractTrainingInfo.LIBSVM = function (
-	x, 
-	output) {
-		pattern <- ".*Accuracy =\\s*(\\d+\\.?\\d*).*"
-		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-		return (error)
+extractTrainingInfo.mySVM = function (x, output) {
+	pattern <- ".*Accuracy =\\s*(\\d+\\.?\\d*).*"
+	error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+	return (error)
 }
+
 	
 	
-#' extractTestInfo.LIBSVM
+#' extractTestInfo.mySVM
 #' 
 #' @param	x		svm object
 #' @param	output
 #'
 #' @return	error		error value
 #'	
-extractTestInfo.LIBSVM = function (
-	x,
-	output) {
-		pattern <- ".*Accuracy =\\s*(\\d+\\.?\\d*).*"
-		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-		return (error)
+extractTestInfo.mySVM = function (x, output) {
+	pattern <- ".*Accuracy =\\s*(\\d+\\.?\\d*).*"
+	error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+	return (error)
 }
 	
 
 	
-#' Read LIBSVM model
+#' Read mySVM model
 #'
 #' As this is a basic for all other model readers, we export it.
 #' 
@@ -211,18 +200,20 @@ extractTestInfo.LIBSVM = function (
 #' @param	verbose		be verbose?
 #'
 #' @return			model object
-
-readModel.LIBSVM = function (x,
+#'
+#' @export
+#'
+readModel.mySVM = function (x,
 	modelFile = "./model",
 	verbose = FALSE) {
-		return (readLIBSVMModel (modelFile = modelFile, verbose = verbose) )
+		return (readmySVMModel (modelFile = modelFile, verbose = verbose) )
 }
 
 
 
 
 	
-#' Write LIBSVM model
+#' Write mySVM model
 #'
 #' As this is a basic for all other model readers, we export it.
 #' 
@@ -231,36 +222,28 @@ readModel.LIBSVM = function (x,
 #' @param	modelFile	path where to write the model
 #' @param	verbose		be verbose?
 #'
-writeModel.LIBSVM = function (x,
+#' @export
+writeModel.mySVM = function (x,
 	model = NA,
 	modelFile = "./model",
 	verbose = FALSE) {
-		return (writeLIBSVMModel (model = model, modelFile = modelFile, verbose = verbose) )
+	return (writemySVMModel (model = model, modelFile = modelFile, verbose = verbose) )
 }
 
 
-
-#' Detect whether a file is a model for LIBSVM.
-#'
-#' @param	x		Object
-#' @param	modelFile		File to check 
-#' @param	verbose		Verbose output?
-#'
-#' @return	TRUE if the given modelFile exists and fits the LIBSVM model, or FALSE if not.
-#'
-#' @note	This is a very basic check, enough to distinguish the wrappers provided within the SVMBridge
-
-detectModel.LIBSVM = function (x, modelFile = NULL, verbose = FALSE) {
+detectModel.mySVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
-	if (is.null (modelFile) == TRUE) 
+	if (is.null (modelFile) == TRUE) {
 		return (FALSE)
+	}
 	
 	# read first lines and detect magic marker
 	if (file.exists (modelFile) == FALSE) 
 		return (FALSE)
-		
-	line = readLines(modelFile, n = 12)
-	if (sum(grepl("total_sv", line)) > 0) {
+	
+	# read first lines and detect magic marker
+	line = readLines(modelFile, n = 1)
+	if (line == "mySVM") {
 		return (TRUE)
 	}
 	
@@ -269,14 +252,14 @@ detectModel.LIBSVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 
 
-#' readPredictions.LIBSVM
+#' readPredictions.mySVM
 #'
 #' @param	x			svm object
 #' @param	predictionsFile		file to read predictions from
 #' @param	verbose			be verbose?
 #' @return				array consisting of predictions
 #'
-readPredictions.LIBSVM = function (x, predictionsFile = "", verbose = FALSE) {
+readPredictions.mySVM = function (x, predictionsFile = "", verbose = FALSE) {
 	# open connection
 	con  <- file(predictionsFile, open = "r")
 
@@ -295,7 +278,7 @@ readPredictions.LIBSVM = function (x, predictionsFile = "", verbose = FALSE) {
 }
 
 	
-#' findSoftware.LIBSVM
+#' findSoftware.mySVM
 #'
 #' @param	x			svm object
 #' @param	searchPath		path to search for software
@@ -303,59 +286,67 @@ readPredictions.LIBSVM = function (x, predictionsFile = "", verbose = FALSE) {
 #'
 #' @return	x			svm object
 #'	
-findSoftware.LIBSVM = function (
-	x,
-	searchPath = "./",
-	verbose = FALSE)
-	{
-		if (verbose == TRUE) {
-			BBmisc::messagef("    LIBSVM Object: Executing search for software for %s", x$method)
-		}
+findSoftware.mySVM = function (x, searchPath = "./", verbose = FALSE) {
+	if (verbose == TRUE) {
+		cat("mySVM Object: Executing search for binaries.")
+	}
+	
+	if(.Platform$OS.type == "unix")
+		trainBinaryPattern = "^svm-train$"
+	else
+		trainBinaryPattern = "^svm-train.exe"
 		
-		if(.Platform$OS.type == "unix")
-			trainBinaryPattern = "^svm-train$"
-		else
-			trainBinaryPattern = "^svm-train.exe"
-			
-		trainBinaryOutputPattern = c('saveExponential : set exponential',
-			'.q : quiet mode .no outputs')
+	trainBinaryOutputPattern = c('saveExponential : set exponential', '.q : quiet mode .no outputs')
 
-		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
+	binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
+	
+	if (verbose == TRUE) {
+		cat("Executing search for binaries in:  %s", searchPath) 
+	}
+	
+	if (verbose == TRUE) {
+		cat("--> Found train binary at %s", binaryPath) 
+	}
+	x$trainBinaryPath = binaryPath
+
+
+	if(.Platform$OS.type == "unix")
+		testBinaryPattern = "^svm-predict$"
+	else
+		testBinaryPattern = "^svm-predict.exe$"
 		
-		if (verbose == TRUE) {
-			BBmisc::messagef("Executing search for binaries in:  %s", searchPath) 
-		}
-		
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found train binary at %s", binaryPath) 
-		}
-		x$trainBinaryPath = binaryPath
+	testBinaryOutputPattern = 'for one-class SVM only 0 is supported'
+	binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
 
-		if(.Platform$OS.type == "unix")
-			testBinaryPattern = "^svm-predict$"
-		else
-			testBinaryPattern = "^svm-predict.exe"
-			
-		testBinaryOutputPattern = 'for one-class SVM only 0 is supported'
+	if (is.null (binaryPath) == TRUE) {
+		warn ("No binary could be found!\n")
+	} else {
+		if (verbose == TRUE)
+			cat("--> Found test binary at %s", binaryPath) 
+	}
+	x$testBinaryPath = binaryPath
 
-		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
-		
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found test binary at %s", binaryPath) 
-		}
-		x$testBinaryPath = binaryPath
-
-		return(x)
+	return(x)
 }
 
 	
-#' print.LIBSVM
+	
+#' print.mySVM
 #'
 #' @param	x			svm object
 #'	
-print.LIBSVM = function(x) {
-	BBmisc::messagef("--- Object: %s", x$method)
-	BBmisc::messagef("       Training Binary at %s", x$trainBinaryPath)
-	BBmisc::messagef("       Test Binary at %s", x$testBinaryPath)
+print.mySVM = function(x) {
+	cat("--- Object: ", x$method)
+	cat("       Training Binary at %s", x$trainBinaryPath)
+	cat("       Test Binary at %s", x$testBinaryPath)
 }
 	
+
+	
+getCapabilities.mySVM = function (x) {
+	isKernelized = TRUE
+	isMulticlass = FALSE
+}
+
+
+# can we use paramhelpers to channel/narrow down the parameters mySVM can handle?
