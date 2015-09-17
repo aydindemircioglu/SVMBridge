@@ -43,6 +43,9 @@ readModelFromFile = function(
 	# file must be there.
 	checkmate::checkFile (modelFile)
 
+	if (file.exists(modelFile) == FALSE) 
+		stop ("Sorry, specified file ", modelFile, " does not exist!")
+
 	# automatic detection, if no method is given
 	if (is.null (modelType) == TRUE) {
 		if (verbose == TRUE) 
@@ -50,6 +53,8 @@ readModelFromFile = function(
 		modelType = detectModelTypeFromFile (modelFile = modelFile)
 		if (verbose == TRUE) 
 			cat ("Found model:", modelType, "\n")
+		if (is.null (modelType) == TRUE) 
+			stop ("Sorry, unable to detect model type. ")
 	}
 	
 	# check

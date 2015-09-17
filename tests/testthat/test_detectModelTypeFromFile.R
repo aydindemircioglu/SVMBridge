@@ -2,7 +2,7 @@ context("detectModelTypeFromFile")
 
 test_that(" model type autodetection is working.", {
 
-	solvers = c("BSGD", "SVMperf",  "LASVM", "BVM", "CVM", "LIBSVM")
+	solvers = c("LIBSVM", "BSGD", "SVMperf",  "LASVM", "BVM", "CVM", "LIBSVM", "LLSVM")
 	
 	for (solver in solvers) {
 		addSVMPackage (method = solver, verbose = FALSE)
@@ -10,13 +10,15 @@ test_that(" model type autodetection is working.", {
 		
 		# detect model type
 		modelFile = paste0 ("../data/", solver, ".australian.model")
-		modelName =  detectModelTypeFromFile (modelFile)
+		modelName =  detectModelTypeFromFile (modelFile, defaultModel = solver)
 		
 		# some models are the same
 		solverName = solver
-		if ((solver == "LASVM") || (solver== "BVM") || (solver == "CVM"))
-			solverName = "LIBSVM"
 		
+		# we do not need this as we told the detection that the default model is the solver's model. 
+		#if (solver == "LASVM")
+		#	solverName = "LIBSVM"
+
 		testthat::expect_equal (modelName, solverName)
 	}
 })

@@ -122,11 +122,11 @@ detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 	# read first lines and detect magic marker
 	if (file.exists (modelFile) == FALSE) 
 		return (FALSE)
-		
-	line = readLines(modelFile, n = 12)
-	if (sum(grepl("total_sv", line)) > 0) {
+
+	line = readLines(modelFile, n = 1)
+	if (line == "svm_type c_svc") {
 		return (TRUE)
-	}
+	} 
 	
 	return (FALSE)
 }

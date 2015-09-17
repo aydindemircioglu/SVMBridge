@@ -21,7 +21,7 @@ test_that("reading a model is working.", {
 		model = readModelFromFile (modelFile)
 
 		# check only information that is there in all models
-		if (solver == "BSGD")
+		if ((solver == "BSGD") || (solver == "LLSVM"))
 			model$gamma = model$gamma/2
 		testthat::expect_equal (model$gamma, 1.0)
 		
@@ -32,7 +32,9 @@ test_that("reading a model is working.", {
 		}
 		
 		# fake alpha value
-		if (solver == "BSGD") {
+		if (solver == "LLSVM") {
+			testthat::expect_equal (model$w[2], 0.018633)
+		} else if (solver == "BSGD") {
 			testthat::expect_equal (model$alpha[nrow(model$alpha),2], -1)
 		} else {
 			testthat::expect_equal (model$alpha[length(model$alpha)], -1)

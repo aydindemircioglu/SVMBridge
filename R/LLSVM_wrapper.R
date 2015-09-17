@@ -217,14 +217,9 @@ readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE)
 	model$gamma = gamma
 	model$bias = bias
 	model$modelType = "LLSVM"
-#	model$nSV	= c(sum(model$alpha[,1] > 0), sum(model$alpha[,1] < 0))
-#	model$label = as.numeric(labels)
-
-	print (model)
-	# sanity check
-	if (sum(model$nSV) != totalSV) {
-		stop ("Counted number of SV and info given in header do not fit.")
-	}
+	model$nSV	= c(sum(model$w > 0), sum(model$w < 0)) # dummy, with no reason at all
+	model$totalSV = nrow(supportvectors)
+	model$label = as.numeric(unlist(strsplit(order, " ")))
 	
 	# do we need to invert the labels? in this case we invert the coefficients
 	if (invertLabels == TRUE) {
@@ -270,12 +265,11 @@ detectModel.LLSVM = function (x, modelFile = NULL, verbose = FALSE) {
 	if (is.null (modelFile) == TRUE) 
 		return (FALSE)
 	
-	# read first lines and detect magic marker
 	if (file.exists (modelFile) == FALSE) 
 		return (FALSE)
-		
-	line = readLines(modelFile, n = 12)
-	if (sum(grepl("total_sv", line)) > 0) {
+
+	line = readLines(modelFile, n = 1)
+	if (line == "ALGORITHM: 3") {
 		return (TRUE)
 	}
 	

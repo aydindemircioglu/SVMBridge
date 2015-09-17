@@ -361,12 +361,11 @@ detectModel.BSGD = function (x, modelFile = NULL, verbose = FALSE) {
 	if (is.null (modelFile) == TRUE) 
 		return (FALSE)
 	
-	# read first lines and detect magic marker
 	if (file.exists (modelFile) == FALSE) 
 		return (FALSE)
 		
-	line = readLines(modelFile, n = 12)
-	if (sum(grepl("KERNEL_GAMMA_PARAM", line)) > 0) {
+	line = readLines(modelFile, n = 1)
+	if (line == "ALGORITHM: 4") {
 		return (TRUE)
 	}
 	
