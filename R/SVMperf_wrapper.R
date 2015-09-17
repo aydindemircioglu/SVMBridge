@@ -350,12 +350,17 @@ readModel.SVMperf <- function (x, modelFile = "./model", verbose = FALSE)
 	# close connection
 	close(con)
 
+	# this is only true for multiclass, but SVMperf does not support multiclass--
 	# we must sort the alphas, else computation of optimize values will not work
-	# as LIBSVMs alphas are sorted and prediction depend on this (because of multiclass)
-	s = sort (model$alpha, index.return = TRUE, decreasing = TRUE)
-	model$alpha[,1] = s$x
-	model$SV = model$SV[s$ix,]
-
+	# as LIBSVMs alphas are sorted and prediction depend on this (because of multiclass
+	# and the special format LIBSVM saves the alphas)
+	sortSVs = FALSE
+	if (sortSVs == TRUE) {
+		s = sort (model$alpha, index.return = TRUE, decreasing = TRUE)
+		model$alpha[,1] = s$x
+		model$SV = model$SV[s$ix,]
+	}
+	
 	# invert the alphas...
 	#model$alpha[1:model$nSV[1],] = - model$alpha[1:model$nSV[1],]
 
