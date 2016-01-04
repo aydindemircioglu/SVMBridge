@@ -1,10 +1,8 @@
-#!/usr/bin/Rscript  --vanilla 
-
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#	.LASVM_walltime_wrapper.R
+#		writeLIBSVMModel.R
 # 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -22,18 +20,27 @@
  
 
 	
-#' Write LIBSVM model
+#' Write LIBSVM model.
 #'
-#' As this is a basic for all other model readers, we export it.
+#' Given a model in memory, write it out in LIBSVM model format, so that e.g. LIBSVM can predict on it directly.
 #' 
 #' @param	model		model object to write
 #' @param	modelFile		path where to write the model
 #' @param	verbose		be verbose?
 #'
+#' @note 		As this is a basic for all other model readers, we export it.
+#'
 #' @export	writeLIBSVMModel
 writeLIBSVMModel = function (model = NA, modelFile = "./model", verbose = FALSE) {
+
+	checkmate::assertFlag (verbose)
+	checkmate::assertString (modelFile)
+
+	# check the model if everything is as we expect it
+	# here: alpha, label... gamma,..
+	
 	if (verbose == TRUE) {
-		BBmisc::messagef ("Writing SVM Model to %s", modelFile)
+		cat("Writing SVM Model to ", modelFile, "\n")
 	}
 	
 	# check of S3 object here.
@@ -44,9 +51,10 @@ writeLIBSVMModel = function (model = NA, modelFile = "./model", verbose = FALSE)
 
 	# open connection
 	if (verbose == TRUE)
-		cat ("  Writing Header\n")
-	modelFileHandle <- file(modelFile, open = "w+")
+		cat ("    Writing Header.\n")
+	modelFileHandle = file(modelFile, open = "w+")
 
+	# TODO: allow for other kernels probably?
 	writeLines(paste ("svm_type c_svc", sep = ""), modelFileHandle )
 	writeLines(paste ("kernel_type", "rbf", sep = " "), modelFileHandle )
 	
@@ -71,11 +79,13 @@ writeLIBSVMModel = function (model = NA, modelFile = "./model", verbose = FALSE)
 	#svmatrix = dumpSparseFormat(model$alpha, model$X)
 	#writeLines(svmatrix, modelFileHandle, sep = "" )
 	if (verbose == TRUE)
-		cat ("  Writing SV\n")
+		cat ("    Writing Support Vectors.\n")
 	writeSparseDataToConnection(modelFileHandle, model$SV, model$alpha)
+
+	if (verbose == TRUE)
+		cat ("    Done.\n")
 	
 	# close connection
 	close(modelFileHandle)
 }
  
-

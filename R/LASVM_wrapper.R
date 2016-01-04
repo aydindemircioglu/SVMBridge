@@ -146,40 +146,44 @@ detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 	
 
-	findSoftware.LASVM = function (x, searchPath = "./", verbose = FALSE) {
+	findSoftware.LASVM = function (x, searchPath = "./", execute = FALSE, verbose = FALSE) {
 
 		if (verbose == TRUE) {
-			BBmisc::messagef("    LASVM Object: Executing search for software for %s", x$method)
+			cat ("    LASVM Object: Executing search for software for ", x$method)
+		}
+
+		# we only test if the train binary exists or not. if it does, we add it to the object
+		trainBinaryPath = file.path (searchPath, "la_svm")
+		if (file.exists (trainBinaryPath) == TRUE) {
+			x$trainBinaryPath = trainBinaryPath 
+			if (verbose == TRUE) {
+				cat ("    Found train binary at ", trainBinaryPath) 
+			}
+			
+			# execute if necessary
+			if (execute == TRUE) {
+				checkExecutionStrings (trainBinaryPath, patterns = list ('la_svm .options. training_set_file .model_file.'))
+			}
 		}
 		
-		trainBinaryPattern = "^la_svm$"
-		trainBinaryOutputPattern = 'la_svm .options. training_set_file .model_file.'
-		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
-
-		# TODO: check for empty path+handling
-		
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found train binary at %s", binaryPath) 
+		# try predict binary now
+		testBinaryPath = file.path (searchPath, "la_test")
+		if (file.exists (trainBinaryPath) == TRUE) {
+			x$testBinaryPath = testBinaryPath
+			if (verbose == TRUE) {
+				cat ("    Found test binary at ", testBinaryPath) 
+			}
+			
+			# execute if necessary
+			if (execute == TRUE) {
+				checkExecutionStrings (trainBinaryPath, patterns = list ('la_test .options. test_set_file model_file output_file'))
+			}
 		}
-		x$trainBinaryPath = binaryPath
-
-
-		testBinaryPattern = "^la_test$"
-		testBinaryOutputPattern = 'la_test .options. test_set_file model_file output_file'
-
-		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
-		
-		# TODO: check for empty path+handling
-
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found test binary at %s", binaryPath) 
-		}
-		x$testBinaryPath = binaryPath
 
 		return(x)
 	}
-
- 
+	
+	
  
 	print.LASVM_walltime = function(x) {
 		BBmisc::messagef("--- Object: %s", x$method)

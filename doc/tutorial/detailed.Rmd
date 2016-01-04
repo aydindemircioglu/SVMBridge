@@ -124,6 +124,12 @@ LABELS..
 MULTICLASS..
 
 
+
+# Advanced
+
+In some cases you might to want to modify the internal object corresponding to a method. **SVMBridge** stores these in its own environment. You can access these Conveniently by using ```getSVMObject()```. After modifying them, you can store the object back by overwriting ```setSVMObject()``, so that the SVMBridge can work with it. Notice that broken objects might lead to unforseen behaviour and crashes.
+
+
 # Vocabulary
 
 The SVM software is the compiled object on the file system, e.g. when you download and compile LIBSVM you will end  up with two binaries, one for training, one for testing. These files is an SVM software for us.

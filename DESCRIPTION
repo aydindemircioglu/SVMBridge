@@ -16,7 +16,6 @@ BugReports: https://github.com/aydindemircioglu/svmBridge
 Depends:
     R (>= 3.0.0),
 Imports:
-    BBmisc (>= 1.7),
     stringr (>= 0.6.2),
     plyr (>= 1.8.1),
     Rcpp (>= 0.8.2.12),
@@ -27,7 +26,6 @@ Imports:
     kernlab
 LinkingTo: Rcpp
 Suggests:
-    devtools,
     testthat,
     knitr
 LazyData: true

@@ -20,172 +20,94 @@
 #
 
 
-#' add package to the bridge
+#' Make a new SVM package known to the bridge.
+#'
+#' This function will create an object corresponding to the SVM object.
+#' By using the findSVMSoftware/findSVMWrapper functions., one can add 
+#' search for the corresponding wrappe and the software.
+#' To avoid lengthy searches,  this function can be used to directly 'shortcut'
+#' the search, by specifiying the directories where the wrapper/software lies.
+#' If this is successful, later findSVM.. calls are unneccessary.
 #'
 #' @param 	method		name of solver
-#' @param	filePath		path to wrapper
-#' @param	softwarePath		path where to find the solver.
-#' @param 	trainBinaryPath		if not NULL this will override any search option
-#' @param 	testBinaryPath		if not NULL this will override any search option
-#' @param	wrapperPath		if not NULL this will override any search option
+#' @param	wrapperName		name of the wrapper (as filename). if none given, method_wrapper.R will be used.
+#' @param	wrapperPath		file path to the wrapper. if none is given, findSVMWrapper needs to be called
+#' @param	softwarePath		path where to find the solver (software), if none is given, findSVMSoftware has to be called
 #' @param	verbose		be verbose?
 #'
 #' @note	 	first the given train and testBinaryPaths will be directly checked.
 #' if the binary does not exist there, the softwarePath will be added and rechecked
 #' and only if this does not work, the software will be searched via softwarePath.
 #' so one can override the search by specifiying train-/testBinaryPath.
-#'
+#' @note		If the wrapper searches for software, it will NOT execute it, existance is enough at this point.
+#' 
 #' @export	addSVMPackage
-addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA, 
-	trainBinaryPath = NA, testBinaryPath = NA, wrapperPath = NA, verbose = FALSE)
+addSVMPackage = function (method = NA, 
+	wrapperName = NA,
+	wrapperPath = NA,
+	softwarePath = NA, 
+	verbose = FALSE)
 {
-	# we always need a method
-	if (is.na(method) == TRUE) {
-		BBmisc::stopf("Please provide the name of the SVM package to create")
-	}
+	checkmate::assertString (method)
 
-	# load definition of SVM object
-	if (is.na(filePath) == FALSE) {
-		source (filePath, local = FALSE)
-	}
-
-	
-	# TODO: test if the object specified by the name exists
-	
-	
-	# create an object now
+	# remove any old object and create a new one by overwriting
 	if (verbose == TRUE) {
-		BBmisc::messagef ("Creating SVM Wrapper for method %s: ", method)
-	}
-	SVMObject = createSVMWrapper( method = method)
-	SVMBridgeEnv$packages[[method]] = SVMObject
-	if (verbose == TRUE) {
-		BBmisc::messagef ("Registered Objects")
-		for (i in seq(1, length(SVMBridgeEnv$packages))) {
-			s = SVMBridgeEnv$packages[i]
-			print (s)
-		}
+		cat ("Creating new SVM object for method ", method, "\n")
 	}
 
-	# check for test and train binaries
-	if ( (is.null (trainBinaryPath) == FALSE) && (is.na(trainBinaryPath) == FALSE)) {
-		if (file.exists (trainBinaryPath) == FALSE) {
-			# append software path to it
-			if (is.na(softwarePath) == FALSE) {
-				if (verbose == TRUE)
-					cat ("Appending softwarePath to train binary")
-					
-				trainBinaryPath = file.path (softwarePath, trainBinaryPath)
-				if (file.exists (trainBinaryPath) == FALSE) {
-					# ok nothing helped. do a search
-					if (verbose == TRUE) {
-						cat ("  Specified software path, so searching for software package: ")
-					}
-					findSVMSoftware (method = method, searchPath = softwarePath, verbose = verbose) 
-				}
-			} else {
-				if (verbose == TRUE)
-					cat ("Did not find training binary: ", trainBinaryPath, "\n")
-			}
-		} else {
-			if (verbose == TRUE)
-				cat ("Found train binary", trainBinaryPath, "\n")
-		}
+	SVMObject = createSVMWrapper (method = method)
+	
+	# add wrapper name, if not provided.
+	if (checkmate::testString (wrapperName) == FALSE) {
+		SVMObject$wrapperName = paste0 (method, "_wrapper.R")
 	}
 
+	setSVMObject (method, SVMObject)
+
 	
-	# check for test and test binaries
-	if ( (is.null (testBinaryPath) == FALSE) && (is.na(testBinaryPath) == FALSE)) {
-		if (file.exists (testBinaryPath) == FALSE) {
-			# append software path to it
-			if (is.na(softwarePath) == FALSE) {
-				if (verbose == TRUE)
-					cat ("Appending softwarePath to test binary")
-					
-				testBinaryPath = file.path (softwarePath, testBinaryPath)
-				if (file.exists (testBinaryPath) == FALSE) {
-					# ok nothing helped. do a search
-					if (verbose == TRUE) {
-						cat ("  Specified software path, so searching for software package: ")
-					}
-					findSVMSoftware (method = method, searchPath = softwarePath, verbose = verbose) 
-				}
-			} else {
-				if (verbose == TRUE)
-					cat ("Did not find testing binary: ", testBinaryPath, "\n")
-			}
-		} else {
-			if (verbose == TRUE)
-				cat ("Found test binary", testBinaryPath, "\n")
-		}
-	}
-	
-	
-	# check for wrapper
-	if ((is.null(wrapperPath) == FALSE) && (is.na(wrapperPath) == FALSE) ) {
-		if (file.exists(wrapperPath) == FALSE) {
-			if (verbose == TRUE)
-				cat ("Did not find wrapper, appending softwarePath.\n")
-					
-			wrapperPath = file.path (softwarePath, wrapperPath)
-			if (file.exists (wrapperPath) == FALSE) {
-				# ok nothing helped. do a search
-				if (verbose == TRUE) 
-					cat ("Specified software path, so searching for wrapper: ")
-				findSVMWrapper (method = method, searchPath = softwarePath, verbose = verbose) 
-			} else {
+	# 1. check if we are given a wrapper path directly.
+	#		if so, we load it. 
+	#		it not, we need to check if we are given a softwarePath.
+	#			if so, we search the softwarePath for the wrapper
+	#			if not, we cannot load any wrapper, thats ok too.
+	if (checkmate::testString (wrapperPath) == TRUE) {
+		checkmate::assertFile (wrapperPath)
+		if (verbose == TRUE)
+			cat ("Found wrapper at", wrapperPath, "\n")
+		source (wrapperPath, local = FALSE)
+		SVMObject$wrapperPath = wrapperPath
+	} else {
+		# test if we can detect it easily
+		if (testString (softwarePath) == TRUE) {
+			wrapperPath = file.path (softwarePath, SVMObject$wrapperName)
+			if (file.exists (wrapperPath) == TRUE) {
 				if (verbose == TRUE)
 					cat ("Found wrapper at", wrapperPath, "\n")
+				source (wrapperPath, local = FALSE)
+				SVMObject$wrapperPath = wrapperPath
+			} else {
+				# finally, we have no clue.
+				if (verbose == TRUE) {
+					cat ("Not able to find the wrapper. Sorry. \n")
+				}
 			}
 		} else {
-			if (verbose == TRUE)
-				cat ("Found wrapper at", wrapperPath, "\n")
+			# we are not given any softwarePath. 
+			# so, what should we do anyway?
+			if (verbose == TRUE) {
+				cat ("Not able to find the wrapper. Sorry.\n")
+			}
 		}
 	}
+
+
+	# now, if a software path is given, then we should check it and try to find
+	# the binaries. if that doesnt work, its not our problem.
 	
+	if (testString (softwarePath) == TRUE) {
+		# ask the wrapper if it can load the binaries from the given path
+		SVMObject = findSoftware (SVMObject, searchPath = softwarePath, verbose = verbose)	
+	} 
 
-	if ( (is.null(wrapperPath) == FALSE) & (is.na(wrapperPath) == FALSE)) {
-		if (verbose == TRUE)
-			cat ("Sourcing wrapper..\n")
-		source (wrapperPath, local = FALSE)
-	}
-	
-	# TODO: correct?
-	# what ever the outcome, we put the binary into our structure
-	SVMBridgeEnv$packages[[method]]$trainBinaryPath = trainBinaryPath
-	SVMBridgeEnv$packages[[method]]$testBinaryPath = testBinaryPath
-}
-
-
-
-#' Dump all known package infos
-#'
-#' @param	verbose		be verbose in output?
-#' @return	A vector of all known SVM solvers as string.
-#'
-#' @export	outputAllSVMSoftwarePackages
-
-outputAllSVMSoftwarePackages <- function (verbose = TRUE) {
-	knownPackages = c()
-	if (verbose == TRUE)
-		cat("Currently known solver:\n")
-	for (package in SVMBridgeEnv$packages) {
-		if (verbose == TRUE)
-			print (package)
-		knownPackages = c(knownPackages, package)
-	}
-	
-	return (knownPackages)
-}
-
-
-
-#' dump specific package info
-#'
-#' @param	method		name of package/method
-#' @return	SVM object for the given method
-#'
-#' @export	getSVMInstance
-getSVMInstance <- function ( method = method) {
-	return (SVMBridgeEnv$packages[[method]])
+	SVMBridgeEnv$packages[[method]] = SVMObject
 }

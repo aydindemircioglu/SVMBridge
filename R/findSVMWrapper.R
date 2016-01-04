@@ -1,4 +1,3 @@
-#!/usr/bin/Rscript  --vanilla 
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
@@ -21,64 +20,69 @@
 
 
 #' findSVMWrapper
-#'		given a search path, it will try to find the corresponding wrapper for the given method.
+#'	
+#' Given a search path, it will try to find the corresponding wrapper for the given method.
+#' This routine will also source the file, if specified.
 #'
 #' @param	method		name of the SVM method
-#' @param	name		if name is given, the search pattern will not have _wrapper.R postfix 
+#' @param	recursive		recursive search?
+#' @param	source		source the found wrapper?
 #' @param 	searchPath	 	search the given path for the SVM binaries of all known SVM packages.
 #' @param	verbose			print messages while searching?
 #'
 #' @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
 #' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
-#'
+#' @note		This routine expects that a SVM object already exists, and will only modify it.
+#' 
 #' @export
-findSVMWrapper <- function (method = NA, name = NA, searchPath = NA, verbose = FALSE) {
-    if (verbose == TRUE) {
-        cat("-Finding wrapper for %s", method)
-    }
-    
-    if (is.na(searchPath)) {
-        stop("No search path is given!")
-    }
-    
-    #look for tilde characters and expand them
-    if(grepl("~", searchPath) == TRUE){
-        searchPath = expandTilde(path = searchPath, verbose = verbose)
-    }
-    
-    if (is.na(method)) {
-        BBmisc::stopf ("No method name is given")
-    }
-    
-    if (verbose == TRUE) {
-        BBmisc::messagef("  Trying to find wrapper for %s", method) 
-    }
+findSVMWrapper <- function (method = NA, searchPath = NA, recursive = TRUE, source = TRUE, verbose = FALSE) {
 
-    if (is.na (name) == TRUE) {
-        pattern = paste( "^", method, "_wrapper.R$", sep = "")
-    } else {
-        pattern = paste( "^", name, "$", sep = "")
-    }
+	checkmate::assertFlag (verbose)
+	checkmate::assertString (method)
+	checkmate::assertString (searchPath)
+	
+	if (verbose == TRUE) {
+		cat("    -Finding wrapper for ", method, "\n")
+	}
+	
+	# look for tilde characters and expand them
+	searchPath = expandTilde(path = searchPath, verbose = verbose)
 
-    if (verbose == TRUE) {
-        BBmisc::messagef("  Looking for a wrapper with regex %s.", pattern)
-    }
-    
-    files <- listFiles (searchPath, pattern = pattern, recursive = TRUE)
-    foundWrapper = ''
-    for (file in files) {
-        wrapperPath = file.path(searchPath, file)
-        if (verbose == TRUE) { 
-            BBmisc::messagef("    -Found wrapper at %s", wrapperPath) 
-        }
-        source (wrapperPath, local = FALSE)
-        break;
-    } 
+	# get the SVM object
+	SVMObject = getSVMObject (method)
+	if (checkmate::testNull (SVMObject) == TRUE) {
+		stop ("Cannot find SVM Obejct for method ", method, ". Please create it first.")
+	}
+	checkmate::assertString (SVMObject$wrapperName)
 
-    # WHAT should happen if we do not find one.
+	# create pattern to look for
+	pattern = paste( "^", SVMObject$wrapperName, "$", sep = "")
 
-    # TODO: to get better tests, maybe we need an option like "TEST = true", which will
-    # take a demo-data-file and compute the model. so actuallly its like a unittest, but
-    # it is executed during use, to make sure everything is as it should be.
+	if (verbose == TRUE) {
+		cat("    Looking for a wrapper with regex ", pattern, "\n")
+	}
+	
+	files <- listFiles (searchPath, pattern = pattern, recursive = recursive)
+	if (len(files) > 1) {
+		warning ("Found multiple wrappers. Taking the first one: ", files[1])
+	}
+	
+	if (len(files) == 0) {
+		warning ("No wrapper found. Please specify correct path.")
+		return (NULL)
+	}
+	
+	wrapperPath = file.path (searchPath, files[1])
+	if (verbose == TRUE) { 
+		cat ("    -Found wrapper at ", wrapperPath, "\n") 
+	}
+
+	if (source == TRUE) {
+		source (wrapperPath, local = FALSE)
+	}
+	
+	# modify object and store back
+	SVMObject$wrapperPath = wrapperPath
+	setSVMObject (method, SVMObject)
 }
 
