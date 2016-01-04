@@ -35,6 +35,7 @@
 #					but it might be hopeless. With luck, the found binary will be left untouched,
 #					and thus work, if not, you must set the path by hand.
 #' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
+#' @export
 
 findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
 	if (verbose == TRUE) { BBmisc::messagef("  Checking for pattern %s", pattern) }

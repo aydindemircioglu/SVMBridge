@@ -294,68 +294,71 @@ readPredictions.LIBSVM = function (x, predictionsFile = "", verbose = FALSE) {
 	return (predictions)
 }
 
-	
+
+
 #' findSoftware.LIBSVM
+#' Will find the LIBSVM binaries.
 #'
-#' @param	x			svm object
-#' @param	searchPath		path to search for software
-#' @param	verbose			be verbose?
+#' @param	x	svm object
+#' @param	searchPath	path to search for software
+#' @param	execute		shall the binaries  be executed to make sure they are the right one?
+#' @param	verbose		be verbose?
 #'
-#' @return	x			svm object
+#' @return	x	svm object with  x$testBinaryPath and x$trainBinaryPath set.
+#' 
+#' @note 		will produce an error if the executable could not be found.
 #'	
-findSoftware.LIBSVM = function (
-	x,
-	searchPath = "./",
-	verbose = FALSE)
-	{
-		if (verbose == TRUE) {
-			BBmisc::messagef("    LIBSVM Object: Executing search for software for %s", x$method)
-		}
-		
-		if(.Platform$OS.type == "unix")
-			trainBinaryPattern = "^svm-train$"
-		else
-			trainBinaryPattern = "^svm-train.exe"
-			
-		trainBinaryOutputPattern = c('saveExponential : set exponential',
-			'.q : quiet mode .no outputs')
+findSoftware.LIBSVM = function (x, searchPath = "./", execute = TRUE, verbose = FALSE) {
 
-		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
+	if (verbose == TRUE) {
+		cat("    LIBSVM Object: Executing search for software for %s", x$method)
+	}
 		
-		if (verbose == TRUE) {
-			BBmisc::messagef("Executing search for binaries in:  %s", searchPath) 
-		}
-		
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found train binary at %s", binaryPath) 
-		}
-		x$trainBinaryPath = binaryPath
+	if(.Platform$OS.type == "unix") {
+		trainBinaryPattern = "^svm-train$"
+		testBinaryPattern = "^svm-predict$"
+	} else {
+		trainBinaryPattern = "^svm-train.exe"
+		testBinaryPattern = "^svm-predict.exe"
+	}
 
-		if(.Platform$OS.type == "unix")
-			testBinaryPattern = "^svm-predict$"
-		else
-			testBinaryPattern = "^svm-predict.exe"
-			
-		testBinaryOutputPattern = 'for one-class SVM only 0 is supported'
+	# search the train binary
+	trainBinaryOutputPattern = c('saveExponential : set exponential', '.q : quiet mode .no outputs')
+	binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, execute = execute, verbose = verbose)
+	
+	# check if we really found something, if not, we stop here.
+	assertFile (binaryPath)
+	
+	if (verbose == TRUE) {
+		cat("    -Found train binary at %s", binaryPath) 
+	}
+	x$trainBinaryPath = binaryPath
 
-		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
-		
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found test binary at %s", binaryPath) 
-		}
-		x$testBinaryPath = binaryPath
-
-		return(x)
+	
+	# search the test binary
+	testBinaryOutputPattern = 'for one-class SVM only 0 is supported'
+	binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, execute = execute, verbose = verbose)
+	assertFile (binaryPath)
+	
+	if (verbose == TRUE) {
+		cat("    -Found test binary at %s", binaryPath) 
+	}
+	x$testBinaryPath = binaryPath
+	
+	return(x)
 }
+
 
 	
 #' print.LIBSVM
+#' 
+#	display some information about the object.
 #'
 #' @param	x			svm object
 #'	
 print.LIBSVM = function(x) {
-	BBmisc::messagef("--- Object: %s", x$method)
-	BBmisc::messagef("       Training Binary at %s", x$trainBinaryPath)
-	BBmisc::messagef("       Test Binary at %s", x$testBinaryPath)
+	cat("--- Object: %s", x$method, "\n")
+	cat("       Training Binary at %s", x$trainBinaryPath, "\n")
+	cat("       Test Binary at %s", x$testBinaryPath, "\n")
 }
 	

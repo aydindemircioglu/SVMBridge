@@ -1,4 +1,9 @@
-**SVMBridge** comes with a couple of wrappers for different SVM packages. Here we list these and provide  details on how to use them.
+**SVMBridge** has some helper functions that might be of use outside the SVM context. We give a short list here, for more, please refer to the corresponding documentation.
+
+- **expandTilde**: This will expand a path containing a tilde (=home directory on Unix-like OSs) into a full path, e.g. '~/R' might expand to '/home/user/R' on Unix or '/Users/user/R' on Windows.
+
+- **..**
+
 
 Notice that the LIBSVM wrapper is the only one that is directly available when loading the **SVMBridge**. The reason for not including other wrappers directly is to reduce dependencies. But as on the other hand other wrappers depend on the functionality of the LIBSVM wrapper to avoid code duplication, LIBSVM is included into the package.
 

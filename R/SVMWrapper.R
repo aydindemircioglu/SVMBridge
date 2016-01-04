@@ -32,92 +32,90 @@
 #' @param b Description
 #' ...
 
-	createSVMWrapper = function(method, ...) {
-		
-		# check that trainingBinary exists, if given
-		# ...    
-		
-		# register the newly created object in our environment
-		
-		# create S3 Object
-		svmPackage = BBmisc::makeS3Obj(c(method, "SVMWrapper"),
-			method = method
-		)
-
-		# TODO: replace existing object in package list
-		
-		# add object to our internal list of created wrappers
-	#	SVMBridgeEnv$packages = c(SVMBridgeEnv$packages, svmPackage)
-		
-		return (svmPackage)
-	}
+createSVMWrapper = function(method, ...) {
+	# check that trainingBinary exists, if given
+	# ...    
 	
+	# register the newly created object in our environment
+	
+	# create S3 Object
+	svmPackage = BBmisc::makeS3Obj(c(method, "SVMWrapper"),
+		method = method
+	)
+
+	# TODO: replace existing object in package list
+	
+	# add object to our internal list of created wrappers
+#	SVMBridgeEnv$packages = c(SVMBridgeEnv$packages, svmPackage)
+	
+	return (svmPackage)
+}
+
+
+
+
+createTrainingArguments = function (x,
+	trainDataFile = "",
+	modelFile = "",
+	extraParameter = "",
+	kernelCacheSize = 1024,
+	cost = 1, 
+	useBias = FALSE,
+	gamma = 1,
+	epsilon = 0.001, 
+	...) 
+{
+	UseMethod("createTrainingArguments")
+}
+
+
+
+createTestArguments = function (x,
+	testDataFile = "",
+	modelFile = "", 
+	predictionsFile = "",
+	...) 
+{
+	UseMethod("createTestArguments")
+}
+
+
+
+extractTrainInfo = function (x, output) {
+	UseMethod ("extractTrainInfo")
+}
+
+
+
+extractTestInfo = function (x, output) {
+	UseMethod ("extractTestInfo")
+}
+
+
+
+readModel = function (x, modelFile = './model', verbose = FALSE) {
+	UseMethod("readModel")
+}
+
+
+
+writeModel = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
+	UseMethod("writeModel")
+}
+
+
+detectModel = function (x, modelFile = "./model", verbose = FALSE) {
+	UseMethod("detectModel")
+}
+
+
+readPredictions = function (x, predictionsFile = "", verbose = FALSE) {
+	UseMethod ("readPredictions")
+}
 
 	
-
-	createTrainingArguments = function (x,
-		trainDataFile = "",
-		modelFile = "",
-		extraParameter = "",
-		kernelCacheSize = 1024,
-		cost = 1, 
-		useBias = FALSE,
-		gamma = 1,
-		epsilon = 0.001, 
-		...) 
-	{
-		UseMethod("createTrainingArguments")
-	}
-
-	
-	
-	createTestArguments = function (x,
-		testDataFile = "",
-		modelFile = "", 
-		predictionsFile = "",
-		...) 
-	{
-		UseMethod("createTestArguments")
-	}
+findSoftware = function (x, searchPath = "./", verbose = FALSE) {
+	UseMethod ("findSoftware")
+}
 
 
-	
-	extractTrainInfo = function (x, output) {
-		UseMethod ("extractTrainInfo")
-	}
-	
-	
-	
-	extractTestInfo = function (x, output) {
-		UseMethod ("extractTestInfo")
-	}
-	
-
-	
-	readModel = function (x, modelFile = './model', verbose = FALSE) {
-		UseMethod("readModel")
-	}
-
-
-
-	writeModel = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
-		UseMethod("writeModel")
-	}
-
-
-	detectModel = function (x, modelFile = "./model", verbose = FALSE) {
-		UseMethod("detectModel")
-	}
-
-
-	readPredictions = function (x, predictionsFile = "", verbose = FALSE) {
-		UseMethod ("readPredictions")
-	}
-
-	
-	
-	findSoftware = function (x, searchPath = "./", verbose = FALSE) {
-		UseMethod ("findSoftware")
-	}
-	
-	

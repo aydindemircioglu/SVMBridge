@@ -85,7 +85,7 @@ addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA,
 				}
 			} else {
 				if (verbose == TRUE)
-					cat ("Did not find training binary.\n")
+					cat ("Did not find training binary: ", trainBinaryPath, "\n")
 			}
 		} else {
 			if (verbose == TRUE)
@@ -112,7 +112,7 @@ addSVMPackage <- function (method = NA, filePath = NA, softwarePath = NA,
 				}
 			} else {
 				if (verbose == TRUE)
-					cat ("Did not find testing binary.\n")
+					cat ("Did not find testing binary: ", testBinaryPath, "\n")
 			}
 		} else {
 			if (verbose == TRUE)

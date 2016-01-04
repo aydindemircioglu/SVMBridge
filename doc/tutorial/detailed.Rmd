@@ -1,0 +1,155 @@
+Writing your own wrapper is also possible, and not too complicated. You must provide several callback functions. The most complex part will be provide functions to read and write the model. As a starter, you might want to look into the wrappers, **SVMBridge** provides.
+
+# SVM Parameter
+
+
+Every SVM has some parameter, tha usually must be tuned. While LIBSVM has (for RBF kernel) two prominent parameter, the regularization term $C$ and the kernel bandwidth $\gamma$, this might not be true for other methods. For example, Budgeted SVM operates with $\lambda$ instead of $C$, with $\lambda = \frac{1}{2 C}$, and the $\gamma$ is twice the gamma of LIBSVM. Because of this, **SVMBridge** does not have a prebuild set of parameters. Every wrapper is free to use the parameter it needs. This entails that to use a wrapper, you must first know which parameter it uses. You can use the help function to get a description of a wrapper.
+
+
+LIBSVMHelp() { }
+
+
+# Training
+
+
+Training can be either performed from data in memory (probably the most useful case), from the file system by using the ```trainSVM``` function.
+Note: In case you specify data from memory and from disc, **SVMBridge** will throw an error, as it will be confused about which source to use.
+
+
+# Testing
+
+Testing is done very similar to training by calling the ```testSVM``` function You have the option to use data from memory, from file system. Furthermore, predictions can be provided. By default, the predictions are written into a temporary file and are discarded after testing.
+Note: In case you specify data from memory and from disc, **SVMBridge** will throw an error, as it will be confused about which source to use.
+
+
+# Models
+
+Usually the underlying SVM solvers will create a model on disk after training. You have two options in ```trainSVM``` to work with these models: modelFile and readModel.
+
+First assume that you provide ```trainSVM``` with a path in the modelFile argument. In that case this path will be passed to the corresponding SVM solver, which (if everything runs without an error) will create a model file at the specified path. The second option for ```trainSVM``` is readModel. If this is set to TRUE, the ```trainSVM``` routine will reread the model back into memory and put it into the resulting trainObject. This will allow you work with the model directly in R, e.g. by reading out the alpha vector of suppor vector coefficients (if the model provides these information). Contrary, if you do not want to work with the model, e.g. as you are only interested in the test results of a subsequent ```testSVM``` call, there is no need to parse the model file, and you might want to set readModel to FALSE. Note that reading a model back into memory is currently very slow and a resource-hog, so only read back the model if this is really necessary.
+
+In the second case, you do not provide a path to ```trainSVM```. In that case ```trainSVM``` has to create a temporary path, as the SVM solver necessarily will need a place to write its model. In this case, the readModel flag work exactly as before. Note that if you set readModel to FALSE, the model will be lost, as it was only written temporarily, but not read back. This might only make sense in very rare, special applications.
+
+Note that in very rare cases you might want to train a SVM, but you are not interested in the model, e.g. you only need the time to train or want to check if the SVM will run without an error. In that case it is a good idea to pass "/dev/null" as modelFile and set readModel to FALSE. This will make the SVM solver to write its model into "/dev/null", effectively discarding it. Similarly, ```trainSVM``` will subsequently ignore the not existing model file.
+
+At testing time, you must provide the trained model. If you pass this as an in-memory model, ```testSVM``` will call the ```readModel``` routine of the SVM package first to dump the model to a temporary file on the filesystem.
+
+skipModel == TRUE
+
+```splus
+library(SVMBridge)
+```
+
+# Predictions
+
+After testing, the predictions will again be stored in the SVM Object and can be accessed by e.g. ```SVMObj$predictions```. Depending on the purpose, the predictions are not always needed, for example when tuning the SVM parameters. To avoid extra I/O and memory consumption, reading back the predictions can be turned of by using the ```skipPredictions``` options. By default, ```skipPredictions``` is false, so ```callSVM``` will return the predictions in the SVM Object.
+
+skipPredictions == TRUE
+
+
+
+# Finding a software package
+
+There are actually two ways to search for wrappers and software..
+
+
+
+
+# Writing your own wrapper
+
+The method name will define all function names! This is very important, if you do not abide to this rule, callSVM will not find the corresponding callbacks! Suppose you want to write a wrapper for mySVM. In this case, you will need to create a file exactly called 'mySVM_wrapper.R'. Please note that the filename is case-sensitive. This is also true for all the callback functions.
+
+Your mySVM software must be split into two parts: Training and Testing. This might be the same executable, but be aware, that testing must work without training data. In case your package needs testing data at training time (e.g. if the model only specifies the index of the support vector in the training file instead of copying them into the model), you need to perform quite heavy tricks to get this going. In general, using other packages and skip **SVMBridge** might be a good idea, as **SVMBridge** strictly follows the LIBSVM way of training and testing.
+
+
+## Adding the wrapper
+
+After you have written a wrapper, say 'mySVM_wrapper.R', you must add your wrapper to the **SVMBridge**. This you can either manually or automatically (see the next section for information about this). There are two parts of this procedure: First you must tell **SVMBridge** where to find your wrapper 'mySVM_wrapper.R'. After this you must specify where the corresponding binaries for mySVM are to be found. Remember that the **SVMBridge** acts mainly as a convenient tool to call a SVM solver via command line.
+
+To add your wrapper to the **SVMBridge** simply call ```addSVMPackage```, e.g. if mySVM resides in the mySVM subdirectory, you can call ```addSVMPackage (method = "mySVM", filePath = "./mySVM/mySVM_wrapper.R", softwarePath = "./mySVM/bin")```. Notice that filePath is mandatory, and the **SVMBridge** will source the specified wrapper. Though you are free to name your wrapper as you wish, it is a good idea to stick to the convention chosen and name the wrapper for your SVM package by adding '_wrapper.R', e.g. the wrapper for LASVM is called 'LASVM_wrapper.R' inside **SVMBridge**. The path for the binaries of mySVM is not mandotory. Instead of specifiying it, **SVMBridge** can automatically find it (based on the code in the mySVM_wrapper.R file).
+
+
+## Automatically finding the software
+
+After you added your wrapper, if you did not specified a softwarePath, **SVMBridge** can find the corresponding binary files for you. Remember that if you forget to specifiy the softwarePath,  **SVMBridge** will not understand where to find the binaries.
+
+v
+The corresponding function is ```findSVMSoftware```. To tell the **SVMBridge** where to find the mySVM software, call it like this: ```findSVMSoftware ("mySVM", searchPath = "./mySVM", verbose = FALSE). It will then look into
+
+For convience, there is also a findAllSVMSoftware function that will try to find the software of all registered SVM packages based on the given search path, e.g., if all your SVM software can be found inside the ./software directory, you can call ```findAllSVMSoftware(searchPath = "./software")```.
+
+Notice that if you write your own findSoftware routine for your wrapper, you might need some platform dependent checks, e.g. the LIBSVM binray is simply called "svm-train" on Linux and Mac OSX, but "svm-train.exe" on Windows. You can use the functionality provided by R to check for the platform. An example can be seen in the LIBSVM wrapper code.
+
+## Automatically finding the wrapper
+
+Sometimes it is convenient to allow the user to specify the SVM software he needs. In this case it is no good to specify neither the wrapper nor the software by hand. Therefore **SVMBridge** allows you not only to automatically find the software, but also the wrapper. This only works, if the wrapper follows the naming convention, i.e. the wrapper for mySVM needs to be called mySVM_wrapper.R.  To initiate the search, just call ```findSVMWrapper (method = "mySVM", searchPath = "./mySVM")```. The specified searchPath will, just as ```findSVMSoftware```, be searched recursively. Notice also that if multiple such wrappers exist inside a directory (in subdirectories), **SVMBridge** will stop searching after the very first hit.
+
+
+## The training parameters
+
+You will get a bunch of parameters. You will need to decide which ones you want to handle. E.g. the LIBSVM wrapper handles $C$, $\gamma$ and $\epsilon$, but also uses $kernelCacheSize$. On the other hand, the LIBSVM wrapper currently has no option to control the shrinking, although LIBSVM has a parameter for this. Similarly you will need to decide, whether you want the user to have control over all parameters or only a relevant subset. The callback will then gather all the parameter and create a command-line string.
+
+
+# SVM Result Object
+
+Actually we do enforce that.
+We do not enforce a structure on the returned SVM Return Object. Nonetheless, we encourage you to use the same structure we have provided in our example wrapper, if that is applicable to your case. The SVM Return Object contains the following fields:
+ -execTime
+ -error
+Depending on training or testing, this is the training or testing time, measured in wall time by microbenchmark.
+
+
+## Test parameters
+
+Very similar to training parameters, the test parameter callback will assemble a given model file and test data and possibly other options.
+
+
+extraParameters for testing??
+
+
+# Data Formats
+
+As nearly all SVM Packages work with the LIBSVM/SVMlight Sparse Format, this is the basic file format in SVMBridge. Notice that SVMBridge actually does neither enforce nor check this explicitly. You can support your own data format for your own SVM wrapper. In this case, keep in mind that other SVM packages might not be able to work with your data.
+
+Conveniently, the **SVMBridge** contains fast routines to read and write Sparse Data Format. Contrary to the similar functionality in e1071, our routines work with dense matrices internally, i.e. reading a Sparse File will result in a dense matrix object, while writing works only with dense matrices and will produce a Sparse File again. In case you need to work with the data in R and it is too big to read it densely, please use e1071 functionality. If the sparsity is not too high, our routines will work much faster than e1071, as we adapted the LIBSVM reader to our needs, so we use Rcpp for this.
+
+
+## Implementing your own data format
+
+To implement your own data format, recall that you have two ways to provide data to your SVM software. The first is by specifiying a path to a data file on the filesystem. In this case, SVMBridge will not explicitly work with the data, so you are free to use any format, as long as your SVM software can handle this. The second way is to pass data as a matrix to the SVMBridge. Here, SVMBridge needs to dump the given data first. By default, the SVMBridge will write the data in the LIBSVM Sparse Format. You are free to overwrite this behaviour, by rewriting the convertData function of the SVM Wrapper Object.
+
+Let us give an easy example.
+
+LABELS..
+MULTICLASS..
+
+
+# Vocabulary
+
+The SVM software is the compiled object on the file system, e.g. when you download and compile LIBSVM you will end  up with two binaries, one for training, one for testing. These files is an SVM software for us.
+
+Glue code that handles controlling the SVM software is called an SVM wrapper. This contains e.g. routines for reading and writing an SVM model.
+
+Finally, an SVM package is for us the internal object in the SVMBridge, that has basically consists of the wrapper and the software (e.g. a path to the binary).
+
+
+
+
+
+# FAQ
+
+## Searching for an unknown solver
+
+If you try to find a wrapper that does not exist, FIXME: fix that.
+for now the error later on:
+Class 'try-error'  atomic [1:1] Error in UseMethod("findSoftware") :
+  no applicable method for 'findSoftware' applied to an object of class "c('CSVM_walltime', 'SVMWrapper')"
+
+## FindBinary stalls when called with parameter execute = TRUE
+
+If the binary expects any kind of input, executing the binary will stall. Please make sure that your binary does not expect input upon being called without parameters. If necessary, turn off automatic search and provide **SVMBridge** the direct path to the software. In some cases you might work around this behaviour by explicitly sending an input to the binary, e.g. the SVMperf wrapper will send a single key to the SVMperf binary, which will print out some information and waits for a key when called without any other argument. Every wrapper provided with the **SVMBridge** in the installation directory should not suffer from this.
+
+
+# Speed
+
+It is possible to bypass any extra-I/O and directly communicate with the SVM Package by specifying the training and test data as well as the model and prediction as a file. If SVMBridge gets file pathes, it will not try to reread the written model nor the predictions. Sometimes you do not need the predictions, neither on memory nor on disk. In this case you can pass "/dev/null" as prediction file. This will make the SVM Test write to null, so it will not take any I/O time,  and therefore the SVMBridge will not reread the predictions, as it was already written on disk.

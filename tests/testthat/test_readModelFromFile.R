@@ -19,6 +19,8 @@ test_that("reading a model is working.", {
 		# detect model type
 		modelFile = paste0 ("../data/", solver, ".australian.model")
 		model = readModelFromFile (modelFile)
+		if (solver == "BSGD") 
+			writeModelToFile (model, modelFile = "./TMPBSGD.bsgd", verbose = TRUE)
 
 		# check only information that is there in all models
 		if ((solver == "BSGD") || (solver == "LLSVM"))

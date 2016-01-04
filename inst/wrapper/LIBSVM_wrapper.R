@@ -211,8 +211,7 @@ extractTestInfo.LIBSVM = function (
 #' @param	verbose		be verbose?
 #'
 #' @return			model object
-#'
-#' @export
+
 readModel.LIBSVM = function (x,
 	modelFile = "./model",
 	verbose = FALSE) {
@@ -232,13 +231,42 @@ readModel.LIBSVM = function (x,
 #' @param	modelFile	path where to write the model
 #' @param	verbose		be verbose?
 #'
-#' @export
 writeModel.LIBSVM = function (x,
 	model = NA,
 	modelFile = "./model",
 	verbose = FALSE) {
 		return (writeLIBSVMModel (model = model, modelFile = modelFile, verbose = verbose) )
 }
+
+
+
+#' Detect whether a file is a model for LIBSVM.
+#'
+#' @param	x		Object
+#' @param	modelFile		File to check 
+#' @param	verbose		Verbose output?
+#'
+#' @return	TRUE if the given modelFile exists and fits the LIBSVM model, or FALSE if not.
+#'
+#' @note	This is a very basic check, enough to distinguish the wrappers provided within the SVMBridge
+
+detectModel.LIBSVM = function (x, modelFile = NULL, verbose = FALSE) {
+	checkmate::checkFlag (verbose)
+	if (is.null (modelFile) == TRUE) 
+		return (FALSE)
+	
+	# read first lines and detect magic marker
+	if (file.exists (modelFile) == FALSE) 
+		return (FALSE)
+		
+	line = readLines(modelFile, n = 12)
+	if (sum(grepl("total_sv", line)) > 0) {
+		return (TRUE)
+	}
+	
+	return (FALSE)
+}
+
 
 
 #' readPredictions.LIBSVM

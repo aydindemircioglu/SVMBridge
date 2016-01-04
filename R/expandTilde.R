@@ -1,4 +1,3 @@
-#!/usr/bin/Rscript  --vanilla 
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
@@ -22,14 +21,14 @@
  
 #' Expand path with tilde 
 #'	
-#' Given a path, try to expand the path, crossplatform independent.
+#' Given a path, try to expand the path in a crossplatform independent way.
 #'
 #' @param 	path		path to expand
 #' @param	verbose			print messages while searching?
 #'
 #' @export
 expandTilde <- function(path = NULL, verbose = FALSE){
-	#look for tilde characters and expand them
+	# look for tilde characters and expand them
 	if(grepl("~", path) == TRUE){
 		if(.Platform$OS.type == "windows"){
 			firstPart = path.expand("~")
@@ -42,7 +41,7 @@ expandTilde <- function(path = NULL, verbose = FALSE){
 		path = gsub("[\\]", "/", path)
 		
 		if(verbose == TRUE){
-			BBmisc::messagef("  Expanded path: %s", path)
+			cat("    Expanded path: %s", path)
 		}
 	}
 	return (path)

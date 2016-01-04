@@ -96,7 +96,36 @@ writeModel.CVM = function (x, model = NA, modelFile = "./model", verbose = FALSE
 		ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
 		return (ret)
 	}
- 
+
+	
+
+#' Detect whether a file is a model for CVM.
+#'
+#' @param	x		Object
+#' @param	modelFile		File to check 
+#' @param	verbose		Verbose output?
+#'
+#' @return	TRUE if the given modelFile exists and fits the CVM model, or FALSE if not.
+#'
+#' @note	This is a very basic check, enough to distinguish the wrappers provided within the SVMBridge
+
+detectModel.CVM = function (x, modelFile = NULL, verbose = FALSE) {
+	checkmate::checkFlag (verbose)
+	if (is.null (modelFile) == TRUE) 
+		return (FALSE)
+	
+	# read first lines and detect magic marker
+	if (file.exists (modelFile) == FALSE) 
+		return (FALSE)
+		
+	line = readLines(modelFile, n = 1)
+	if (line == "svm_type cvc") {
+		return (TRUE)
+	}
+	
+	return (FALSE)
+}
+
 
  
 #

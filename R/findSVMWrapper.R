@@ -33,82 +33,52 @@
 #'
 #' @export
 findSVMWrapper <- function (method = NA, name = NA, searchPath = NA, verbose = FALSE) {
-		if (verbose == TRUE) {
-			BBmisc::messagef("API: Finding wrapper for %s", method)
-		}
-		
-		if (is.na(searchPath)) {
-			BBmisc::stopf("No search path is given!")
-		}
-		
-		#look for tilde characters and expand them
-		if(grepl("~", searchPath) == TRUE){
-			searchPath = expandTilde(path = searchPath, verbose = verbose)
-		}
-		
-		if (is.na(method)) {
-			BBmisc::stopf ("No method name is given")
-		}
-		
-		if (verbose == TRUE) {
-			BBmisc::messagef("  Trying to find wrapper for %s", method) 
-		}
-
-		if (is.na (name) == TRUE) {
-			pattern = paste( "^", method, "_wrapper.R$", sep = "")
-		} else {
-			pattern = paste( "^", name, "$", sep = "")
-		}
-
-		if (verbose == TRUE) {
-			BBmisc::messagef("  Looking for a wrapper with regex %s.", pattern)
-		}
-		
-		files <- listFiles (searchPath, pattern = pattern, recursive = TRUE)
-		foundWrapper = ''
-		for (file in files) {
-			wrapperPath = file.path(searchPath, file)
-			if (verbose == TRUE) { 
-				BBmisc::messagef("    -Found wrapper at %s", wrapperPath) 
-			}
-			source (wrapperPath, local = FALSE)
-			break;
-		} 
+    if (verbose == TRUE) {
+        cat("-Finding wrapper for %s", method)
+    }
     
-		# WHAT should happen if we do not find one.
+    if (is.na(searchPath)) {
+        stop("No search path is given!")
+    }
     
-		# TODO: to get better tests, maybe we need an option like "TEST = true", which will
-		# take a demo-data-file and compute the model. so actuallly its like a unittest, but
-		# it is executed during use, to make sure everything is as it should be.
-	}
+    #look for tilde characters and expand them
+    if(grepl("~", searchPath) == TRUE){
+        searchPath = expandTilde(path = searchPath, verbose = verbose)
+    }
+    
+    if (is.na(method)) {
+        BBmisc::stopf ("No method name is given")
+    }
+    
+    if (verbose == TRUE) {
+        BBmisc::messagef("  Trying to find wrapper for %s", method) 
+    }
 
+    if (is.na (name) == TRUE) {
+        pattern = paste( "^", method, "_wrapper.R$", sep = "")
+    } else {
+        pattern = paste( "^", name, "$", sep = "")
+    }
 
-	
+    if (verbose == TRUE) {
+        BBmisc::messagef("  Looking for a wrapper with regex %s.", pattern)
+    }
+    
+    files <- listFiles (searchPath, pattern = pattern, recursive = TRUE)
+    foundWrapper = ''
+    for (file in files) {
+        wrapperPath = file.path(searchPath, file)
+        if (verbose == TRUE) { 
+            BBmisc::messagef("    -Found wrapper at %s", wrapperPath) 
+        }
+        source (wrapperPath, local = FALSE)
+        break;
+    } 
 
-#' findAllSVMWrapper
-#'		given a search path, it will try to find the corresponding wrapper
-#'		for all registered SVM packages.
-#'
-#' @param 	searchPath	 	search the given path for the SVM wrappers of all known SVM packages.
-#' @param	verbose			print messages while searching?
-#'
-#' @note		There is no extra check on the found wrapper. It will simply be sourced.
-#' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
-#' 
-#' @export
-findAllSVMWrapper <- function (searchPath = NA, verbose = FALSE) {
-		if (verbose == TRUE) {
-			BBmisc::messagef("API: Searching for all software wrappers:")
-		}
-		
-		for (i in seq(1, length(SVMBridgeEnv$packages))) {
-			method = SVMBridgeEnv$packages[[i]]$method
-			if (verbose == TRUE) {
-				BBmisc::messagef("  Searching for wrapper for SVM package %s:", method)
-			}
-			findSVMWrapper (method = method, searchPath = searchPath, verbose = verbose)
-		}
-	}
+    # WHAT should happen if we do not find one.
 
+    # TODO: to get better tests, maybe we need an option like "TEST = true", which will
+    # take a demo-data-file and compute the model. so actuallly its like a unittest, but
+    # it is executed during use, to make sure everything is as it should be.
+}
 
-	

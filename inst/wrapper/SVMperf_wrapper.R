@@ -306,8 +306,8 @@ extractTestInfo.SVMperf = function (x, output) {
 readModel.SVMperf <- function (x, modelFile = "./model", verbose = FALSE)
 {
 	if (verbose == TRUE) {
-			BBmisc::messagef ("Reading SVMperf model from %s.", modelFile)
-		}
+		cat ("Reading SVMperf model from ", modelFile, "\n")
+	}
     # open connection
     con  <- file(modelFile, open = "r")
 
@@ -349,6 +349,23 @@ readModel.SVMperf <- function (x, modelFile = "./model", verbose = FALSE)
 	
 	# close connection
 	close(con)
+
+	# this is only true for multiclass, but SVMperf does not support multiclass--
+	# we must sort the alphas, else computation of optimize values will not work
+	# as LIBSVMs alphas are sorted and prediction depend on this (because of multiclass
+	# and the special format LIBSVM saves the alphas)
+	sortSVs = FALSE
+	if (sortSVs == TRUE) {
+		s = sort (model$alpha, index.return = TRUE, decreasing = TRUE)
+		model$alpha[,1] = s$x
+		model$SV = model$SV[s$ix,]
+	}
+	
+	# invert the alphas...
+	#model$alpha[1:model$nSV[1],] = - model$alpha[1:model$nSV[1],]
+
+	#model$alpha[(1+model$nSV[1]):nrow(model$alpha),] = - model$alpha[(1+model$nSV[1]):nrow(model$alpha),]
+
 	
 	# return
 	return (model)
@@ -358,10 +375,84 @@ readModel.SVMperf <- function (x, modelFile = "./model", verbose = FALSE)
 
 # DUMMY
 writeModel.SVMperf <- function (x, model = NA, modelFile = "./model", verbose = FALSE) {
-	ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
-		return (ret)
+	
+	if (verbose == TRUE) {
+		cat ("Writing SVMperf Model to ", modelFile, "\n")
+	}
+	
+	# check of S3 object here.
+	
+	model$nrclass = length(model$label)
+	posSV = sum(model$alpha > 0)
+	negSV = sum(model$alpha < 0)
+
+	# open connection
+	if (verbose == TRUE)
+		cat ("  Writing Header\n")
+	modelFileHandle <- file(modelFile, open = "w+")
+	writeLines ("SVM-light Version V6.20", modelFileHandle)
+	writeLines("2 # kernel type", modelFileHandle) #kernel type
+	writeLines("3 # kernel parameter -d ", modelFileHandle) # degree, not used here
+	writeLines(paste(as.character(model$gamma), "# kernel parameter -g ", sep = " "), modelFileHandle )
+	writeLines("1 # kernel parameter -s ", modelFileHandle ) #s? 
+	writeLines("1 # kernel parameter -r ", modelFileHandle ) #r?
+	writeLines("empty # kernel parameter -u ", modelFileHandle ) #u?
+
+	# highest feature index 
+	maxFeatIndex = ncol(model$SV)
+	writeLines(paste(as.character(maxFeatIndex), "# highest feature index "), modelFileHandle ) #r?
+	
+	# FIXME: numer of training data-- we do not have this information..
+	nTraining = ncol(model$SV)
+	writeLines(paste(as.character(nTraining), " # number of training documents "), modelFileHandle ) #r?
+
+	nr_svValues = nrow(model$SV)+1
+	writeLines(paste(as.character(nr_svValues), " # number of support vectors plus 1 "), modelFileHandle )
+	
+	biasvalues = paste(model$bias, collapse = " ")
+	writeLines(paste(as.character(biasvalues), "# threshold b, each following line is a SV (starting with alpha*y)"), modelFileHandle )
+	
+	# basically all data is sparse data format, but the data around this differs
+	#svmatrix = dumpSparseFormat(model$alpha, model$X)
+	#writeLines(svmatrix, modelFileHandle, sep = "" )
+	if (verbose == TRUE)
+		cat ("  Writing SV\n")
+	writeSparseDataToConnection(modelFileHandle, model$SV, model$alpha)
+	
+	# close connection
+	close(modelFileHandle)
 }
- 
+
+
+
+#' Detect whether a file is a model for SVMperf
+#'
+#' @param	x		Object
+#' @param	modelFile		File to check 
+#' @param	verbose		Verbose output?
+#'
+#' @return	TRUE if the given modelFile exists and fits the SVMperf model, or FALSE if not.
+#'
+#' @note	This is a very basic check, enough to distinguish the wrappers provided within the SVMBridge
+
+detectModel.SVMperf = function (x, modelFile = NULL, verbose = FALSE) {
+	checkmate::checkFlag (verbose)
+	if (is.null (modelFile) == TRUE) 
+		return (FALSE)
+	
+	# read first lines and detect magic marker
+	if (file.exists (modelFile) == FALSE) 
+		return (FALSE)
+		
+	line = readLines(modelFile, n = 12)
+	if (sum(grepl("SVM-light", line)) > 0) {
+		return (TRUE)
+	}
+	
+	return (FALSE)
+}
+
+
 
 #
 # @param[in]	predictionsFile		file to read predictions from

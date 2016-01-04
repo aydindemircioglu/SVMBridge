@@ -316,34 +316,82 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 	if (verbose == TRUE) {
 		cat ("Writing BSGD Model..\n")
 	}
-
-	# BROKEN, FIXME
+ 
+	dim = ncol (model$SV)
+	nClasses = 2
+	nWeights = nrow (model$SV)
+	gamma = model$gamma * 2
+	degree = 1
+	coef = 1
 	
-	# FIXME: label order
-	# TODO: support multiclass
-	model$nrclass = 2
-	posSV = sum(model$a > 0)
-	negSV = sum(model$a < 0)
+	print (as.character (paste (model$label, sep = " ", collapse = " ")))
+	
     # open connection
     modelFileHandle <- file(modelFile, open = "w+")
-	writeLines(paste ("svm_type c_svc", sep = ""), modelFileHandle )
-	writeLines(paste ("kernel_type", "rbf", sep = " "), modelFileHandle )
-	writeLines(paste ("gamma", model$gamma, sep = " "), modelFileHandle )
-	writeLines(paste ("nr_class", model$nrclass, sep = " "), modelFileHandle )
-	writeLines(paste ("total_sv", length(model$a), sep = " "), modelFileHandle )
-	writeLines(paste ("rho", model$bias, sep = " "), modelFileHandle )
-	writeLines(paste ("label 1 -1", sep = " "), modelFileHandle )
-	writeLines(paste ("nr_sv", posSV, negSV, sep = " "), modelFileHandle )
-	writeLines(paste ("SV", sep = ""), modelFileHandle )
+	writeLines(paste ("ALGORITHM: 4", sep = ""), modelFileHandle )
+	writeLines(paste ("DIMENSION:", dim, sep = " "), modelFileHandle )
+	writeLines(paste ("NUMBER_OF_CLASSES:", nClasses, sep = " "), modelFileHandle )
+	writeLines(paste ("LABELS:", as.character (paste (model$label, sep = " ", collapse = " ")), sep = " "), modelFileHandle )
+	writeLines(paste ("NUMBER_OF_WEIGHTS:", nWeights, sep = " "), modelFileHandle )
+	writeLines(paste ("BIAS_TERM: ", model$bias, sep = " "), modelFileHandle )
+	writeLines(paste ("KERNEL_FUNCTION: 0", sep = " "), modelFileHandle )
+	writeLines(paste ("KERNEL_GAMMA_PARAM:", gamma, sep = " "), modelFileHandle )
+	writeLines(paste ("KERNEL_DEGREE_PARAM:", degree, sep = " "), modelFileHandle )
+	writeLines(paste ("KERNEL_COEF_PARAM:", coef, sep = " "), modelFileHandle )
+	writeLines(paste ("MODEL:", sep = ""), modelFileHandle )
 
 	# basically all data is sparse data format, but the data around this differs
-	svmatrix = dumpSparseFormat(model$a, model$X)
-	writeLines(svmatrix, modelFileHandle, sep = "" )
+	dumpSparseLine = function (row, invertIndex = FALSE) {
+		sparseLine = ''
+		for (x in seq(1, length(row))) {
+			if (row[x] != 0) {
+				if (invertIndex == TRUE)
+					idx = -x
+				else idx = x
+				sparseLine = paste(sparseLine, paste(idx, row[x], sep =":"), sep = " ")
+			}
+		}
+		return(sparseLine)
+	}
+
+	for (r in seq(1, nrow(model$SV))) {
+		sparseLine = paste(dumpSparseLine (model$alpha[r,], invertIndex = TRUE), " ", dumpSparseLine (model$SV[r,]), "\n", sep = '')
+		writeLines(sparseLine, modelFileHandle, sep = "" )
+	}
 	
 	# close connection
 	close(modelFileHandle)
 }
- 
+
+
+
+#' Detect whether a file is a model for BSGD
+#'
+#' @param	x		Object
+#' @param	modelFile		File to check 
+#' @param	verbose		Verbose output?
+#'
+#' @return	TRUE if the given modelFile exists and fits the BSGD model, or FALSE if not.
+#'
+#' @note	This is a very basic check, enough to distinguish the wrappers provided within the SVMBridge
+
+detectModel.BSGD = function (x, modelFile = NULL, verbose = FALSE) {
+	checkmate::checkFlag (verbose)
+	if (is.null (modelFile) == TRUE) 
+		return (FALSE)
+	
+	if (file.exists (modelFile) == FALSE) 
+		return (FALSE)
+		
+	line = readLines(modelFile, n = 1)
+	if (line == "ALGORITHM: 4") {
+		return (TRUE)
+	}
+	
+	return (FALSE)
+}
+
+
 
 #
 # @param	predictionsFile		file to read predictions from
@@ -374,6 +422,7 @@ readPredictions.BSGD <- function (x, predictionsFilePath = "", verbose = FALSE) 
 	
     return (predictions)
 }
+
 
 
 #' findSoftware.BSGD
