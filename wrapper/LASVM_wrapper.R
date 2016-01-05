@@ -192,8 +192,8 @@ detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 	
  
 	print.LASVM_walltime = function(x) {
-		BBmisc::messagef("--- Object: %s", x$method)
-		BBmisc::messagef("       Training Binary at %s", x$trainBinaryPath)
-		BBmisc::messagef("       Test Binary at %s", x$testBinaryPath)
+		cat("--- Object: ", x$method)
+		cat("       Training Binary at ", x$trainBinaryPath)
+		cat("       Test Binary at ", x$testBinaryPath)
 	}
 	

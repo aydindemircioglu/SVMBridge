@@ -155,6 +155,10 @@ Class 'try-error'  atomic [1:1] Error in UseMethod("findSoftware") :
 
 If the binary expects any kind of input, executing the binary will stall. Please make sure that your binary does not expect input upon being called without parameters. If necessary, turn off automatic search and provide **SVMBridge** the direct path to the software. In some cases you might work around this behaviour by explicitly sending an input to the binary, e.g. the SVMperf wrapper will send a single key to the SVMperf binary, which will print out some information and waits for a key when called without any other argument. Every wrapper provided with the **SVMBridge** in the installation directory should not suffer from this.
 
+## Calling findSoftware (or other methods) result in 'no applicable method for 'findSoftware' applied to an object of class...'
+
+This means that the wrapper for your SVM was not found, therefore no object was created, and the findSoftware could not be executed, because it is simply not there. Double check that adding the SVM package works for you, e.g. by enabling verbose mode.
+'
 
 # Speed
 

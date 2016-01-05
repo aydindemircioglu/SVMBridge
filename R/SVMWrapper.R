@@ -33,15 +33,22 @@
 #' ...
 
 createSVMWrapper = function(method, ...) {
-	# check that trainingBinary exists, if given
-	# ...    
-	
-	# register the newly created object in our environment
-	
+
+	# remove first all old stuff lying around
+	# TODO: one must be able to do this better, but how? can anyone fix this :/
+	suppressWarnings( rm (envir = globalenv(), list = c(paste0("createTestArguments", ".", method), 
+		paste0("createTrainingArguments", ".", method), 
+		paste0("detectModel", ".", method), 
+		paste0("extractTestInfo", ".", method), 
+		paste0("extractTrainingInfo", ".", method), 
+		paste0("findSoftware", ".", method), 
+		paste0("print", ".", method), 
+		paste0("readModel", ".", method), 
+		paste0("readPredictions", ".", method), 
+		paste0("writeModel", ".", method) )))
+
 	# create S3 Object
-	svmPackage = BBmisc::makeS3Obj(c(method, "SVMWrapper"),
-		method = method
-	)
+	svmPackage = BBmisc::makeS3Obj(c(method, "SVMWrapper"), method = method)
 
 	# TODO: replace existing object in package list
 	

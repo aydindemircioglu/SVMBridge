@@ -38,13 +38,33 @@ findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 	checkmate::assertFlag (verbose)
 
 	if (verbose == TRUE) {
-		cat("-Finding software for %s", method)
+		cat("Finding software for ", method, "\n")
 	}
 	
 	# replace tilde characters by expanding them
 	searchPath = expandTilde(path = searchPath, verbose = verbose)
 	
-	# call the find software method of the solver
-	SVMBridgeEnv$packages[[method]] = findSoftware (SVMBridgeEnv$packages[[method]], searchPath = searchPath, verbose = verbose)
+	# iterate over all search paths until we hit the target
+	dirList = list.dirs(searchPath, recursive = TRUE)
+    
+    SVMObject = getSVMObject (method)
+    for (dir in dirList) {
+		# call the find software method of the solver
+		if (verbose == TRUE) {
+			cat ("    ", dir, "\n")
+		}
+		SVMObject = findSoftware (SVMObject, searchPath = dir, verbose = verbose)
+		if (is.null (SVMObject$trainBinaryPath) == FALSE) {
+			if (verbose == TRUE) {
+				cat ("    Found binaries in", dir, "\n")
+				cat ("       ", SVMObject$trainBinaryPath, "\n")
+				cat ("       ", SVMObject$testBinaryPath, "\n")
+			}
+			break
+		}
+	}
+	
+	setSVMObject (method, SVMObject)
+	return (is.null (SVMObject$trainBinaryPath) == FALSE)
 }
 

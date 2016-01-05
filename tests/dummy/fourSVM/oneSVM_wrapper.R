@@ -86,6 +86,9 @@ findSoftware.oneSVM = function (x, searchPath = "./", execute = FALSE, verbose =
 	
 	# we only test if the train binary exists or not. if it does, we add it to the object
 	trainBinaryPath = file.path (searchPath, "oneSVM-learn")
+	if (verbose == TRUE) {
+		cat ("    Checking ", trainBinaryPath, "\n")
+	}
 	if (file.exists (trainBinaryPath) == TRUE) {
 		x$trainBinaryPath = trainBinaryPath 
 		# wont execute
@@ -93,6 +96,9 @@ findSoftware.oneSVM = function (x, searchPath = "./", execute = FALSE, verbose =
 	
 	# try predict binary now
 	testBinaryPath = file.path (searchPath, "oneSVM-predict")
+	if (verbose == TRUE) {
+		cat ("    Checking ", testBinaryPath, "\n")
+	}
 	if (file.exists (trainBinaryPath) == TRUE) {
 		x$testBinaryPath = testBinaryPath
 	}

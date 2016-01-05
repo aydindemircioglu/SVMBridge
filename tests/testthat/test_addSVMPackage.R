@@ -17,7 +17,19 @@ test_that("adding (empty) SVM Packages work", {
 	expect_equal (svmObject$wrapperName, "oneSVM_wrapper.R")
 	expect_equal (class(svmObject)[2], "SVMWrapper")
 }	)
-	
+
+
+test_that("calling SVM Packages again erases old package infos", {
+	# add just a package
+	addSVMPackage ("randomSVM435353451")
+	svmObject = getSVMObject ("randomSVM435353451")
+	svmObject$hidden = "treasure"
+	addSVMPackage ("randomSVM435353451")
+	svmObject = getSVMObject ("randomSVM435353451")
+	expect_null (svmObject$hidden)
+}	)
+
+
 
 test_that("adding a SVM Package with wrapper in same path works", {
 	# add just a package
