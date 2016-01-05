@@ -1,5 +1,3 @@
-#!/usr/bin/Rscript  --vanilla 
-
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
@@ -26,8 +24,9 @@
 #
 
 
-#' readLIBSVMPredictions
-#' 		Read predictions produced by LIBSVM, i.e. each line one label.
+#' read predictions produced by LIBSVM
+#'
+#' Read predictions produced by LIBSVM, i.e. each line one label.
 #'
 #' @param	x		SVMObject
 #' @param	predictionsFile		file to read predictions from
@@ -36,9 +35,9 @@
 #' @return		array consisting of predictions
 #
 #' @export	readLIBSVMPredictions
-readLIBSVMPredictions = function (x, predictionsFile = "", verbose = FALSE) {
+readLIBSVMPredictions = function (predictionsFile = "", verbose = FALSE) {
 	# open connection
-	con  <- file(predictionsFile, open = "r")
+	con  = file (predictionsFile, open = "r")
 
 	predictions = c()
 	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {

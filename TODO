@@ -6,4 +6,10 @@
 	x$trainBinaryPath = NULL
 	x$testBinaryPath = NULL
 
+	refactor findBinary so that findSoftware is even easier.
+	findBinary is not so much needed anymore.
+	
+	detectModel gegneric for all wrappers
+	checkModel generic for all  wrappers
+
 	

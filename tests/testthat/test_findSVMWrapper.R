@@ -5,9 +5,14 @@ test_that("trying to find a non existent wrapper returns error code", {
 	addSVMPackage ("oneSVM")
 	expect_warning (findSVMWrapper ("oneSVM", searchPath = "../dummy/empty"), "No wrapper found")
 	
+	# workaround 
+	testReturnValue = function () {
+		retValue = findSVMWrapper ("oneSVM", searchPath = "../dummy/empty")
+		expect_equal (retValue, FALSE)
+	}
+	
 	# test return value 
-	suppressWarnings (retValue = findSVMWrapper ("oneSVM", searchPath = "../dummy/empty"))
-	expect_equal (retValue, FALSE)
+	suppressWarnings (testReturnValue())
 
 	# object must stell be there
 	svmObject = getSVMObject ("oneSVM")

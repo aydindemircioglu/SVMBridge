@@ -102,8 +102,8 @@ findSoftware.oneSVM = function (x, searchPath = "./", execute = FALSE, verbose =
 	
 
 print.oneSVM = function(x) {
-	cat("--- Object: %s", x$method, "\n")
-	cat("       Training Binary at %s", x$trainBinaryPath, "\n")
-	cat("       Test Binary at %s", x$testBinaryPath, "\n")
+	cat("--- Object: ", x$method, "\n")
+	cat("       Training Binary at ", x$trainBinaryPath, "\n")
+	cat("       Test Binary at ", x$testBinaryPath, "\n")
 }
 	
