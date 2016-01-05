@@ -1,4 +1,3 @@
-#!/usr/bin/Rscript  --vanilla 
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
@@ -21,15 +20,14 @@
 
 
 
-# General class for any SVM wrapper.
-# 
-# Roxygen Documentation:
-#' Description... 
+#' General class for any SVM wrapper.
 #' 
-#' Details
+#' This will create an object of class SVMWrapper for a given name.
+# 
+#' @param 	method		name of the class/object to create
 #'
-#' @param a Description
-#' @param b Description
+#' @note	This function will first remove all member functions to make sure
+#'		that no trash is lying around.
 #' ...
 
 createSVMWrapper = function(method, ...) {
@@ -50,11 +48,6 @@ createSVMWrapper = function(method, ...) {
 	# create S3 Object
 	svmPackage = BBmisc::makeS3Obj(c(method, "SVMWrapper"), method = method)
 
-	# TODO: replace existing object in package list
-	
-	# add object to our internal list of created wrappers
-#	SVMBridgeEnv$packages = c(SVMBridgeEnv$packages, svmPackage)
-	
 	return (svmPackage)
 }
 
@@ -87,11 +80,9 @@ createTestArguments = function (x,
 }
 
 
-
 extractTrainInfo = function (x, output) {
 	UseMethod ("extractTrainInfo")
 }
-
 
 
 extractTestInfo = function (x, output) {
@@ -99,11 +90,9 @@ extractTestInfo = function (x, output) {
 }
 
 
-
 readModel = function (x, modelFile = './model', verbose = FALSE) {
 	UseMethod("readModel")
 }
-
 
 
 writeModel = function (x, model = NA, modelFile = "./model", verbose = FALSE) {

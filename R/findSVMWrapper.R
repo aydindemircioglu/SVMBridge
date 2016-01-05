@@ -63,13 +63,13 @@ findSVMWrapper <- function (method = NA, searchPath = NA, recursive = TRUE, sour
 	}
 	
 	files <- listFiles (searchPath, pattern = pattern, recursive = recursive)
-	if (len(files) > 1) {
+	if (length(files) > 1) {
 		warning ("Found multiple wrappers. Taking the first one: ", files[1])
 	}
 	
-	if (len(files) == 0) {
+	if (length(files) == 0) {
 		warning ("No wrapper found. Please specify correct path.")
-		return (NULL)
+		return (FALSE)
 	}
 	
 	wrapperPath = file.path (searchPath, files[1])
@@ -84,5 +84,7 @@ findSVMWrapper <- function (method = NA, searchPath = NA, recursive = TRUE, sour
 	# modify object and store back
 	SVMObject$wrapperPath = wrapperPath
 	setSVMObject (method, SVMObject)
+	
+	return (TRUE)
 }
 
