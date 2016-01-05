@@ -19,40 +19,18 @@ addSVMPackage (method = "LIBSVM")
 # + will locate the wrapper at ./wrapperPath/LIBSVM_wrapper.R
 addSVMPackage (method = "LIBSVM", wrapperPath = "./wrapperPath")
 
-# + will locate the wrapper at ./wrapperPath/specified.R
-addSVMPackage (method = "LIBSVM", wrapperPath = "./wrapperPath/specified.R")
+# wont work
+addSVMPackage (method = "LIBSVM", wrapperPath = "./wrapperPath/my_wrapper.R")
 
-# + will search the wrapper below './wrapperPath'
-addSVMPackage (method = "LIBSVM", wrapperSearchPath = "./wrapperPath")
-
-# expect to fail, cannot work with both? OR: will try to locate first, if not, will search for it.
-addSVMPackage (method = "LIBSVM", wrapperPath = "./wrapperPath", wrapperSearchPath = "./wrapperPath")
-
-# override default wrapper name, so you can use findWrapper and find a differently named wrapper.
-addSVMPackage (method = "LIBSVM", wrapperName = "my_wrapper.R")
-
-# expect to fail, cannot work with both? OR: will try to locate first, if not, will search for it.
-addSVMPackage (method = "LIBSVM", wrapperName = "my_wrapper.R", wrapperSearchPath = "./wrapperPath")
+# will work
 addSVMPackage (method = "LIBSVM", wrapperName = "my_wrapper.R", wrapperPath = "./wrapperPath")
 
 
 
 
 #THIRD BATCH
-# empty package + wrapper gets specified + software gets specified
-
-# + will locate the wrapper at ./wrapperPath/LIBSVM_wrapper.R
-addSVMPackage (method = "LIBSVM", wrapperPath = "./wrapperPath")
-
-# + will locate the wrapper at ./wrapperPath/specified.R
-addSVMPackage (method = "LIBSVM", wrapperPath = "./wrapperPath/specified.R")
-
-
-# NOTE: there is no case where we have no wrapper, but software!
-
-# FOURTH BATCH: mutants
-
-# this will try to find the wrapper at ./softwarePath/LIBSVM_wrapper.R
+# this will try to find the wrapper at ./softwarePath/LIBSVM_wrapper.R and also the binaries exactly there.
+# mmh, no, try ALSO ./bin/!
 addSVMPackage (method = "LIBSVM", softwarePath = "./softwarePath")
 
 # this will try to find the wrapper at ./softwarePath/my_wrapper.R

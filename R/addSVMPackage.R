@@ -1,4 +1,3 @@
-#!/usr/bin/Rscript  --vanilla 
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
@@ -71,16 +70,27 @@ addSVMPackage = function (method = NA,
 	#			if so, we search the softwarePath for the wrapper
 	#			if not, we cannot load any wrapper, thats ok too.
 	if (checkmate::testString (wrapperPath) == TRUE) {
-		checkmate::assertFile (wrapperPath)
-		if (verbose == TRUE)
-			cat ("Found wrapper at", wrapperPath, "\n")
-		source (wrapperPath, local = FALSE)
-		SVMObject$wrapperPath = wrapperPath
+		# could be a file directly, not just a path
+		if ((file.exists (wrapperPath) == TRUE) & (dir.exists (wrapperPath) == FALSE)) {
+			if (verbose == TRUE)
+				cat ("Found wrapper at", wrapperPath, "\n")
+			source (wrapperPath, local = FALSE)
+			SVMObject$wrapperPath = wrapperPath
+		} else {
+			# if not, we try to find the default wrapper
+			wrapperPath = file.path (wrapperPath, SVMObject$wrapperName)
+			if ((file.exists (wrapperPath) == TRUE) & (dir.exists (wrapperPath) == FALSE)) {
+				if (verbose == TRUE)
+					cat ("Found wrapper at", wrapperPath, "\n")
+				source (wrapperPath, local = FALSE)
+				SVMObject$wrapperPath = wrapperPath
+			} 
+		}
 	} else {
 		# test if we can detect it easily
-		if (testString (softwarePath) == TRUE) {
+		if (checkmate::testString (softwarePath) == TRUE) {
 			wrapperPath = file.path (softwarePath, SVMObject$wrapperName)
-			if (file.exists (wrapperPath) == TRUE) {
+			if ((file.exists (wrapperPath) == TRUE) & (dir.exists (wrapperPath) == FALSE)) {
 				if (verbose == TRUE)
 					cat ("Found wrapper at", wrapperPath, "\n")
 				source (wrapperPath, local = FALSE)
@@ -104,9 +114,14 @@ addSVMPackage = function (method = NA,
 	# now, if a software path is given, then we should check it and try to find
 	# the binaries. if that doesnt work, its not our problem.
 	
-	if (testString (softwarePath) == TRUE) {
+	if (checkmate::testString (softwarePath) == TRUE) {
 		# ask the wrapper if it can load the binaries from the given path
 		SVMObject = findSoftware (SVMObject, searchPath = softwarePath, verbose = verbose)	
+		
+		# assume here that predict and test are in the same directory. if not, the user has to do magic by findSVM... or manually 
+		if ((is.null(SVMObject$trainBinaryPath) == TRUE) | (is.null(SVMObject$testBinaryPath) == TRUE)) {
+			SVMObject = findSoftware (SVMObject, searchPath = file.path (softwarePath, "bin"), verbose = verbose)	
+		}
 	} 
 
 	SVMBridgeEnv$packages[[method]] = SVMObject

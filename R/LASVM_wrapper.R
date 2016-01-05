@@ -152,6 +152,10 @@ detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 			cat ("    LASVM Object: Executing search for software for ", x$method)
 		}
 
+		# remove old
+		x$trainBinaryPath = NULL
+		x$testBinaryPath = NULL
+		
 		# we only test if the train binary exists or not. if it does, we add it to the object
 		trainBinaryPath = file.path (searchPath, "la_svm")
 		if (file.exists (trainBinaryPath) == TRUE) {
@@ -162,7 +166,8 @@ detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 			
 			# execute if necessary
 			if (execute == TRUE) {
-				checkExecutionStrings (trainBinaryPath, patterns = list ('la_svm .options. training_set_file .model_file.'))
+				if (checkExecutionStrings (trainBinaryPath, patterns = list ('la_svm .options. training_set_file .model_file.')) == TRUE)
+					x$trainBinaryPath = trainBinaryPath 
 			}
 		}
 		
@@ -176,7 +181,8 @@ detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 			
 			# execute if necessary
 			if (execute == TRUE) {
-				checkExecutionStrings (trainBinaryPath, patterns = list ('la_test .options. test_set_file model_file output_file'))
+				if (checkExecutionStrings (trainBinaryPath, patterns = list ('la_test .options. test_set_file model_file output_file')) == TRUE)
+					x$testBinaryPath = testBinaryPath
 			}
 		}
 

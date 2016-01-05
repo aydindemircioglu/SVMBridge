@@ -2,7 +2,7 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		getSVMObject.R
+#		setSVMObject.R
 # 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -20,17 +20,20 @@
 
 
 
-#' getSVMObject
+#' setSVMObject
 #'
-#' Retrieve the object for a given method.
+#' Set a given object for a given method.
 #'
 #' @param	method		name of method
-#' @return	SVM object for the given method (or NULL if it does not exist)
+#' @param	object	object to set
 #'
 #' @export
-setSVMObject = function (method = method, object = NULL) {
+setSVMObject = function (method = method, object = NULL, verbose = FALSE) {
 	if (checkmate::testNull (object) == TRUE) {
-		warn ("Setting a NULL object, i.e. object for method ", method, " will be erased.")
+		if (verbose == TRUE) {
+			cat ("Setting a NULL object, i.e. object for method ", method, " will be erased.\n")
+		}
+	}
 	SVMBridgeEnv$packages[[method]] = object
 }
 
