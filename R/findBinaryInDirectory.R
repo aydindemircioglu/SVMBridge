@@ -2,7 +2,7 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		findBinary.R
+#		findBinaryInDirectory.R
 # 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -18,7 +18,7 @@
 # All negative use is prohibited.
 #
  
-#' findBinary
+#' findBinaryInDirectory.
 #'		given a file pattern and an std-out-pattern it will try to find a binary matching
 #'		the file pattern (which contains std-out-pattern as output if called without arguments)
 #'		in the path given.
@@ -36,42 +36,41 @@
 #' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
 #' @export
 
-findBinary <- function (searchPath, pattern, outputPattern, verbose = FALSE) {
-	if (verbose == TRUE) { BBmisc::messagef("  Checking for pattern %s", pattern) }
-	files <- listFiles (searchPath, pattern = pattern, recursive = TRUE)
-    foundBinary = ''
-    
-    for (binary in files) {
-		binaryPath = file.path(searchPath, binary)
-		if (verbose == TRUE) { BBmisc::messagef("    -Found binary at %s", binaryPath) }
-		
-		# add echo 1 to circumvent the stupid wait-for-key tactic in SVMperf. most stupid program ever.
-		# for now: implement as a HOTFIX
-		args = c()
-		
-		if (length(grep( "svm_perf", binaryPath)) != 0) {
-			if (verbose == TRUE) { BBmisc::messagef("    -Applied SVMperf fix") }
-			stdout = system3 ("/bin/echo", args = c("1", "|", binaryPath), verbose = FALSE)
-		} else {
-			stdout = system3 (binaryPath, args = c(), verbose = FALSE)
-		}
-		matches = 0
-		for (o in outputPattern) {
-			if (length(grep(o, stdout$output)) != 0) {
-				foundBinary = binaryPath
-				matches = matches + 1
-			}
-		}
-		# stop after the first match we find
-		if (matches == length(outputPattern)) {
-			if (verbose == TRUE) { BBmisc::messagef ("    -This binary %s matches all the patterns!", foundBinary) }
-			break;
-		}
-    } 
-    
-    # TODO:: should we here throw an error? or leave it to the upper class?
-    
-    return (foundBinary)
-}
+findBinaryInDirectory = function (binaryName = NULL, searchPath = NULL, patterns = NULL, verbose = FALSE) {
 
+	# check all the parameters
+	checkmate::assertString (binaryName)
+	checkmate::assertList (patterns)
+	checkmate::assertFlag (verbose)
+	checkmate::assertString (searchPath)
+	for (l in patterns) {
+		checkmate::assertString (l)
+	}
+
+	if (verbose == TRUE) {
+		cat("Searching for ", binaryName, " in directory ", searchPath)
+	}
+
+	# is the binary there?
+	binaryPath = file.path (searchPath, binaryName)
+	if (file.exists (binaryPath) == TRUE) {
+
+		# do we have any patterns to check?
+		if (length(patterns) > 0) {
+			# if yes, we have to execute the thing. if they do not match, we delete the path
+			if (checkExecutionStrings (binaryPath, patterns = patterns) == FALSE) {
+				binaryPath = NULL
+			} else {
+				# everything is ok, binary path is not deleted
+			}
+		} else {
+			# everything is ok, binary path is not deleted
+		}
+    } else {
+		# no binary. so we return 
+		binaryPath = NULL
+	}
+	
+    return (binaryPath)
+}
 

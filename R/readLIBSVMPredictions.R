@@ -24,19 +24,17 @@
 #
 
 
-#' read predictions produced by LIBSVM
+#' Read predictions produced by LIBSVM
 #'
 #' Read predictions produced by LIBSVM, i.e. each line one label.
 #'
-#' @param	x		SVMObject
 #' @param	predictionsFile		file to read predictions from
 #' @param	verbose		be verbose?
 #' 
 #' @return		array consisting of predictions
 #
-#' @export	readLIBSVMPredictions
+#' @export
 readLIBSVMPredictions = function (predictionsFile = "", verbose = FALSE) {
-	# open connection
 	con  = file (predictionsFile, open = "r")
 
 	predictions = c()
