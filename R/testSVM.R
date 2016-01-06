@@ -1,4 +1,3 @@
-#!/usr/bin/Rscript  --vanilla 
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
@@ -20,11 +19,13 @@
 #
  
 
-#' testSVM
+#' test a trained SVM.
+#'
+#' This is the main routine for testing/prediction an SVM.
 #'
 #' @param	testDataFile		file to read training data from 
 #' @param	testDataX		matrix to read training data from 
-#' @param	testDatay		matrix to read training label from 
+#' @param	testDataY		matrix to read training label from 
 #'
 #' @param	model		list containing a trained SVM model
 #' @param	modelFile       path to a model file
@@ -35,16 +36,12 @@
 #' @param	extraParameter		extra parameters for solver
 #' @param	verbose		be verbose?
 #'
-#' @note		exclusive parameters, i.e. you cannot specify both:
+#' @note		testDataFile and testDataX,testDataY are exclusive parameters, i.e. you cannot specify both.
+#' @note		Make sure the modelFile is a character string and not a factor! Else you might obtain strange modelfile arguments.
 #'
 #' @return		SVM Object
-#' @export	testSVM
-# #examples
-# 	testSVM(method = 'LIBSVM', testDataFile = './data/australian.test') 
 #'
-#
-# NOTE: make sure the modelFile is a character string and not a factor! else you might strange modelfile arguments.
-# If no
+#' @export
 
 testSVM = function(
 	method = NULL,
@@ -52,7 +49,7 @@ testSVM = function(
 	# data
 	testDataFile = NULL,
 	testDataX = NULL, 
-	testDatay = NULL, 
+	testDataY = NULL, 
 
 	# model 
 	model = NULL,
@@ -128,7 +125,7 @@ testSVM = function(
 		testDataFile = tempfile()
 		if (verbose == TRUE)
 			BBmisc::messagef("  Writing given test data as %s", testDataFile)
-		e1071::write.matrix.csr(testDataX, testDataFile, testDatay)
+		e1071::write.matrix.csr(testDataX, testDataFile, testDataY)
 	} 
 
 	if (verbose == TRUE) 
@@ -183,5 +180,4 @@ testSVM = function(
 	
 	return (results)   
 }
-
 

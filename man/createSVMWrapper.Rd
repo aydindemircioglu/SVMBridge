@@ -2,17 +2,19 @@
 % Please edit documentation in R/SVMWrapper.R
 \name{createSVMWrapper}
 \alias{createSVMWrapper}
-\title{Description...}
+\title{General class for any SVM wrapper.}
 \usage{
 createSVMWrapper(method, ...)
 }
 \arguments{
-\item{a}{Description}
-
-\item{b}{Description
-...}
+\item{method}{name of the class/object to create}
 }
 \description{
-Details
+This will create an object of class SVMWrapper for a given name.
+}
+\note{
+This function will first remove all member functions to make sure
+	that no trash is lying around.
+...
 }
 

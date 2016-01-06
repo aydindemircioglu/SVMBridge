@@ -146,44 +146,24 @@ detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 	
 
-	findSoftware.LASVM = function (x, searchPath = "./", verbose = FALSE) {
+	findSoftware.LASVM = function (x, searchPath = "./", execute = FALSE, verbose = FALSE) {
 
 		if (verbose == TRUE) {
-			BBmisc::messagef("    LASVM Object: Executing search for software for %s", x$method)
+			cat ("    LASVM Object: Executing search for software for ", x$method)
 		}
-		
-		trainBinaryPattern = "^la_svm$"
-		trainBinaryOutputPattern = 'la_svm .options. training_set_file .model_file.'
-		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
 
-		# TODO: check for empty path+handling
-		
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found train binary at %s", binaryPath) 
-		}
-		x$trainBinaryPath = binaryPath
-
-
-		testBinaryPattern = "^la_test$"
-		testBinaryOutputPattern = 'la_test .options. test_set_file model_file output_file'
-
-		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
-		
-		# TODO: check for empty path+handling
-
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found test binary at %s", binaryPath) 
-		}
-		x$testBinaryPath = binaryPath
+		# can do now OS specific stuff here
+		x$trainBinaryPath = findBinaryInDirectory ("la_svm", dir = searchPath, patterns = list ('la_svm .options. training_set_file .model_file.'))
+		x$testBinaryPath = findBinaryInDirectory ("la_test", dir = searchPath, patterns = list ('la_test .options. test_set_file model_file output_file'))
 
 		return(x)
 	}
-
- 
+	
+	
  
 	print.LASVM_walltime = function(x) {
-		BBmisc::messagef("--- Object: %s", x$method)
-		BBmisc::messagef("       Training Binary at %s", x$trainBinaryPath)
-		BBmisc::messagef("       Test Binary at %s", x$testBinaryPath)
+		cat("--- Object: ", x$method)
+		cat("       Training Binary at ", x$trainBinaryPath)
+		cat("       Test Binary at ", x$testBinaryPath)
 	}
 	

@@ -2,27 +2,31 @@
 % Please edit documentation in R/findSVMWrapper.R
 \name{findSVMWrapper}
 \alias{findSVMWrapper}
-\title{findSVMWrapper
-	given a search path, it will try to find the corresponding wrapper for the given method.}
+\title{findSVMWrapper}
 \usage{
-findSVMWrapper(method = NA, name = NA, searchPath = NA, verbose = FALSE)
+findSVMWrapper(method = NA, searchPath = NA, recursive = TRUE,
+  source = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{method}{name of the SVM method}
 
-\item{name}{if name is given, the search pattern will not have _wrapper.R postfix}
-
 \item{searchPath}{search the given path for the SVM binaries of all known SVM packages.}
+
+\item{recursive}{recursive search?}
+
+\item{source}{source the found wrapper?}
 
 \item{verbose}{print messages while searching?}
 }
 \description{
-findSVMWrapper
-	given a search path, it will try to find the corresponding wrapper for the given method.
+Given a search path, it will try to find the corresponding wrapper for the given method.
+This routine will also source the file, if specified.
 }
 \note{
 To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
 
 If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
+
+This routine expects that a SVM object already exists, and will only modify it.
 }
 

@@ -2,34 +2,36 @@
 % Please edit documentation in R/addSVMPackage.R
 \name{addSVMPackage}
 \alias{addSVMPackage}
-\title{add package to the bridge}
+\title{Make a new SVM package known to the bridge.}
 \usage{
-addSVMPackage(method = NA, filePath = NA, softwarePath = NA,
-  trainBinaryPath = NA, testBinaryPath = NA, wrapperPath = NA,
-  verbose = FALSE)
+addSVMPackage(method = NA, wrapperName = NA, wrapperPath = NA,
+  softwarePath = NA, verbose = FALSE)
 }
 \arguments{
 \item{method}{name of solver}
 
-\item{filePath}{path to wrapper}
+\item{wrapperName}{name of the wrapper (as filename). if none given, method_wrapper.R will be used.}
 
-\item{softwarePath}{path where to find the solver.}
+\item{wrapperPath}{file path to the wrapper. if none is given, findSVMWrapper needs to be called}
 
-\item{trainBinaryPath}{if not NULL this will override any search option}
-
-\item{testBinaryPath}{if not NULL this will override any search option}
-
-\item{wrapperPath}{if not NULL this will override any search option}
+\item{softwarePath}{path where to find the solver (software), if none is given, findSVMSoftware has to be called}
 
 \item{verbose}{be verbose?}
 }
 \description{
-add package to the bridge
+This function will create an object corresponding to the SVM object.
+By using the findSVMSoftware/findSVMWrapper functions., one can add 
+search for the corresponding wrappe and the software.
+To avoid lengthy searches,  this function can be used to directly 'shortcut'
+the search, by specifiying the directories where the wrapper/software lies.
+If this is successful, later findSVM.. calls are unneccessary.
 }
 \note{
 first the given train and testBinaryPaths will be directly checked.
 if the binary does not exist there, the softwarePath will be added and rechecked
 and only if this does not work, the software will be searched via softwarePath.
 so one can override the search by specifiying train-/testBinaryPath.
+
+If the wrapper searches for software, it will NOT execute it, existance is enough at this point.
 }
 

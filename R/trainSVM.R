@@ -1,4 +1,3 @@
-#!/usr/bin/Rscript  --vanilla 
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
@@ -20,13 +19,15 @@
 #
  
 
-#' trainSVM
+#' Train an SVM.
+#'
+#' This is the main routine that trains an SVM.
 #'
 #' @param	method		name of the SVM method/solver
 #'
 #' @param	trainDataFile		file to read training data from 
 #' @param	trainDataX		matrix to read training data from 
-#' @param	trainDatay		matrix to read training label from 
+#' @param	trainDataY		matrix to read training label from 
 #'
 #' @param	trainBinaryPath		full path to the training binary to call
 #'
@@ -42,10 +43,8 @@
 #' @note		exclusive parameters, i.e. you cannot specify both:
 #'
 #' @return		SVM Object
-#' @export		trainSVM
-# #examples
-# #	trainSVM(model = 'LIBSVM', trainDataFile = './data/australian.train') 
 #'
+#' @export
 
 trainSVM = function(
 	# method
@@ -54,7 +53,7 @@ trainSVM = function(
 	# data
 	trainDataFile = NULL,
 	trainDataX = NULL, 
-	trainDatay = NULL, 
+	trainDataY = NULL, 
 
 	# full path to executable
 	trainBinaryPath = NULL,
@@ -130,7 +129,7 @@ trainSVM = function(
 		trainDataFile = tempfile()
 		if (verbose == TRUE)
 			BBmisc::messagef("  Writing given data as %s", trainDataFile)
-		e1071::write.matrix.csr(trainDataX, trainDataFile, trainDatay)
+		e1071::write.matrix.csr(trainDataX, trainDataFile, trainDataY)
 	} 
 
 	if (verbose == TRUE) 

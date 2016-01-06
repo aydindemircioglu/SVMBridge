@@ -114,15 +114,20 @@ addSVMPackage = function (method = NA,
 	# now, if a software path is given, then we should check it and try to find
 	# the binaries. if that doesnt work, its not our problem.
 	
+	# but if we have no wrapper, we cannot find any software.. 
 	if (checkmate::testString (softwarePath) == TRUE) {
-		# ask the wrapper if it can load the binaries from the given path
-		SVMObject = findSoftware (SVMObject, searchPath = softwarePath, verbose = verbose)	
-		
-		# assume here that predict and test are in the same directory. if not, the user has to do magic by findSVM... or manually 
-		if ((is.null(SVMObject$trainBinaryPath) == TRUE) | (is.null(SVMObject$testBinaryPath) == TRUE)) {
-			SVMObject = findSoftware (SVMObject, searchPath = file.path (softwarePath, "bin"), verbose = verbose)	
+		if ((is.null(wrapperPath) == FALSE) & (file.exists(wrapperPath))) {
+			# ask the wrapper if it can load the binaries from the given path
+			SVMObject = findSoftware (SVMObject, searchPath = softwarePath, verbose = verbose)	
+			
+			# assume here that predict and test are in the same directory. if not, the user has to do magic by findSVM... or manually 
+			if ((is.null(SVMObject$trainBinaryPath) == TRUE) | (is.null(SVMObject$testBinaryPath) == TRUE)) {
+				SVMObject = findSoftware (SVMObject, searchPath = file.path (softwarePath, "bin"), verbose = verbose)	
+			}
+		} else {
+			warning ("Could not find a wrapper, as such, search path is ignored.")
 		}
 	} 
 
-	SVMBridgeEnv$packages[[method]] = SVMObject
+	setSVMObject (method, SVMObject)
 }

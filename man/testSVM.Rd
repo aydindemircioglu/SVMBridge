@@ -2,10 +2,10 @@
 % Please edit documentation in R/testSVM.R
 \name{testSVM}
 \alias{testSVM}
-\title{testSVM}
+\title{test a trained SVM.}
 \usage{
 testSVM(method = NULL, testDataFile = NULL, testDataX = NULL,
-  testDatay = NULL, model = NULL, modelFile = NULL,
+  testDataY = NULL, model = NULL, modelFile = NULL,
   readPredictions = FALSE, predictionsFile = NULL, extraParameter = "",
   verbose = FALSE, ...)
 }
@@ -14,7 +14,7 @@ testSVM(method = NULL, testDataFile = NULL, testDataX = NULL,
 
 \item{testDataX}{matrix to read training data from}
 
-\item{testDatay}{matrix to read training label from}
+\item{testDataY}{matrix to read training label from}
 
 \item{model}{list containing a trained SVM model}
 
@@ -32,9 +32,11 @@ testSVM(method = NULL, testDataFile = NULL, testDataX = NULL,
 SVM Object
 }
 \description{
-testSVM
+This is the main routine for testing/prediction an SVM.
 }
 \note{
-exclusive parameters, i.e. you cannot specify both:
+testDataFile and testDataX,testDataY are exclusive parameters, i.e. you cannot specify both.
+
+Make sure the modelFile is a character string and not a factor! Else you might obtain strange modelfile arguments.
 }
 

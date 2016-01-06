@@ -28,7 +28,7 @@
 #' 
 #' @return	A vector of all known SVM solvers as string.
 #'
-#' @export	outputAllSVMSoftwarePackages
+#' @export
 
 getSVMMethodsAsList = function (verbose = TRUE) {
 

@@ -20,4 +20,7 @@ findSVMSoftware
 	given a search path, it will try to find the corresponding software packages
 	for the given method.
 }
+\note{
+calls the findSoftware routine of the corresponding wrapper.
+}
 

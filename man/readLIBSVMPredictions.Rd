@@ -2,14 +2,11 @@
 % Please edit documentation in R/readLIBSVMPredictions.R
 \name{readLIBSVMPredictions}
 \alias{readLIBSVMPredictions}
-\title{readLIBSVMPredictions
-		Read predictions produced by LIBSVM, i.e. each line one label.}
+\title{Read predictions produced by LIBSVM}
 \usage{
-readLIBSVMPredictions(x, predictionsFile = "", verbose = FALSE)
+readLIBSVMPredictions(predictionsFile = "", verbose = FALSE)
 }
 \arguments{
-\item{x}{SVMObject}
-
 \item{predictionsFile}{file to read predictions from}
 
 \item{verbose}{be verbose?}
@@ -18,7 +15,6 @@ readLIBSVMPredictions(x, predictionsFile = "", verbose = FALSE)
 array consisting of predictions
 }
 \description{
-readLIBSVMPredictions
-		Read predictions produced by LIBSVM, i.e. each line one label.
+Read predictions produced by LIBSVM, i.e. each line one label.
 }
 

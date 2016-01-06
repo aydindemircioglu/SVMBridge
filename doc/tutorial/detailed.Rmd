@@ -158,6 +158,10 @@ If the binary expects any kind of input, executing the binary will stall. Please
 ## Calling findSoftware (or other methods) result in 'no applicable method for 'findSoftware' applied to an object of class...'
 
 This means that the wrapper for your SVM was not found, therefore no object was created, and the findSoftware could not be executed, because it is simply not there. Double check that adding the SVM package works for you, e.g. by enabling verbose mode.
+
+## Something like basename(trainBinaryPath) : a character vector argument expected happened.
+
+(FIXME actually). The software was not found, so there is no trainBinaryPath in the SVM object.
 '
 
 # Speed

@@ -2,10 +2,10 @@
 % Please edit documentation in R/trainSVM.R
 \name{trainSVM}
 \alias{trainSVM}
-\title{trainSVM}
+\title{Train an SVM.}
 \usage{
 trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
-  trainDatay = NULL, trainBinaryPath = NULL, extraParameter = "",
+  trainDataY = NULL, trainBinaryPath = NULL, extraParameter = "",
   modelFile = NULL, verbose = TRUE, subsamplingRate = NULL,
   subsamplingMethod = "cutoff", timeOut = -1, readModelFile = FALSE, ...)
 }
@@ -16,7 +16,7 @@ trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
 
 \item{trainDataX}{matrix to read training data from}
 
-\item{trainDatay}{matrix to read training label from}
+\item{trainDataY}{matrix to read training label from}
 
 \item{trainBinaryPath}{full path to the training binary to call}
 
@@ -38,7 +38,7 @@ trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
 SVM Object
 }
 \description{
-trainSVM
+This is the main routine that trains an SVM.
 }
 \note{
 exclusive parameters, i.e. you cannot specify both:

@@ -12,6 +12,6 @@ expandTilde(path = NULL, verbose = FALSE)
 \item{verbose}{print messages while searching?}
 }
 \description{
-Given a path, try to expand the path, crossplatform independent.
+Given a path, try to expand the path in a crossplatform independent way.
 }
 
