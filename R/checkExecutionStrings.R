@@ -63,9 +63,9 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 		if (verbose == TRUE) { 
 			cat ("    Applying key (aka SVMperf) fix") 
 		}
-		stdout = system3 ("/bin/echo", args = c("1", "|", binaryPath), verbose = FALSE)
+		stdout = system3 ("/bin/echo", args = c("1", "|", trainBinaryPath), verbose = FALSE)
 	} else {
-		stdout = system3 (binaryPath, args = c(), verbose = FALSE)
+		stdout = system3 (trainBinaryPath, args = c(), verbose = FALSE)
 	}
 
 	matches = 0
@@ -75,7 +75,7 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 		}
 	}
 
-	if (matches == length(outputPattern)) {
+	if (matches == length(patterns)) {
 		if (verbose == TRUE) { 
 			cat ("    Output matches all the patterns.\n") 
 		}

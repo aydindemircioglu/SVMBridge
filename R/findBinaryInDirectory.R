@@ -23,7 +23,7 @@
 #'		the file pattern (which contains std-out-pattern as output if called without arguments)
 #'		in the path given.
 #'
-#' @param	searchPath	 	search the given path for the SVM binaries recursively.
+#' @param	dir	 	search the given path for the SVM binaries recursively.
 #' @param	pattern		pattern for the binary file
 #' @param	outputPattern		pattern for the stdout output of the binary
 #' @param	verbose			print messages while searching?
@@ -36,23 +36,23 @@
 #' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
 #' @export
 
-findBinaryInDirectory = function (binaryName = NULL, searchPath = NULL, patterns = NULL, verbose = FALSE) {
+findBinaryInDirectory = function (binaryName = NULL, dir = NULL, patterns = NULL, verbose = FALSE) {
 
 	# check all the parameters
 	checkmate::assertString (binaryName)
 	checkmate::assertList (patterns)
 	checkmate::assertFlag (verbose)
-	checkmate::assertString (searchPath)
+	checkmate::assertString (dir)
 	for (l in patterns) {
 		checkmate::assertString (l)
 	}
 
 	if (verbose == TRUE) {
-		cat("Searching for ", binaryName, " in directory ", searchPath)
+		cat("Searching for ", binaryName, " in directory ", dir)
 	}
 
 	# is the binary there?
-	binaryPath = file.path (searchPath, binaryName)
+	binaryPath = file.path (dir, binaryName)
 	if (file.exists (binaryPath) == TRUE) {
 
 		# do we have any patterns to check?

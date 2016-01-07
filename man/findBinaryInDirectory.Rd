@@ -7,11 +7,11 @@
 	the file pattern (which contains std-out-pattern as output if called without arguments)
 	in the path given.}
 \usage{
-findBinaryInDirectory(binaryName = NULL, searchPath = NULL,
-  patterns = NULL, verbose = FALSE)
+findBinaryInDirectory(binaryName = NULL, dir = NULL, patterns = NULL,
+  verbose = FALSE)
 }
 \arguments{
-\item{searchPath}{search the given path for the SVM binaries recursively.}
+\item{dir}{search the given path for the SVM binaries recursively.}
 
 \item{verbose}{print messages while searching?}
 

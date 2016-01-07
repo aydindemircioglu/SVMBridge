@@ -9,6 +9,9 @@ wrappertests = function (solver, trainDataX, trainDataY, testDataX, testDataY, v
 		cost = 1, 
 		gamma = 1, 
 		epsilon = 0.01, 
+		rank = 32,
+		k = 32,
+		budget = 32,
 		readModelFile = TRUE,
 		verbose = verbose
 	)  

@@ -1,53 +1,28 @@
 #!/usr/bin/Rscript  --vanilla 
 
-# make it more general so that all solver can be tested.....
+# This test will try to download each of the SVM software packages
+# that the SVMBridge provides a pre-fabricated wrapper for. 
+# This is done via SVN, so SVN needs to be accessible from the command line.
+# Then the package will be compiled via make, so some compile tool must be available.
+# Finally the software will undergo simple train/testcalls.
+# The results are checked by testthat.
 
-# as LIBSVM has to be compiled, this script expects a c++-compiler and make.
+library (SVMBridge)
 
-
-library(SVMBridge)
-
-source("wrappertests.R")
-
+source ("wrappertests.R")
+source ("downloadSoftware.R")
 
 # VERY VERY IMPORTANT!
 # else SVM does not work 100p the same, as the data is shuffled.
 set.seed(42)
 
-solver = "LIBSVM"
-verbose = FALSE
+verbose = TRUE
 
 modelFile = tempfile()
 predictionsFile = tempfile()
 
 
-
-## 1. first we need LIBSVM , so we download and compile it.
-
-downloadSoftware = function (solver) {
-	
-	if ((solver == "BSGD") || (solver == "LLSVM")) {
-		solver = "BudgetedSVM"
-	}
-	
-	if ((solver == "CVM") || (solver == "BVM")) {
-		solver = "libCVM"
-	}
-
-	tmpDir = tempdir()
-	print (tmpDir)
-	softwareDir = file.path (tmpDir, solver)
-	system2 ("svn", args = c("checkout", paste0 ("https://github.com/aydindemircioglu/SVMBridge/trunk/software/", solver), softwareDir ))
-	system2 ("make", args = c("-C", softwareDir))
-
-	return (softwareDir )
-}
-
-downloadSoftware ("BVM")
-
-stop ("B")
-
-## 2. prepare the data
+## prepare the data
 
 	# create binary iris 
 	shufflediris = iris[sample(nrow(iris)),]
@@ -71,8 +46,14 @@ stop ("B")
 	
 	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
 	for (solver in solvers) {
+		cat ("\n\n\n####################################################################################################\n\n\n")
 		softwareDir = downloadSoftware (solver)
-		addSVMPackage (solver, wrapperPath = "../../inst/wrapper", softwarePath = softwareDir)
-		wrappertests ("LIBSVM", trainDataX, trainDataY, testDataX, testDataY, verbose)
+		addSVMPackage (solver, wrapperPath = "../../inst/wrapper", softwarePath = softwareDir, verbose = verbose)
+		wrappertests (solver, trainDataX, trainDataY, testDataX, testDataY, verbose)
 	}
 	
+	
+	for (solver in solvers) {
+		s = getSVMObject (solver)
+		print (s)
+	}
