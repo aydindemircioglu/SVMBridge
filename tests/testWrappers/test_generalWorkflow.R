@@ -43,7 +43,7 @@ downloadSoftware = function (solver) {
 	return (softwareDir )
 }
 
-downloadSoftware ("CVM")
+downloadSoftware ("BVM")
 
 stop ("B")
 

@@ -1,7 +1,0 @@
-http://download.joachims.org/svm_perf/current/svm_perf_linux64.tar.gz
-Linux (32-bit): http://download.joachims.org/svm_perf/current/svm_perf_linux32.tar.gz
-Linux (64-bit): http://download.joachims.org/svm_perf/current/svm_perf_linux64.tar.gz
-Cygwin: http://download.joachims.org/svm_perf/current/svm_perf_cygwin.tar.gz
-Windows: http://download.joachims.org/svm_perf/current/svm_perf_windows.zip
-Please send me email and let me know that you got it. The archive contains the source code of the most r
-
