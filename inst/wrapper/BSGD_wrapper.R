@@ -1,10 +1,10 @@
-#!/usr/bin/Rscript  --vanilla 
+#!/usr/bin/Rscript  --vanilla
 
 #
-# SVMBridge 
+# SVMBridge
 #
 #		(C) 2015, by Aydin Demircioglu
-# 
+#
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -26,8 +26,8 @@
 #' @param	trainDataFile	file to read training data from.
 #' @param	modelFile	path to model, defaults to a temporary file (given by R).
 #' @param	extraParameter	extra parameters for solver
-#' @param	primalTime		
-#' @param	wallTime		
+#' @param	primalTime
+#' @param	wallTime
 #' @param	cost		cost parameter C.
 #' @param	gamma		gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...).
 #' @param	budget		budget parameter.
@@ -39,10 +39,10 @@ createTrainingArguments.BSGD = function (
 	trainDataFile = "",
 	modelFile = "",
 	extraParameter = "",
-	primalTime = 10, 
+	primalTime = 10,
 	wallTime = 8*60,
-	cost = 1, 
-	gamma = 1, 
+	cost = 1,
+	gamma = 1,
 	budget = 128,
 	epochs = 1, ...) {
 
@@ -78,17 +78,17 @@ createTrainingArguments.BSGD = function (
 createTestArguments.BSGD = function (
 	x,
 	testDataFile = "",
-	modelFile = "", 
-	predictionOutput = "/dev/null", 
+	modelFile = "",
+	predictionOutput = "/dev/null",
 	...) {
 		args = c(
 			"-v 1",
 		#        "-o 1", only works for BSGD for now
 			testDataFile,
 			modelFile,
-			predictionOutput 
+			predictionOutput
 		)
-  
+
 	return (args)
 }
 
@@ -139,35 +139,35 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 	invertLabels = FALSE
 
 	# grep needed information step by step, the bias is on the threshold line
-	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) 
+	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0)
 	{
 		if (grepl("MODEL", oneLine) == TRUE) break;
-      
+
 		# gamma value
-		if (grepl("KERNEL_GAMMA_PARAM", oneLine) == TRUE) 
+		if (grepl("KERNEL_GAMMA_PARAM", oneLine) == TRUE)
 		{
 		    pattern <- "KERNEL_GAMMA_PARAM: (.*)"
-		    gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
-		}  
-	      
+		    gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
+		}
+
 		if (grepl("NUMBER_OF_WEIGHTS", oneLine) == TRUE) {
 		    pattern <- "NUMBER_OF_WEIGHTS: (.*)"
-		    totalSV = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+		    totalSV = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
 		}
-		
+
 		# bias
-		if (grepl("BIAS_TERM", oneLine) == TRUE) 
+		if (grepl("BIAS_TERM", oneLine) == TRUE)
 		{
 		    pattern <- "BIAS_TERM: (.*)"
-		    bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
+		    bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
 		}
-      
+
 		# order of labels
-		if (grepl("LABELS", oneLine) == TRUE) 
+		if (grepl("LABELS", oneLine) == TRUE)
 		{
 			pattern <- "LABELS: (.*)"
-			order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) 
-		
+			order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
+
 			if (order == "1 -1") {
 				invertLabels = FALSE
 			}
@@ -175,42 +175,42 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 			if (order == "-1 1") {
 				invertLabels = TRUE
 			 }
-			
+
 			labels = unlist(strsplit(order, split = "\\s"))
-		}  
+		}
 	}
-  
-  
-	# read and interprete data 
+
+
+	# read and interprete data
 	# basically all data is sparse data format, but the data around this differs
 # 	model = readSparseFormat(con)
-	
+
 	# these will contain the coefficients and the  svs.
 	supportvectors <- matrix()
 	coefficients <- matrix()
 	weights <- matrix()
-	
+
 	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
-	
+
 		# remove comment if necesary
 		oneLine = stringr::str_split_fixed(oneLine, pattern = '#', n = 2)[1]
-		
+
 		# split line by " "
 		svec = vector(length = 1)
 		parts = strsplit (oneLine, " ")
-		
+
 		# where the support vector data starts in the row
 		fvpos = 1
 		coeff = vector(length = 1)
 		w = vector (length = 1)
-		
+
 		# read part for part until it is something positive
 		for (i in seq(1, length(parts[[1]]))) {
 			fparts <- strsplit (parts[[1]][i], ":")
 			if (!is.na(fparts[[1]][1])) {
 				ind = as.numeric(fparts[[1]][1])
 				value = as.numeric(fparts[[1]][2])
-		      
+
 				# check if we have part of some feature vector
 				if (ind > 0) {
 					# yes, so quit the whole loop
@@ -224,12 +224,12 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 				stop ("Should never happen. Really.")
 			}
 		}
-		
+
 		# grep feature vectors one by one
 		for (i in fvpos:length(parts[[1]])) {
 			# split by :
 			fparts <- strsplit (parts[[1]][i], ":")
-			
+
 			# if we have anything, add it to our vector
 			if (!is.na(fparts[[1]][1])) {
 				ind = as.numeric(fparts[[1]][1])
@@ -237,39 +237,39 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 				svec[ind] <- value
 			}
 		}
-    
+
 		# make sure our vector has no NAs
 		#print (svec)
 		svec[is.na(svec)] <- 0
-		
+
 		# stack matrices
 		supportvectors <- plyr::rbind.fill.matrix(supportvectors, t(svec))
 		coefficients <- plyr::rbind.fill.matrix(coefficients, t(coeff))
 		weights <- plyr::rbind.fill.matrix(weights, t(w))
 	}
-	
+
 	# crop first NA list (why does it even exist?..)
 	supportvectors = supportvectors[-1, ]
 	coefficients = coefficients[-1, ]
 	weights = weights[-1, ]
-	
+
 	# remove possible NA values that occur if the very last
 	# entry of a sparse vector is omitted because of sparsity
 	supportvectors[is.na(supportvectors)] <- 0
-	coefficients[is.na(coefficients)] <- 0 
-	weights[is.na(weights)] <- 0 
+	coefficients[is.na(coefficients)] <- 0
+	weights[is.na(weights)] <- 0
 
 	dimnames(supportvectors) = NULL
 	dimnames(coefficients ) = NULL
 	model = list("SV" = supportvectors, "alpha" = coefficients, "w" = weights)
-	
+
 	# add header information
 	model$gamma = gamma
 	model$bias = bias
 	model$modelType = "BSGD"
 	model$nSV	= c(sum(model$alpha[,1] > 0), sum(model$alpha[,1] < 0))
 	model$label = as.numeric(labels)
-	
+
 	# sanity check
 	if (sum(model$nSV) != totalSV) {
 		stop ("Counted number of SV and info given in header do not fit.")
@@ -277,19 +277,19 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 
 	# do we need to invert the labels? in this case we invert the coefficients
 	if (invertLabels == TRUE) {
-		if (verbose == TRUE)  
+		if (verbose == TRUE)
 			cat(" Inverting Labels.")
 
-		# invert alphas 
+		# invert alphas
 		model$alpha = -model$alpha
-		
-		# this is also needed.. 
+
+		# this is also needed..
 		model$bias = -bias
 	}
 
 	# close connection
 	close(con)
-	
+
 	# remove extra row if necessary
 	if (singleBinaryColumn == TRUE) {
 		if (length (model$label) == 2) {
@@ -298,11 +298,11 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 				cat ("  Removing Column of extra alpha values.\n")
 		}
 	}
-	
+
 	# return
 	return (model)
 }
- 
+
 
 
 #' writeModel.BSGD
@@ -316,16 +316,16 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 	if (verbose == TRUE) {
 		cat ("Writing BSGD Model..\n")
 	}
- 
+
 	dim = ncol (model$SV)
 	nClasses = 2
 	nWeights = nrow (model$SV)
 	gamma = model$gamma * 2
 	degree = 1
 	coef = 1
-	
+
 	print (as.character (paste (model$label, sep = " ", collapse = " ")))
-	
+
     # open connection
     modelFileHandle <- file(modelFile, open = "w+")
 	writeLines(paste ("ALGORITHM: 4", sep = ""), modelFileHandle )
@@ -358,7 +358,7 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 		sparseLine = paste(dumpSparseLine (model$alpha[r,], invertIndex = TRUE), " ", dumpSparseLine (model$SV[r,]), "\n", sep = '')
 		writeLines(sparseLine, modelFileHandle, sep = "" )
 	}
-	
+
 	# close connection
 	close(modelFileHandle)
 }
@@ -368,7 +368,7 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 #' Detect whether a file is a model for BSGD
 #'
 #' @param	x		Object
-#' @param	modelFile		File to check 
+#' @param	modelFile		File to check
 #' @param	verbose		Verbose output?
 #'
 #' @return	TRUE if the given modelFile exists and fits the BSGD model, or FALSE if not.
@@ -377,17 +377,17 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 
 detectModel.BSGD = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
-	if (is.null (modelFile) == TRUE) 
+	if (is.null (modelFile) == TRUE)
 		return (FALSE)
-	
-	if (file.exists (modelFile) == FALSE) 
+
+	if (file.exists (modelFile) == FALSE)
 		return (FALSE)
-		
+
 	line = readLines(modelFile, n = 1)
 	if (line == "ALGORITHM: 4") {
 		return (TRUE)
 	}
-	
+
 	return (FALSE)
 }
 
@@ -399,7 +399,7 @@ detectModel.BSGD = function (x, modelFile = NULL, verbose = FALSE) {
 #
 
 # dummy probably
- 
+
 #' Read predictions from BSGD
 #'
 #' @param	predictionsFile		file to read predictions from
@@ -413,13 +413,13 @@ readPredictions.BSGD <- function (x, predictionsFilePath = "", verbose = FALSE) 
 	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
 		predictions = c(predictions, as.numeric(oneLine))
     }
-    
+
 	if (verbose == TRUE) {
 		print(predictions)
 	}
-			
+
 	close (con)
-	
+
     return (predictions)
 }
 
@@ -437,15 +437,15 @@ findSoftware.BSGD = function (x, searchPath = "./", verbose = FALSE) {
 		if (verbose == TRUE) {
 			BBmisc::messagef("    BSGD Object: Executing search for software for %s", x$method)
 		}
-		
+
 		trainBinaryPattern = "^budgetedsvm-train$"
 		trainBinaryOutputPattern = "budgetedsvm-train .options. train_file .model_file."
 		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
 
 		# TODO: check for empty path+handling
-		
+
 		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found train binary at %s", binaryPath) 
+			BBmisc::messagef("--> Found train binary at %s", binaryPath)
 		}
 		x$trainBinaryPath = binaryPath
 
@@ -454,13 +454,19 @@ findSoftware.BSGD = function (x, searchPath = "./", verbose = FALSE) {
 		testBinaryOutputPattern = "budgetedsvm-predict .options. test_file model_file output_file"
 
 		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
-		
+
 		# TODO: check for empty path+handling
 
 		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found test binary at %s", binaryPath) 
+			BBmisc::messagef("--> Found test binary at %s", binaryPath)
 		}
 		x$testBinaryPath = binaryPath
 
 		return(x)
 }
+
+	print.BSGD = function(x) {
+		cat("Solver: ", x$method)
+		cat("    Training Binary at ", x$trainBinaryPath)
+		cat("    Test Binary at ", x$testBinaryPath)
+	}

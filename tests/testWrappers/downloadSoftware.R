@@ -1,5 +1,9 @@
 
-downloadSoftware = function (solver) {
+downloadSoftware = function (solver, verbose = FALSE) {
+	
+	if (verbose == TRUE) {
+		cat ("Downloading and Building solver ", solver, "\n")
+	}
 	
 	if ((solver == "BSGD") || (solver == "LLSVM")) {
 		solver = "BudgetedSVM"
@@ -9,11 +13,18 @@ downloadSoftware = function (solver) {
 		solver = "libCVM"
 	}
 
+	# generate paths
 	tmpDir = tempdir()
-	print (tmpDir)
 	softwareDir = file.path (tmpDir, solver)
-	system2 ("svn", args = c("checkout", paste0 ("https://github.com/aydindemircioglu/SVMBridge/trunk/software/", solver), softwareDir ))
-	system2 ("make", args = c("-C", softwareDir))
+	
+	downloadAndBuild = function (softwareDir) {
+		system2 ("svn", stdout = NULL, stderr = NULL, args = c("checkout", paste0 ("https://github.com/aydindemircioglu/SVMBridge/trunk/software/", solver), softwareDir ))
+		system2 ("make", stdout = NULL, stderr = NULL, args = c("-C", softwareDir))
+	}
+	if (verbose == TRUE)
+		downloadAndBuild(softwareDir)
+	else
+		suppressMessages(downloadAndBuild(softwareDir))
 
 	return (softwareDir )
 }

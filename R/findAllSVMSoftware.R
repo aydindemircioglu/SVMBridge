@@ -20,9 +20,10 @@
 
 
 
-#' findAllSVMSoftware 
-#'		Given a search path, it will try to find the software packages
-#'		for all registered SVM package by calling the 'findSoftware' routine of each known wrapper.
+#' Find All SVM Software 
+#'
+#' Given a search path, it will try to find the software packages
+#' for all registered SVM package by calling the 'findSoftware' routine of each known wrapper.
 #'
 #' @param 	searchPath	 	search the given path for the SVM binaries of all known SVM packages.
 #' @param	verbose			print messages while searching?
@@ -32,12 +33,17 @@
 #'
 #' @export
 findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
+	
+	checkmate::checkString (searchPath)
+	
 	if (verbose == TRUE) {
 		cat("-Finding all SVM software packages:")
 	}
 	
-	for (i in seq(1, length(SVMBridgeEnv$packages))) {
-		method = SVMBridgeEnv$packages[[i]]$method
+	for (method in getSVMMethodsAsList()) {
+		if (verbose == TRUE) {
+			cat ("    Seaching for ", method, "\n")
+		}
 		findSVMSoftware (method = method, searchPath = searchPath, verbose = verbose)
 	}
 }

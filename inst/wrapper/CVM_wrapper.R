@@ -1,10 +1,10 @@
-#!/usr/bin/Rscript  --vanilla 
+#!/usr/bin/Rscript  --vanilla
 
 #
-# SVMBridge 
+# SVMBridge
 #
 #		(C) 2015, by Aydin Demircioglu
-# 
+#
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -18,7 +18,7 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
-  
+
 #source ("./universalWrapper.R")
 
 
@@ -26,21 +26,21 @@
 # add functions to allow for searching the binaries
 
 
-createTrainingArguments.CVM = function (x, 
+createTrainingArguments.CVM = function (x,
 						trainDataFile = "",
 						modelFile = "",
 						extraParameter = "",
-						primalTime = 10, 
+						primalTime = 10,
 						wallTime = 8*60,
 						kernelCacheSize = 1024,
-						cost = 1, 
-						gamma = 1, 
+						cost = 1,
+						gamma = 1,
 						epsilon = 0.001, ...) {
     args = c(
         "-s 6",                         # CVM = 6, BVM = 9
         "-t 2",
-        sprintf("-c %.16f", cost), 
-        sprintf("-m %d", kernelCacheSize), # in MB 
+        sprintf("-c %.16f", cost),
+        sprintf("-m %d", kernelCacheSize), # in MB
         sprintf("-g %.16f", gamma),
         sprintf("-e %.16f", epsilon),
         extraParameter,
@@ -61,7 +61,7 @@ createTestArguments.CVM = function (x,
         modelFile,
         "/dev/null"                     # outfile, not needed
     )
-    
+
     return (args)
 }
 
@@ -71,7 +71,7 @@ extractTrainingInfo.CVM = function (x, output) {
     # maybe not the best way to grep the string
     pattern <- "Accuracy = (\\d+\\.?\\d*).*"
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-    
+
     return (err)
 }
 
@@ -81,7 +81,7 @@ extractTestInfo.CVM = function (x, output) {
 	# maybe not the best way to grep the string
     pattern <- "Accuracy = (\\d+\\.?\\d*).*"
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-    
+
     return (err)
 }
 
@@ -97,12 +97,12 @@ writeModel.CVM = function (x, model = NA, modelFile = "./model", verbose = FALSE
 		return (ret)
 	}
 
-	
+
 
 #' Detect whether a file is a model for CVM.
 #'
 #' @param	x		Object
-#' @param	modelFile		File to check 
+#' @param	modelFile		File to check
 #' @param	verbose		Verbose output?
 #'
 #' @return	TRUE if the given modelFile exists and fits the CVM model, or FALSE if not.
@@ -111,23 +111,23 @@ writeModel.CVM = function (x, model = NA, modelFile = "./model", verbose = FALSE
 
 detectModel.CVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
-	if (is.null (modelFile) == TRUE) 
+	if (is.null (modelFile) == TRUE)
 		return (FALSE)
-	
+
 	# read first lines and detect magic marker
-	if (file.exists (modelFile) == FALSE) 
+	if (file.exists (modelFile) == FALSE)
 		return (FALSE)
-		
+
 	line = readLines(modelFile, n = 1)
 	if (line == "svm_type cvc") {
 		return (TRUE)
 	}
-	
+
 	return (FALSE)
 }
 
 
- 
+
 #
 # @param[in]	predictionsFile		file to read predictions from
 # @return		array consisting of predictions
@@ -144,15 +144,15 @@ findSoftware.CVM = function (x, searchPath = "./", verbose = FALSE) {
 		if (verbose == TRUE) {
 			BBmisc::messagef("    CVM Object: Executing search for software for %s", x$method)
 		}
-		
+
 		trainBinaryPattern = "^svm-train$"
 		trainBinaryOutputPattern = 'bvm-train .options. training_set_file .model_file.'
 		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
 
 		# TODO: check for empty path+handling
-		
+
 		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found train binary at %s", binaryPath) 
+			BBmisc::messagef("--> Found train binary at %s", binaryPath)
 		}
 		x$trainBinaryPath = binaryPath
 
@@ -161,13 +161,20 @@ findSoftware.CVM = function (x, searchPath = "./", verbose = FALSE) {
 		testBinaryOutputPattern = 'bvm-predict .options. test_file model_file output_file'
 
 		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
-		
+
 		# TODO: check for empty path+handling
 
 		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found test binary at %s", binaryPath) 
+			BBmisc::messagef("--> Found test binary at %s", binaryPath)
 		}
 		x$testBinaryPath = binaryPath
 
 		return(x)
+	}
+
+
+	print.CVM = function(x) {
+		cat("Solver: ", x$method)
+		cat("    Training Binary at ", x$trainBinaryPath)
+		cat("    Test Binary at ", x$testBinaryPath)
 	}

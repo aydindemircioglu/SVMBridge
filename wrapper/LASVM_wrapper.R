@@ -92,14 +92,14 @@
 
 
 	readModel.LASVM = function (x, modelFile = './model', verbose = FALSE) {
-		ret = readModel.LIBSVM (modelFile = modelFile, verbose = verbose)
+		ret = readLIBSVMModel(modelFile = modelFile, verbose = verbose)
 		return (ret)
 	}
 
 
 
 	writeModel.LASVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
-		ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
+		ret = writeLIBSVMModel (model = model, modelFile = modelFile, verbose = verbose)
 		return (ret)
 	}
 
@@ -133,6 +133,21 @@ detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 
 
+#' Check if model is valid.
+#'
+#' @param	model	model to check
+#'
+#' @return	TRUE if model is valid, FALSE if noy.
+#'
+checkModel.LASVM = function (model) {
+	check = TRUE
+	check = check & checkmate::testNumeric (model$gamma)
+	check = check & checkmate::assertInteger (model$nSV)
+	return (check)
+}
+
+
+
 	#
 	# @param[in]	predictionsFile		file to read predictions from
 	# @return		array consisting of predictions
@@ -140,7 +155,7 @@ detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 
 	readPredictions.LASVM = function (x, predictionsFile = "", verbose = FALSE) {
-		ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
+		ret = readLIBSVMPredictions (predictionsFile = predictionsFile, verbose = verbose)
 		return (ret)
 	}
 
@@ -166,3 +181,6 @@ detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 		cat("    Training Binary at ", x$trainBinaryPath)
 		cat("    Test Binary at ", x$testBinaryPath)
 	}
+
+	
+	

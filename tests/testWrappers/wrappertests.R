@@ -1,7 +1,5 @@
 
 wrappertests = function (solver, trainDataX, trainDataY, testDataX, testDataY, verbose) {
-	cat("\n\n\n======= Train ", solver, ", Traindata from Memory, Model to Memory\n")
-	print (getSVMObject(solver))
 	trainObj =  trainSVM(
 		method = solver,
 		trainDataX = trainDataX, 
@@ -15,7 +13,9 @@ wrappertests = function (solver, trainDataX, trainDataY, testDataX, testDataY, v
 		readModelFile = TRUE,
 		verbose = verbose
 	)  
-	expect_equal (trainObj$model$nSV, c(20, 12))
+	expErrors = list("LIBSVM" = c(20, 12), "LASVM" = c(22, 12), "BSGD" = c(10, 8), "SVMperf" = c(21, 11), 
+								"BVM" = c(18, 16),  "CVM" = c(18, 16),  "LLSVM" = c(21, 11))
+	expect_equal (trainObj$model$nSV, expErrors[[solver]])
 	
 	testObj =  testSVM(
 		method = solver,
@@ -24,7 +24,9 @@ wrappertests = function (solver, trainDataX, trainDataY, testDataX, testDataY, v
 		model = trainObj$model,
 		verbose = verbose
 	)  
-	expect_equal (testObj$testError, 0.06)
+	
+	expErrors = c("LIBSVM" = 0.06, "LASVM" = 0.06, "BSGD" = 0.06, "SVMperf" = 0.06, "BVM" = 0.04, "CVM" = 0.04, "LLSVM" = 0.06)
+	expect_lte (abs(testObj$testError - expErrors[solver]), 0.001)
 }
 
 f = function () {

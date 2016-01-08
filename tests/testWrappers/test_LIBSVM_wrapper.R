@@ -7,7 +7,7 @@ test_that(" readModel.LIBSVM (read/write operations) work with binary models", {
 	addSVMPackage (method = solver, verbose = FALSE)
 	SVMObject = SVMBridgeEnv$packages[[solver]]
 	
-	svmatrix = readModel.LIBSVM(SVMObject, modelFile = dataset)
+	svmatrix = readModel.LIBSVM (SVMObject, modelFile = dataset)
 	writeModel.LIBSVM(SVMObject, svmatrix, tmp)
 	svmatrix2 = readModel.LIBSVM(SVMObject, modelFile = tmp)
 

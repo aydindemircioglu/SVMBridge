@@ -42,18 +42,34 @@ predictionsFile = tempfile()
 	writeSparseData(filename = testDataFile, X = testDataX, Y = testDataY)
 
 	
-## 3. now do all the thirty different ways of calling trainSVM 
+## 1. test finding all software first
 	
+	# stupid, stupid: need to clear up old wrappers, else we find LIBSVM and then test may fail.
+	detach("package:SVMBridge", unload = TRUE)
+	library(SVMBridge)
+
 	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
+	solvers = c("LASVM")
 	for (solver in solvers) {
-		cat ("\n\n\n####################################################################################################\n\n\n")
+		cat ("Downloading and building software ", solver, "\n")
 		softwareDir = downloadSoftware (solver)
-		addSVMPackage (solver, wrapperPath = "../../inst/wrapper", softwarePath = softwareDir, verbose = verbose)
+		addSVMPackage (solver, wrapperPath = "../../inst/wrapper", verbose = verbose)
+	}
+
+	print (getSVMMethodsAsList())
+	findAllSVMSoftware (file.path(softwareDir, ".."), verbose = verbose)
+
+	
+##  now do all the thirty different ways of calling trainSVM 
+	
+	for (solver in solvers) {
+		context(solver)
 		wrappertests (solver, trainDataX, trainDataY, testDataX, testDataY, verbose)
 	}
 	
-	
-	for (solver in solvers) {
-		s = getSVMObject (solver)
-		print (s)
+	if (verbose == TRUE) {
+		for (solver in solvers) {
+			s = getSVMObject (solver)
+		}
 	}
+	

@@ -30,7 +30,7 @@
 #'
 #' @export
 
-getSVMMethodsAsList = function (verbose = TRUE) {
+getSVMMethodsAsList = function (verbose = FALSE) {
 
 	knownPackages = c()
 	if (verbose == TRUE) {
@@ -39,10 +39,10 @@ getSVMMethodsAsList = function (verbose = TRUE) {
 	
 	for (package in SVMBridgeEnv$packages) {
 		if (verbose == TRUE) {
-			cat ("    -", package, "\n")
+			cat ("    -", package$method, "\n")
 		}
 
-		knownPackages = c(knownPackages, package)
+		knownPackages = c(knownPackages, package$method)
 	}
 	
 	return (knownPackages)

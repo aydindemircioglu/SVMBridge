@@ -60,11 +60,11 @@ findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 				cat ("       ", SVMObject$trainBinaryPath, "\n")
 				cat ("       ", SVMObject$testBinaryPath, "\n")
 			}
+			setSVMObject (method, SVMObject)
 			break
 		}
 	}
 	
-	setSVMObject (method, SVMObject)
 	return (is.null (SVMObject$trainBinaryPath) == FALSE)
 }
 
