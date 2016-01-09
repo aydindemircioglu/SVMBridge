@@ -18,7 +18,7 @@ downloadSoftware = function (solver, verbose = FALSE) {
 	softwareDir = file.path (tmpDir, solver)
 	
 	downloadAndBuild = function (softwareDir) {
-		system2 ("svn", stdout = NULL, stderr = NULL, args = c("checkout", paste0 ("https://github.com/aydindemircioglu/SVMBridge/trunk/software/", solver), softwareDir ))
+		system2 ("svn", stdout = NULL, stderr = NULL, args = c("checkout", "--force", paste0 ("https://github.com/aydindemircioglu/SVMBridge/trunk/software/", solver), softwareDir ))
 		system2 ("make", stdout = NULL, stderr = NULL, args = c("-C", softwareDir))
 	}
 	if (verbose == TRUE)

@@ -4,7 +4,7 @@
 \alias{getSVMMethodsAsList}
 \title{getSVMMethodsAsList}
 \usage{
-getSVMMethodsAsList(verbose = TRUE)
+getSVMMethodsAsList(verbose = FALSE)
 }
 \arguments{
 \item{verbose}{be verbose in output?}

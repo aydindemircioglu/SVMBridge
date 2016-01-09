@@ -83,9 +83,9 @@ generateZSVLowBound <- function (filePath = "./zsvLowBound.data", n = 1, seed = 
     # open connection  
     filePath = file.path(dirname(filePath), paste (basename(filePath), "_", toString(n), sep = ""))
     con  <- file(filePath, open = "w")
-    messagef ("\t\tWriting zsvLowBound example with %d examples to %s", n, filePath)
+    cat("\t\tWriting zsvLowBound example with ", n, " examples to ", filePath, "\n")
     
-    n = ceil(1/eps)
+    n = ceiling(1/eps)
     
     xf = vector()
     yf = vector()
@@ -130,7 +130,7 @@ generateXORClusters <- function (filePath = "./xorcluster.data", n = 1, seed = 4
     # open connection  
     filePath = file.path(dirname(filePath), paste (basename(filePath), "_", toString(n), sep = ""))
     con  <- file(filePath, open = "w")
-    messagef ("\t\tWriting linear 5 example with %d examples to %s", n, filePath)
+    cat("\t\tWriting linear 5 example with ", n, " examples to ", filePath, "\n")
     
     xf = vector()
     yf = vector()
@@ -179,7 +179,7 @@ generate2621 <- function (filePath = "./2621.data", n = 3, seed = 42, asymmetric
     # open connection  
     filePath = file.path(dirname(filePath), paste (basename(filePath), "_", toString(n), sep = ""))
     con  <- file(filePath, open = "w")
-    messagef ("\t\tWriting 2621 example with %d examples to %s", n, filePath)
+    cat("\t\tWriting 2621 example with ", n, " examples to ", filePath, "\n")
 
 
     xf = vector()
@@ -241,7 +241,7 @@ generateRadial5 <- function (filePath = "./radial5.data", n = 1, seed = 42)
     # open connection  
     filePath = file.path(dirname(filePath), paste (basename(filePath), "_", toString(n), sep = ""))
     con  <- file(filePath, open = "w")
-    messagef ("\t\tWriting radial 5 example with %d examples to %s", n, filePath)
+    cat("\t\tWriting radial 5 example with ", n, " examples to ", filePath, "\n")
     
     # generate uniformly from -5..5
     xc = runif(n, min=-5, max=5)
@@ -316,7 +316,7 @@ generateLinear5 <- function (filePath = "./linear5.data", n = 1, seed = 42)
     # open connection  
     filePath = file.path(dirname(filePath), paste (basename(filePath), "_", toString(n), sep = ""))
     con  <- file(filePath, open = "w")
-    messagef ("\t\tWriting linear 5 example with %d examples to %s", n, filePath)
+    cat("\t\tWriting linear 5 example with ", n, " examples to ", filePath, "\n")
     
     # generate uniformly from -5..5
     xc = runif(n, min=-5, max=5)
@@ -393,7 +393,7 @@ generateXORExample2D <- function (filePath = "./xorexample2D.data", n = 1)
   # open connection  
   filePath = file.path(dirname(filePath), paste (basename(filePath), "_", toString(n), sep = ""))
   con  <- file(filePath, open = "w")
-  messagef ("\t\tWriting XOR example with %d examples to %s", n, filePath)
+  cat("\t\tWriting XOR example with ", n, " examples to ", filePath, "\n")
   
   # just dump it without much thought
   for (i in seq (1,n)) {
@@ -418,7 +418,7 @@ generateSimpleExample1DChain <- function (filePath = "./easyexample1DChain.data"
   # open connection  
   filePath = file.path(dirname(filePath), paste (basename(filePath), "_", toString(n), sep = ""))
   con  <- file(filePath, open = "w")
-  messagef ("\t\tWriting easy example with %d examples to %s", n, filePath)
+  cat("\t\tWriting easy example with ", n, " examples to ", filePath, "\n")
   
   # just dump it without much thought
   for (i in seq (1,n)) {
@@ -439,7 +439,7 @@ generateSimpleExample2D <- function (filePath = "./easyexample2D.data", n = 1)
   # open connection  
   filePath = file.path(dirname(filePath), paste (basename(filePath), "_", toString(n), sep = ""))
   con  <- file(filePath, open = "w")
-  messagef ("\t\tWriting easy example with %d examples to %s", n, filePath)
+  cat("\t\tWriting easy example with ", n, " examples to ", filePath, "\n")
   
   # just dump it without much thought
   for (i in seq (0,n)) {
@@ -465,7 +465,7 @@ generateEasyExample2D <- function (filePath = "./easyexample2D.data", n = 1)
   # open connection  
   filePath = file.path(dirname(filePath), paste (basename(filePath), "_", toString(n), sep = ""))
   con  <- file(filePath, open = "w")
-  messagef ("\t\tWriting easy example with %d examples to %s", n, filePath)
+  cat("\t\tWriting easy example with ", n, " examples to ", filePath, "\n")
 
 	# two points = SV
 	writeLines( paste( "1 1:1 2:0"), con)
@@ -493,7 +493,7 @@ generateSimpleExample <- function (filePath = "./easyexample.data", n = 1, scale
     # open connection  
     filePath = file.path(dirname(filePath), paste (basename(filePath), "_", toString(n), sep = ""))
     con  <- file(filePath, open = "w")
-    messagef ("\t\tWriting easy example with %d examples to %s", n, filePath)
+    cat("\t\tWriting easy example with ", n, " examples to ", filePath, "\n")
 
     correctionFactor = 1
     if (scale == TRUE)
@@ -541,7 +541,7 @@ generateSimpleThreePoint <- function (filePath = "./easyexample.data")
     # open connection  
     filePath = file.path(dirname(filePath), paste (basename(filePath), sep = ""))
     con  <- file(filePath, open = "w")
-    messagef ("\t\tWriting easy example with 3 points to %s", filePath)
+    cat("\t\tWriting easy example with 3 points to %s", filePath)
   
     # for now "hard-coded" example
     # just dump it without much thought

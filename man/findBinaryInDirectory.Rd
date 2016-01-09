@@ -11,13 +11,13 @@ findBinaryInDirectory(binaryName = NULL, dir = NULL, patterns = NULL,
   verbose = FALSE)
 }
 \arguments{
+\item{binaryName}{search the given path for the SVM binaries recursively.}
+
 \item{dir}{search the given path for the SVM binaries recursively.}
 
+\item{patterns}{pattern for the binary file}
+
 \item{verbose}{print messages while searching?}
-
-\item{pattern}{pattern for the binary file}
-
-\item{outputPattern}{pattern for the stdout output of the binary}
 }
 \value{
 name of the found binary matching the pattern
@@ -30,6 +30,7 @@ findBinaryInDirectory.
 }
 \note{
 To make sure that the binary is correct, it will be executed!
+				This happens only if this routine is given some pattterns.
 
 If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
 }

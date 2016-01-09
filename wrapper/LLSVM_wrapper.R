@@ -244,7 +244,7 @@ readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE)
 
 # dummy for now
 writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
-		ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
+		ret = writeLIBSVMModel (model = model, modelFile = modelFile, verbose = verbose)
 		return (ret)
 	}
 
@@ -278,15 +278,27 @@ detectModel.LLSVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 
 
-# dummy for now
-readPredictions.LLSVM = function (x, predictionsFile = "", verbose = FALSE) {
-		ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
+	# dummy for now
+	readPredictions.LLSVM = function (x, predictionsFile = "", verbose = FALSE) {
+		ret = readLIBSVMPredictions (predictionsFile = predictionsFile, verbose = verbose)
 		return (ret)
 	}
 
-findSoftware.LLSVM = function (x, searchPath = "./", verbose = FALSE) {
-		x = findSoftware.BSGD (x, searchPath, verbose)
-		return(x)
+	findSoftware.LLSVM = function (x, searchPath = "./", verbose = FALSE) {
+		if (verbose == TRUE) {
+				cat ("    LLSVM Object: Executing search for software for ", x$method)
+			}
+	
+		trainBinaryPattern = "budgetedsvm-train"
+		trainBinaryOutputPattern = list ("budgetedsvm-train .options. train_file .model_file.")
+		testBinaryPattern = "budgetedsvm-predict"
+		testBinaryOutputPattern = list ("budgetedsvm-predict .options. test_file model_file output_file")
+
+		# can do now OS specific stuff here
+		x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern , dir = searchPath, patterns = trainBinaryOutputPattern )
+		x$testBinaryPath = findBinaryInDirectory (testBinaryPattern , dir = searchPath, patterns = testBinaryOutputPattern )
+		
+		return (x)
 	}
 
 

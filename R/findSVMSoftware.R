@@ -20,9 +20,10 @@
 
 
 
-#' findSVMSoftware 
-#'		given a search path, it will try to find the corresponding software packages
-#'		for the given method.
+#' Find software  for an SVM package.
+#'
+#' Given a search path, it will try to find the corresponding software packages
+#' for the given method.
 #'
 #' @param	method	   name of the SVM method
 #' @param   searchPath   search the given path for the SVM binaries of the given SVM method.
@@ -48,23 +49,25 @@ findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 	dirList = list.dirs(searchPath, recursive = TRUE)
     
     SVMObject = getSVMObject (method)
-    for (dir in dirList) {
-		# call the find software method of the solver
-		if (verbose == TRUE) {
-			cat ("    ", dir, "\n")
-		}
-		SVMObject = findSoftware (SVMObject, searchPath = dir, verbose = verbose)
-		if (is.null (SVMObject$trainBinaryPath) == FALSE) {
+    if (is.null(SVMObject$wrapperPath) == FALSE) {
+		for (dir in dirList) {
+			# call the find software method of the solver
 			if (verbose == TRUE) {
-				cat ("    Found binaries in", dir, "\n")
-				cat ("       ", SVMObject$trainBinaryPath, "\n")
-				cat ("       ", SVMObject$testBinaryPath, "\n")
+				cat ("    Scanning directory: ", dir, "\n")
 			}
-			setSVMObject (method, SVMObject)
-			break
+			SVMObject = findSoftware (SVMObject, searchPath = dir, verbose = verbose)
+			if (is.null (SVMObject$trainBinaryPath) == FALSE) {
+				if (verbose == TRUE) {
+					cat ("    Found binaries in", dir, "\n")
+					cat ("       ", SVMObject$trainBinaryPath, "\n")
+					cat ("       ", SVMObject$testBinaryPath, "\n")
+				}
+				setSVMObject (method, SVMObject)
+				break
+			}
 		}
 	}
-	
+		
 	return (is.null (SVMObject$trainBinaryPath) == FALSE)
 }
 

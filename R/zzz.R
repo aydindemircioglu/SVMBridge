@@ -34,7 +34,7 @@ SVMBridgeEnv = new.env(parent = emptyenv())
     devtools.install.args = "",
     devtools.name = "Aydin Demircioglu",
     devtools.desc.author = '"Aydin Demircioglu <aydin.demircioglu@ini.rub.de> [aut, cre]"',
-    devtools.desc.license = "LGPL-3 + file LICENSE",
+    devtools.desc.license = "LGPL-3",
     devtools.desc.suggests = NULL,
     devtools.desc = list()
   )

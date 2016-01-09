@@ -39,7 +39,7 @@
 checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, applyKeyFix = FALSE, verbose = TRUE) {
 
 	if (verbose == TRUE) { 
-		cat("Checking if binary has the correct output patterns.\n") 
+		cat("    Checking if binary has the correct output patterns.\n") 
 	}
 	checkmate::checkString (trainBinaryPath)
 	
@@ -53,7 +53,7 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 
 	# execute 
 	if (verbose == TRUE) { 
-		cat ("    Executing binary now.") 
+		cat ("    Executing binary now.\n") 
 	}
 	args = c()
 	
@@ -61,7 +61,7 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 	# for now: implement as a HOTFIX
 	if (applyKeyFix == TRUE) {
 		if (verbose == TRUE) { 
-			cat ("    Applying key (aka SVMperf) fix") 
+			cat ("    Applying key (aka SVMperf) fix.\n") 
 		}
 		stdout = system3 ("/bin/echo", args = c("1", "|", trainBinaryPath), verbose = FALSE)
 	} else {
@@ -77,7 +77,7 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 
 	if (matches == length(patterns)) {
 		if (verbose == TRUE) { 
-			cat ("    Output matches all the patterns.\n") 
+			cat ("    FOUND. Output matches all the patterns!\n") 
 		}
 		return (TRUE)
 	}

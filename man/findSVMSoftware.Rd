@@ -2,9 +2,7 @@
 % Please edit documentation in R/findSVMSoftware.R
 \name{findSVMSoftware}
 \alias{findSVMSoftware}
-\title{findSVMSoftware 
-	given a search path, it will try to find the corresponding software packages
-	for the given method.}
+\title{Find software  for an SVM package.}
 \usage{
 findSVMSoftware(method = NA, searchPath = NA, verbose = FALSE)
 }
@@ -16,9 +14,8 @@ findSVMSoftware(method = NA, searchPath = NA, verbose = FALSE)
 \item{verbose}{print messages while searching?}
 }
 \description{
-findSVMSoftware 
-	given a search path, it will try to find the corresponding software packages
-	for the given method.
+Given a search path, it will try to find the corresponding software packages
+for the given method.
 }
 \note{
 calls the findSoftware routine of the corresponding wrapper.

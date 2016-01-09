@@ -37,13 +37,10 @@ findAllSVMSoftware <- function (searchPath = NA, verbose = FALSE) {
 	checkmate::checkString (searchPath)
 	
 	if (verbose == TRUE) {
-		cat("-Finding all SVM software packages:")
+		cat("Finding all SVM software packages:\n")
 	}
 	
 	for (method in getSVMMethodsAsList()) {
-		if (verbose == TRUE) {
-			cat ("    Seaching for ", method, "\n")
-		}
 		findSVMSoftware (method = method, searchPath = searchPath, verbose = verbose)
 	}
 }

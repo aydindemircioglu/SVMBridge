@@ -3,5 +3,5 @@ find . -name \*.o -exec rm {} \;
 find . -name \*.so -exec rm {} \;
 find . -name "#*#" -exec rm {} \;
 
-cp R/*_wrapper.R ./inst/wrapper
+cp wrapper/*_wrapper.R ./inst/wrapper
 

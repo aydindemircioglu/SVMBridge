@@ -1,5 +1,10 @@
 context("Find SVM Software")
 
+# make sure everything is clean
+detach("package:SVMBridge", unload = TRUE)
+library(SVMBridge)
+
+
 
 test_that("finding works in general", {
 	addSVMPackage ("oneSVM", wrapperPath = "../dummy/oneSVM")
@@ -32,7 +37,8 @@ test_that("finding non existent software returns error code", {
 
 test_that("finding software without wrapper does not work", {
 	addSVMPackage ("oneSVM")
-	expect_error (findSVMSoftware ("oneSVM", searchPath = "../dummy/fourSVM"), "no applicable method")
+	e = findSVMSoftware ("oneSVM", searchPath = "../dummy/fourSVM")
+	expect_equal (FALSE, findSVMSoftware ("oneSVM", searchPath = "../dummy/fourSVM"))
 }	)
 
 

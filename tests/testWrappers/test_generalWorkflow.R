@@ -9,6 +9,8 @@
 
 library (SVMBridge)
 
+
+source ("cycletests.R")
 source ("wrappertests.R")
 source ("downloadSoftware.R")
 
@@ -16,7 +18,7 @@ source ("downloadSoftware.R")
 # else SVM does not work 100p the same, as the data is shuffled.
 set.seed(42)
 
-verbose = TRUE
+verbose = FALSE
 
 modelFile = tempfile()
 predictionsFile = tempfile()
@@ -45,27 +47,36 @@ predictionsFile = tempfile()
 ## 1. test finding all software first
 	
 	# stupid, stupid: need to clear up old wrappers, else we find LIBSVM and then test may fail.
-	detach("package:SVMBridge", unload = TRUE)
-	library(SVMBridge)
+#	detach("package:SVMBridge", unload = TRUE)
+#	library(SVMBridge)
 
 	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
-	solvers = c("LASVM")
+	solvers = c("LLSVM")
 	for (solver in solvers) {
 		cat ("Downloading and building software ", solver, "\n")
 		softwareDir = downloadSoftware (solver)
-		addSVMPackage (solver, wrapperPath = "../../inst/wrapper", verbose = verbose)
+		cat ("Unlinking ", file.path(softwareDir, ".svn"), "\n")
+		unlink (file.path(softwareDir, ".svn"), recursive = TRUE)
+		addSVMPackage (solver, wrapperPath = "../../wrapper", verbose = TRUE)
 	}
 
-	print (getSVMMethodsAsList())
+	# softwareDir will have the last directory found, e.g. ../BudgetedSVM. we need to go one above.
 	findAllSVMSoftware (file.path(softwareDir, ".."), verbose = verbose)
 
 	
 ##  now do all the thirty different ways of calling trainSVM 
 	
 	for (solver in solvers) {
-		context(solver)
+		context (paste0(solver, "wrapper"))
 		wrappertests (solver, trainDataX, trainDataY, testDataX, testDataY, verbose)
 	}
+	
+	for (solver in solvers) {
+		context (paste0(solver, "cycle"))
+		cycletests (solver, verbose)
+	}
+	
+## do a train/test cycle
 	
 	if (verbose == TRUE) {
 		for (solver in solvers) {

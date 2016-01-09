@@ -23,12 +23,15 @@
 #'		the file pattern (which contains std-out-pattern as output if called without arguments)
 #'		in the path given.
 #'
+#' @param	binaryName		search the given path for the SVM binaries recursively.
 #' @param	dir	 	search the given path for the SVM binaries recursively.
-#' @param	pattern		pattern for the binary file
-#' @param	outputPattern		pattern for the stdout output of the binary
+#' @param	patterns		pattern for the binary file
 #' @param	verbose			print messages while searching?
+#'
 #' @return	name of the found binary matching the pattern
+#'
 #' @note		To make sure that the binary is correct, it will be executed!
+#'					This happens only if this routine is given some pattterns.
 # 					Furthermore, many SVM packages derive from libSVM. as such, they
 #					often do not change the prediction binasry. We will try to sort these out,
 #					but it might be hopeless. With luck, the found binary will be left untouched,
@@ -46,14 +49,18 @@ findBinaryInDirectory = function (binaryName = NULL, dir = NULL, patterns = NULL
 	for (l in patterns) {
 		checkmate::assertString (l)
 	}
+	verbose = TRUE
 
 	if (verbose == TRUE) {
-		cat("Searching for ", binaryName, " in directory ", dir)
+		cat("    Searching for ", binaryName, " in directory ", dir,"\n")
 	}
 
 	# is the binary there?
 	binaryPath = file.path (dir, binaryName)
 	if (file.exists (binaryPath) == TRUE) {
+		if (verbose == TRUE) {
+			cat("    Found matching ", binaryPath, "\n")
+		}
 
 		# do we have any patterns to check?
 		if (length(patterns) > 0) {

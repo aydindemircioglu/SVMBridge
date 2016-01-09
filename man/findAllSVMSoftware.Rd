@@ -2,9 +2,7 @@
 % Please edit documentation in R/findAllSVMSoftware.R
 \name{findAllSVMSoftware}
 \alias{findAllSVMSoftware}
-\title{findAllSVMSoftware 
-	Given a search path, it will try to find the software packages
-	for all registered SVM package by calling the 'findSoftware' routine of each known wrapper.}
+\title{Find All SVM Software}
 \usage{
 findAllSVMSoftware(searchPath = NA, verbose = FALSE)
 }
@@ -14,9 +12,8 @@ findAllSVMSoftware(searchPath = NA, verbose = FALSE)
 \item{verbose}{print messages while searching?}
 }
 \description{
-findAllSVMSoftware 
-	Given a search path, it will try to find the software packages
-	for all registered SVM package by calling the 'findSoftware' routine of each known wrapper.
+Given a search path, it will try to find the software packages
+for all registered SVM package by calling the 'findSoftware' routine of each known wrapper.
 }
 \note{
 To make sure that the binary is correct, it will be executed! (see findBinary for more infos)

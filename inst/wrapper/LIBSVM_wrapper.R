@@ -311,39 +311,26 @@ readPredictions.LIBSVM = function (x, predictionsFile = "", verbose = FALSE) {
 findSoftware.LIBSVM = function (x, searchPath = "./", execute = TRUE, verbose = FALSE) {
 
 	if (verbose == TRUE) {
-		cat("    LIBSVM Object: Executing search for software for %s", x$method)
+		cat("    LIBSVM Object: Executing search for software for ", x$method, "\n")
 	}
 
+	# can do now OS specific stuff here
 	if(.Platform$OS.type == "unix") {
-		trainBinaryPattern = "^svm-train$"
-		testBinaryPattern = "^svm-predict$"
+		if (verbose == TRUE) {
+			cat ("Unix binaries.\n")
+		}
+		trainBinaryPattern = "svm-train"
+		testBinaryPattern = "svm-predict"
 	} else {
-		trainBinaryPattern = "^svm-train.exe"
-		testBinaryPattern = "^svm-predict.exe"
+		if (verbose == TRUE) {
+			cat ("Windows binaries.\n")
+		}
+		trainBinaryPattern = "svm-train.exe"
+		testBinaryPattern = "svm-predict.exe"
 	}
 
-	# search the train binary
-	trainBinaryOutputPattern = c('saveExponential : set exponential', '.q : quiet mode .no outputs')
-	binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, execute = execute, verbose = verbose)
-
-	# check if we really found something, if not, we stop here.
-	assertFile (binaryPath)
-
-	if (verbose == TRUE) {
-		cat("    -Found train binary at %s", binaryPath)
-	}
-	x$trainBinaryPath = binaryPath
-
-
-	# search the test binary
-	testBinaryOutputPattern = 'for one-class SVM only 0 is supported'
-	binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, execute = execute, verbose = verbose)
-	assertFile (binaryPath)
-
-	if (verbose == TRUE) {
-		cat("    -Found test binary at %s", binaryPath)
-	}
-	x$testBinaryPath = binaryPath
+	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, dir = searchPath, patterns = list ('saveExponential : set exponential', '.q : quiet mode .no outputs'))
+	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern, dir = searchPath, patterns = list ('for one-class SVM only 0 is supported'))
 
 	return(x)
 }
@@ -357,7 +344,7 @@ findSoftware.LIBSVM = function (x, searchPath = "./", execute = TRUE, verbose = 
 #' @param	x			svm object
 #'
 	print.LIBSVM = function(x) {
-		cat("Solver: ", x$method)
-		cat("    Training Binary at ", x$trainBinaryPath)
-		cat("    Test Binary at ", x$testBinaryPath)
+		cat("Solver: ", x$method, "\n")
+		cat("    Training Binary at ", x$trainBinaryPath, "\n")
+		cat("    Test Binary at ", x$testBinaryPath, "\n")
 	}
