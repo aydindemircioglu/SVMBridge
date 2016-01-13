@@ -12,6 +12,8 @@ library (SVMBridge)
 
 source ("cycletests.R")
 source ("wrappertests.R")
+source ("optimizationValuestests.R")
+source ("detectModeltests.R")
 source ("downloadSoftware.R")
 
 # VERY VERY IMPORTANT!
@@ -50,8 +52,7 @@ predictionsFile = tempfile()
 #	detach("package:SVMBridge", unload = TRUE)
 #	library(SVMBridge)
 
-	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
-	solvers = c("LLSVM")
+	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM")#, "LLSVM")
 	for (solver in solvers) {
 		cat ("Downloading and building software ", solver, "\n")
 		softwareDir = downloadSoftware (solver)
@@ -75,6 +76,20 @@ predictionsFile = tempfile()
 		context (paste0(solver, "cycle"))
 		cycletests (solver, verbose)
 	}
+	
+	solvers = c("BSGD", "LIBSVM", "LASVM", "CVM", "BVM")
+	for (solver in solvers) {
+		context (paste0(solver, " optimization values"))
+		optimizationValuestests (solver, verbose)
+	}
+	
+	
+	for (solver in solvers) {
+		context (paste0(solver, " detect models."))
+		detectModeltests (solver, verbose)
+	}
+	
+	
 	
 ## do a train/test cycle
 	

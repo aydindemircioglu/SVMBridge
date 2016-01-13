@@ -1,5 +1,22 @@
-context("OptimizationValuesRegression")
-library (SVMBridge)
+#
+# SVMBridge 
+#
+#		(C) 2015, by Aydin Demircioglu
+# 
+# SVMBridge is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SVMBridge is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# Please do not use this software to destroy or spy on people, environment or things.
+# All negative use is prohibited.
+#
+
 
 
 ## old routines (that should basically work)
@@ -176,53 +193,82 @@ computeOptimizationValuesLibSVM <- function (model, trainingDataPath,
 
 
 
-test_that("OptimizationValues works as before", {
+
+optimizationValuestests  = function (solver, verbose) {
 	
 	# for now just set a fixed C
 	C = 7.74
-
-	# test for each of these bunnies
-	solvers = c("BSGD", "LIBSVM", "LASVM", "CVM", "BVM")
-
-	for (s in solvers) {
-		# load wrapper first
-		softwarePath = "../../R"
-		wrapperPath = "../../R"
-		wrapperName = paste0 (s, "_wrapper.R")
-		
-		addSVMPackage (method = s, trainBinaryPath = NULL,
-				testBinaryPath = NULL,
-				wrapperPath  = wrapperPath ,
-				verbose = FALSE)
-
-		modelFile = file.path ("..", "data", paste (s, "australian", "model", sep = "."))
-		model = readModelFromFile(modelFile)
-		australian = readSparseData ("../data/australian.train")
-
-		oV = optimizationValues (X = as.matrix(australian$X), Y = as.matrix(australian$Y), model = model, C = C)
-
-		# create regression model
-		data = list()
-		data$x = australian$X
-		data$y = as.vector(australian$Y)
-		model$L = 1
-		model$C = C
-		model$X = model$SV
-
-		# special care of BSGD
-		if (s == "BSGD") {
-			model$alpha = model$alpha[,1]
-			model$gamma = model$gamma/2
-			model$L = 1
-			model$C = C
-		}
-		
-		pV = computeOptimizationValuesLibSVM (model, NULL, data = data,  predictionOutput = NULL, verbose = FALSE)
-
-		expect_equal(oV$primal, pV$primal[1,1])
-		expect_equal(oV$dual, pV$dual[1,1])
+	
+	if (verbose == TRUE) {
+		cat ("Testing optimization values for ", solver, "\n")
 	}
-}	)
+	
+	
+	# read data
+	australian = readSparseData ("../data/australian.train")
+	
+	# create table of what we expecte
+	mysolver = c("BSGD", "LIBSVM", "LASVM", "CVM", "BVM")
+	trainingError = c(0.2289855, 0.257971, 0.2, 0.742029, 0.7362319)
+	halfwTw = c(9.086238, 15.66334, 15.8894, 0.5149239, 0.5202258)
+	primalValue  = c(2165.622, 1926.384, 1968.645, 2698.021, 2705.437)
+	dualValue = c(15.91675678, 16.98221, 17.41129, 1.463981, 1.465854)
+	optTable = data.frame(cbind (mysolver, primalValue, dualValue, halfwTw, trainingError))
+	
+	# TODO: make this compact :(
+	optTable$mysolver = as.character(mysolver)
+	optTable$primalValue = as.numeric (primalValue)
+	optTable$dualValue = as.numeric (dualValue)
+	optTable$halfwTw = as.numeric (halfwTw)
+	optTable$trainingError = as.numeric (trainingError)
+	
+	curModel = optTable [mysolver == solver,]
+
+	# read model first
+	modelFile = file.path ("..", "data", paste (solver, "australian", "model", sep = "."))
+#			modelType = detectModelTypeFromFile (modelFile)
+	modelType = solver
+	
+	# read model
+	model = readModelFromFile (modelFile, modelType)
+		
+	# compute values
+	X = as.matrix(australian$X)
+	Y = as.matrix(australian$Y)[,1]
+	oV = optimizationValues (X = X, Y = Y, model = model, C = C)
+
+	# check values
+	expect_equal (oV$primal, curModel$primalValue, tolerance = 0.01)
+	expect_equal (oV$dual, curModel$dualValue, tolerance = 0.01)
+	expect_equal (oV$weight, curModel$halfwTw, tolerance = 0.01)
+	expect_equal (oV$trainingError, curModel$trainingError, tolerance = 0.01)
+	
+	# check also against old way of computing it (TODO: actually we could remove the table above..)
+	
+}	
 	
 
 	
+	
+# 		oV = optimizationValues (X = as.matrix(australian$X), Y = as.matrix(australian$Y), model = model, C = C)
+# 
+# 		# create regression model
+# 		data = list()
+# 		data$x = australian$X
+# 		data$y = as.vector(australian$Y)
+# 		model$L = 1
+# 		model$C = C
+# 		model$X = model$SV
+# 
+# 		# special care of BSGD
+# 		if (s == "BSGD") {
+# 			model$alpha = model$alpha[,1]
+# 			model$gamma = model$gamma/2
+# 			model$L = 1
+# 			model$C = C
+# 		}
+# 		
+# 		pV = computeOptimizationValuesLibSVM (model, NULL, data = data,  predictionOutput = NULL, verbose = FALSE)
+# 
+# 		expect_equal(oV$primal, pV$primal[1,1])
+# 		expect_equal(oV$dual, pV$dual[1,1])
