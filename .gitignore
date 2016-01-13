@@ -19,3 +19,5 @@ webpage/**
 *.R~
 inst/doc
 *.model
+*.gcda
+*.gcno

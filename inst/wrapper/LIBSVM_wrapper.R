@@ -317,20 +317,20 @@ findSoftware.LIBSVM = function (x, searchPath = "./", execute = TRUE, verbose = 
 	# can do now OS specific stuff here
 	if(.Platform$OS.type == "unix") {
 		if (verbose == TRUE) {
-			cat ("Unix binaries.\n")
+			cat ("    Unix binaries.\n")
 		}
 		trainBinaryPattern = "svm-train"
 		testBinaryPattern = "svm-predict"
 	} else {
 		if (verbose == TRUE) {
-			cat ("Windows binaries.\n")
+			cat ("    Windows binaries.\n")
 		}
 		trainBinaryPattern = "svm-train.exe"
 		testBinaryPattern = "svm-predict.exe"
 	}
 
-	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, dir = searchPath, patterns = list ('saveExponential : set exponential', '.q : quiet mode .no outputs'))
-	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern, dir = searchPath, patterns = list ('for one-class SVM only 0 is supported'))
+	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, dir = searchPath, patterns = list ('2 -- radial basis function: exp', '.q : quiet mode .no outputs'), verbose = verbose )
+	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern, dir = searchPath, patterns = list ('for one-class SVM only 0 is supported'), verbose = verbose )
 
 	return(x)
 }

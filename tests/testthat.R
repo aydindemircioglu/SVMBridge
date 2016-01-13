@@ -9,7 +9,8 @@ test_check("SVMBridge")
 ## doublefun : .
 
 #library(covr)
-#package_coverage("testcovr")
+#package_coverage("testWrappers")
+
 ## doublefun : .
 ##
 ## Package Coverage: 66.67%

@@ -432,37 +432,17 @@ readPredictions.BSGD <- function (x, predictionsFilePath = "", verbose = FALSE) 
 #' @param	verbose			print messages?
 #'
 #' @return	x			binary path for the software
-findSoftware.BSGD = function (x, searchPath = "./", verbose = FALSE) {
 
-		if (verbose == TRUE) {
-			BBmisc::messagef("    BSGD Object: Executing search for software for %s", x$method)
-		}
+findSoftware.BSGD = function (x, searchPath = "./", execute = FALSE, verbose = FALSE) {
+	if (verbose == TRUE) {
+		cat ("    BSGD Object: Executing search for software for ", x$method)
+	}
 
-		trainBinaryPattern = "^budgetedsvm-train$"
-		trainBinaryOutputPattern = "budgetedsvm-train .options. train_file .model_file."
-		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
+	# can do now OS specific stuff here
+	x$trainBinaryPath = findBinaryInDirectory ("budgetedsvm-train", dir = searchPath, patterns = list ('budgetedsvm-train .options. train_file .model_file.'))
+	x$testBinaryPath = findBinaryInDirectory ("budgetedsvm-predict", dir = searchPath, patterns = list ('budgetedsvm-predict .options. test_file model_file output_file'))
 
-		# TODO: check for empty path+handling
-
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found train binary at %s", binaryPath)
-		}
-		x$trainBinaryPath = binaryPath
-
-
-		testBinaryPattern = "^budgetedsvm-predict$"
-		testBinaryOutputPattern = "budgetedsvm-predict .options. test_file model_file output_file"
-
-		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
-
-		# TODO: check for empty path+handling
-
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found test binary at %s", binaryPath)
-		}
-		x$testBinaryPath = binaryPath
-
-		return(x)
+	return(x)
 }
 
 	print.BSGD = function(x) {

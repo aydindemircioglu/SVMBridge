@@ -25,6 +25,7 @@
 #'
 #' @param	binaryName		search the given path for the SVM binaries recursively.
 #' @param	dir	 	search the given path for the SVM binaries recursively.
+#' @param	applyKeyFix	apply fix for 'press any key to continue'?
 #' @param	patterns		pattern for the binary file
 #' @param	verbose			print messages while searching?
 #'
@@ -39,7 +40,7 @@
 #' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
 #' @export
 
-findBinaryInDirectory = function (binaryName = NULL, dir = NULL, patterns = NULL, verbose = FALSE) {
+findBinaryInDirectory = function (binaryName = NULL, dir = NULL, patterns = NULL, applyKeyFix = FALSE, verbose = FALSE) {
 
 	# check all the parameters
 	checkmate::assertString (binaryName)
@@ -65,7 +66,7 @@ findBinaryInDirectory = function (binaryName = NULL, dir = NULL, patterns = NULL
 		# do we have any patterns to check?
 		if (length(patterns) > 0) {
 			# if yes, we have to execute the thing. if they do not match, we delete the path
-			if (checkExecutionStrings (binaryPath, patterns = patterns) == FALSE) {
+			if (checkExecutionStrings (binaryPath, patterns = patterns, applyKeyFix = applyKeyFix) == FALSE) {
 				binaryPath = NULL
 			} else {
 				# everything is ok, binary path is not deleted

@@ -466,39 +466,19 @@ readPredictions.SVMperf <- function (x, predictionsFile = "", verbose = FALSE) {
 
 }
 
+		
 
-findSoftware.SVMperf = function(x, searchPath = "./", verbose = FALSE) {
-		if (verbose == TRUE) {
-			BBmisc::messagef("    SVMperf_wrapper Object: Executing search for software for %s", x$method)
-		}
+findSoftware.SVMperf = function (x, searchPath = "./", execute = FALSE, verbose = FALSE) {
 
-		trainBinaryPattern = "^svm_perf_learn$"
-		trainBinaryOutputPattern = c(
-			'saveExponential : set exponential of time interval in seconds',
-			'usage: svm_struct_learn .options. example_file model_file')
+	if (verbose == TRUE) {
+		cat ("    SVMperf Object: Executing search for software for ", x$method)
+	}
 
-		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
+	# can do now OS specific stuff here
+	x$trainBinaryPath = findBinaryInDirectory ("svm_perf_learn", applyKeyFix = TRUE,  dir = searchPath, patterns = list ('ROCArea: Percentage of swapped pos/neg pairs', 'usage: svm_struct_learn .options. example_file model_file'))
+	x$testBinaryPath = findBinaryInDirectory ("svm_perf_classify", applyKeyFix = TRUE, dir = searchPath, patterns = list ('usage: svm_struct_classify .options. example_file model_file output_file'))
 
-
-
-
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found train binary at %s", binaryPath)
-		}
-		x$trainBinaryPath = binaryPath
-
-
-		testBinaryPattern = "^svm_perf_classify$"
-		testBinaryOutputPattern = 'usage: svm_struct_classify .options. example_file model_file output_file'
-
-		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
-
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found test binary at %s", binaryPath)
-		}
-		x$testBinaryPath = binaryPath
-
-		return(x)
+	return(x)
 }
 
 

@@ -139,38 +139,21 @@ readPredictions.CVM = function (x, predictionsFile = "", verbose = FALSE) {
 		return (ret)
 	}
 
-findSoftware.CVM = function (x, searchPath = "./", verbose = FALSE) {
 
-		if (verbose == TRUE) {
-			BBmisc::messagef("    CVM Object: Executing search for software for %s", x$method)
-		}
+	
+findSoftware.CVM = function (x, searchPath = "./", execute = FALSE, verbose = FALSE) {
 
-		trainBinaryPattern = "^svm-train$"
-		trainBinaryOutputPattern = 'bvm-train .options. training_set_file .model_file.'
-		binaryPath = findBinary (searchPath, trainBinaryPattern, trainBinaryOutputPattern, verbose = verbose)
-
-		# TODO: check for empty path+handling
-
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found train binary at %s", binaryPath)
-		}
-		x$trainBinaryPath = binaryPath
-
-
-		testBinaryPattern = "^svm-predict$"
-		testBinaryOutputPattern = 'bvm-predict .options. test_file model_file output_file'
-
-		binaryPath = findBinary (searchPath, testBinaryPattern, testBinaryOutputPattern, verbose = verbose)
-
-		# TODO: check for empty path+handling
-
-		if (verbose == TRUE) {
-			BBmisc::messagef("--> Found test binary at %s", binaryPath)
-		}
-		x$testBinaryPath = binaryPath
-
-		return(x)
+	if (verbose == TRUE) {
+		cat ("    CVM Object: Executing search for software for ", x$method)
 	}
+
+	# can do now OS specific stuff here
+	x$trainBinaryPath = findBinaryInDirectory ("svm-train", dir = searchPath, patterns = list ('bvm-train .options. training_set_file .model_file.'))
+	x$testBinaryPath = findBinaryInDirectory ("svm-predict", dir = searchPath, patterns = list ('bvm-predict .options. test_file model_file output_file'))
+
+	return(x)
+}
+
 
 
 	print.CVM = function(x) {
