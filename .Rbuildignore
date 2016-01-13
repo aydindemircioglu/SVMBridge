@@ -12,8 +12,8 @@ README.md
 todo.txt
 demo.R 
 doc 
-src/*.o
-src/*.so
+src/*.o$
+src/*.so$
 testinfo.RData
 ^.*\.Rproj$
 ^\.Rproj\.user$
@@ -43,3 +43,4 @@ README.md
 ^.*kate-swp$
 ^.*gcda$
 ^.*gcno$
+^wrapper/*

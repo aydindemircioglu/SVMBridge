@@ -23,7 +23,9 @@ Imports:
     R.utils(>= 1.32.4),
     e1071 (>= 1.6),
     SparseM (>= 1.05),
-    kernlab
+    kernlab,
+    BBmisc,
+    checkmate
 LinkingTo: Rcpp
 Suggests:
     testthat,

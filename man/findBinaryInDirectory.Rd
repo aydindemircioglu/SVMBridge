@@ -8,7 +8,7 @@
 	in the path given.}
 \usage{
 findBinaryInDirectory(binaryName = NULL, dir = NULL, patterns = NULL,
-  verbose = FALSE)
+  applyKeyFix = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{binaryName}{search the given path for the SVM binaries recursively.}
@@ -16,6 +16,8 @@ findBinaryInDirectory(binaryName = NULL, dir = NULL, patterns = NULL,
 \item{dir}{search the given path for the SVM binaries recursively.}
 
 \item{patterns}{pattern for the binary file}
+
+\item{applyKeyFix}{apply fix for 'press any key to continue'?}
 
 \item{verbose}{print messages while searching?}
 }

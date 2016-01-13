@@ -20,4 +20,4 @@ devtools::check()
 
 # work around
 system2(command="R", args="CMD build .")
-system2(command="R", args="CMD check --as-cran ./LiblineaR.ACF_1.94-2.tar.gz")
+system2(command="R", args="CMD check --as-cran ./SVMBridge_0.1.tar.gz")
