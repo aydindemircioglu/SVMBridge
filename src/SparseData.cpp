@@ -102,7 +102,7 @@ static char* readline(FILE *input)
 //'	}
 //' @export
 // [[Rcpp::export]] 
-List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = false, bool zeroBased = false) {
+List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool verbose = false, bool zeroBased = false) {
 	
 	std::setprecision(16);
   
@@ -444,7 +444,7 @@ List readSparseData (std::string filename, size_t skipBytes = 0, bool verbose = 
 //'		writeSparseData ("./australian.data", X, Y)
 //' @export
 // [[Rcpp::export]] 
-List writeSparseData (std::string filename, NumericMatrix X, NumericMatrix Y, size_t skipBytes = 0, bool verbose = false, bool zeroBased = false) {
+List writeSparseData (std::string filename, NumericMatrix X, NumericMatrix Y, unsigned long  skipBytes = 0, bool verbose = false, bool zeroBased = false) {
 	
 	try
 	{

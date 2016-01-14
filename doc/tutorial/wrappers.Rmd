@@ -1,55 +1,75 @@
-**SVMBridge** comes with a couple of wrappers for different SVM packages. Here we list these and provide  details on how to use them.
+# Wrappers
 
-Notice that the LIBSVM wrapper is the only one that is directly available when loading the **SVMBridge**. The reason for not including other wrappers directly is to reduce dependencies. But as on the other hand other wrappers depend on the functionality of the LIBSVM wrapper to avoid code duplication, LIBSVM is included into the package.
-
-**Warning:** Currently we do not seek completeness. The **SVMBridge** is a classification-only package, so many options e.g. regarding regression are not supported at all. Some other options, although they can be used with classifications, might be missing too. In case you need something, you will need to adapt an existing classifier or simply write your own.
-
-**Note:** For convenience, all the wrappers apart from LIBSVM are nonetheless installed along the package and can be accessed by specifying the correct path. See the introduction for examples on how to do this.
+**SVMBridge** comes with a couple of wrappers for different SVM packages. Here we list these and provide a few details on how to use them.
 
 
-# LIBSVM
-
-LIBSVM is practially the de-facto standard SVM solver. It can be found at http://
+**Warning:** Currently we do not seek completeness. The **SVMBridge** is a classification-only package, so many options e.g. regarding regression etc are not supported at all. Some other options, although they can be used with classifications, might be missing too. In case you need something, you will need to adapt an existing classifier or simply write your own from scratch. If you do so, please share your results with us, so we can include these in future versions of the **SVMBridge**.
 
 
-# LASVM
-
-LASVM is very similar to LIBSVM wrapper, as both packages use the same parameters and the same model. LASVM has many more options than LIBSVM, as for our purpose we did not need them, for now these are not supported. Please feel free to enhance the wrapper and share the results with us, so we can include these in future versions of **SVMBridge**.
+**Note:** For convenience, all the wrappers are installed along the package and can be accessed by specifying the correct path. See the introduction for examples on how to do this.
 
 
-# LLSVM
+## LIBSVM
 
-Part of the BudgetedSVM package, at http://
+LIBSVM is practically the de-facto standard SVM solver.
+The wrapper supports for now classification and RBF kernel only.
 
-
-# Budgeted SGD
-
-Part of the BudgetedSVM package, at http://
+LIBSVM can be found at https://www.csie.ntu.edu.tw/~cjlin/libsvm/.
 
 
-# Pegasos
+## LASVM
 
-Part of the BudgetedSVM package, at http://
+LASVM is very similar to LIBSVM wrapper, as both packages use the same parameters and the same model. LASVM has many more options than LIBSVM, as for our purpose we did not need them, for now these are not supported.
+
+LASVM can be found at http://leon.bottou.org/projects/lasvm/.
 
 
-# SVMperf
+## LLSVM
 
 
-Currently the package can be found at http://
-Note: Please do not mix SVMperf with SVMlight or SVMRank.
+LLSVM is part of the BudgetedSVM package, see http://www.dabi.temple.edu/budgetedsvm/.
 
-SVMperf has many options, so instead of providing all of these as parameter, we decided instead to give the user a choise over several 'configurations'.
+
+**Note**: The models saved by LLSVM are quite non-standard, as the transformation matrices
+have to be saved instead of a list of support vectors. The wrapper includes a simple
+reader, which is written in pure R. Therefore, the performance of this wrapper is rather
+reduced. In case you need faster model readers/writers, you need to handle it by
+yourself.
 
 
 
+## Budgeted SGD
 
-# CVM
+BSGD is part of the BudgetedSVM package, see http://www.dabi.temple.edu/budgetedsvm/.
 
-libCVM, found at http://
+**Note**: The models saved by LLSVM are quite non-standard, as the transformation matrices
+have to be saved instead of a list of support vectors. The wrapper includes a simple
+reader, which is written in pure R. Therefore, the performance of this wrapper is rather
+reduced. In case you need faster model readers/writers, you need to handle it by
+yourself.
 
-# BVM
+
+## SVMperf
+
+SVMperf has a great deal of options, so instead of providing all of these as parameter, we decided instead to give the user a choice over several 'configurations'.
+
+SVMperf can be found at https://www.cs.cornell.edu/people/tj/svm_light/svm_perf.html.
+
+**Note**: Please do not mix up SVMperf with SVMlight or SVMRank.
+
+
+
+
+## CVM
+
+
+**Note**: The source code for CVM cannot be found in the internet anymore.
+Therefore we provide a copy of it in our github repository.
+
+
+## BVM
 
 Though BVM is practially the same software as CVM, sharing models and parameters and executables with CVM, the philosophy of **SVMBridge** is to have a separate wrapper for each method. Thus, though BVM has its own wrapper, all the parameters etc are the same as CVM, so please read the CVM section.
 
-
-There are several other packages, namely
+**Note**: The source code for BVM cannot be found in the internet anymore.
+Therefore we provide a copy of it in our github repository.

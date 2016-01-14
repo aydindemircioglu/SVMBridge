@@ -398,7 +398,7 @@ Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C
 		if (SV.ncol() > X.ncol()) {
 			NumericMatrix tmpX (X.nrow(), SV.ncol());
 			// better copy possible?
-			for (size_t i = 0; i < X.nrow(); i++) {
+			for (unsigned long i = 0; i < X.nrow(); i++) {
 				NumericMatrix::Row zzrow = X( i, _);
 				NumericMatrix::Row yyrow = tmpX( i, _);
 				std::copy (zzrow.begin(), zzrow.end(), yyrow.begin());
@@ -406,7 +406,7 @@ Rcpp::List computeOptimizationValues (NumericMatrix X, NumericVector Y, double C
 			X = tmpX;
 		} else {
 			NumericMatrix tmpSV (SV.nrow(), X.ncol());
-			for (size_t i = 0; i < SV.nrow(); i++) {
+			for (unsigned long i = 0; i < SV.nrow(); i++) {
 				NumericMatrix::Row zzrow = SV( i, _);
 				NumericMatrix::Row yyrow = tmpSV( i, _);
 				std::copy (zzrow.begin(), zzrow.end(), yyrow.begin());

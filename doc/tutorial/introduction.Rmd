@@ -32,4 +32,4 @@ svmObj =  callSVM(method = "LIBSVM", testDataFile = './data/australian_scale', m
 
 **SVMBridge** comes in handy, when one has the data already in memory. Let us generate some training and test data by using the build-in data set iris:
 
-**Warning:** The findSVMSoftware functionality is made for convenience, not for performance. As all given directories has to be searched, this can slow down all I/O operations. Prevent running this function on a high performance cluster often, as might very well slowdown the whole cluster!
+**Warning:** The findSVMSoftware functionality is made for convenience, not for performance. As all given (sub)directories have to be searched, this can slow down all I/O operations. Restrain from running this function on a high performance cluster, as it might very well slowdown the whole cluster!

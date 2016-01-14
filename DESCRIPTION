@@ -1,9 +1,12 @@
 Package: SVMBridge
-Title: A Bridge to Integrate Different SVM Solvers into R
-Description: Different SVM solvers are commonly used, e.g. LIBSVM and SVMperf.
-    Unfortunately, many of these do not come with an interface to R,
-    and writing such an interface might be tedious. This package remedies the
-    situation by providing predefined interfaces to many SVM solvers.
+Title: A Bridge to Integrate Different 'SVM' Solvers into R
+Description: In machine learning, different 'SVM' solvers are commonly used, 
+    e.g. 'LIBSVM' and 'SVMperf' are two of the more popular ones. 
+    Unfortunately, many of these do not come with an interface to R.
+	While linking such packages directly via packages like 'Rcpp' is quite hard,
+    even writing simple command-line interfaces get tedious at times. This package 
+    remedies the situation by providing predefined, but extensible interfaces and
+    provides several interfaces to many 'SVM' solvers.
 Authors@R: c( 
     person ("Aydin", "Demircioglu", email = "aydin.demircioglu@ini.rub.de", role = c("aut", "cre")), 
     person ("Hanna", "Houphouet", email = "hanna.houphouet@ini.rub.de",  role = c("aut") ) )
