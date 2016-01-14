@@ -49,6 +49,12 @@ findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 	dirList = list.dirs(searchPath, recursive = TRUE)
     
     SVMObject = getSVMObject (method)
+    if (is.null (SVMObject) == TRUE) {
+		if (verbose == TRUE) {
+			cat ("No SVM Object found. Did you create the wrapper?\n")
+			return (FALSE)
+		}
+	}
     if (is.null(SVMObject$wrapperPath) == FALSE) {
 		for (dir in dirList) {
 			# call the find software method of the solver

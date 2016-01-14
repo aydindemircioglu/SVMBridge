@@ -1,14 +1,17 @@
 context("Find SVM Software")
 
 # make sure everything is clean
-detach("package:SVMBridge", unload = TRUE)
-library(SVMBridge)
+#detach("package:SVMBridge", unload = TRUE)
+#library(SVMBridge)
 
 
 
 test_that("finding works in general", {
 	addSVMPackage ("oneSVM", wrapperPath = "../dummy/oneSVM")
-	findSVMSoftware ("oneSVM", searchPath = "../dummy/oneSVM")
+#	print (getSVMObject("oneSVM"))
+	r = findSVMSoftware ("oneSVM", searchPath = "../dummy/oneSVM")
+#	print (r)
+#	print (getSVMObject("oneSVM"))
 
 	svmObject = getSVMObject ("oneSVM")
 	expect_equal (svmObject$method, "oneSVM")
@@ -39,13 +42,14 @@ test_that("finding software without wrapper does not work", {
 	addSVMPackage ("oneSVM")
 	e = findSVMSoftware ("oneSVM", searchPath = "../dummy/fourSVM")
 	expect_equal (FALSE, findSVMSoftware ("oneSVM", searchPath = "../dummy/fourSVM"))
+#	expect_equal ("A", 	(getwd()))
 }	)
 
 
 	
 test_that("finding software in a sub-sub-directory works", {
 	addSVMPackage ("oneSVM", wrapperPath = "../dummy/fourSVM")
-	retValue = findSVMSoftware ("oneSVM", searchPath = "../dummy/fourSVM")
+	retValue = findSVMSoftware ("oneSVM", searchPath = "../dummy/fourSVM", verbose = TRUE)
 
 	svmObject = getSVMObject ("oneSVM")
 	expect_equal (retValue, TRUE)
@@ -54,6 +58,7 @@ test_that("finding software in a sub-sub-directory works", {
 	expect_equal (class(svmObject)[2], "SVMWrapper")
 	expect_equal (svmObject$trainBinaryPath, "../dummy/fourSVM/dir/subdir/oneSVM-learn")
 	expect_equal (svmObject$testBinaryPath, "../dummy/fourSVM/dir/subdir/oneSVM-predict")
+#	expect_equal ("A", 	(getwd()))
 }	)
 	
 	
