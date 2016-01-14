@@ -127,11 +127,11 @@ readSparseFormat <- function (con)
 #'
 #' @return	sparseLine		string with row data 
 #'
-dumpSparseLine = function (row) {
+dumpSparseLine = function (row, dense = FALSE) {
 	sparseLine = ''
 
 	for (x in seq(1, length(row))) {
-		if (row[x] != 0) {
+		if ((row[x] != 0) | dense == TRUE) {
 			sparseLine = paste(sparseLine, paste(x, row[x], sep =":"), sep = " ")
 		}
 	}
@@ -195,7 +195,7 @@ readSparseDataFromConnection = function (con, verbose = FALSE, zeroBased = FALSE
 writeSparseDataToConnection = function (con, X, Y, verbose = FALSE, zeroBased = FALSE) {
 	currentPosition = seek(con)
 	filename = summary(con)$description
-	writeSparseData(filename, X, Y, skipBytes = currentPosition, verbose = verbose, zeroBased = zeroBased)
+	writeSparseData(filename, X, Y, skipBytes = currentPosition, verbose = verbose, zeroBased = zeroBased, dense = FALSE)
 }
 
 

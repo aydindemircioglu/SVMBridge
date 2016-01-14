@@ -3,5 +3,9 @@ find . -name \*.o -exec rm {} \;
 find . -name \*.so -exec rm {} \;
 find . -name "#*#" -exec rm {} \;
 
+# copy wrapper
 cp wrapper/*_wrapper.R ./inst/wrapper
+
+# copy OS-specific tests
+cp tests/testWrappers ./inst/tests
 

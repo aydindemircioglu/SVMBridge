@@ -1,43 +1,37 @@
-***SVMBridge Windows Tutorial***
+# SVMBridge Windows Quick Tutorial
 
-1) Download R 3.2.x or later for Windows (32/64 bit) (https://cran.r-project.org/bin/windows/base/) 
+- Download latest R for Windows (32/64 bit) (https://cran.r-project.org/bin/windows/base/)
+- Download Rtools for R 3.2.x and later (https://cran.r-project.org/bin/windows/Rtools/)
+- Install R and use the 32 bit option only
+- Install Rtools and use the 32 bit option only
+- Install SVMBridge by starting R and typing ```install.packages ("SVMBridge")```
+- If SVMBridge was successfully installed, you can now execute the OS-specific tests. For this
+you need testthat. To install testthat, ```install.packages ("testthat")```
+- Then execute the tests by .....
+- Now if the tests were succesful, you end up with a bunch of pre-compiled SVM software. Copy these over to a directory you like, e.g. C:\Programs\SVMSolver\. Alternatively, especially for those SVM solvers for which the **SVMBridge** has no support, download and compile the SVM software by yourself and also put it into a directory of your choice.
 
-2) Download Rtools for R 3.2.x and later (https://cran.r-project.org/bin/windows/Rtools/)
 
-3) Download Git for Windows (https://git-scm.com/downloads)
+You're ready to test the SVMBridge.
 
-3) Install R and use the 32 bit option only
+- ...
 
-4) Install Rtools and use the 32 bit option only
 
-5) Install Git
+9) Create a folder structure "shark/svm_large_data/software/" in your home directory, download and install the latest version of the SVM you want to use in
+   the newly created shark folder. In this directory you will find executables with names like "svm-train.exe" and "svm-predict.exe"
+   for each SVM.(By example if you use LIBSVM and downloaded the latest version from "https://www.csie.ntu.edu.tw/~cjlin/libsvm/").
+   At this point you have to look into some files, which are located in the SVMBridge\R folder.
 
-6) Start up the Git Bash and navigate into a directory in which you want to download SVMbridge to. For best compatibility,
-   install SVMBridge into your home directory. Some tests may fail if you put it elsewhere.
-
-7) Download the SVMBridge repository by using git clone in the git console 
-   (git clone https://github.com/aydindemircioglu/SVMBridge.git)
-   
-8) Delete the makefile.win file, which is located in the src directory in SVMBridge.
-
-9) Create a folder structure "shark/svm_large_data/software/" in your home directory, download and install the latest version of the SVM you want to use in 
-   the newly created shark folder. In this directory you will find executables with names like "svm-train.exe" and "svm-predict.exe" 
-   for each SVM.(By example if you use LIBSVM and downloaded the latest version from "https://www.csie.ntu.edu.tw/~cjlin/libsvm/"). 
-   At this point you have to look into some files, which are located in the SVMBridge\R folder. 
-   
    The file you need is called *_wrapper.R whereas the * stands for the SVM you're using.
    In this file, look for a function called findSoftware.* whereas the * stands for the SVM you're using. A few lines below, two variables
-   called trainBinaryPattern and testBinaryPattern are defined with a certain string for the windows platform. Be sure that the binaries 
-   of the SVM you are using are named the same way, or else the function won't be able to find them. Be sure as well to remember the path 
+   called trainBinaryPattern and testBinaryPattern are defined with a certain string for the windows platform. Be sure that the binaries
+   of the SVM you are using are named the same way, or else the function won't be able to find them. Be sure as well to remember the path
    to where you installed the SVM, since it is a needed argument for usage.
    (For the example with LIBSVM you don't need to change the names of the binaries)
 
-9) Start up R Gui and install following packages by typing "install.packages("package-name")" into the R Gui: BBmisc, stringr, 
-    plyr, Rcpp, microbenchmark, R.utils, e1071, SparseM, testthat, knitr, devtools
 
 10) Your Environment is now ready to get started:
 
-11) Find the option "change directory" and navigate to the directory where you downloaded SVMBridge to and type "devtools::test()" into your R gui 
+11) Find the option "change directory" and navigate to the directory where you downloaded SVMBridge to and type "devtools::test()" into your R gui
     for a full test run.
 
 12) Type in the following small demo into your R console for a quick start in how to use the wrapper. This demo uses the LIBSV machine as stated earlier. (More demos can be found in demo.R in SVMBridge).
@@ -49,12 +43,12 @@ trainFile = "*realtive path to the directory where your R executable lies in, to
 addSVMPackage(method="LIBSVM", verbose=TRUE)
 
 findSVMSoftware(
-	"LIBSVM", 
-	searchPath = "*relative path or path to some parent directory of the used SVM binaries*", 	
+	"LIBSVM",
+	searchPath = "*relative path or path to some parent directory of the used SVM binaries*",
 	verbose = TRUE
 )
 
-trainObject = trainSVM( 
+trainObject = trainSVM(
 		method = "LIBSVM",
 		trainDataFile = trainFile,
 		cost = runif(1),
@@ -69,5 +63,3 @@ testObject = testSVM(
 		modelFile = trainObject$model,
 		verbose = verbose
 )
-		
-

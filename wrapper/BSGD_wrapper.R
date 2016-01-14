@@ -324,7 +324,7 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 	degree = 1
 	coef = 1
 
-	print (as.character (paste (model$label, sep = " ", collapse = " ")))
+#	print (as.character (paste (model$label, sep = " ", collapse = " ")))
 
     # open connection
     modelFileHandle <- file(modelFile, open = "w+")

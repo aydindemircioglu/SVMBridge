@@ -243,12 +243,66 @@ readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE)
 
 
 # dummy for now
-writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
-		ret = writeLIBSVMModel (model = model, modelFile = modelFile, verbose = verbose)
-		return (ret)
+writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FALSE)
+{
+	#FIXME: does this change globally?
+	options(scipen=999)
+
+	# check for weightvector, coefficients and SV
+	
+	# check for size 
+	if ((nrow(model$SV) != nrow(model$alpha)) || (nrow(model$alpha) != length(model$w))) {
+		warning ("Cannot write model, as model is not consistent!")
+		return (FALSE)
 	}
 
+	# get things
+	dim = ncol (model$SV)
+	nClasses = 2
+	nWeights = nrow (model$SV)
+	gamma = model$gamma * 2
+	degree = 1
+	coef = 1
 
+	
+	# write header
+	modelFileHandle <- file(modelFile, open = "w+")
+	writeLines(paste ("ALGORITHM: 3", sep = ""), modelFileHandle )
+	writeLines(paste ("DIMENSION:", dim, sep = " "), modelFileHandle )
+	writeLines(paste ("NUMBER_OF_CLASSES:", nClasses, sep = " "), modelFileHandle )
+	writeLines(paste ("LABELS:", as.character (paste (model$label, sep = " ", collapse = " ")), sep = " "), modelFileHandle )
+	writeLines(paste ("NUMBER_OF_WEIGHTS:", nWeights, sep = " "), modelFileHandle )
+	writeLines(paste ("BIAS_TERM: ", model$bias, sep = " "), modelFileHandle )
+	writeLines(paste ("KERNEL_FUNCTION: 0", sep = " "), modelFileHandle )
+	writeLines(paste ("KERNEL_GAMMA_PARAM:", gamma, sep = " "), modelFileHandle )
+	writeLines(paste ("KERNEL_DEGREE_PARAM:", degree, sep = " "), modelFileHandle )
+	writeLines(paste ("KERNEL_COEF_PARAM:", coef, sep = " "), modelFileHandle )
+	writeLines(paste ("MODEL:", sep = ""), modelFileHandle )
+	
+	
+	## FIXME: there is a minus in the coefficients, WHY?
+	
+	for (r in 1:nrow(model$SV)) {
+		wline = paste0 (model$w[r])
+		aline = ""
+		for (c in 1:ncol(model$a)) {
+			aline = paste0 (aline, -model$a[r,c], " ")
+		}
+		sline = ""
+		for (c in 1:ncol(model$SV)) {
+			if (model$SV[r,c] != 0) {
+				aline = paste0 (aline, c, ":", model$SV[r,c], " ")
+			}
+		}
+		wholeLine = paste0 (wline, " ", aline, sline, "\n") 
+		writeLines(wholeLine, modelFileHandle, sep = "" )
+#		print (wholeLine )
+		#model = list("SV" = supportvectors, "alpha" = coefficients, "w" = weights)
+	}
+	close(modelFileHandle)
+	
+	return (TRUE)
+}
 
 #' Detect whether a file is a model for LLSVM.
 #'
