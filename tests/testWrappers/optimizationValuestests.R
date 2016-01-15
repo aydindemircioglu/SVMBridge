@@ -208,11 +208,11 @@ optimizationValuestests  = function (solver, verbose) {
 	australian = readSparseData ("../data/australian.train")
 	
 	# create table of what we expecte
-	mysolver = c("BSGD", "LIBSVM", "LASVM", "CVM", "BVM")
-	trainingError = c(0.2289855, 0.257971, 0.2, 0.742029, 0.7362319)
-	halfwTw = c(9.086238, 15.66334, 15.8894, 0.5149239, 0.5202258)
-	primalValue  = c(2165.622, 1926.384, 1968.645, 2698.021, 2705.437)
-	dualValue = c(15.91675678, 16.98221, 17.41129, 1.463981, 1.465854)
+	mysolver = c("BSGD", "LIBSVM", "LASVM", "CVM", "BVM", "LLSVM", "SVMperf")
+	trainingError = c(0.226087, 0.257971, 0.2, 0.742029, 0.7362319, 0.4927536, 0.2028986)
+	halfwTw = c(8.501867, 15.66334, 15.8894, 0.5149239, 0.5202258, 0.4999954, 16.09485)
+	primalValue  = c(1646.83, 1926.384, 1968.645, 2698.021, 2705.437, 2667.982, 1987.876)
+	dualValue = c(16.50107, 16.98221, 17.41129, 1.463981, 1.465854, 13.11328, 17.81096)
 	optTable = data.frame(cbind (mysolver, primalValue, dualValue, halfwTw, trainingError))
 	
 	# TODO: make this compact :(
@@ -224,6 +224,13 @@ optimizationValuestests  = function (solver, verbose) {
 	
 	curModel = optTable [mysolver == solver,]
 
+	if (TRUE == FALSE) {
+		print (oV$trainingError)
+		print (oV$weight)
+		print (oV$primal)
+		print (oV$dual)
+	}
+	
 	# read model first
 	modelFile = file.path ("..", "data", paste (solver, "australian", "model", sep = "."))
 #			modelType = detectModelTypeFromFile (modelFile)

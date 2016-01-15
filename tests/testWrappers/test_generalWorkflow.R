@@ -52,13 +52,13 @@ predictionsFile = tempfile()
 #	detach("package:SVMBridge", unload = TRUE)
 #	library(SVMBridge)
 
-	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM")#, "LLSVM")
+	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
 	for (solver in solvers) {
 		cat ("Downloading and building software ", solver, "\n")
 		softwareDir = downloadSoftware (solver)
 		cat ("Unlinking ", file.path(softwareDir, ".svn"), "\n")
 		unlink (file.path(softwareDir, ".svn"), recursive = TRUE)
-		addSVMPackage (solver, wrapperPath = "../../wrapper", verbose = TRUE)
+		addSVMPackage (solver, wrapperPath = "../../wrapper", verbose = verbose)
 	}
 
 	# softwareDir will have the last directory found, e.g. ../BudgetedSVM. we need to go one above.
@@ -77,12 +77,10 @@ predictionsFile = tempfile()
 		cycletests (solver, verbose)
 	}
 	
-	solvers = c("BSGD", "LIBSVM", "LASVM", "CVM", "BVM")
 	for (solver in solvers) {
 		context (paste0(solver, " optimization values"))
 		optimizationValuestests (solver, verbose)
 	}
-	
 	
 	for (solver in solvers) {
 		context (paste0(solver, " detect models."))

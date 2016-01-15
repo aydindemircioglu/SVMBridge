@@ -17,7 +17,9 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
- 
+
+
+
 #' findBinaryInDirectory.
 #'		given a file pattern and an std-out-pattern it will try to find a binary matching
 #'		the file pattern (which contains std-out-pattern as output if called without arguments)
@@ -50,7 +52,6 @@ findBinaryInDirectory = function (binaryName = NULL, dir = NULL, patterns = NULL
 	for (l in patterns) {
 		checkmate::assertString (l)
 	}
-	verbose = TRUE
 
 	if (verbose == TRUE) {
 		cat("    Searching for ", binaryName, " in directory ", dir,"\n")

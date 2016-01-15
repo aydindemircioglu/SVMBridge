@@ -1,4 +1,3 @@
-#!/usr/bin/Rscript  --vanilla
 
 #
 # SVMBridge
@@ -20,113 +19,69 @@
 #
 
 
-#' createTrainingArguments.BSGD
-#'
-#' @param	x		SVM object
-#' @param	trainDataFile	file to read training data from.
-#' @param	modelFile	path to model, defaults to a temporary file (given by R).
-#' @param	extraParameter	extra parameters for solver
-#' @param	primalTime
-#' @param	wallTime
-#' @param	cost		cost parameter C.
-#' @param	gamma		gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...).
-#' @param	budget		budget parameter.
-#' @param	epochs		number of epochs to run.
-#'
-#' @return	args		arguments for training
-createTrainingArguments.BSGD = function (
-	x,
+
+createTrainingArguments.BSGD = function (x,
 	trainDataFile = "",
 	modelFile = "",
 	extraParameter = "",
-	primalTime = 10,
-	wallTime = 8*60,
 	cost = 1,
 	gamma = 1,
 	budget = 128,
 	epochs = 1, ...) {
 
-		n = R.utils::countLines(trainDataFile)
+	n = R.utils::countLines(trainDataFile)
 
-
-		# arguments for training
-		args = c(
-			"-A 4",
-			"-r 0",
-			sprintf("-B %.16f", budget ),
-			sprintf("-L %.16f", (1.0 / (n * cost))),
-			sprintf("-e %.16f", epochs ),
-			sprintf("-g %.16f", 2 * gamma),
-			extraParameter,
-			trainDataFile,
-			modelFile
-		)
-		print(c)
-		return (args)
+	# arguments for training
+	args = c(
+		"-A 4",
+		"-r 0",
+		sprintf("-B %.16f", budget ),
+		sprintf("-L %.16f", (1.0 / (n * cost))),
+		sprintf("-e %.16f", epochs ),
+		sprintf("-g %.16f", 2 * gamma),
+		extraParameter,
+		trainDataFile,
+		modelFile
+	)
+	return (args)
 }
 
 
 
-#' createTestArguments.BSGD
-#'
-#' @param	x			SVM object
-#' @param	testDataFile		file to read test data from.
-#' @param	modelFile		path to model, defaults to a temporary file (given by R).
-#' @param	predictionOutput	path to where to put prediction output
-#'
-#' @return	args		arguments for testing
-createTestArguments.BSGD = function (
-	x,
+createTestArguments.BSGD = function (x,
 	testDataFile = "",
 	modelFile = "",
 	predictionOutput = "/dev/null",
-	...) {
-		args = c(
-			"-v 1",
-		#        "-o 1", only works for BSGD for now
-			testDataFile,
-			modelFile,
-			predictionOutput
-		)
+	...) 
+{
+	args = c(
+		"-v 1",
+		testDataFile,
+		modelFile,
+		predictionOutput
+	)
 
 	return (args)
 }
 
 
 
-#' Extract training information (error rate) from command-line output
-#'
-#' @param		x 		object
-#' @param		output		command-line output from BSGD
-#'
 extractTrainingInfo.BSGD = function (x, output) {
-    pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
-    err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-    return (err)
+	pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
+	err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+	return (err)
 }
 
 
 
-#' Extract test information (error rate) from command-line output
-#'
-#' @param		x 		object
-#' @param		output		command-line output from BSGD
-#'
 extractTestInfo.BSGD = function (x, output) {
-    pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
-    err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-    return (err)
+	pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
+	err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+	return (err)
 }
 
 
 
-#' readModel.BSGD
-#'
-#' @param	x			SVM object
-#' @param	modelFile		path to model, defaults to a temporary file (given by R).
-#' @param	verbose			print messages?
-#'
-#' @return	svmatrix		BSGD model
 readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBinaryColumn = FALSE) {
 	if (verbose == TRUE) {
 		cat("Reading BSGD model from ", modelFile)
@@ -146,20 +101,20 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 		# gamma value
 		if (grepl("KERNEL_GAMMA_PARAM", oneLine) == TRUE)
 		{
-		    pattern <- "KERNEL_GAMMA_PARAM: (.*)"
-		    gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
+			pattern <- "KERNEL_GAMMA_PARAM: (.*)"
+			gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) / 2 # make sure it works like the 'normal' gamma for the user
 		}
 
 		if (grepl("NUMBER_OF_WEIGHTS", oneLine) == TRUE) {
-		    pattern <- "NUMBER_OF_WEIGHTS: (.*)"
-		    totalSV = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
+			pattern <- "NUMBER_OF_WEIGHTS: (.*)"
+			totalSV = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
 		}
 
 		# bias
 		if (grepl("BIAS_TERM", oneLine) == TRUE)
 		{
-		    pattern <- "BIAS_TERM: (.*)"
-		    bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
+			pattern <- "BIAS_TERM: (.*)"
+			bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
 		}
 
 		# order of labels
@@ -174,7 +129,7 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 
 			if (order == "-1 1") {
 				invertLabels = TRUE
-			 }
+			}
 
 			labels = unlist(strsplit(order, split = "\\s"))
 		}
@@ -183,7 +138,7 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 
 	# read and interprete data
 	# basically all data is sparse data format, but the data around this differs
-# 	model = readSparseFormat(con)
+	# 	model = readSparseFormat(con)
 
 	# these will contain the coefficients and the  svs.
 	supportvectors <- matrix()
@@ -305,13 +260,6 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 
 
 
-#' writeModel.BSGD
-#'
-#' @param	x			SVM object
-#' @param	model 			Model to write
-#' @param	modelFile		Path to write model to
-#' @param	verbose			print messages?
-#'
 writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
 	if (verbose == TRUE) {
 		cat ("Writing BSGD Model..\n")
@@ -324,10 +272,9 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 	degree = 1
 	coef = 1
 
-#	print (as.character (paste (model$label, sep = " ", collapse = " ")))
-
-    # open connection
-    modelFileHandle <- file(modelFile, open = "w+")
+	
+	# open connection
+	modelFileHandle <- file(modelFile, open = "w+")
 	writeLines(paste ("ALGORITHM: 4", sep = ""), modelFileHandle )
 	writeLines(paste ("DIMENSION:", dim, sep = " "), modelFileHandle )
 	writeLines(paste ("NUMBER_OF_CLASSES:", nClasses, sep = " "), modelFileHandle )
@@ -365,16 +312,6 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 
 
 
-#' Detect whether a file is a model for BSGD
-#'
-#' @param	x		Object
-#' @param	modelFile		File to check
-#' @param	verbose		Verbose output?
-#'
-#' @return	TRUE if the given modelFile exists and fits the BSGD model, or FALSE if not.
-#'
-#' @note	This is a very basic check, enough to distinguish the wrappers provided within the SVMBridge
-
 detectModel.BSGD = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
 	if (is.null (modelFile) == TRUE)
@@ -393,26 +330,14 @@ detectModel.BSGD = function (x, modelFile = NULL, verbose = FALSE) {
 
 
 
-#
-# @param	predictionsFile		file to read predictions from
-# @return		array consisting of predictions
-#
-
-# dummy probably
-
-#' Read predictions from BSGD
-#'
-#' @param	predictionsFile		file to read predictions from
-#' @return		array consisting of predictions
-#'
 readPredictions.BSGD <- function (x, predictionsFilePath = "", verbose = FALSE) {
-    # open connection
-    con  <- file(predictionsFilePath, open = "r")
+	# open connection
+	con  <- file(predictionsFilePath, open = "r")
 
-    predictions = c()
+	predictions = c()
 	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
 		predictions = c(predictions, as.numeric(oneLine))
-    }
+	}
 
 	if (verbose == TRUE) {
 		print(predictions)
@@ -420,18 +345,10 @@ readPredictions.BSGD <- function (x, predictionsFilePath = "", verbose = FALSE) 
 
 	close (con)
 
-    return (predictions)
+	return (predictions)
 }
 
 
-
-#' findSoftware.BSGD
-#'
-#' @param	x			SVM object
-#' @param	searchPath		path to search for software
-#' @param	verbose			print messages?
-#'
-#' @return	x			binary path for the software
 
 findSoftware.BSGD = function (x, searchPath = "./", execute = FALSE, verbose = FALSE) {
 	if (verbose == TRUE) {
@@ -439,14 +356,16 @@ findSoftware.BSGD = function (x, searchPath = "./", execute = FALSE, verbose = F
 	}
 
 	# can do now OS specific stuff here
-	x$trainBinaryPath = findBinaryInDirectory ("budgetedsvm-train", dir = searchPath, patterns = list ('budgetedsvm-train .options. train_file .model_file.'))
-	x$testBinaryPath = findBinaryInDirectory ("budgetedsvm-predict", dir = searchPath, patterns = list ('budgetedsvm-predict .options. test_file model_file output_file'))
+	x$trainBinaryPath = findBinaryInDirectory ("budgetedsvm-train", dir = searchPath, patterns = list ('budgetedsvm-train .options. train_file .model_file.'), verbose = verbose)
+	x$testBinaryPath = findBinaryInDirectory ("budgetedsvm-predict", dir = searchPath, patterns = list ('budgetedsvm-predict .options. test_file model_file output_file'), verbose = verbose)
 
 	return(x)
 }
 
-	print.BSGD = function(x) {
-		cat("Solver: ", x$method)
-		cat("    Training Binary at ", x$trainBinaryPath)
-		cat("    Test Binary at ", x$testBinaryPath)
-	}
+
+
+print.BSGD = function(x) {
+	cat("Solver: ", x$method)
+	cat("    Training Binary at ", x$trainBinaryPath)
+	cat("    Test Binary at ", x$testBinaryPath)
+}

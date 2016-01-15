@@ -1,46 +1,51 @@
-#!/usr/bin/Rscript  --vanilla
+
+#
+# SVMBridge
+#
+#		(C) 2015, by Aydin Demircioglu
+#
+# SVMBridge is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SVMBridge is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# Please do not use this software to destroy or spy on people, environment or things.
+# All negative use is prohibited.
+#
 
 
-
-
-
-# @param[in]    trainDataFile       file to read training data from
-# @param[in]    testDataFile        file to read test data from
-# @param[in]    cost            cost parameter C
-# @param[in]    gamma           gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...)
-# @param[in]    rank            number of landmarks
-# @param[in]    bindir          relativ path to the binaries, defaults to default.
-# @param[in]    modelFile       path to model, defaults to a temporary file (given by R)
 
 createTrainingArguments.LLSVM = function (x,
 								trainDataFile = "",
 								modelFile = "",
 								extraParameter = "",
-								primalTime = 10,
-								wallTime = 8*60,
 								cost = 1,
 								gamma = 1,
 								rank = 128, ...) {
-    # ---- compute general things
-    n = R.utils::countLines(trainDataFile)
 
-    # ---- sanity checks
-    if(n < rank)
-        stop("Rank must not be greater or equal to size of dataset")
+	n = R.utils::countLines(trainDataFile)
 
-    # ---- training
-    args = c(
-        "-A 3",
-        "-r 0",
-        sprintf("-B %.16f", rank),
-        sprintf("-L %.16f", (1.0 / (n * cost))),
-        sprintf("-g %.16f", 2 * gamma),
-        extraParameter,
-        trainDataFile,
-        modelFile
-    )
+	# ---- sanity checks
+	if(n < rank)
+		stop("Rank must not be greater or equal to size of dataset")
 
-    return (args)
+	args = c(
+		"-A 3",
+		"-r 0",
+		sprintf("-B %.16f", rank),
+		sprintf("-L %.16f", (1.0 / (n * cost))),
+		sprintf("-g %.16f", 2 * gamma),
+		extraParameter,
+		trainDataFile,
+		modelFile
+	)
+
+	return (args)
 }
 
 
@@ -49,37 +54,37 @@ createTestArguments.LLSVM = function (x,
 									testDataFile = "",
 									modelFile = "",
 									predictionOutput = "/dev/null", ...) {
-    args = c(
-        "-v 1",
+	args = c(
+		"-v 1",
 #        "-o 1", only works for BSGD for now
-        testDataFile,
-        modelFile,
-        predictionOutput
-    )
+		testDataFile,
+		modelFile,
+		predictionOutput
+	)
 
-    return (args)
+	return (args)
 }
 
 
 
 extractTrainingInfo.LLSVM = function (x, output) {
 
-    # ---- grep the error rate
-    pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
-    err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+	# ---- grep the error rate
+	pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
+	err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 
-    return (err)
+	return (err)
 }
 
 
 
 extractTestInfo.LLSVM = function (x, output) {
 
-    # ---- grep the error rate
-    pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
-    err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+	# ---- grep the error rate
+	pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
+	err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 
-    return (err)
+	return (err)
 }
 
 
@@ -90,51 +95,51 @@ readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE)
 		cat("Reading LLSVM model from ", modelFile, "\n")
 	}
 
-    # open connection
-    con  <- file(modelFile, open = "r")
+	# open connection
+	con  <- file(modelFile, open = "r")
 
 	# do we need to invert the labels?
 	invertLabels = FALSE
 
 	# grep needed information step by step, the bias is on the threshold line
-    while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0)
-    {
-        if (grepl("MODEL", oneLine) == TRUE) break;
+	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0)
+	{
+		if (grepl("MODEL", oneLine) == TRUE) break;
 
-        # gamma value
-        if (grepl("KERNEL_GAMMA_PARAM", oneLine) == TRUE)
-        {
-            pattern <- "KERNEL_GAMMA_PARAM: (.*)"
-            gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
-        }
+		# gamma value
+		if (grepl("KERNEL_GAMMA_PARAM", oneLine) == TRUE)
+		{
+			pattern <- "KERNEL_GAMMA_PARAM: (.*)"
+			gamma = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)])) / 2 # make sure it works like the 'normal' gamma for the user
+		}
 
 
-        # bias
-        if (grepl("BIAS_TERM", oneLine) == TRUE)
-        {
-            pattern <- "BIAS_TERM: (.*)"
-            bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
-        }
+		# bias
+		if (grepl("BIAS_TERM", oneLine) == TRUE)
+		{
+			pattern <- "BIAS_TERM: (.*)"
+			bias = as.numeric(sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
+		}
 
-        # order of labels
-        if (grepl("LABELS", oneLine) == TRUE)
-        {
-            pattern <- "LABELS: (.*)"
-            order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
+		# order of labels
+		if (grepl("LABELS", oneLine) == TRUE)
+		{
+			pattern <- "LABELS: (.*)"
+			order = (sub(pattern, '\\1', oneLine[grepl(pattern, oneLine)]))
 
-            if ((order != "1 -1") && (order != "-1 1")) {
-                stop ("Label ordering %s is unknown!", order)
-            }
+			if ((order != "1 -1") && (order != "-1 1")) {
+				stop ("Label ordering %s is unknown!", order)
+			}
 
-            if (order == "1 -1") {
-                invertLabels = FALSE
-            }
+			if (order == "1 -1") {
+				invertLabels = FALSE
+			}
 
-            if (order == "-1 1") {
-                invertLabels = TRUE
-            }
-        }
-    }
+			if (order == "-1 1") {
+				invertLabels = TRUE
+			}
+		}
+	}
 
 
 	# these will contain the coefficients and the  svs.
@@ -242,7 +247,6 @@ readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE)
 
 
 
-# dummy for now
 writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FALSE)
 {
 	#FIXME: does this change globally?
@@ -263,7 +267,6 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 	gamma = model$gamma * 2
 	degree = 1
 	coef = 1
-
 	
 	# write header
 	modelFileHandle <- file(modelFile, open = "w+")
@@ -279,9 +282,6 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 	writeLines(paste ("KERNEL_COEF_PARAM:", coef, sep = " "), modelFileHandle )
 	writeLines(paste ("MODEL:", sep = ""), modelFileHandle )
 	
-	
-	## FIXME: there is a minus in the coefficients, WHY?
-	
 	for (r in 1:nrow(model$SV)) {
 		wline = paste0 (model$w[r])
 		aline = ""
@@ -296,23 +296,13 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 		}
 		wholeLine = paste0 (wline, " ", aline, sline, "\n") 
 		writeLines(wholeLine, modelFileHandle, sep = "" )
-#		print (wholeLine )
-		#model = list("SV" = supportvectors, "alpha" = coefficients, "w" = weights)
 	}
 	close(modelFileHandle)
 	
 	return (TRUE)
 }
 
-#' Detect whether a file is a model for LLSVM.
-#'
-#' @param	x		Object
-#' @param	modelFile		File to check
-#' @param	verbose		Verbose output?
-#'
-#' @return	TRUE if the given modelFile exists and fits the LLSVM model, or FALSE if not.
-#'
-#' @note	This is a very basic check, enough to distinguish the wrappers provided within the SVMBridge
+
 
 detectModel.LLSVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
@@ -332,33 +322,34 @@ detectModel.LLSVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 
 
-	# dummy for now
-	readPredictions.LLSVM = function (x, predictionsFile = "", verbose = FALSE) {
-		ret = readLIBSVMPredictions (predictionsFile = predictionsFile, verbose = verbose)
-		return (ret)
-	}
+readPredictions.LLSVM = function (x, predictionsFile = "", verbose = FALSE) {
+	ret = readLIBSVMPredictions (predictionsFile = predictionsFile, verbose = verbose)
+	return (ret)
+}
 
-	findSoftware.LLSVM = function (x, searchPath = "./", verbose = FALSE) {
-		if (verbose == TRUE) {
-				cat ("    LLSVM Object: Executing search for software for ", x$method)
-			}
 	
-		trainBinaryPattern = "budgetedsvm-train"
-		trainBinaryOutputPattern = list ("budgetedsvm-train .options. train_file .model_file.")
-		testBinaryPattern = "budgetedsvm-predict"
-		testBinaryOutputPattern = list ("budgetedsvm-predict .options. test_file model_file output_file")
+	
+findSoftware.LLSVM = function (x, searchPath = "./", verbose = FALSE) {
+	if (verbose == TRUE) {
+			cat ("    LLSVM Object: Executing search for software for ", x$method)
+		}
 
-		# can do now OS specific stuff here
-		x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern , dir = searchPath, patterns = trainBinaryOutputPattern )
-		x$testBinaryPath = findBinaryInDirectory (testBinaryPattern , dir = searchPath, patterns = testBinaryOutputPattern )
-		
-		return (x)
-	}
+	trainBinaryPattern = "budgetedsvm-train"
+	trainBinaryOutputPattern = list ("budgetedsvm-train .options. train_file .model_file.")
+	testBinaryPattern = "budgetedsvm-predict"
+	testBinaryOutputPattern = list ("budgetedsvm-predict .options. test_file model_file output_file")
+
+	# can do now OS specific stuff here
+	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern , dir = searchPath, patterns = trainBinaryOutputPattern, verbose = verbose )
+	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern , dir = searchPath, patterns = testBinaryOutputPattern, verbose = verbose )
+	
+	return (x)
+}
 
 
 
-	print.LLSVM = function(x) {
-		cat("Solver: ", x$method)
-		cat("    Training Binary at ", x$trainBinaryPath)
-		cat("    Test Binary at ", x$testBinaryPath)
-	}
+print.LLSVM = function(x) {
+	cat("Solver: ", x$method)
+	cat("    Training Binary at ", x$trainBinaryPath)
+	cat("    Test Binary at ", x$testBinaryPath)
+}
