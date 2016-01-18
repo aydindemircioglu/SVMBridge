@@ -209,12 +209,13 @@ optimizationValuestests  = function (solver, verbose) {
 	
 	# create table of what we expecte
 	mysolver = c("BSGD", "LIBSVM", "LASVM", "CVM", "BVM", "LLSVM", "SVMperf")
-	trainingError = c(0.226087, 0.257971, 0.2, 0.742029, 0.7362319, 0.4927536, 0.2028986)
-	halfwTw = c(8.501867, 15.66334, 15.8894, 0.5149239, 0.5202258, 0.4999954, 16.09485)
-	primalValue  = c(1646.83, 1926.384, 1968.645, 2698.021, 2705.437, 2667.982, 1987.876)
-	dualValue = c(16.50107, 16.98221, 17.41129, 1.463981, 1.465854, 13.11328, 17.81096)
+	trainingError = c(0.226087, 0.257971, 0.2, 0.742029, 0.7362319, 0.8811594, 0.2028986)
+	halfwTw = c(8.501867, 15.66334, 15.8894, 0.5149239, 0.5202258, 338.2818, 16.09485)
+	primalValue  = c(1646.83, 1926.384, 1968.645, 2698.021, 2705.437, 10987.9, 1987.876)
+	dualValue = c(16.50107, 16.98221, 17.41129, 1.463981, 1.465854, -50.77524, 17.81096)
 	optTable = data.frame(cbind (mysolver, primalValue, dualValue, halfwTw, trainingError))
-	
+
+
 	# TODO: make this compact :(
 	optTable$mysolver = as.character(mysolver)
 	optTable$primalValue = as.numeric (primalValue)
@@ -242,8 +243,8 @@ optimizationValuestests  = function (solver, verbose) {
 	# compute values
 	X = as.matrix(australian$X)
 	Y = as.matrix(australian$Y)[,1]
-	oV = optimizationValues (X = X, Y = Y, model = model, C = C)
-
+	oV = computeOptimizationValues (X = X, Y = Y, model = model, C = C, verbose = TRUE)
+	
 	# check values
 	expect_equal (oV$primal, curModel$primalValue, tolerance = 0.01)
 	expect_equal (oV$dual, curModel$dualValue, tolerance = 0.01)
@@ -254,28 +255,3 @@ optimizationValuestests  = function (solver, verbose) {
 	
 }	
 	
-
-	
-	
-# 		oV = optimizationValues (X = as.matrix(australian$X), Y = as.matrix(australian$Y), model = model, C = C)
-# 
-# 		# create regression model
-# 		data = list()
-# 		data$x = australian$X
-# 		data$y = as.vector(australian$Y)
-# 		model$L = 1
-# 		model$C = C
-# 		model$X = model$SV
-# 
-# 		# special care of BSGD
-# 		if (s == "BSGD") {
-# 			model$alpha = model$alpha[,1]
-# 			model$gamma = model$gamma/2
-# 			model$L = 1
-# 			model$C = C
-# 		}
-# 		
-# 		pV = computeOptimizationValuesLibSVM (model, NULL, data = data,  predictionOutput = NULL, verbose = FALSE)
-# 
-# 		expect_equal(oV$primal, pV$primal[1,1])
-# 		expect_equal(oV$dual, pV$dual[1,1])

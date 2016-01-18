@@ -1,4 +1,3 @@
-#!/usr/bin/Rscript  --vanilla
 
 #
 # SVMBridge
@@ -202,53 +201,16 @@ extractTestInfo.LIBSVM = function (
 
 
 
-#' Read LIBSVM model
-#'
-#' As this is a basic for all other model readers, we export it.
-#'
-#' @param	x		svm object
-#' @param	modelFile	model file to read
-#' @param	verbose		be verbose?
-#'
-#' @return			model object
-
-readModel.LIBSVM = function (x,
-	modelFile = "./model",
-	verbose = FALSE) {
+readModel.LIBSVM = function (x,modelFile = "./model",	verbose = FALSE) {
 		return (readLIBSVMModel (modelFile = modelFile, verbose = verbose) )
 }
 
 
 
-
-
-#' Write LIBSVM model
-#'
-#' As this is a basic for all other model readers, we export it.
-#'
-#' @param	x		svm object
-#' @param	model		model object to write
-#' @param	modelFile	path where to write the model
-#' @param	verbose		be verbose?
-#'
-writeModel.LIBSVM = function (x,
-	model = NA,
-	modelFile = "./model",
-	verbose = FALSE) {
+writeModel.LIBSVM = function (x,model = NA,	modelFile = "./model", verbose = FALSE) {
 		return (writeLIBSVMModel (model = model, modelFile = modelFile, verbose = verbose) )
 }
 
-
-
-#' Detect whether a file is a model for LIBSVM.
-#'
-#' @param	x		Object
-#' @param	modelFile		File to check
-#' @param	verbose		Verbose output?
-#'
-#' @return	TRUE if the given modelFile exists and fits the LIBSVM model, or FALSE if not.
-#'
-#' @note	This is a very basic check, enough to distinguish the wrappers provided within the SVMBridge
 
 detectModel.LIBSVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
@@ -269,13 +231,6 @@ detectModel.LIBSVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 
 
-#' readPredictions.LIBSVM
-#'
-#' @param	x			svm object
-#' @param	predictionsFile		file to read predictions from
-#' @param	verbose			be verbose?
-#' @return				array consisting of predictions
-#'
 readPredictions.LIBSVM = function (x, predictionsFile = "", verbose = FALSE) {
 	# open connection
 	con  <- file(predictionsFile, open = "r")
@@ -296,18 +251,6 @@ readPredictions.LIBSVM = function (x, predictionsFile = "", verbose = FALSE) {
 
 
 
-#' findSoftware.LIBSVM
-#' Will find the LIBSVM binaries.
-#'
-#' @param	x	svm object
-#' @param	searchPath	path to search for software
-#' @param	execute		shall the binaries  be executed to make sure they are the right one?
-#' @param	verbose		be verbose?
-#'
-#' @return	x	svm object with  x$testBinaryPath and x$trainBinaryPath set.
-#'
-#' @note 		will produce an error if the executable could not be found.
-#'
 findSoftware.LIBSVM = function (x, searchPath = "./", execute = TRUE, verbose = FALSE) {
 
 	if (verbose == TRUE) {
@@ -337,14 +280,13 @@ findSoftware.LIBSVM = function (x, searchPath = "./", execute = TRUE, verbose = 
 
 
 
-#' print.LIBSVM
-#'
-#	display some information about the object.
-#'
-#' @param	x			svm object
-#'
-	print.LIBSVM = function(x) {
-		cat("Solver: ", x$method, "\n")
-		cat("    Training Binary at ", x$trainBinaryPath, "\n")
-		cat("    Test Binary at ", x$testBinaryPath, "\n")
-	}
+print.LIBSVM = function(x) {
+	cat("Solver: ", x$method, "\n")
+	cat("    Training Binary at ", x$trainBinaryPath, "\n")
+	cat("    Test Binary at ", x$testBinaryPath, "\n")
+}
+
+
+optimizationValues.LIBSVM = function (x, X, Y, C = 0.0, model = NA, verbose = FALSE) {
+		optimizationValuesLIBSVM (X = X, Y = Y, model = model, C = C, verbose = verbose)
+}

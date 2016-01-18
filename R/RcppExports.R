@@ -16,8 +16,8 @@
 #' @note		all computations will be done in DENSE format, not sparse!
 #' @return		list of optimization values
 #' @export
-computeOptimizationValues <- function(X, Y, C, gamma, SV, nSV, alpha, rho, label, verbose = FALSE) {
-    .Call('SVMBridge_computeOptimizationValues', PACKAGE = 'SVMBridge', X, Y, C, gamma, SV, nSV, alpha, rho, label, verbose)
+computeOptimizationValuesCpp <- function(X, Y, C, gamma, SV, nSV, alpha, rho, label, verbose = FALSE) {
+    .Call('SVMBridge_computeOptimizationValuesCpp', PACKAGE = 'SVMBridge', X, Y, C, gamma, SV, nSV, alpha, rho, label, verbose)
 }
 
 #' Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.

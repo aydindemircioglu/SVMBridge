@@ -53,16 +53,28 @@ predictionsFile = tempfile()
 #	library(SVMBridge)
 
 	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
-	for (solver in solvers) {
-		cat ("Downloading and building software ", solver, "\n")
-		softwareDir = downloadSoftware (solver)
-		cat ("Unlinking ", file.path(softwareDir, ".svn"), "\n")
-		unlink (file.path(softwareDir, ".svn"), recursive = TRUE)
-		addSVMPackage (solver, wrapperPath = "../../wrapper", verbose = verbose)
+	#solvers = c("LIBSVM")
+	
+	softwareDir = "/tmp/software"
+	if (file.exists("/tmp/software") == FALSE) {
+		
+		for (solver in solvers) {
+			cat ("Downloading and building software ", solver, "\n")
+			softwareDir = downloadSoftware (solver, softwareDir = softwareDir)
+			cat ("Unlinking ", file.path(softwareDir, ".svn"), "\n")
+			unlink (file.path(softwareDir, ".svn"), recursive = TRUE)
+			addSVMPackage (solver, wrapperPath = "../../wrapper", verbose = verbose)
+		}
+		findAllSVMSoftware (file.path(softwareDir, "."), verbose = TRUE)
+	} else {
+		for (solver in solvers) {
+			addSVMPackage (solver, wrapperPath = "../../wrapper", verbose = verbose)
+		}
+		findAllSVMSoftware (file.path(softwareDir, "."), verbose = TRUE)
 	}
-
+	
 	# softwareDir will have the last directory found, e.g. ../BudgetedSVM. we need to go one above.
-	findAllSVMSoftware (file.path(softwareDir, ".."), verbose = verbose)
+	#findAllSVMSoftware (file.path(softwareDir, ".."), verbose = TRUE)
 
 	
 ##  now do all the thirty different ways of calling trainSVM 

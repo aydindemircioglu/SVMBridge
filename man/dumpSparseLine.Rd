@@ -4,9 +4,9 @@
 \alias{dumpSparseLine}
 \title{dumpSparseLine}
 \usage{
-dumpSparseLine(row)
+dumpSparseLine(row, dense = FALSE)
 
-dumpSparseLine(row)
+dumpSparseLine(row, dense = FALSE)
 }
 \arguments{
 \item{row}{array to read data from}

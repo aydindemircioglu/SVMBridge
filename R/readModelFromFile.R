@@ -61,11 +61,15 @@ readModelFromFile = function(
 	checkmate::checkString (modelType)
 	
 	# get the correct object
-	SVMObject = SVMBridgeEnv$packages[[modelType]]
+	SVMObject = getSVMObject (modelType)
 	if (checkmate::testClass (SVMObject, "SVMWrapper") == FALSE) {
 		stop ("Could not find the SVM Wrapper corresponding to model ", modelType, ". Please make sure it is loaded first.\n")
 	}
 
+	if (verbose == TRUE) {
+		cat ("Handling over reading model to object\n")
+	}
+	
 	# read model (TODO; make call better)
 	model = readModel (SVMObject, modelFile = modelFile, verbose = verbose)
 	return (model)

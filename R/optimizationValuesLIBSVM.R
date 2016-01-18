@@ -32,8 +32,7 @@
 #' @return		a list of values and corresponding objects
 #'
 #' @export
-optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FALSE) {
-
+optimizationValuesLIBSVM = function (X, Y, model, C = 0.0, verbose = FALSE) {
 	# checkmate checks
 	checkmate::assertFlag (verbose)
 	checkmate::assertString (model$modelType)
@@ -42,55 +41,12 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 		cat("Computing optimization values for given model.")
 	}
 
-	# apply our fixes-- if we do not know the model, we apply LIBSVM
-	if (model$modelType == "LIBSVM")	{
-		# nothing to fix
-	}
-	
-	if (model$modelType == "SVMperf")	{
-		
-		# compute lambda and correction factor as BSGD model works with lambda-formulation
-		N = nrow(X)
-	}
-	
-	if (model$modelType == "BSGD")	{
-	# sanity check, if we really have BSGD data
-		cl1 = model$alpha[,1]
-		cl2 = -model$alpha[,2]
-		if (!all(cl1 == cl2)) {
-			stop ("Sanity check failed: alpha_1 == -alpha_2 is violated.")
-		}
-
-		# prepare model, the alphas have coefficients for 'both' classes, need simply to crop that
-		model$alpha = t(model$alpha[,1])
-
-		# adapt gamma, as BSGD has different kernel constant
-		model$gamma = model$gamma/2
-		
-		
-		# compute lambda and correction factor as BSGD model works with lambda-formulation
-		N = nrow(X)
-	}
-	
-	if (model$modelType == "LASVM")	{
-		# nothing to be done, as LASVM and LIBSVM have the same model format.
-	}
-		
-
-	# does model fit to data?
-
-	
-	# FIXME: for now ignore values vector
-	
-	# compute values
 	if (verbose == TRUE) {
 		cat ("gamma", model$gamma, "\n")
 		cat ("nSV", model$nSV, "\n")
 		cat ("bias", model$bias, "\n")
 		cat ("label", model$label, "\n")
 		cat ("C", model$C, "\n")
-#		cat ("SV", model$SV, "\n")
-#		cat ("alpha", model$alpha, "\n")
 	}
 
 	checkmate::assertMatrix(X, min.rows = 1)
@@ -99,11 +55,11 @@ optimizationValues <- function (X, Y, model, C = 0.0, values = c(), verbose = FA
 	checkmate::assertNumber (model$gamma, lower = 0)
 	checkmate::assertMatrix (model$SV)
 	checkmate::assertVector (model$nSV)
-	checkmate::assertMatrix(model$alpha)
+	checkmate::assertMatrix (model$alpha)
 	checkmate::assertVector (model$bias)
 	checkmate::assertVector (model$label)
 
-	computedValues = computeOptimizationValues (X, Y, C, model$gamma, 
+	computedValues = computeOptimizationValuesCpp (X, Y, C, model$gamma, 
 		model$SV, model$nSV, model$alpha, model$bias, model$label, verbose)
 
 	if (verbose == TRUE)

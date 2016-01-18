@@ -56,7 +56,6 @@ createTestArguments.LLSVM = function (x,
 									predictionOutput = "/dev/null", ...) {
 	args = c(
 		"-v 1",
-#        "-o 1", only works for BSGD for now
 		testDataFile,
 		modelFile,
 		predictionOutput
@@ -68,29 +67,22 @@ createTestArguments.LLSVM = function (x,
 
 
 extractTrainingInfo.LLSVM = function (x, output) {
-
-	# ---- grep the error rate
 	pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
 	err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-
 	return (err)
 }
 
 
 
 extractTestInfo.LLSVM = function (x, output) {
-
-	# ---- grep the error rate
 	pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
 	err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-
 	return (err)
 }
 
 
 
-readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE)
-{
+readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE) {
 	if (verbose == TRUE) {
 		cat("Reading LLSVM model from ", modelFile, "\n")
 	}
@@ -252,9 +244,9 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 	#FIXME: does this change globally?
 	options(scipen=999)
 
-	# check for weightvector, coefficients and SV
-	
-	# check for size 
+	# TODO: check for weightvector, coefficients and SV
+
+	# check for size
 	if ((nrow(model$SV) != nrow(model$alpha)) || (nrow(model$alpha) != length(model$w))) {
 		warning ("Cannot write model, as model is not consistent!")
 		return (FALSE)
@@ -267,7 +259,7 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 	gamma = model$gamma * 2
 	degree = 1
 	coef = 1
-	
+
 	# write header
 	modelFileHandle <- file(modelFile, open = "w+")
 	writeLines(paste ("ALGORITHM: 3", sep = ""), modelFileHandle )
@@ -281,7 +273,7 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 	writeLines(paste ("KERNEL_DEGREE_PARAM:", degree, sep = " "), modelFileHandle )
 	writeLines(paste ("KERNEL_COEF_PARAM:", coef, sep = " "), modelFileHandle )
 	writeLines(paste ("MODEL:", sep = ""), modelFileHandle )
-	
+
 	for (r in 1:nrow(model$SV)) {
 		wline = paste0 (model$w[r])
 		aline = ""
@@ -294,11 +286,11 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 				aline = paste0 (aline, c, ":", model$SV[r,c], " ")
 			}
 		}
-		wholeLine = paste0 (wline, " ", aline, sline, "\n") 
+		wholeLine = paste0 (wline, " ", aline, sline, "\n")
 		writeLines(wholeLine, modelFileHandle, sep = "" )
 	}
 	close(modelFileHandle)
-	
+
 	return (TRUE)
 }
 
@@ -327,8 +319,8 @@ readPredictions.LLSVM = function (x, predictionsFile = "", verbose = FALSE) {
 	return (ret)
 }
 
-	
-	
+
+
 findSoftware.LLSVM = function (x, searchPath = "./", verbose = FALSE) {
 	if (verbose == TRUE) {
 			cat ("    LLSVM Object: Executing search for software for ", x$method)
@@ -342,7 +334,7 @@ findSoftware.LLSVM = function (x, searchPath = "./", verbose = FALSE) {
 	# can do now OS specific stuff here
 	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern , dir = searchPath, patterns = trainBinaryOutputPattern, verbose = verbose )
 	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern , dir = searchPath, patterns = testBinaryOutputPattern, verbose = verbose )
-	
+
 	return (x)
 }
 
@@ -352,4 +344,23 @@ print.LLSVM = function(x) {
 	cat("Solver: ", x$method)
 	cat("    Training Binary at ", x$trainBinaryPath)
 	cat("    Test Binary at ", x$testBinaryPath)
+}
+
+
+
+optimizationValues.LLSVM = function (x, X, Y, C = 0.0, model = NA, verbose = FALSE) {
+
+		LIBSVMmodel = model
+#FIXME sign of alpha depends on invertLabels!!
+
+		# prepare model, the alphas we need to transform with W (to have a libsvm model)
+		LIBSVMmodel$alpha = t(model$w) %*% t(-model$a)
+
+		# adapt gamma, as BSGD has different kernel constant
+		LIBSVMmodel$gamma = LIBSVMmodel$gamma/2
+
+		LIBSVMmodel$SV = model$SV
+
+		optimizationValues = optimizationValuesLIBSVM (X = X, Y = Y, model = LIBSVMmodel, C = C, verbose = verbose)
+		return (optimizationValues)
 }

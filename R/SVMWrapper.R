@@ -36,6 +36,7 @@ createSVMWrapper = function(method, ...) {
 	# TODO: one must be able to do this better, but how? can anyone fix this :/
 	suppressWarnings( rm (envir = globalenv(), list = c(paste0("createTestArguments", ".", method), 
 		paste0("createTrainingArguments", ".", method), 
+		paste0("computeOptimizationValues", ".", method), 
 		paste0("detectModel", ".", method), 
 		paste0("extractTestInfo", ".", method), 
 		paste0("extractTrainingInfo", ".", method), 
@@ -54,28 +55,12 @@ createSVMWrapper = function(method, ...) {
 
 
 
-createTrainingArguments = function (x,
-	trainDataFile = "",
-	modelFile = "",
-	extraParameter = "",
-	kernelCacheSize = 1024,
-	cost = 1, 
-	useBias = FALSE,
-	gamma = 1,
-	epsilon = 0.001, 
-	...) 
-{
+createTrainingArguments = function (x, trainDataFile = NULL, modelFile = NULL, verbose = FALSE, ...) {
 	UseMethod("createTrainingArguments")
 }
 
 
-
-createTestArguments = function (x,
-	testDataFile = "",
-	modelFile = "", 
-	predictionsFile = "",
-	...) 
-{
+createTestArguments = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
 	UseMethod("createTestArguments")
 }
 
@@ -104,8 +89,13 @@ detectModel = function (x, modelFile = "./model", verbose = FALSE) {
 	UseMethod("detectModel")
 }
 
+	
+optimizationValues = function (x, X = NULL, Y = NULL, model = NULL, C = NULL, verbose = FALSE) {
+	UseMethod ("optimizationValues")
+}
 
-readPredictions = function (x, predictionsFile = "", verbose = FALSE) {
+
+readPredictions = function (x, predictionsFile = NULL, verbose = FALSE) {
 	UseMethod ("readPredictions")
 }
 

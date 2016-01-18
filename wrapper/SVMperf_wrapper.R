@@ -230,7 +230,7 @@ createTrainingArguments.SVMperf = function (x,
 	if (verbose == TRUE) {
 		cat("SVMperf will apply method ", method, "\n")
 	}
-	
+
 	return (args)
 }
 
@@ -240,7 +240,7 @@ createTestArguments.SVMperf = function (x,
 	testDataFile = "",
 	modelFile = "",
 	predictionsFile = "",
-	...) 
+	...)
 {
 	args = c(
 		testDataFile,
@@ -413,7 +413,7 @@ readPredictions.SVMperf <- function (x, predictionsFile = "", verbose = FALSE) {
 		return (ret)
 }
 
-		
+
 
 findSoftware.SVMperf = function (x, searchPath = "./", execute = FALSE, verbose = FALSE) {
 
@@ -422,7 +422,7 @@ findSoftware.SVMperf = function (x, searchPath = "./", execute = FALSE, verbose 
 	}
 
 	# can do now OS specific stuff here
-	x$trainBinaryPath = findBinaryInDirectory ("svm_perf_learn", applyKeyFix = TRUE,  
+	x$trainBinaryPath = findBinaryInDirectory ("svm_perf_learn", applyKeyFix = TRUE,
 		dir = searchPath, patterns = list ('ROCArea: Percentage of swapped pos/neg pairs', 'usage: svm_struct_learn .options. example_file model_file'), verbose = verbose)
 	x$testBinaryPath = findBinaryInDirectory ("svm_perf_classify", applyKeyFix = TRUE, dir = searchPath, patterns = list ('usage: svm_struct_classify .options. example_file model_file output_file'), verbose = verbose)
 
@@ -435,4 +435,13 @@ print.SVMperf  = function(x) {
 	cat("--- Object: ", x$method, "\n")
 	cat("       Training Binary at ", x$trainBinaryPath, "\n")
 	cat("       Test Binary at ", x$testBinaryPath, "\n")
+}
+
+
+
+optimizationValues.SVMperf = function (x, X, Y, C = 0.0, model = NA, verbose = FALSE) {
+	if (verbose == TRUE) {
+		cat ("Computing optimization values for SVMperf.\n")
+	}
+	optimizationValuesLIBSVM (X = X, Y = Y, model = model, C = C, verbose = verbose)
 }

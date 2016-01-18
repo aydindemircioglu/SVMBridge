@@ -1,5 +1,7 @@
 
-downloadSoftware = function (solver, verbose = FALSE) {
+#' @param	softwareDir	 	base of the directory to download software to (e.g. 'solver' path will be added!)
+
+downloadSoftware = function (solver, softwareDir = NULL, verbose = FALSE) {
 	
 	if (verbose == TRUE) {
 		cat ("Downloading and Building solver ", solver, "\n")
@@ -14,8 +16,12 @@ downloadSoftware = function (solver, verbose = FALSE) {
 	}
 
 	# generate paths
-	tmpDir = tempdir()
-	softwareDir = file.path (tmpDir, solver)
+	if (is.null (softwareDir) == TRUE) {
+		tmpDir = tempdir()
+		softwareDir = file.path (tmpDir, solver)
+	} else {
+		softwareDir = file.path (softwareDir, solver)
+	}
 	
 	downloadAndBuild = function (softwareDir) {
 		system2 ("svn", stdout = NULL, stderr = NULL, args = c("checkout", "--force", paste0 ("https://github.com/aydindemircioglu/SVMBridge/trunk/software/", solver), softwareDir ))
