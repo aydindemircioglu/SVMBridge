@@ -207,10 +207,10 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 				
 				test_for_multi = idx3.find(" ");
 				
-				if(idx3.size() > 1 & test_for_multi != -1){
+				if ((idx3.size() > 1) & (test_for_multi != -1)){
 					int f = 0;
 					//determine count of alpha values (check for unequal counts)
-					for(int j=0;j<idx3.size();j++){
+					for (unsigned int j=0; j < idx3.size(); j++){
 						alphastring = std::string(&idx[j], 1);
 						
 						if(alphastring == " "){
@@ -338,11 +338,11 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 				string idx3 = std::string(idx);
 				test_for_multi = idx3.find(" ");
 				int f = 0;
-				if(idx3.size() > 1 & test_for_multi != -1){
+				if ((idx3.size() > 1) & (test_for_multi != -1)) {
 					int k = 1;
 					
 					//fill yR with alpha values
-					for(int j=0;j<idx3.size();j++){
+					for (unsigned int j=0;j<idx3.size();j++){
 						
 						alphastring = std::string(&idx[j], 1);
 						if(alphastring == " "){
