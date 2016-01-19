@@ -39,7 +39,7 @@ test_that("read/write operations for LIBSVM  models work with binary models", {
 	modelFile = "../data/LIBSVM.australian.model"
 	australianModel = readLIBSVMModel (modelFile) 
 	
-	tmp = tempfile()
+	print (australianModel)
 	writeLIBSVMModel (australianModel, modelFile = tmp)
 	print (readLines(tmp, n = -1))
 

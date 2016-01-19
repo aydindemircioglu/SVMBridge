@@ -174,13 +174,8 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 			return R_NilValue;
 		}
 		
-		
-		
-		
 		//Jump to position in dataset where sparse data starts
 		fseek(fp, skipBytes, SEEK_CUR);
-		
-		
 		
 		max_line_len = 1024;
 		line = Malloc(char,max_line_len);
@@ -190,7 +185,7 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 		{
 			p = strtok(line," \t"); 
 			inst_max_index = -1;
-			strtod(p,&endptr);
+			double i = strtod(p,&endptr);
 			
 			if(p == NULL) // empty line
 				break;
@@ -204,7 +199,6 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 				idx = strtok(NULL,":");
 				p = strtok(NULL," \t"); 
 
-				//cout << "Fehlertracking: " << "idx = " << idx << endl;
 				if(p == NULL || *p == '\n') 
 						break;
 				
@@ -213,10 +207,6 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 				
 				test_for_multi = idx3.find(" ");
 				
-				
-				
-				//cout << "Fehlertracking: " << "idx3 = " << idx3 << endl;
-				//cout << "Fehlertracking: " << "test_for_multi = " << test_for_multi << endl;
 				if(idx3.size() > 1 & test_for_multi != -1){
 					int f = 0;
 					//determine count of alpha values (check for unequal counts)
@@ -269,7 +259,7 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 					inst_max_index = index;
 				
 				errno = 0;
-				strtod(p,&endptr); 
+				double i = strtod(p,&endptr); 
 				
 				if(endptr == p || errno != 0 || (*endptr != '\0' && !isspace(*endptr))){
 					s << "Input Error" ;
