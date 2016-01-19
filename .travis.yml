@@ -1,4 +1,10 @@
 language: r
+os:
+    - linux
+    - osx
+compiler:
+    - gcc
+    - clang
 env:
     global:
         - _R_CHECK_TIMINGS_=0
