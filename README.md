@@ -1,3 +1,5 @@
+
+
 # SVMBridge
 
 A simple bridge for various binary SVM packages.
@@ -9,6 +11,15 @@ The package will be released soon, so some links below are not working.
 * [Offical CRAN release site](http://cran.r-project.org/web/packages/SVMBridge/index.html)
 
 * [Tutorial on github](https://github.com/aydindemircioglu/SVMBridge/blob/master/doc/knitted/tutorial/README.md)
+
+
+# Current build status
+
+| ![](http://s3.amazonaws.com/entp-tender-production/assets/31027eff5fb7f725081560b12ebc82dd21b9146e/appveyor-kb-logo.png)  |    [![Build status](https://ci.appveyor.com/api/projects/status/5hli9i0h4aaxxvlh?svg=true)](https://ci.appveyor.com/project/aydindemircioglu/svmbridge) |
+|:---:|:---:|
+|![](https://billing.travis-ci.com/__travis__/mustache-spinner.gif)  |  [![Build Status](https://travis-ci.org/aydindemircioglu/SVMBridge.svg?branch=master)](https://travis-ci.org/aydindemircioglu/SVMBridge)|
+
+
 
 
 # Installation
