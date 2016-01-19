@@ -3,7 +3,7 @@ context("Find SVM Software")
 # make sure everything is clean
 #detach("package:SVMBridge", unload = TRUE)
 #library(SVMBridge)
-
+verbose = FALSE
 
 
 test_that("finding works in general", {
@@ -49,7 +49,7 @@ test_that("finding software without wrapper does not work", {
 	
 test_that("finding software in a sub-sub-directory works", {
 	addSVMPackage ("oneSVM", wrapperPath = "../dummy/fourSVM")
-	retValue = findSVMSoftware ("oneSVM", searchPath = "../dummy/fourSVM", verbose = TRUE)
+	retValue = findSVMSoftware ("oneSVM", searchPath = "../dummy/fourSVM", verbose = verbose)
 
 	svmObject = getSVMObject ("oneSVM")
 	expect_equal (retValue, TRUE)
