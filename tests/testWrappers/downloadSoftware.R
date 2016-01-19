@@ -24,7 +24,7 @@ downloadSoftware = function (solver, softwareDir = NULL, verbose = FALSE) {
 	}
 	
 	downloadAndBuild = function (softwareDir) {
-		system2 ("svn", stdout = NULL, stderr = NULL, args = c("checkout", "--force", paste0 ("https://github.com/aydindemircioglu/SVMBridge/trunk/software/", solver), softwareDir ))
+		system2 ("svn", stdout = NULL, stderr = NULL, args = c("checkout", "--force", "--non-interactive", "--trust-server-cert", paste0 ("https://github.com/aydindemircioglu/SVMBridge/trunk/software/", solver), softwareDir ))
 		system2 ("make", stdout = NULL, stderr = NULL, args = c("-C", softwareDir))
 	}
 	if (verbose == TRUE)

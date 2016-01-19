@@ -20,7 +20,7 @@ source ("downloadSoftware.R")
 # else SVM does not work 100p the same, as the data is shuffled.
 set.seed(42)
 
-verbose = FALSE
+verbose = TRUE
 
 modelFile = tempfile()
 predictionsFile = tempfile()
@@ -65,16 +65,16 @@ predictionsFile = tempfile()
 			unlink (file.path(softwareDir, ".svn"), recursive = TRUE)
 			addSVMPackage (solver, wrapperPath = "../../wrapper", verbose = verbose)
 		}
-		findAllSVMSoftware (file.path(softwareDir, "."), verbose = TRUE)
+		findAllSVMSoftware (file.path(softwareDir, "."), verbose = verbose)
 	} else {
 		for (solver in solvers) {
 			addSVMPackage (solver, wrapperPath = "../../wrapper", verbose = verbose)
 		}
-		findAllSVMSoftware (file.path(softwareDir, "."), verbose = TRUE)
+		findAllSVMSoftware (file.path(softwareDir, "."), verbose = verbose)
 	}
 	
 	# softwareDir will have the last directory found, e.g. ../BudgetedSVM. we need to go one above.
-	#findAllSVMSoftware (file.path(softwareDir, ".."), verbose = TRUE)
+	#findAllSVMSoftware (file.path(softwareDir, ".."), verbose = verbose)
 
 	
 ##  now do all the thirty different ways of calling trainSVM 

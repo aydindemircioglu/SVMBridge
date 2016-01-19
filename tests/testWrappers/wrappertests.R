@@ -45,6 +45,10 @@ wrappertests = function (solver, trainDataX, trainDataY, testDataX, testDataY, v
 	)  
 
 	expErrors = c("LIBSVM" = 0.06, "LASVM" = 0.06, "BSGD" = 0.04, "SVMperf" = 0.06, "BVM" = 0.04, "CVM" = 0.04, "LLSVM" = 0.94) #LLSVM is no joke.
+	if (verbose == TRUE) {
+		print (testObj)
+	}
+
 	expect_lte (abs(testObj$testError - expErrors[solver]), 0.001)
 }
 

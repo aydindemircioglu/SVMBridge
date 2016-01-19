@@ -25,9 +25,10 @@
 
 #include <stdlib.h>
 #include <Rcpp.h>
+#include <unistd.h>
+#include <pwd.h>
 #include <errno.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <sstream>
 #include <fstream>
 #include <iostream>
@@ -138,16 +139,7 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 		int tilde = filename.find("~");
 		if(tilde != -1){
 			
-			#ifdef __linux
-				char* home_path;
-				home_path = getenv("HOME");
-				if(home_path == NULL){
-						struct passwd* pw = getpwuid(getuid());
-						home_path = pw->pw_dir;
-				}
-				filename.erase(tilde,1);
-				filename = home_path + filename;
-			#elif defined _WIN32
+			#if defined _WIN32
 				char* home_path;
 				home_path = getenv("HOMEPATH");
 				filename.erase(tilde,1);
@@ -158,7 +150,14 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 				}
 				filename = home_path + filename;
 			#else
-			#error "Error"
+				char* home_path;
+				home_path = getenv("HOME");
+				if(home_path == NULL){
+						struct passwd* pw = getpwuid(getuid());
+						home_path = pw->pw_dir;
+				}
+				filename.erase(tilde,1);
+				filename = home_path + filename;
 			#endif
 			if(verbose == TRUE){
 				Rcout << "  Expanded path to dataset: " << filename << "\n";
