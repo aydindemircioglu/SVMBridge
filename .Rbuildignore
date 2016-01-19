@@ -2,7 +2,7 @@
 staticdocs
 todo-files
 tools
-
+^appveyor\.yml$
 .gitignore
 .travis.yml
 ^.*tar.gz$
