@@ -123,7 +123,8 @@ after_success:
     - git config push.default matching
     - git commit man DESCRIPTION NAMESPACE -m "update auto-generated documentation [ci skip]" || true
     - git push
-
+after_failure:
+    - cat ./SVMBridge.Rcheck/tests/testthat.Rout
 notifications:
   email:
     recipients:

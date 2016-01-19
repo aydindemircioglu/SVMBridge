@@ -41,6 +41,8 @@ test_that("read/write operations for LIBSVM  models work with binary models", {
 	
 	tmp = tempfile()
 	writeLIBSVMModel (australianModel, modelFile = tmp)
+	print (readLines(tmp, n = -1))
+
 	australianModelReread = readLIBSVMModel (modelFile = tmp)
 
 	expect_equal(australianModel, australianModelReread)
