@@ -2,8 +2,6 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		writeLIBSVMModel.R
-# 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -35,6 +33,7 @@ writeLIBSVMModel = function (model = NA, modelFile = "./model", verbose = FALSE)
 
 	checkmate::assertFlag (verbose)
 	checkmate::assertString (modelFile)
+	checkmate::assertClass (model, "SVMModel")
 
 	# check the model if everything is as we expect it
 	# here: alpha, label... gamma,..
@@ -43,7 +42,6 @@ writeLIBSVMModel = function (model = NA, modelFile = "./model", verbose = FALSE)
 		cat("Writing SVM Model to ", modelFile, "\n")
 	}
 	
-	# check of S3 object here.
 	
 	model$nrclass = length(model$label)
 	posSV = sum(model$alpha > 0)
@@ -76,8 +74,6 @@ writeLIBSVMModel = function (model = NA, modelFile = "./model", verbose = FALSE)
 	writeLines(paste ("SV", sep = ""), modelFileHandle )
 
 	# basically all data is sparse data format, but the data around this differs
-	#svmatrix = dumpSparseFormat(model$alpha, model$X)
-	#writeLines(svmatrix, modelFileHandle, sep = "" )
 	if (verbose == TRUE)
 		cat ("    Writing Support Vectors.\n")
 	writeSparseDataToConnection(modelFileHandle, model$SV, model$alpha)
