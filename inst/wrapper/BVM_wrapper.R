@@ -135,8 +135,8 @@ readPredictions.BVM = function (x, predictionsFile = "", verbose = FALSE) {
 		return (ret)
 	}
 
-	
-	
+
+
 findSoftware.BVM = function (x, searchPath = "./", execute = FALSE, verbose = FALSE) {
 
 	if (verbose == TRUE) {
@@ -152,8 +152,13 @@ findSoftware.BVM = function (x, searchPath = "./", execute = FALSE, verbose = FA
 
 
 
-	print.BVM = function(x) {
-		cat("Solver: ", x$method)
-		cat("    Training Binary at ", x$trainBinaryPath)
-		cat("    Test Binary at ", x$testBinaryPath)
-	}
+print.BVM = function(x) {
+	cat("Solver: ", x$method)
+	cat("    Training Binary at ", x$trainBinaryPath)
+	cat("    Test Binary at ", x$testBinaryPath)
+}
+
+
+optimizationValues.BVM = function (x, X, Y, C = 0.0, model = NA, verbose = FALSE) {
+		optimizationValuesLIBSVM (X = X, Y = Y, model = model, C = C, verbose = verbose)
+}

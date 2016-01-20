@@ -184,19 +184,6 @@ readSparseDataFromConnection = function (con, verbose = FALSE, zeroBased = FALSE
     return (L)
 }
 
-#' writeSparseDataToConnection
-#'
-#' @param	con		connection
-#' @param 	X		input data
-#' @param	Y		labels
-#' @param	verbose		be verbose?
-#' @param	zeroBased		do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
-#'
-writeSparseDataToConnection = function (con, X, Y, verbose = FALSE, zeroBased = FALSE) {
-	currentPosition = seek(con)
-	filename = summary(con)$description
-	writeSparseData(filename, X, Y, skipBytes = currentPosition, verbose = verbose, zeroBased = zeroBased, dense = FALSE)
-}
 
 
 # stupid R check for pythons cool "name == __main__"

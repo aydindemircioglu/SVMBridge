@@ -2,8 +2,7 @@
 % Please edit documentation in R/readLIBSVMModel.R
 \name{readLIBSVMModel}
 \alias{readLIBSVMModel}
-\title{readLIBSVMModel
-		Read LIBSVM model}
+\title{Read a model in LIBSVM format}
 \usage{
 readLIBSVMModel(modelFile = "./model", verbose = FALSE)
 }
@@ -13,13 +12,11 @@ readLIBSVMModel(modelFile = "./model", verbose = FALSE)
 \item{verbose}{be verbose?}
 }
 \value{
-model object
+model object, if
 }
 \description{
-readLIBSVMModel
-		Read LIBSVM model
-}
-\note{
-As this is a basic for all other model readers, we export it.
+This will simply read a model in LIBSVM format. As this is the base of many
+other solvers, this is part of the library (instead of putting it into a wrapper)
+and it uses Rcpp to read the support vectors for speeding up.
 }
 

@@ -53,7 +53,7 @@ readSparseData <- function(filename, skipBytes = 0L, verbose = FALSE, zeroBased 
 #'		Y = as.matrix(as.numeric(iris[,5]))
 #'		writeSparseData ("./australian.data", X, Y)
 #' @export
-writeSparseData <- function(filename, X, Y, skipBytes = 0L, verbose = FALSE, zeroBased = FALSE) {
-    .Call('SVMBridge_writeSparseData', PACKAGE = 'SVMBridge', filename, X, Y, skipBytes, verbose, zeroBased)
+writeSparseData <- function(filename, X, Y, append = FALSE, skipBytes = 0L, verbose = FALSE, zeroBased = FALSE) {
+    .Call('SVMBridge_writeSparseData', PACKAGE = 'SVMBridge', filename, X, Y, append, skipBytes, verbose, zeroBased)
 }
 

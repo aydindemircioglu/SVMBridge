@@ -1,4 +1,3 @@
-#!/usr/bin/Rscript  --vanilla
 
 #
 # SVMBridge
@@ -21,98 +20,88 @@
 #
 
 
+createTrainingArguments.LASVM = function (x,
+	trainDataFile = "",
+      modelFile = "",
+      extraParameter = "",
+      kernelCacheSize = 1024,
+	cost = 1,
+      useBias = FALSE,
+      gamma = 1,
+      epochs = 1,
+      epsilon = 0.001,
+      ...)
+{
+	# count training examples
+	N = R.utils::countLines(trainDataFile)
 
-	createTrainingArguments.LASVM = function (x,
-		trainDataFile = "",
-        modelFile = "",
-        extraParameter = "",
-        kernelCacheSize = 1024,
-		cost = 1,
-        useBias = FALSE,
-        gamma = 1,
-        epochs = 1,
-        epsilon = 0.001,
-        ...)
-	{
-		# count training examples
-		N = R.utils::countLines(trainDataFile)
+	biasParameter = "-b 0"
+	if (useBias == TRUE)
+		biasParameter = "-b 1"
 
-		biasParameter = "-b 0"
-		if (useBias == TRUE)
-			biasParameter = "-b 1"
+	args = c(
+		sprintf("-m %d", kernelCacheSize), # in MB
+		biasParameter,
+		sprintf("-g %.16f", gamma),
+		sprintf("-c %.16f", cost),
+		sprintf("-e %.16f", epsilon),
+		sprintf("-p %.16f", epochs),
+		extraParameter,
+		trainDataFile,
+		modelFile
+	)
 
-		args = c(
-			sprintf("-m %d", kernelCacheSize), # in MB
-			biasParameter,
-			sprintf("-g %.16f", gamma),
-			sprintf("-c %.16f", cost),
-			sprintf("-e %.16f", epsilon),
-			sprintf("-p %.16f", epochs),
-			extraParameter,
-			trainDataFile,
-			modelFile
-		)
-
-		return (args)
-	}
-
-
-
-	createTestArguments.LASVM = function (x,
-		testDataFile = "",
-		modelFile = "",
-		predictionsFile = "",
-		...)
-	{
-		args = c(
-			testDataFile,
-			modelFile,
-			predictionsFile
-		)
-
-		return (args)
-	}
+	return (args)
+}
 
 
 
-	extractTrainingInfo.LASVM = function (x, output) {
-		pattern <- "accuracy= (\\d+\\.?\\d*).*"
-		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-		return (error)
-	}
+createTestArguments.LASVM = function (x,
+	testDataFile = "",
+	modelFile = "",
+	predictionsFile = "",
+	...)
+{
+	args = c(
+		testDataFile,
+		modelFile,
+		predictionsFile
+	)
+
+	return (args)
+}
 
 
 
-	extractTestInfo.LASVM = function (x, output) {
-		pattern <- "accuracy= (\\d+\\.?\\d*).*"
-		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-		return (error)
-	}
+extractTrainingInfo.LASVM = function (x, output) {
+	pattern <- "accuracy= (\\d+\\.?\\d*).*"
+	error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+	return (error)
+}
 
 
 
-	readModel.LASVM = function (x, modelFile = './model', verbose = FALSE) {
-		ret = readLIBSVMModel(modelFile = modelFile, verbose = verbose)
-		return (ret)
-	}
+extractTestInfo.LASVM = function (x, output) {
+	pattern <- "accuracy= (\\d+\\.?\\d*).*"
+	error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
+	return (error)
+}
 
 
 
-	writeModel.LASVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
-		ret = writeLIBSVMModel (model = model, modelFile = modelFile, verbose = verbose)
-		return (ret)
-	}
+readModel.LASVM = function (x, modelFile = './model', verbose = FALSE) {
+	ret = readLIBSVMModel(modelFile = modelFile, verbose = verbose)
+	return (ret)
+}
 
 
-#' Detect whether a file is a model for LASVM.
-#'
-#' @param	x		Object
-#' @param	modelFile		File to check
-#' @param	verbose		Verbose output?
-#'
-#' @return	TRUE if the given modelFile exists and fits the LASVM model, or FALSE if not.
-#'
-#' @note	This is a very basic check, enough to distinguish the wrappers provided within the SVMBridge
+
+writeModel.LASVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
+	ret = writeLIBSVMModel (model = model, modelFile = modelFile, verbose = verbose)
+	return (ret)
+}
+
+
 
 detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
@@ -133,12 +122,6 @@ detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 
 
-#' Check if model is valid.
-#'
-#' @param	model	model to check
-#'
-#' @return	TRUE if model is valid, FALSE if noy.
-#'
 checkModel.LASVM = function (model) {
 	check = TRUE
 	check = check & checkmate::testNumeric (model$gamma)
@@ -148,39 +131,36 @@ checkModel.LASVM = function (model) {
 
 
 
-	#
-	# @param[in]	predictionsFile		file to read predictions from
-	# @return		array consisting of predictions
-	#
+readPredictions.LASVM = function (x, predictionsFile = "", verbose = FALSE) {
+	ret = readLIBSVMPredictions (predictionsFile = predictionsFile, verbose = verbose)
+	return (ret)
+}
 
 
-	readPredictions.LASVM = function (x, predictionsFile = "", verbose = FALSE) {
-		ret = readLIBSVMPredictions (predictionsFile = predictionsFile, verbose = verbose)
-		return (ret)
+
+findSoftware.LASVM = function (x, searchPath = "./", execute = FALSE, verbose = FALSE) {
+
+	if (verbose == TRUE) {
+		cat ("    LASVM Object: Executing search for software for ", x$method)
 	}
 
+	# can do now OS specific stuff here
+	x$trainBinaryPath = findBinaryInDirectory ("la_svm", dir = searchPath, patterns = list ('la_svm .options. training_set_file .model_file.'))
+	x$testBinaryPath = findBinaryInDirectory ("la_test", dir = searchPath, patterns = list ('la_test .options. test_set_file model_file output_file'))
 
-
-	findSoftware.LASVM = function (x, searchPath = "./", execute = FALSE, verbose = FALSE) {
-
-		if (verbose == TRUE) {
-			cat ("    LASVM Object: Executing search for software for ", x$method)
-		}
-
-		# can do now OS specific stuff here
-		x$trainBinaryPath = findBinaryInDirectory ("la_svm", dir = searchPath, patterns = list ('la_svm .options. training_set_file .model_file.'))
-		x$testBinaryPath = findBinaryInDirectory ("la_test", dir = searchPath, patterns = list ('la_test .options. test_set_file model_file output_file'))
-
-		return(x)
-	}
+	return(x)
+}
 
 
 
-	print.LASVM = function(x) {
-		cat("Solver: ", x$method)
-		cat("    Training Binary at ", x$trainBinaryPath)
-		cat("    Test Binary at ", x$testBinaryPath)
-	}
+print.LASVM = function(x) {
+	cat("Solver: ", x$method)
+	cat("    Training Binary at ", x$trainBinaryPath)
+	cat("    Test Binary at ", x$testBinaryPath)
+}
 
-	
-	
+
+
+optimizationValues.LASVM = function (x, X, Y, C = 0.0, model = NA, verbose = FALSE) {
+		optimizationValuesLIBSVM (X = X, Y = Y, model = model, C = C, verbose = verbose)
+}

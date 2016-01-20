@@ -25,8 +25,6 @@
 
 #include <stdlib.h>
 #include <Rcpp.h>
-#include <unistd.h>
-#include <pwd.h>
 #include <errno.h>
 #include <stdio.h>
 #include <sstream>
@@ -43,7 +41,12 @@
 	#include <unistd.h>
 	#include <sys/types.h>
 	#include <pwd.h>
-#else
+#elif __APPLE__
+	#define OS (const char*)("mac")
+	#include <unistd.h>
+	#include <sys/types.h>
+	#include <pwd.h>
+#elif defined _WIN32 || defined _WIN64
 	#define OS (const char*)("windows")
 #endif
 
@@ -58,12 +61,7 @@ static int max_line_len;
 
 
 // TODOs: every X lines call Rcpp::checkUserInterrupt().
-// use Rcout ifnstead of cout, if applicable.
-// add .onUnload <- function (libpath) {
-// library.dynam.unload("mypackage", libpath)
-// } 
-// somewhere
-//
+
 
 // internal helper function to read a line into global variable
 static char* readline(FILE *input)
@@ -104,6 +102,8 @@ static char* readline(FILE *input)
 //' @export
 // [[Rcpp::export]] 
 List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool verbose = false, bool zeroBased = false) {
+	
+	verbose = true;
 	
 	std::setprecision(16);
   
@@ -150,6 +150,7 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 				}
 				filename = home_path + filename;
 			#else
+				// mac and linux works the same here
 				char* home_path;
 				home_path = getenv("HOME");
 				if(home_path == NULL){
@@ -433,15 +434,20 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 //'		writeSparseData ("./australian.data", X, Y)
 //' @export
 // [[Rcpp::export]] 
-List writeSparseData (std::string filename, NumericMatrix X, NumericMatrix Y, unsigned long  skipBytes = 0, bool verbose = false, bool zeroBased = false) {
+List writeSparseData (std::string filename, NumericMatrix X, NumericMatrix Y, bool append = false,
+	unsigned long  skipBytes = 0, bool verbose = false, bool zeroBased = false) {
 	
 	try
 	{
 		stringstream s;
 
 		std::fstream fs;
-		fs.open(filename.c_str(), std::fstream::in | std::fstream::out |std::fstream::trunc);
-		fs.seekg(skipBytes);
+		if (append == true) {
+			fs.open(filename.c_str(), std::fstream::in | std::fstream::out |std::fstream::app);
+//			fs.seekg(skipBytes);
+		} else {
+			fs.open (filename.c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
+		}
 		
 		int correction = 0;
 		if (zeroBased == false) {

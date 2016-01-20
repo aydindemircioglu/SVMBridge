@@ -1,3 +1,4 @@
+.DS_Store
 mlrMBO.Rcheck
 mlrMBO_*.tar.gz
 .Rproj.user

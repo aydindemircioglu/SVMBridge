@@ -363,7 +363,7 @@ findSoftware.BSGD = function (x, searchPath = "./", execute = FALSE, verbose = F
 }
 
 
-computeOptimizationValues.BSGD = function (x, X = NULL, Y = NULL, model = NULL, C = NULL, verbose = TRUE) {
+optimizationValues.BSGD = function (x, X = NULL, Y = NULL, model = NULL, C = NULL, verbose = TRUE) {
 
 	# sanity check
 	cl1 = model$alpha[,1]

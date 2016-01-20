@@ -73,15 +73,16 @@ writeLIBSVMModel = function (model = NA, modelFile = "./model", verbose = FALSE)
 	writeLines(paste ("nr_sv", nr_svValues, sep = " "), modelFileHandle )
 	writeLines(paste ("SV", sep = ""), modelFileHandle )
 
+	# close connection
+	close(modelFileHandle)
+
 	# basically all data is sparse data format, but the data around this differs
 	if (verbose == TRUE)
 		cat ("    Writing Support Vectors.\n")
-	writeSparseDataToConnection(modelFileHandle, model$SV, model$alpha)
+	appendSparseDataToFile (modelFile, model$SV, model$alpha, verbose = verbose)
 
 	if (verbose == TRUE)
 		cat ("    Done.\n")
 	
-	# close connection
-	close(modelFileHandle)
 }
  

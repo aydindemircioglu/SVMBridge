@@ -4,8 +4,8 @@
 \alias{writeSparseData}
 \title{Write given (dense) R matrix and R vector in sparse (LIBSVM) format to given file.}
 \usage{
-writeSparseData(filename, X, Y, skipBytes = 0L, verbose = FALSE,
-  zeroBased = FALSE)
+writeSparseData(filename, X, Y, append = FALSE, skipBytes = 0L,
+  verbose = FALSE, zeroBased = FALSE)
 }
 \arguments{
 \item{filename}{the filename to write the given data to}

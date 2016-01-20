@@ -2,8 +2,6 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		writeSparseDataToConnection.R
-# 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -19,18 +17,17 @@
 #
  
  
-#' writeSparseDataToConnection
+#' appendSparseDataToFile 
 #'
-#' @param	con		connection
+#' @param	filename	file to write to (should NOT be opened by R)
 #' @param 	X		input data
 #' @param	Y		labels
 #' @param	verbose		be verbose?
 #' @param	zeroBased		do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
 #'
 #' @export
-writeSparseDataToConnection = function (con, X, Y, verbose = FALSE, zeroBased = FALSE) {
-	currentPosition = seek(con)
-	filename = summary(con)$description
-	writeSparseData(filename, X, Y, skipBytes = currentPosition, verbose = verbose, zeroBased = zeroBased)
+appendSparseDataToFile = function (filename, X, Y, verbose = FALSE, zeroBased = FALSE) {
+	currentPosition = file.size (filename)
+	writeSparseData(filename, X, Y, append = TRUE, verbose = verbose, zeroBased = zeroBased)
 }
 

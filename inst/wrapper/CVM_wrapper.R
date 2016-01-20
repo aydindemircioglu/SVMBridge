@@ -140,7 +140,7 @@ readPredictions.CVM = function (x, predictionsFile = "", verbose = FALSE) {
 	}
 
 
-	
+
 findSoftware.CVM = function (x, searchPath = "./", execute = FALSE, verbose = FALSE) {
 
 	if (verbose == TRUE) {
@@ -156,8 +156,14 @@ findSoftware.CVM = function (x, searchPath = "./", execute = FALSE, verbose = FA
 
 
 
-	print.CVM = function(x) {
-		cat("Solver: ", x$method)
-		cat("    Training Binary at ", x$trainBinaryPath)
-		cat("    Test Binary at ", x$testBinaryPath)
-	}
+print.CVM = function(x) {
+	cat("Solver: ", x$method)
+	cat("    Training Binary at ", x$trainBinaryPath)
+	cat("    Test Binary at ", x$testBinaryPath)
+}
+
+
+
+optimizationValues.CVM = function (x, X, Y, C = 0.0, model = NA, verbose = FALSE) {
+		optimizationValuesLIBSVM (X = X, Y = Y, model = model, C = C, verbose = verbose)
+}

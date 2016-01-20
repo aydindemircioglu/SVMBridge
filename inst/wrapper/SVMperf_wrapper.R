@@ -2,8 +2,6 @@
 # SVMBridge
 #		(C) 2015, by Aydin Demircioglu
 #
-#		SVMperf_wrapper.R
-#
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -379,12 +377,14 @@ writeModel.SVMperf <- function (x, model = NA, modelFile = "./model", verbose = 
 	# basically all data is sparse data format, but the data around this differs
 	#svmatrix = dumpSparseFormat(model$alpha, model$X)
 	#writeLines(svmatrix, modelFileHandle, sep = "" )
-	if (verbose == TRUE)
-		cat ("  Writing SV\n")
-	writeSparseDataToConnection(modelFileHandle, model$SV, model$alpha)
 
 	# close connection
 	close(modelFileHandle)
+
+	if (verbose == TRUE)
+		cat ("  Writing SV\n")
+	appendSparseDataToFile (modelFileHandle, model$SV, model$alpha)
+
 }
 
 
