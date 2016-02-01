@@ -3,8 +3,6 @@
 # SVMBridge
 #		(C) 2015, by Aydin Demircioglu
 #
-#		LIBSVM_wrapper.R
-#
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -20,31 +18,6 @@
 #
 
 
-#' Create training arguments for LIBSVM
-#'
-#'
-#' @param	x			SVM object
-#' @param	trainDataFile		file to read training data from.
-#' @param	modelFile		path to model, defaults to a temporary file (given by R).
-#' @param	extraParameter		extra parameters for solver
-#' @param	kernelCacheSize		kernel cache parameter
-#' @param	svmType			type of svm
-#' @param	useBias
-#' @param	epsilon
-#' @param	degree
-#' @param	coef0
-#' @param	nu
-#' @param	shrinking
-#' @param	probabilityEstimates
-#' @param	weight
-#' @param	n
-#' @param	kernelType
-#' @param	quietMode
-#' @param	cost			cost parameter C.
-#' @param	gamma			gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...).
-#'
-#' @return	args			arguments for training
-#'
 createTrainingArguments.LIBSVM = function (
 	x,
 	...,
@@ -128,8 +101,6 @@ createTrainingArguments.LIBSVM = function (
 		if(quietMode != FALSE)
 			quietModeparameter = TRUE;
 
-
-
 		args = c(
 			svmTypeParameter,
 			degreeParameter,
@@ -142,17 +113,11 @@ createTrainingArguments.LIBSVM = function (
 			trainDataFile,
 			modelFile
 		)
-
 		return (args)
 }
 
 
-#' createTestArguments.LIBSVM
-#'
-#' @param	x			SVM object
-#' @param	testDataFile		file to read training data from.
-#' @param	modelFile		path to model, defaults to a temporary file (given by R).
-#' @param	predictionsFile
+
 createTestArguments.LIBSVM = function (x,
 	testDataFile = "",
 	modelFile = "",
@@ -163,37 +128,20 @@ createTestArguments.LIBSVM = function (x,
 			modelFile,
 			predictionsFile
 		)
-
 		return (args)
 }
 
 
-#' extractTrainingInfo.LIBSVM
-#'
-#' @param	x		svm object
-#' @param	output
-#'
-#' @return	error		error value
-#'
-extractTrainingInfo.LIBSVM = function (
-	x,
-	output) {
+
+extractTrainingInfo.LIBSVM = function (x, 	output) {
 		pattern <- ".*Accuracy =\\s*(\\d+\\.?\\d*).*"
 		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 		return (error)
 }
 
 
-#' extractTestInfo.LIBSVM
-#'
-#' @param	x		svm object
-#' @param	output
-#'
-#' @return	error		error value
-#'
-extractTestInfo.LIBSVM = function (
-	x,
-	output) {
+
+extractTestInfo.LIBSVM = function (x, output) {
 		pattern <- ".*Accuracy =\\s*(\\d+\\.?\\d*).*"
 		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 		return (error)
@@ -212,7 +160,9 @@ writeModel.LIBSVM = function (x,model = NA,	modelFile = "./model", verbose = FAL
 }
 
 
+
 detectModel.LIBSVM = function (x, modelFile = NULL, verbose = FALSE) {
+	print ("USING US")
 	checkmate::checkFlag (verbose)
 	if (is.null (modelFile) == TRUE)
 		return (FALSE)
@@ -286,7 +236,3 @@ print.LIBSVM = function(x) {
 	cat("    Test Binary at ", x$testBinaryPath, "\n")
 }
 
-
-optimizationValues.LIBSVM = function (x, X, Y, C = 0.0, model = NA, verbose = FALSE) {
-		optimizationValuesLIBSVM (X = X, Y = Y, model = model, C = C, verbose = verbose)
-}

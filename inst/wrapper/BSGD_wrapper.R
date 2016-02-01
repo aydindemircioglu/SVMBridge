@@ -1,4 +1,3 @@
-
 #
 # SVMBridge
 #
@@ -362,27 +361,6 @@ findSoftware.BSGD = function (x, searchPath = "./", execute = FALSE, verbose = F
 	return(x)
 }
 
-
-optimizationValues.BSGD = function (x, X = NULL, Y = NULL, model = NULL, C = NULL, verbose = TRUE) {
-
-	# sanity check
-	cl1 = model$alpha[,1]
-	cl2 = -model$alpha[,2]
-	if (!all(cl1 == cl2)) {
-		warning ("Sanity check failed: alpha_1 == -alpha_2 is violated.")
-		return (FALSE)
-	}
-
-	LIBSVMmodel = model
-	# prepare model, the alphas have coefficients for 'both' classes, need simply to crop that
-	LIBSVMmodel$alpha = t(LIBSVMmodel$alpha[,1])
-
-	# adapt gamma, as BSGD has different kernel constant
-	LIBSVMmodel$gamma = LIBSVMmodel$gamma/2
-
-	optimizationValues = optimizationValuesLIBSVM (X = X, Y = Y, model = LIBSVMmodel, C = C, verbose = verbose)
-	return (optimizationValues)
-}
 
 
 print.BSGD = function(x) {

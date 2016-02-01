@@ -10,7 +10,7 @@
 RCPP_LDFLAGS	= `Rscript -e 'Rcpp:::LdFlags()'`
 
 BIN		= SVMBridge.dll
-CXXFLAGS	= -I$(RHOME)/include -I$(RHOME)/library/Rcpp/include -I. -I$(SHARK_ROOT)/include -Wall -O2 
+CXXFLAGS	= -I$(RHOME)/include -I$(RHOME)/library/Rcpp/include -I. -Wall -O3
 
 SOURCES		:= $(wildcard *.cpp)
 LINKOBJ		:= $(SOURCES:.cpp=.o)

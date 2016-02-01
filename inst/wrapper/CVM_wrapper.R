@@ -1,5 +1,3 @@
-#!/usr/bin/Rscript  --vanilla
-
 #
 # SVMBridge
 #
@@ -18,12 +16,6 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
-
-#source ("./universalWrapper.R")
-
-
-
-# add functions to allow for searching the binaries
 
 
 createTrainingArguments.CVM = function (x,
@@ -85,29 +77,19 @@ extractTestInfo.CVM = function (x, output) {
     return (err)
 }
 
-# dummy for now
+
 readModel.CVM = function (x, modelFile = './model', verbose = FALSE) {
-		ret = readModel.LIBSVM (modelFile = modelFile, verbose = verbose)
-		return (ret)
-	}
+	ret = readModel.LIBSVM (modelFile = modelFile, verbose = verbose)
+	return (ret)
+}
 
-# dummy for now
+
 writeModel.CVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
-		ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
-		return (ret)
-	}
+	ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
+	return (ret)
+}
 
 
-
-#' Detect whether a file is a model for CVM.
-#'
-#' @param	x		Object
-#' @param	modelFile		File to check
-#' @param	verbose		Verbose output?
-#'
-#' @return	TRUE if the given modelFile exists and fits the CVM model, or FALSE if not.
-#'
-#' @note	This is a very basic check, enough to distinguish the wrappers provided within the SVMBridge
 
 detectModel.CVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
@@ -128,16 +110,10 @@ detectModel.CVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 
 
-#
-# @param[in]	predictionsFile		file to read predictions from
-# @return		array consisting of predictions
-#
-
-# dummy for now
 readPredictions.CVM = function (x, predictionsFile = "", verbose = FALSE) {
-		ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
-		return (ret)
-	}
+	ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
+	return (ret)
+}
 
 
 
@@ -162,8 +138,3 @@ print.CVM = function(x) {
 	cat("    Test Binary at ", x$testBinaryPath)
 }
 
-
-
-optimizationValues.CVM = function (x, X, Y, C = 0.0, model = NA, verbose = FALSE) {
-		optimizationValuesLIBSVM (X = X, Y = Y, model = model, C = C, verbose = verbose)
-}

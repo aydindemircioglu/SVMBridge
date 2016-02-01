@@ -1,5 +1,3 @@
-#!/usr/bin/Rscript  --vanilla
-
 #
 # SVMBridge
 #
@@ -19,7 +17,7 @@
 # All negative use is prohibited.
 #
 
-#source ("./universalWrapper.R")
+
 createTrainingArguments.BVM = function (x,
 					trainDataFile = "",
                                             modelFile = "",
@@ -70,40 +68,28 @@ extractTrainingInfo.BVM = function (x, output) {
 }
 
 
-#NEW
-extractTestInfo.BVM = function (x, output) {
 
-    # maybe not the best way to grep the string
+extractTestInfo.BVM = function (x, output) {
     pattern <- "Accuracy = (\\d+\\.?\\d*).*"
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-
     return (err)
 }
 
-#DUMMY
-	readModel.BVM = function (x, modelFile = './model', verbose = FALSE) {
-		ret = readModel.LIBSVM (modelFile = modelFile, verbose = verbose)
-		return (ret)
-	}
 
 
-#DUMMY
-	writeModel.BVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
-		ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
-		return (ret)
-	}
+readModel.BVM = function (x, modelFile = './model', verbose = FALSE) {
+	ret = readModel.LIBSVM (modelFile = modelFile, verbose = verbose)
+	return (ret)
+}
 
 
 
-#' Detect whether a file is a model for LIBSVM.
-#'
-#' @param	x		Object
-#' @param	modelFile		File to check
-#' @param	verbose		Verbose output?
-#'
-#' @return	TRUE if the given modelFile exists and fits the LIBSVM model, or FALSE if not.
-#'
-#' @note	This is a very basic check, enough to distinguish the wrappers provided within the SVMBridge
+writeModel.BVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
+	ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
+	return (ret)
+}
+
+
 
 detectModel.BVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
@@ -124,16 +110,10 @@ detectModel.BVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 
 
-#
-# @param[in]	predictionsFile		file to read predictions from
-# @return		array consisting of predictions
-#
-
-#DUMMY
 readPredictions.BVM = function (x, predictionsFile = "", verbose = FALSE) {
-		ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
-		return (ret)
-	}
+	ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
+	return (ret)
+}
 
 
 
@@ -158,7 +138,3 @@ print.BVM = function(x) {
 	cat("    Test Binary at ", x$testBinaryPath)
 }
 
-
-optimizationValues.BVM = function (x, X, Y, C = 0.0, model = NA, verbose = FALSE) {
-		optimizationValuesLIBSVM (X = X, Y = Y, model = model, C = C, verbose = verbose)
-}
