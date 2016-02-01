@@ -383,7 +383,7 @@ writeModel.SVMperf <- function (x, model = NA, modelFile = "./model", verbose = 
 
 	if (verbose == TRUE)
 		cat ("  Writing SV\n")
-	appendSparseDataToFile (modelFileHandle, model$SV, model$alpha)
+	appendSparseDataToFile (modelFile, model$SV, model$alpha)
 
 }
 
@@ -437,11 +437,3 @@ print.SVMperf  = function(x) {
 	cat("       Test Binary at ", x$testBinaryPath, "\n")
 }
 
-
-
-optimizationValues.SVMperf = function (x, X, Y, C = 0.0, model = NA, verbose = FALSE) {
-	if (verbose == TRUE) {
-		cat ("Computing optimization values for SVMperf.\n")
-	}
-	optimizationValuesLIBSVM (X = X, Y = Y, model = model, C = C, verbose = verbose)
-}

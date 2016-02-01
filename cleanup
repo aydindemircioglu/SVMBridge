@@ -7,5 +7,5 @@ find . -name "#*#" -exec rm {} \;
 cp wrapper/*_wrapper.R ./inst/wrapper
 
 # copy OS-specific tests
-cp tests/testWrappers ./inst/tests
+cp -R tests/testWrappers ./inst/tests
 

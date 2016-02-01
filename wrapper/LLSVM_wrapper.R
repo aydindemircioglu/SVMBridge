@@ -346,21 +346,3 @@ print.LLSVM = function(x) {
 	cat("    Test Binary at ", x$testBinaryPath)
 }
 
-
-
-optimizationValues.LLSVM = function (x, X, Y, C = 0.0, model = NA, verbose = FALSE) {
-
-		LIBSVMmodel = model
-#FIXME sign of alpha depends on invertLabels!!
-
-		# prepare model, the alphas we need to transform with W (to have a libsvm model)
-		LIBSVMmodel$alpha = t(model$w) %*% t(-model$a)
-
-		# adapt gamma, as BSGD has different kernel constant
-		LIBSVMmodel$gamma = LIBSVMmodel$gamma/2
-
-		LIBSVMmodel$SV = model$SV
-
-		optimizationValues = optimizationValuesLIBSVM (X = X, Y = Y, model = LIBSVMmodel, C = C, verbose = verbose)
-		return (optimizationValues)
-}

@@ -1,11 +1,8 @@
-#!/usr/bin/Rscript  --vanilla 
 
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		detectModelTypeFromFile.R
-# 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -39,8 +36,8 @@ detectModelTypeFromFile = function (modelFile = NULL, defaultModel = "LIBSVM", v
 	
 	# iterate over all known wrapper
 	detectedModels = c()
-	for (package in names(SVMBridgeEnv$packages)) {
-		if (detectModel (SVMBridgeEnv$packages[[package]], modelFile = modelFile, verbose = verbose) == TRUE) {
+	for (package in getSVMMethodsAsList(verbose = verbose)) {
+		if (detectModel (getSVMObject(package), modelFile = modelFile, verbose = verbose) == TRUE) {
 			if (verbose == TRUE)
 				cat("Detected model ", package, ".\n")
 			detectedModels = c(detectedModels, package)

@@ -1,9 +1,6 @@
-
 #
 # SVMBridge
 #		(C) 2015, by Aydin Demircioglu
-#
-#		LASVM_wrapper.R
 #
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -159,8 +156,3 @@ print.LASVM = function(x) {
 	cat("    Test Binary at ", x$testBinaryPath)
 }
 
-
-
-optimizationValues.LASVM = function (x, X, Y, C = 0.0, model = NA, verbose = FALSE) {
-		optimizationValuesLIBSVM (X = X, Y = Y, model = model, C = C, verbose = verbose)
-}

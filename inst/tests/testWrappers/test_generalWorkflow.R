@@ -43,6 +43,7 @@ predictionsFile = tempfile()
 	writeSparseData(filename = trainDataFile, X = trainDataX, Y = trainDataY)
 	testDataFile = tempfile()
 	writeSparseData(filename = testDataFile, X = testDataX, Y = testDataY)
+
 	
 ## 1. test finding all software first
 	
@@ -53,23 +54,22 @@ predictionsFile = tempfile()
 	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
 	#solvers = c("LIBSVM")
 	
-	softwareBaseDir = "/tmp/software"
-#	softwareBaseDir = tempdir()
-	if (file.exists(softwareBaseDir) == FALSE) {
+	softwareDir = "/tmp/software"
+	if (file.exists("/tmp/software") == FALSE) {
+		
 		for (solver in solvers) {
 			cat ("Downloading and building software ", solver, "\n")
-			softwareDir = downloadSoftware (solver, softwareDir = softwareBaseDir, verbose = verbose)
+			softwareDir = downloadSoftware (solver, softwareDir = softwareDir)
 			cat ("Unlinking ", file.path(softwareDir, ".svn"), "\n")
 			unlink (file.path(softwareDir, ".svn"), recursive = TRUE)
 			addSVMPackage (solver, wrapperPath = "../../wrapper", verbose = verbose)
 		}
-		findAllSVMSoftware (softwareBaseDir, verbose = verbose)
+		findAllSVMSoftware (file.path(softwareDir, "."), verbose = verbose)
 	} else {
-		cat ("Found existing software directory (", softwareBaseDir, ") using it\n")
 		for (solver in solvers) {
 			addSVMPackage (solver, wrapperPath = "../../wrapper", verbose = verbose)
 		}
-		findAllSVMSoftware (softwareBaseDir, verbose = verbose)
+		findAllSVMSoftware (file.path(softwareDir, "."), verbose = verbose)
 	}
 	
 	# softwareDir will have the last directory found, e.g. ../BudgetedSVM. we need to go one above.
