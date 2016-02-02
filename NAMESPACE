@@ -3,6 +3,7 @@
 export(addSVMPackage)
 export(appendSparseDataToFile)
 export(checkExecutionStrings)
+export(checkModel)
 export(detectModelTypeFromFile)
 export(dumpSparseFormat)
 export(expandTilde)

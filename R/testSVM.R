@@ -2,8 +2,6 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		testSVM.R
-# 
 # SVMBridge is free software: you can redistribtrainSVMute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -19,130 +17,136 @@
 #
  
 
-#' test a trained SVM.
+#' Test a trained SVM on given data.
 #'
-#' This is the main routine for testing/prediction an SVM.
+#' This is the main routine for testing an SVM (or doing predictions).
 #'
-#' @param	testDataFile		file to read training data from 
-#' @param	testDataX		matrix to read training data from 
-#' @param	testDataY		matrix to read training label from 
-#'
-#' @param	model		list containing a trained SVM model
-#' @param	modelFile       path to a model file
-#'
-#' @param	readPredictions		if TRUE, the prediction will be read back 
-#' @param	predictionsFile		the prediction will be written to this file or to a tempfile
-#'
-#' @param	extraParameter		extra parameters for solver
-#' @param	verbose		be verbose?
+#' @param	testDataFile		File to read training data from. Cannot be specified at the same time as testDataX and testDataY.
+#' @param	testDataX		Matrix to read training data from. Cannot be specified at the same time as testDataFile. 
+#' @param	testDataY		Matrix to read training label from. Cannot be specified at the same time as testDataFile.
+#' @param	model		A trained SVM model. Cannot be specified at the same time as modelFile.
+#' @param	modelFile		Path of the model file. Cannot be specified at the same time as model.
+#' @param	readPredictions		Shall the predictions be read back into memory and added to the model?
+#' @param	predictionsFile		File to which the predictions will be written.
+#' @param	extraParameter			Extra parameters for solver in form of a string.
+#' @param	verbose			Be verbose?
+#' @param	...		Further parameters that will be passed to the createTestArguments function of the wrapper.
 #'
 #' @note		testDataFile and testDataX,testDataY are exclusive parameters, i.e. you cannot specify both.
 #' @note		Make sure the modelFile is a character string and not a factor! Else you might obtain strange modelfile arguments.
 #'
-#' @return		SVM Object
+#' @return	An SVM Test Object.
 #'
 #' @export
 
 testSVM = function(
 	method = NULL,
-
-	# data
 	testDataFile = NULL,
 	testDataX = NULL, 
 	testDataY = NULL, 
-
-	# model 
 	model = NULL,
 	modelFile = NULL,
-
-	# prediction
 	readPredictions = FALSE,
 	predictionsFile = NULL,
-	
-	# rest
 	extraParameter = "",
 	verbose = FALSE,
 	...) {
 	
 	if (verbose == TRUE) {
-		BBmisc::messagef("--- Testing...")
+		cat("Testing SVM.")
 	}
 	
-		# TODO: sanity checks for parameter
+	# sanity checks for parameters
 	if ( (is.null(model) == TRUE) && (is.null(modelFile) == TRUE))
-			BBmisc::stopf("Neither given a model nor given a path to the model. Stopping.")	
+			stop("Neither given a model nor given a path to the model. Stopping.")	
 	
 	if ( (is.null(model) == FALSE) && (is.null(modelFile) == FALSE))
-			BBmisc::stopf("Given a model in memory and specified a model file name. Confused. Stopping.")
-			
+			stop("Given a model in memory and specified a model file name. Confused. Stopping.")
+
 	if (is.null (method) == TRUE) {
-		# test model
 		if  (is.null(model) == FALSE)
 			method = model$modelType
 		# else get method from model file
 		else
 			method = detectModelTypeFromFile (modelFile)
 	}
+	
+	checkmate::assertString (method)
+	if (is.null (testDataFile) == FALSE)
+		checkmate::assertString (testDataFile)
+		
+	if (is.null (testDataX) == FALSE) {
+		checkmate::assertMatrix (testDataX)
+		checkmate::assertMatrix (testDataY)
+	}
+	
+	if (is.null (predictionsFile) == FALSE) {
+		checkmate::checkString (predictionsFile)
+	}
+	
+	checkmate::assertBoolean (readPredictions)
+	
+	checkmate::assertString (extraParameter)
+	checkmate::assertBoolean (verbose)
 
 	# get the correct object
-	SVMObject = SVMBridgeEnv$packages[[method]]
+	SVMObject = getSVMObject (method)
+
+	# check for the object
+	if (is.null (SVMObject) == TRUE) {
+		stop ("Could not find wrapper for given model. Did you include the wrapper of the method?")
+	}
 	
 	# ask object for its path
 	testBinaryPath = SVMObject$testBinaryPath
-	
-	if (is.null(SVMObject)) {
-		BBmisc::stopf ("Cannot find the specified SVM object. Did you include the wrapper of the method %s?", method)
-	}
-	
+	checkmate::assertString (testBinaryPath)
+
+	# get basename
 	testBinary = basename(testBinaryPath)
 	
 	# general modifications
 	if (verbose == TRUE) {
-		BBmisc::messagef("  Path of binary for testing is %s", testBinaryPath)
-		BBmisc::messagef("  Binary for testing is %s", testBinary)
+		cat("  Path of binary for testing is ", testBinaryPath)
+		cat("  Binary for testing is ", testBinary)
 	}
 
 	# take care of data. if testdata or traindata is given,
-	# the corresponding filename must be empty.
-	# finally, everything is dumped to disk.
-  
 	if ( (is.null(testDataX) == FALSE) && (is.null(testDataFile) == FALSE))
-		BBmisc::stopf("Given a data frame as testing data and specified a testing file name. Confused. Stopping.")
+		stop("Given a data frame as testing data and specified a testing file name. Confused. Stopping.")
 			
 	if ( (is.null(testDataX) == TRUE) && (is.null(testDataFile) == TRUE))
-		BBmisc::stopf("Neither specified testing data path nor given testing data. Stopping.")
+		stop("Neither specified testing data path nor given testing data. Stopping.")
 
-	# TODO: check for X AND y.
-		
-	# we got 
-	
+
 	#expand possible tilde characters in the path and get rid of backslashes
 	if(is.null(testDataFile) == FALSE && grepl("~", testDataFile) == TRUE){
+		checkmate::assertString (trainDataFile)
 		testDataFile = expandTilde(path = testDataFile, verbose = verbose)
 	}
 	
 	if (is.null(testDataX) == FALSE) {
 		testDataFile = tempfile()
 		if (verbose == TRUE)
-			BBmisc::messagef("  Writing given test data as %s", testDataFile)
-		e1071::write.matrix.csr(testDataX, testDataFile, testDataY)
+			cat("  Writing given test data as ", testDataFile)
+		writeSparseData (filename = testDataFile, X = testDataX, Y = testDataY)
+		#e1071::write.matrix.csr(testDataX, testDataFile, testDataY)
 	} 
 
 	if (verbose == TRUE) 
-		BBmisc::messagef("  Test Data is now in %s", testDataFile)
+		cat("  Test Data is now in ", testDataFile)
 
 	results = list()
 
-	# if the user specified a model in memory, we first need to write that
+	# if the user specified a model in memory, we first need to write it to disk
 	if (is.null(model) == FALSE) {
 		modelFile = tempfile()
 		if (verbose == TRUE)
-			BBmisc::messagef("  Writing model in memory to disk as %s", modelFile)
+			cat("  Writing model in memory to disk as ", modelFile)
 		
 		writeModel (SVMObject, model = model, modelFile = modelFile, verbose = verbose)
 	} else {
 		if (verbose == TRUE)
-			BBmisc::messagef("  Reading model from file %s", modelFile)
+			cat("  Reading model from file ", modelFile)
 	}
 
 	# check if we need to create a temporary file
@@ -158,23 +162,23 @@ testSVM = function(
 		...)
     
     if (verbose == TRUE) {
-		BBmisc::messagef("  Generated test arguments %s", args)
+		cat("  Generated test arguments ", args)
 	}
       
 	# probably FIXME because of windows systems
 	testTime = microbenchmark::microbenchmark(s <- system3(testBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
     
 	if (verbose == TRUE) 
-		BBmisc::messagef("Testing took %f seconds.", testTime);
+		cat("Testing took ", testTime, " seconds.");
     
 	results[["testTime"]] = testTime
-	results[["testError"]] = extractTestInfo(SVMObject, output = s$output)
+	results[["testError"]] = extractTestInfo(SVMObject, output = s$output, verbose = verbose)
 		
 		
 	# if user did not specify prediction file, we will read them back
 	if (readPredictions == TRUE) {
-		# we turn off verbose here, in order not to clutter screen
-		predictions = readPredictions (SVMObject, predictionsFile = predictionsFile, verbose = FALSE)
+		# we turn off verbose here, in order not to clutter screen. this is mainly a debug switch.
+		predictions = readPredictions (SVMObject, predictionsFile = predictionsFile, verbose = FALSE) 
 		results[["predictions"]] = predictions
 	}
 	

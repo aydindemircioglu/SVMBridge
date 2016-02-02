@@ -1,10 +1,7 @@
-#!/usr/bin/Rscript  --vanilla 
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		readModel.R
-# 
 # SVMBridge is free software: you can redistribtrainSVMute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -20,31 +17,23 @@
 #
  
 
-#' readModel
+#' Read a model from a given file
 #'
-#' @param	method		name of the SVM method/solver
+#' @param	modelFile		Path to the file to read the model from
+#' @param	modelType		Name of the SVM method/solver. If Null, detectModel will be called.
+#' @param	verbose		Be verbose?
 #'
-#' @param	modelFile		path to file to read model from 
-#' @param	verbose		be verbose
+#' @return		An SVM model
 #'
-#' @return		SVM model 
+#' @note		If no modelType is given, the model will be inferred from detectModelTypeFromFile.
+#' If this fails, an error will be issued.
 #'
 #' @export
 #'
-# 
-#'
 
-readModelFromFile = function(
-	modelFile = NULL, 
-	modelType = NULL,
-	verbose = FALSE,
-	...) {
-
+readModelFromFile = function(modelFile = NULL, modelType = NULL, verbose = FALSE, ...) {
 	# file must be there.
 	checkmate::checkFile (modelFile)
-
-	if (file.exists(modelFile) == FALSE) 
-		stop ("Sorry, specified file ", modelFile, " does not exist!")
 
 	# automatic detection, if no method is given
 	if (is.null (modelType) == TRUE) {
@@ -53,11 +42,9 @@ readModelFromFile = function(
 		modelType = detectModelTypeFromFile (modelFile = modelFile)
 		if (verbose == TRUE) 
 			cat ("Found model:", modelType, "\n")
-		if (is.null (modelType) == TRUE) 
-			stop ("Sorry, unable to detect model type. ")
 	}
 	
-	# check
+	# check that we have a model now.
 	checkmate::checkString (modelType)
 	
 	# get the correct object
@@ -70,7 +57,7 @@ readModelFromFile = function(
 		cat ("Handling over reading model to object\n")
 	}
 	
-	# read model (TODO; make call better)
+	# read model
 	model = readModel (SVMObject, modelFile = modelFile, verbose = verbose)
 	return (model)
 }	

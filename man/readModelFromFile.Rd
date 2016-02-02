@@ -2,22 +2,26 @@
 % Please edit documentation in R/readModelFromFile.R
 \name{readModelFromFile}
 \alias{readModelFromFile}
-\title{readModel}
+\title{Read a model from a given file}
 \usage{
 readModelFromFile(modelFile = NULL, modelType = NULL, verbose = FALSE,
   ...)
 }
 \arguments{
-\item{modelFile}{path to file to read model from}
+\item{modelFile}{Path to the file to read the model from}
 
-\item{verbose}{be verbose}
+\item{modelType}{Name of the SVM method/solver. If Null, detectModel will be called.}
 
-\item{method}{name of the SVM method/solver}
+\item{verbose}{Be verbose?}
 }
 \value{
-SVM model
+An SVM model
 }
 \description{
-readModel
+Read a model from a given file
+}
+\note{
+If no modelType is given, the model will be inferred from detectModelTypeFromFile.
+If this fails, an error will be issued.
 }
 

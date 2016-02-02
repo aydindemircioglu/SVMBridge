@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkModel.R
 \name{checkModel}
 \alias{checkModel}
-\title{Write LIBSVM model.}
+\title{Check model.}
 \usage{
 checkModel(model = NA, verbose = FALSE)
 }

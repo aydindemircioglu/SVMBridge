@@ -2,31 +2,30 @@
 % Please edit documentation in R/checkExecutionStrings.R
 \name{checkExecutionStrings}
 \alias{checkExecutionStrings}
-\title{checkExecutionStrings}
+\title{Check whether a binary's output contains given strings.}
 \usage{
 checkExecutionStrings(trainBinaryPath = NULL, patterns = NULL,
   applyKeyFix = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{verbose}{print messages while searching?}
+\item{trainBinaryPath}{Path of binary to check.}
 
-\item{searchPath}{search the given path for the SVM binaries recursively.}
+\item{patterns}{List of patterns to check for. Checking is done via grep.}
 
-\item{pattern}{pattern for the binary file}
+\item{applyKeyFix}{Send a dummy key ('1') to the binary? This is necessary if the binary waits for a key prompt.}
 
-\item{outputPattern}{pattern for the stdout output of the binary}
+\item{verbose}{Be verbose?}
 }
 \value{
-name of the found binary matching the pattern
+True, if all patterns matches, False if not.
 }
 \description{
-given a file pattern and an std-out-pattern it will try to find a binary matching
-	the file pattern (which contains std-out-pattern as output if called without arguments)
-	in the path given.
+Given a pattern, this function will check whether the given binary has these patterns
+in its output string, when called without any arguments. This helps all wrappers in identifying 
+the correct binary.
 }
 \note{
 To make sure that the binary is correct, it will be executed!
-
-If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
+binary is really not exchangeable).
 }
 

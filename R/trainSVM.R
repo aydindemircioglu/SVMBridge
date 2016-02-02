@@ -2,8 +2,6 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		trainSVM.R
-# 
 # SVMBridge is free software: you can redistribtrainSVMute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -19,66 +17,65 @@
 #
  
 
+
 #' Train an SVM.
 #'
-#' This is the main routine that trains an SVM.
+#' This is the main routine that trains an SVM, e.g. it will make sure that all
+#' data is on the disk, create the training arguments and then call the corresponding binary.
 #'
 #' @param	method		name of the SVM method/solver
-#'
-#' @param	trainDataFile		file to read training data from 
-#' @param	trainDataX		matrix to read training data from 
-#' @param	trainDataY		matrix to read training label from 
-#'
-#' @param	trainBinaryPath		full path to the training binary to call
-#'
-#' @param	extraParameter		extra parameters for solver
-#' @param	modelFile		path to a model file
-#' @param	verbose		be verbose
-#'
-#' @param	subsamplingRate		rate to subsample the data at
-#' @param	subsamplingMethod		method to subsample the data with
-#'
-#' @param	timeOut		value to time out at
+#' @param	trainDataFile		Filename to read training data from. This cannot be used at the same time as trainDataX/trainDataY.
+#' @param	trainDataX		Matrix comprising the data. This cannot be used at the same time as trainDataFile.
+#' @param	trainDataY		Vector comprising the labels for the data. This cannot be used at the same time as trainDataFile.
+#' @param	trainBinaryPath		Full path to the training binary to call.
+#' @param	extraParameter		Extra parameters for solver, passed to the createTrainingArguments function of the wrapper.
+#' @param	modelFile		Path to the model file to create. If none specified, a temporary file will be created and read into memory.
+#' @param	verbose		Be verbose?
+#' @param	subsamplingRate		Rate to subsample the data. 
+#' @param	subsamplingMethod		Method to subsample the data with.
+#' @param	timeOut		Value to time out at, so that e.g. solvers that do stall/do an endless loop can be stopped nonetheless.
 #' @param	readModelFile		if TRUE, will read the model back (model is saved in the created object)
-#' @note		exclusive parameters, i.e. you cannot specify both:
+#' @param	...		Further parameters that will be passed to the wrapper.
 #'
-#' @return		SVM Object
+#' @note		trainDataFile, trainDataX/trainDataY are exclusive parameters, i.e. you cannot specify both.
+#' @note		timeOut might not work on all platforms yet.
+#'
+#' @return		An SVM Object.
 #'
 #' @export
 
 trainSVM = function(
-	# method
 	method = NULL,
-
-	# data
 	trainDataFile = NULL,
 	trainDataX = NULL, 
 	trainDataY = NULL, 
-
-	# full path to executable
 	trainBinaryPath = NULL,
-	
-	# rest
 	extraParameter = "",
 	modelFile = NULL,
-	verbose = TRUE,
-
-	# data
 	subsamplingRate = NULL,
 	subsamplingMethod = "cutoff",
-	
-	# SVMBridge
+	verbose = TRUE,
 	timeOut = -1,
 	readModelFile = FALSE,
 	...) {
 	
 	#expand possible tilde characters in the path and get rid of backslashes
 	if(is.null(trainDataFile) == FALSE && grepl("~", trainDataFile) == TRUE){
+		checkmate::assertString (trainDataFile)
 		trainDataFile = expandTilde(path = trainDataFile, verbose = verbose)
 	}
 	
+	
+	checkmate::assertString (method)
+		
+	
 	# get the correct object
-	SVMObject = SVMBridgeEnv$packages[[method]]
+	SVMObject = getSVMObject (method)
+
+	# check for the object
+	if (is.null (SVMObject) == TRUE) {
+		stop ("Could not find wrapper for given model. Did you include the wrapper of the method?")
+	}
 	
 	# ask object for its path
 	trainBinaryPath = SVMObject$trainBinaryPath
@@ -91,14 +88,14 @@ trainSVM = function(
 	
 	# general modifications
 	if (verbose == TRUE) {
-		BBmisc::messagef("  Path of binary for training is %s", trainBinaryPath)
-		BBmisc::messagef("  Binary for training is %s", trainBinary)
+		cat("    Path of binary for training is ", trainBinaryPath)
+		cat("    Binary for training is ", trainBinary)
 	}
 
 	
 	# TODO: sanity checks for parameter
 	if (is.null (method) == TRUE) {
-		BBmisc::stopf("No method name is given, this should never happen.")
+		stop("No method name is given, this should never happen.")
 	}
 				
  	
@@ -112,45 +109,56 @@ trainSVM = function(
 	# take care of data. if testdata or traindata is given,
 	# the corresponding filename must be empty.
 	# finally, everything is dumped to disk.
-  
-	if ( (is.null(trainDataX) == FALSE) && (is.null(trainDataFile) == FALSE))
-	{
-		print(trainDataX)
-		print(trainDataFile)
-		BBmisc::stopf("Given a data frame as training data and specified a training file name. Confused. Stopping.")
+	if ( (is.null(trainDataX) == FALSE) && (is.null(trainDataFile) == FALSE)) {
+		stop("Given a data frame as training data and specified a training file name. Confused. Stopping.")
 	}		
-	if ( (is.null(trainDataX) == TRUE) && (is.null(trainDataFile) == TRUE))
-		BBmisc::stopf("Neither specified training data path nor given training data. Stopping.")
+	if ( (is.null(trainDataX) == TRUE) && (is.null(trainDataFile) == TRUE)) {
+		stop("Neither specified training data path nor given training data. Stopping.")
+	}
+	
 
-	# TODO: check for X AND y.
+	
+	if (is.null (testDataFile) == FALSE)
+		checkmate::assertString (testDataFile)
+		
+	if (is.null (testDataX) == FALSE) {
+		checkmate::assertMatrix (testDataX)
+		checkmate::assertMatrix (testDataY)
+	}	
+
 		
 	# we got 
 	if (is.null(trainDataX) == FALSE) {
 		trainDataFile = tempfile()
 		if (verbose == TRUE)
-			BBmisc::messagef("  Writing given data as %s", trainDataFile)
-		e1071::write.matrix.csr(trainDataX, trainDataFile, trainDataY)
+			cat("    Writing given data as ", trainDataFile)
+		#e1071::write.matrix.csr(trainDataX, trainDataFile, trainDataY)
+		writeSparseData (filename = trainDataFile, X = trainDataX, Y = trainDataY)
 	} 
 
 	if (verbose == TRUE) 
-		BBmisc::messagef("  Train Data is now in %s", trainDataFile)
+		cat("    Train Data is now in ", trainDataFile)
 
+
+	if (is.null (testDataFile) == FALSE)
+		checkmate::assertString (testDataFile)
+	
+	
 	results = list()
 
-	
 	# subsample the file
 	if (is.null(subsamplingRate) == FALSE) {
-		
-		# depending on method
+		checkmate::assertString (subsamplingMethod)
+		checkmate::assertNumeric (subsamplingRate)
+
 		if (subsamplingMethod == "cutoff") {
 			# simple cut off
-			trainDataFile = subsampleDataByCutoff (trainDataFile, subsamplingRate = as.numeric(subsamplingRate)) 
+			trainDataFile = subsampleDataByCutoff (trainDataFile, subsamplingRate = as.numeric(subsamplingRate), verbose = verbose) 
 		} else {
 			# unknown method
 			stop("Unknown subsampling method.")
 		}
 	}
-
 	
 	# create arguments for training
 	args = createTrainingArguments (SVMObject, 
@@ -195,14 +203,14 @@ trainSVM = function(
 # 	}
 	
 	if (verbose == TRUE) 
-		BBmisc::messagef("Training took %f seconds.", trainTime)
+		cat("Training took ", trainTime, seconds)
 		
 	results[["trainTime"]] = trainTime
 	
 	
 	if (readModelFile == TRUE) {
 		if (verbose == TRUE) 
-			BBmisc::messagef( "Will read model back from %s", modelFile)
+			cat( "    Will read model back from ", modelFile)
 
 		model = readModel (SVMObject, modelFile = modelFile, verbose = verbose)
 		results[["model"]] = model

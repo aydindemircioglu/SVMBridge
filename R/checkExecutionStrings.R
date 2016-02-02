@@ -2,8 +2,6 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		checkExecutionStrings.R
-# 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -18,24 +16,28 @@
 # All negative use is prohibited.
 #
  
-#' checkExecutionStrings
+ 
+ 
+#' Check whether a binary's output contains given strings.
 #'
-#'		given a file pattern and an std-out-pattern it will try to find a binary matching
-#'		the file pattern (which contains std-out-pattern as output if called without arguments)
-#'		in the path given.
+#' Given a pattern, this function will check whether the given binary has these patterns
+#' in its output string, when called without any arguments. This helps all wrappers in identifying 
+#' the correct binary.
 #'
-#' @param	searchPath	 	search the given path for the SVM binaries recursively.
-#' @param	pattern		pattern for the binary file
-#' @param	outputPattern		pattern for the stdout output of the binary
-#' @param	verbose			print messages while searching?
-#' @return	name of the found binary matching the pattern
+#' @param	trainBinaryPath		Path of binary to check.
+#' @param	patterns		List of patterns to check for. Checking is done via grep.
+#' @param	applyKeyFix		Send a dummy key ('1') to the binary? This is necessary if the binary waits for a key prompt.
+#' @param	verbose			Be verbose?
+#'
+#' @return	True, if all patterns matches, False if not.
+#'
 #' @note		To make sure that the binary is correct, it will be executed!
-# 					Furthermore, many SVM packages derive from libSVM. as such, they
-#					often do not change the prediction binasry. We will try to sort these out,
-#					but it might be hopeless. With luck, the found binary will be left untouched,
-#					and thus work, if not, you must set the path by hand.
-#' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
+# 	Furthermore, many SVM packages derive from libSVM. as such, they
+#	often do not change the prediction binary, so care must be taken (if the 
+#' binary is really not exchangeable).
+#'
 #' @export
+
 checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, applyKeyFix = FALSE, verbose = TRUE) {
 
 	if (verbose == TRUE) { 

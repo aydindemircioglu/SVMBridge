@@ -1,10 +1,7 @@
-#!/usr/bin/Rscript  --vanilla 
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		writeModel.R
-# 
 # SVMBridge is free software: you can redistribtrainSVMute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -20,34 +17,33 @@
 #
  
 
-#' writeModelToFile
+#' Write a given moel to a file.
 #'
-#' @param	modelFile		path to file to write model to
-#' @param	verbose		be verbose
+#' @param	model		Model to write
+#' @param	modelFile		Path to file to write model to
+#' @param	verbose		Be verbose?
 #'
 #' @return	nothing
 #'
 #' @export
 #'
-writeModelToFile = function(model = NULL,
-	modelFile = NULL, 
-	verbose = FALSE,
-	...) {
+writeModelToFile = function (model = NULL, modelFile = NULL, verbose = FALSE, ...) {
 
 	# make sure the model exists and has some member variables
 	if (is.null (model) == TRUE) {
 		stop ("No model was given to write. \n")
 	}
-	# TODO: check modelType exists
-	checkmate::checkString (model$modelType)
-	
-	# get the correct object
-	SVMObject = SVMBridgeEnv$packages[[model$modelType]]
-	if (checkmate::testClass (SVMObject, "SVMWrapper") == FALSE) {
-		stop ("Could not find the SVM Wrapper corresponding to model ", modelType, ". Please make sure it is loaded first.\n")
-	}
 
-	# write model (TODO; make call better)
+	# check modelType exists
+	checkmate::checkString (model$modelType)
+
+	# get the correct object
+	SVMObject = getSVMObject (model$modelType)
+	if (checkmate::testClass (SVMObject, "SVMWrapper") == FALSE) {
+		stop ("Could not find the SVM Wrapper corresponding to model ", model$modelType, ". Please make sure it is loaded first.\n")
+	}	
+
+	# write model
 	model = writeModel (SVMObject, model = model, modelFile = modelFile, verbose = verbose)
 	return (TRUE)
 }	

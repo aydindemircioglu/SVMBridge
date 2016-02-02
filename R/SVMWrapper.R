@@ -2,8 +2,6 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		SVMWrapper.R
-# 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -53,8 +51,6 @@ createSVMWrapper = function(method, ...) {
 }
 
 
-
-
 createTrainingArguments = function (x, trainDataFile = NULL, modelFile = NULL, verbose = FALSE, ...) {
 	UseMethod("createTrainingArguments")
 }
@@ -65,12 +61,12 @@ createTestArguments = function (x, testDataFile = NULL, modelFile = NULL, predic
 }
 
 
-extractTrainInfo = function (x, output) {
+extractTrainInfo = function (x, output, verbose = FALSE) {
 	UseMethod ("extractTrainInfo")
 }
 
 
-extractTestInfo = function (x, output) {
+extractTestInfo = function (x, output, verbose = FALSE) {
 	UseMethod ("extractTestInfo")
 }
 
@@ -87,11 +83,6 @@ writeModel = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
 
 detectModel = function (x, modelFile = "./model", verbose = FALSE) {
 	UseMethod("detectModel")
-}
-
-	
-optimizationValues = function (x, X = NULL, Y = NULL, model = NULL, C = NULL, verbose = FALSE) {
-	UseMethod ("optimizationValues")
 }
 
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/testSVM.R
 \name{testSVM}
 \alias{testSVM}
-\title{test a trained SVM.}
+\title{Test a trained SVM on given data.}
 \usage{
 testSVM(method = NULL, testDataFile = NULL, testDataX = NULL,
   testDataY = NULL, model = NULL, modelFile = NULL,
@@ -10,29 +10,31 @@ testSVM(method = NULL, testDataFile = NULL, testDataX = NULL,
   verbose = FALSE, ...)
 }
 \arguments{
-\item{testDataFile}{file to read training data from}
+\item{testDataFile}{File to read training data from. Cannot be specified at the same time as testDataX and testDataY.}
 
-\item{testDataX}{matrix to read training data from}
+\item{testDataX}{Matrix to read training data from. Cannot be specified at the same time as testDataFile.}
 
-\item{testDataY}{matrix to read training label from}
+\item{testDataY}{Matrix to read training label from. Cannot be specified at the same time as testDataFile.}
 
-\item{model}{list containing a trained SVM model}
+\item{model}{A trained SVM model. Cannot be specified at the same time as modelFile.}
 
-\item{modelFile}{path to a model file}
+\item{modelFile}{Path of the model file. Cannot be specified at the same time as model.}
 
-\item{readPredictions}{if TRUE, the prediction will be read back}
+\item{readPredictions}{Shall the predictions be read back into memory and added to the model?}
 
-\item{predictionsFile}{the prediction will be written to this file or to a tempfile}
+\item{predictionsFile}{File to which the predictions will be written.}
 
-\item{extraParameter}{extra parameters for solver}
+\item{extraParameter}{Extra parameters for solver in form of a string.}
 
-\item{verbose}{be verbose?}
+\item{verbose}{Be verbose?}
+
+\item{...}{Further parameters that will be passed to the wrapper.}
 }
 \value{
-SVM Object
+An SVM Test Object.
 }
 \description{
-This is the main routine for testing/prediction an SVM.
+This is the main routine for testing an SVM (or doing predictions).
 }
 \note{
 testDataFile and testDataX,testDataY are exclusive parameters, i.e. you cannot specify both.

@@ -2,19 +2,21 @@
 % Please edit documentation in R/writeModel.R
 \name{writeModelToFile}
 \alias{writeModelToFile}
-\title{writeModelToFile}
+\title{Write a given moel to a file.}
 \usage{
 writeModelToFile(model = NULL, modelFile = NULL, verbose = FALSE, ...)
 }
 \arguments{
-\item{modelFile}{path to file to write model to}
+\item{model}{Model to write}
 
-\item{verbose}{be verbose}
+\item{modelFile}{Path to file to write model to}
+
+\item{verbose}{Be verbose?}
 }
 \value{
 nothing
 }
 \description{
-writeModelToFile
+Write a given moel to a file.
 }
 
