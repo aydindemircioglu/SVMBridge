@@ -4,7 +4,7 @@
 \alias{createSVMWrapper}
 \title{General class for any SVM wrapper.}
 \usage{
-createSVMWrapper(method, ...)
+createSVMWrapper(method)
 }
 \arguments{
 \item{method}{name of the class/object to create}

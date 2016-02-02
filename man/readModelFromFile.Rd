@@ -4,8 +4,7 @@
 \alias{readModelFromFile}
 \title{Read a model from a given file}
 \usage{
-readModelFromFile(modelFile = NULL, modelType = NULL, verbose = FALSE,
-  ...)
+readModelFromFile(modelFile = NULL, modelType = NULL, verbose = FALSE)
 }
 \arguments{
 \item{modelFile}{Path to the file to read the model from}

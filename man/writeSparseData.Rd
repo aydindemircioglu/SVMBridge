@@ -10,9 +10,17 @@ writeSparseData(filename, X, Y, append = FALSE, skipBytes = 0L,
 \arguments{
 \item{filename}{the filename to write the given data to}
 
-\item{verbose}{show verbose output?}
+\item{X}{The data to write as a matrix}
 
-\item{zeroBased}{do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?}
+\item{Y}{The labels for the data.}
+
+\item{append}{Append to the file (or overwrite)?}
+
+\item{skipBytes}{How many bytes of the head of the files should be skipped?}
+
+\item{verbose}{Be verbose?}
+
+\item{zeroBased}{Do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?}
 }
 \value{
 NULL.
@@ -21,12 +29,13 @@ NULL.
 Write given (dense) R matrix and R vector in sparse (LIBSVM) format to given file.
 }
 \note{
-labels can any numeric, they are not converted in any way.
+Labels can any numeric, they are not converted in any way.
 }
 \examples{
 	X = as.matrix(iris[,1:4])
 	Y = as.matrix(as.numeric(iris[,5]))
 	writeSparseData ("./australian.data", X, Y)
+
 }
 \keyword{IO}
 

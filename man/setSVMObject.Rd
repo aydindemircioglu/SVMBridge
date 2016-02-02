@@ -2,16 +2,18 @@
 % Please edit documentation in R/setSVMObject.R
 \name{setSVMObject}
 \alias{setSVMObject}
-\title{setSVMObject}
+\title{Set an SVM object into the environment.}
 \usage{
 setSVMObject(method = method, object = NULL, verbose = FALSE)
 }
 \arguments{
-\item{method}{name of method}
+\item{method}{Name of method}
 
-\item{object}{object to set}
+\item{object}{Object to set.}
+
+\item{verbose}{Be verbose?}
 }
 \description{
-Set a given object for a given method.
+Set an SVM object into the environment.
 }
 

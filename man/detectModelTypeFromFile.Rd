@@ -8,14 +8,22 @@ detectModelTypeFromFile(modelFile = NULL, defaultModel = "LIBSVM",
   verbose = FALSE)
 }
 \arguments{
-\item{modelFile}{path to model file}
+\item{modelFile}{Path to model file.}
 
-\item{verbose}{be verbose?}
+\item{defaultModel}{Model to use as default in case multiple models match.}
+
+\item{verbose}{Be verbose?}
 }
 \value{
-method name or NULL if no method could be detected.
+Method name or NULL if no method could be detected.
 }
 \description{
 This will auto detect the type of SVM model from a given file.
+}
+\note{
+As it is common for many derivates of LIBSVM to use the very same model structure
+as LIBSVM, the model cannot be detected reliably. Nonetheless, to minimize confusion, a default
+E.g. a LIBSVM model will be detected as LASVM, BVM and CVM, By providing defaultModel, say
+to be BVM, the modelType returned will be BVM. It has no effect, if only one or none models are matched.
 }
 

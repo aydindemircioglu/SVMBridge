@@ -62,7 +62,7 @@ findSVMWrapper <- function (method = NA, searchPath = NA, recursive = TRUE, sour
 		cat("    Looking for a wrapper with regex ", pattern, "\n")
 	}
 	
-	files <- listFiles (searchPath, pattern = pattern, recursive = recursive)
+	files <- list.files (searchPath, pattern = pattern, recursive = recursive)
 	if (length(files) > 1) {
 		warning ("Found multiple wrappers. Taking the first one: ", files[1])
 	}

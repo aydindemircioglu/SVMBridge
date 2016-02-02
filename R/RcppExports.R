@@ -3,13 +3,18 @@
 
 #' Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
 #'
-#' @param 		filename		the filename of the data in sparse file format. The Tilde Character isn't supported for f filename!  
-#' @param		verbose		show verbose output?
-#' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
+#' @param 		filename		The filename of the data in sparse file format. The Tilde Character isn't supported for f filename!  
+#' @param 		skipBytes		How many bytes of the head of the files should be skipped?
+#' @param		verbose		Show verbose output?
+#' @param		zeroBased			Do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
+#'
 #' @keywords	IO 
-#' @note		this routine is nearly a 1:1 adoptation from the LIBSVM original code.
-#' @return		the data is read into an R matrix and an R vector, containing the data
+#'
+#' @note		This routine is nearly a 1:1 adoptation from the LIBSVM original code.
+#'
+#' @return		The data is read into an R matrix and an R vector, containing the data
 #'					and the labels. note, that these are not in sparse format, but are dense.
+#'
 #' @examples	
 #' \dontrun{
 #'		S = readSparseData("../../../SVMBridge/tests/data/australian.train")
@@ -24,15 +29,24 @@ readSparseData <- function(filename, skipBytes = 0L, verbose = FALSE, zeroBased 
 #' Write given (dense) R matrix and R vector in sparse (LIBSVM) format to given file.
 #'
 #' @param 	filename		the filename to write the given data to
-#' @param		verbose		show verbose output?
-#' @param		zeroBased	do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
-#' @note		labels can any numeric, they are not converted in any way.
+#' @param	X		The data to write as a matrix
+#' @param	Y		The labels for the data.
+#' @param	append		Append to the file (or overwrite)?
+#' @param 	skipBytes		How many bytes of the head of the files should be skipped?
+#' @param	verbose			Be verbose?
+#' @param	zeroBased			Do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
+#'
+#' @note		Labels can any numeric, they are not converted in any way.
+#'
 #' @keywords	IO 
+#'
 #' @return		NULL.
+#'
 #' @examples	
 #'		X = as.matrix(iris[,1:4])
 #'		Y = as.matrix(as.numeric(iris[,5]))
 #'		writeSparseData ("./australian.data", X, Y)
+#'
 #' @export
 writeSparseData <- function(filename, X, Y, append = FALSE, skipBytes = 0L, verbose = FALSE, zeroBased = FALSE) {
     .Call('SVMBridge_writeSparseData', PACKAGE = 'SVMBridge', filename, X, Y, append, skipBytes, verbose, zeroBased)

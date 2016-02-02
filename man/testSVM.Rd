@@ -10,6 +10,8 @@ testSVM(method = NULL, testDataFile = NULL, testDataX = NULL,
   verbose = FALSE, ...)
 }
 \arguments{
+\item{method}{Name of the method/solver to use for testing. If NULL, a detectModelTypeFromFile will be called on the given model (or modelfile).}
+
 \item{testDataFile}{File to read training data from. Cannot be specified at the same time as testDataX and testDataY.}
 
 \item{testDataX}{Matrix to read training data from. Cannot be specified at the same time as testDataFile.}

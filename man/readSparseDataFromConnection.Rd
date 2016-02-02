@@ -7,11 +7,11 @@
 readSparseDataFromConnection(con, verbose = FALSE, zeroBased = FALSE)
 }
 \arguments{
-\item{con}{connection}
+\item{con}{Connection to read from}
 
-\item{verbose}{be verbose?}
+\item{verbose}{Be verbose?}
 
-\item{zeroBased}{do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?}
+\item{zeroBased}{Do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?}
 }
 \value{
 L		list containing input data and labels

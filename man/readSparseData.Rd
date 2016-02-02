@@ -8,21 +8,23 @@ readSparseData(filename, skipBytes = 0L, verbose = FALSE,
   zeroBased = FALSE)
 }
 \arguments{
-\item{filename}{the filename of the data in sparse file format. The Tilde Character isn't supported for f filename!}
+\item{filename}{The filename of the data in sparse file format. The Tilde Character isn't supported for f filename!}
 
-\item{verbose}{show verbose output?}
+\item{skipBytes}{How many bytes of the head of the files should be skipped?}
 
-\item{zeroBased}{do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?}
+\item{verbose}{Show verbose output?}
+
+\item{zeroBased}{Do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?}
 }
 \value{
-the data is read into an R matrix and an R vector, containing the data
+The data is read into an R matrix and an R vector, containing the data
 				and the labels. note, that these are not in sparse format, but are dense.
 }
 \description{
 Read a given file in sparse (LIBSVM) format to dense R matrix and R vector.
 }
 \note{
-this routine is nearly a 1:1 adoptation from the LIBSVM original code.
+This routine is nearly a 1:1 adoptation from the LIBSVM original code.
 }
 \examples{
 \dontrun{
