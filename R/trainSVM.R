@@ -106,7 +106,7 @@ trainSVM = function(
 	}
 		
 
-	# take care of data. if testdata or traindata is given,
+	# take care of data. if traindataFile or traindataX is given,
 	# the corresponding filename must be empty.
 	# finally, everything is dumped to disk.
 	if ( (is.null(trainDataX) == FALSE) && (is.null(trainDataFile) == FALSE)) {
@@ -118,12 +118,12 @@ trainSVM = function(
 	
 
 	
-	if (is.null (testDataFile) == FALSE)
-		checkmate::assertString (testDataFile)
+	if (is.null (trainDataFile) == FALSE)
+		checkmate::assertString (trainDataFile)
 		
-	if (is.null (testDataX) == FALSE) {
-		checkmate::assertMatrix (testDataX)
-		checkmate::assertMatrix (testDataY)
+	if (is.null (trainDataX) == FALSE) {
+		checkmate::assertMatrix (trainDataX)
+		checkmate::assertMatrix (trainDataY)
 	}	
 
 		
@@ -139,10 +139,10 @@ trainSVM = function(
 	if (verbose == TRUE) 
 		cat("    Train Data is now in ", trainDataFile)
 
-
-	if (is.null (testDataFile) == FALSE)
-		checkmate::assertString (testDataFile)
 	
+	# at this point we need to have a train data file on disk
+	checkmate::assertString (trainDataFile)
+	checkmate::assertFile (trainDataFile)
 	
 	results = list()
 
@@ -153,7 +153,7 @@ trainSVM = function(
 
 		if (subsamplingMethod == "cutoff") {
 			# simple cut off
-			trainDataFile = subsampleDataByCutoff (trainDataFile, subsamplingRate = as.numeric(subsamplingRate), verbose = verbose) 
+			trainDataFile = subsampleDataByCutoff (trainDataFile, subsamplingRate = as.numeric(subsamplingRate)) 
 		} else {
 			# unknown method
 			stop("Unknown subsampling method.")

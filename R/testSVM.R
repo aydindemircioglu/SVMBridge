@@ -85,10 +85,10 @@ testSVM = function(
 		checkmate::checkString (predictionsFile)
 	}
 	
-	checkmate::assertBoolean (readPredictions)
+	checkmate::assertFlag (readPredictions)
 	
 	checkmate::assertString (extraParameter)
-	checkmate::assertBoolean (verbose)
+	checkmate::assertFlag (verbose)
 
 	# get the correct object
 	SVMObject = getSVMObject (method)
@@ -121,7 +121,7 @@ testSVM = function(
 
 	#expand possible tilde characters in the path and get rid of backslashes
 	if(is.null(testDataFile) == FALSE && grepl("~", testDataFile) == TRUE){
-		checkmate::assertString (trainDataFile)
+		checkmate::assertString (testDataFile)
 		testDataFile = expandTilde(path = testDataFile, verbose = verbose)
 	}
 	
