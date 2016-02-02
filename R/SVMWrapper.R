@@ -28,11 +28,13 @@
 #'		that no trash is lying around.
 #' ...
 
-createSVMWrapper = function(method, ...) {
+createSVMWrapper = function(method) {
 
 	# remove first all old stuff lying around
 	# TODO: one must be able to do this better, but how? can anyone fix this :/
-	suppressWarnings( rm (envir = globalenv(), list = c(paste0("createTestArguments", ".", method), 
+	suppressWarnings( rm (envir = globalenv(), list = c(
+		paste0("checkModel", ".", method), 
+		paste0("createTestArguments", ".", method), 
 		paste0("createTrainingArguments", ".", method), 
 		paste0("computeOptimizationValues", ".", method), 
 		paste0("detectModel", ".", method), 

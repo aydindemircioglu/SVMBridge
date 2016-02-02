@@ -31,7 +31,7 @@
 #' @export
 #'
 
-readModelFromFile = function(modelFile = NULL, modelType = NULL, verbose = FALSE, ...) {
+readModelFromFile = function(modelFile = NULL, modelType = NULL, verbose = FALSE) {
 	# file must be there.
 	checkmate::checkFile (modelFile)
 

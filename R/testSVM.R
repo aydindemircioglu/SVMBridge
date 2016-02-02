@@ -21,6 +21,7 @@
 #'
 #' This is the main routine for testing an SVM (or doing predictions).
 #'
+#' @param	method		Name of the method/solver to use for testing. If NULL, a detectModelTypeFromFile will be called on the given model (or modelfile).
 #' @param	testDataFile		File to read training data from. Cannot be specified at the same time as testDataX and testDataY.
 #' @param	testDataX		Matrix to read training data from. Cannot be specified at the same time as testDataFile. 
 #' @param	testDataY		Matrix to read training label from. Cannot be specified at the same time as testDataFile.

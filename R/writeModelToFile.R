@@ -27,7 +27,7 @@
 #'
 #' @export
 #'
-writeModelToFile = function (model = NULL, modelFile = NULL, verbose = FALSE, ...) {
+writeModelToFile = function (model = NULL, modelFile = NULL, verbose = FALSE) {
 
 	# make sure the model exists and has some member variables
 	if (is.null (model) == TRUE) {

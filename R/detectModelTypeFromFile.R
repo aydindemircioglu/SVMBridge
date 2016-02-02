@@ -1,4 +1,3 @@
-
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
@@ -22,13 +21,21 @@
 #' 
 #' This will auto detect the type of SVM model from a given file.
 #' 
-#' @param	modelFile		path to model file
-#' @param	verbose		be verbose?
+#' @param	modelFile		Path to model file.
+#' @param	defaultModel		Model to use as default in case multiple models match.
+#' @param	verbose		Be verbose?
 #'
-#' @return	method name or NULL if no method could be detected.
+#' @return	Method name or NULL if no method could be detected.
+#'
+#' @note		As it is common for many derivates of LIBSVM to use the very same model structure
+#' as LIBSVM, the model cannot be detected reliably. Nonetheless, to minimize confusion, a default
+#  model can be provided. If this solver/modeltype is amongst the ones matching, this will be returened.
+#' E.g. a LIBSVM model will be detected as LASVM, BVM and CVM, By providing defaultModel, say
+#' to be BVM, the modelType returned will be BVM. It has no effect, if only one or none models are matched.
 #'
 #' @export
 #'
+
 detectModelTypeFromFile = function (modelFile = NULL, defaultModel = "LIBSVM", verbose = FALSE) {
 	checkmate::checkFile (modelFile)
 	checkmate::checkFlag (verbose)

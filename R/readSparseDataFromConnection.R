@@ -21,9 +21,9 @@
 
 #' Read spase data from an open connection.
 #'
-#' @param	con		connection
-#' @param 	verbose		be verbose?
-#' @param	zeroBased		do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
+#' @param	con		Connection to read from
+#' @param 	verbose		Be verbose?
+#' @param	zeroBased		Do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?
 #'
 #' @return	L		list containing input data and labels
 #'

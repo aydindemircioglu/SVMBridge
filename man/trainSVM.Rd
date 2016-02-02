@@ -6,41 +6,46 @@
 \usage{
 trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
   trainDataY = NULL, trainBinaryPath = NULL, extraParameter = "",
-  modelFile = NULL, verbose = TRUE, subsamplingRate = NULL,
-  subsamplingMethod = "cutoff", timeOut = -1, readModelFile = FALSE, ...)
+  modelFile = NULL, subsamplingRate = NULL, subsamplingMethod = "cutoff",
+  verbose = TRUE, timeOut = -1, readModelFile = FALSE, ...)
 }
 \arguments{
 \item{method}{name of the SVM method/solver}
 
-\item{trainDataFile}{file to read training data from}
+\item{trainDataFile}{Filename to read training data from. This cannot be used at the same time as trainDataX/trainDataY.}
 
-\item{trainDataX}{matrix to read training data from}
+\item{trainDataX}{Matrix comprising the data. This cannot be used at the same time as trainDataFile.}
 
-\item{trainDataY}{matrix to read training label from}
+\item{trainDataY}{Vector comprising the labels for the data. This cannot be used at the same time as trainDataFile.}
 
-\item{trainBinaryPath}{full path to the training binary to call}
+\item{trainBinaryPath}{Full path to the training binary to call.}
 
-\item{extraParameter}{extra parameters for solver}
+\item{extraParameter}{Extra parameters for solver, passed to the createTrainingArguments function of the wrapper.}
 
-\item{modelFile}{path to a model file}
+\item{modelFile}{Path to the model file to create. If none specified, a temporary file will be created and read into memory.}
 
-\item{verbose}{be verbose}
+\item{subsamplingRate}{Rate to subsample the data.}
 
-\item{subsamplingRate}{rate to subsample the data at}
+\item{subsamplingMethod}{Method to subsample the data with.}
 
-\item{subsamplingMethod}{method to subsample the data with}
+\item{verbose}{Be verbose?}
 
-\item{timeOut}{value to time out at}
+\item{timeOut}{Value to time out at, so that e.g. solvers that do stall/do an endless loop can be stopped nonetheless.}
 
 \item{readModelFile}{if TRUE, will read the model back (model is saved in the created object)}
+
+\item{...}{Further parameters that will be passed to the wrapper.}
 }
 \value{
-SVM Object
+An SVM Object.
 }
 \description{
-This is the main routine that trains an SVM.
+This is the main routine that trains an SVM, e.g. it will make sure that all
+data is on the disk, create the training arguments and then call the corresponding binary.
 }
 \note{
-exclusive parameters, i.e. you cannot specify both:
+trainDataFile, trainDataX/trainDataY are exclusive parameters, i.e. you cannot specify both.
+
+timeOut might not work on all platforms yet.
 }
 

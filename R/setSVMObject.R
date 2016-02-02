@@ -1,8 +1,6 @@
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
-#
-#		setSVMObject.R
 # 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -20,14 +18,14 @@
 
 
 
-#' setSVMObject
+#' Set an SVM object into the environment.
 #'
-#' Set a given object for a given method.
-#'
-#' @param	method		name of method
-#' @param	object	object to set
+#' @param	method		Name of method
+#' @param	object	Object to set.
+#' @param 	verbose		Be verbose?
 #'
 #' @export
+
 setSVMObject = function (method = method, object = NULL, verbose = FALSE) {
 	if (checkmate::testNull (object) == TRUE) {
 		if (verbose == TRUE) {

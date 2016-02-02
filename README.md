@@ -17,7 +17,7 @@ The package will be released soon, so some links below are not working.
 
 | ![](http://s3.amazonaws.com/entp-tender-production/assets/31027eff5fb7f725081560b12ebc82dd21b9146e/appveyor-kb-logo.png)  |    [![Build status](https://ci.appveyor.com/api/projects/status/5hli9i0h4aaxxvlh?svg=true)](https://ci.appveyor.com/project/aydindemircioglu/svmbridge) |
 |:---:|:---:|
-|![](https://billing.travis-ci.com/__travis__/mustache-spinner.gif)  |  [![Build Status](https://travis-ci.org/aydindemircioglu/SVMBridge.svg?branch=master)](https://travis-ci.org/aydindemircioglu/SVMBridge)|
+|![](https://docs.travis-ci.com/images/ui/footer-logo.svg)  |  [![Build Status](https://travis-ci.org/aydindemircioglu/SVMBridge.svg?branch=master)](https://travis-ci.org/aydindemircioglu/SVMBridge)|
 
 
 

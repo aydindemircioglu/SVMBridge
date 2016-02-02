@@ -28,7 +28,7 @@ testSVM(method = NULL, testDataFile = NULL, testDataX = NULL,
 
 \item{verbose}{Be verbose?}
 
-\item{...}{Further parameters that will be passed to the wrapper.}
+\item{...}{Further parameters that will be passed to the createTestArguments function of the wrapper.}
 }
 \value{
 An SVM Test Object.
