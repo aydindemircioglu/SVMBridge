@@ -194,7 +194,7 @@ trainSVM = function(
 			
 			verbose = TRUE
 			if (verbose == TRUE) 
-				BBmisc::messagef("  Applying hard timeout of %f seconds.", timeOut)
+				cat("  Applying a hard timeout of ", timeOut, "%f seconds\n")
 			trainTime = microbenchmark::microbenchmark(s <- system3(timeOutPath, timeOutArgs, verbose = verbose), times = 1L)$time / 1e9
 		}
 		 else {
@@ -203,14 +203,14 @@ trainSVM = function(
 # 	}
 	
 	if (verbose == TRUE) 
-		cat("Training took ", trainTime, seconds)
+		cat("Training took ", trainTime, " seconds\n")
 		
 	results[["trainTime"]] = trainTime
 	
 	
 	if (readModelFile == TRUE) {
 		if (verbose == TRUE) 
-			cat( "    Will read model back from ", modelFile)
+			cat( "    Will read model back from ", modelFile, "\n")
 
 		model = readModel (SVMObject, modelFile = modelFile, verbose = verbose)
 		results[["model"]] = model

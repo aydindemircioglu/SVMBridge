@@ -4,17 +4,17 @@
 \alias{checkModel}
 \title{Check model.}
 \usage{
-checkModel(model = NA, verbose = FALSE)
+checkModel(model = NA, modelFile = NA, verbose = FALSE)
 }
 \arguments{
-\item{model}{model object to write}
+\item{model}{Model (in memory) to check. This cannot be used simultanously with modelFile.}
 
-\item{verbose}{be verbose?}
+\item{modelFile}{Path to model (on disk) to check. . This cannot be used simultanously with model.}
 
-\item{modelFile}{path where to write the model}
+\item{verbose}{Be verbose?}
 }
 \description{
-Given a model in memory, write it out in LIBSVM model format, so that e.g. LIBSVM can predict on it directly.
+Given a model, check it by calling the asking the corresponding wrapper.
 }
 \note{
 As this is a basic for all other model readers, we export it.

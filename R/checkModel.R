@@ -20,20 +20,34 @@
 	
 #' Check model.
 #'
-#' Given a model in memory, write it out in LIBSVM model format, so that e.g. LIBSVM can predict on it directly.
+#' Given a model, check it by calling the asking the corresponding wrapper.
 #' 
-#' @param	model		model object to write
-#' @param	modelFile		path where to write the model
-#' @param	verbose		be verbose?
+#' @param	model		Model (in memory) to check. This cannot be used simultanously with modelFile.
+#' @param	modelFile		Path to model (on disk) to check. . This cannot be used simultanously with model.
+#' @param	verbose		Be verbose?
 #'
-#' @note 		As this is a basic for all other model readers, we export it.
+#' @note 		As this is a basic for all other model readers, we export it. 
 #'
 #' @export
-checkModel = function (model = NA, verbose = FALSE) {
+
+checkModel = function (model = NA, modelFile = NA, verbose = FALSE) {
 
 	if (verbose == TRUE)
 		cat ("Checking model for completeness.\n")
 
+	if (is.null (model) && is.null (modelFile)) {
+		stop ("You must specify either a model or a model file!")
+	}
+		
+	if (is.null (model) == FALSE && is.null (modelFile) == FALSE) {
+		stop ("You cannot specify a model and a model file at the same time!")
+	}
+
+	# try to load the model in case that it is not in memory
+	if (is.null (model) == TRUE) {
+		model = readModelFromFile (modelFile = modelFile, verbose = verbose) 
+	}
+	
 	# check first, if the model has is the correct class 
 	if (checkmate::testNull (model) == TRUE) {
 		warning ("No model was given.")
