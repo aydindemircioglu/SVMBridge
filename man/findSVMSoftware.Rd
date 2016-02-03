@@ -7,17 +7,17 @@
 findSVMSoftware(method = NA, searchPath = NA, verbose = FALSE)
 }
 \arguments{
-\item{method}{name of the SVM method}
+\item{method}{Name of the SVM method}
 
-\item{searchPath}{search the given path for the SVM binaries of the given SVM method.}
+\item{searchPath}{Search path for the SVM binaries of the given SVM method.}
 
-\item{verbose}{print messages while searching?}
+\item{verbose}{Print messages while searching?}
 }
 \description{
 Given a search path, it will try to find the corresponding software packages
 for the given method.
 }
 \note{
-calls the findSoftware routine of the corresponding wrapper.
+Calls the findSoftware routine of the corresponding wrapper.
 }
 

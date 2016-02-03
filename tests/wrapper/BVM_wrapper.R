@@ -134,6 +134,8 @@ findSoftware.BVM = function (x, searchPath = "./", execute = FALSE, verbose = FA
 	# can do now OS specific stuff here
 	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, dir = searchPath, patterns = list ('bvm-train .options. training_set_file .model_file.'))
 	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern , dir = searchPath, patterns = list ('bvm-predict .options. test_file model_file output_file'))
+	
+	return (x)
 }
 
 

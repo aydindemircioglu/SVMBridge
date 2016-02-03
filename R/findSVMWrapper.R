@@ -1,8 +1,6 @@
 #
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
-#
-#		findSVMWrapper.R
 # 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -24,17 +22,14 @@
 #' Given a search path, it will try to find the corresponding wrapper for the given method.
 #' This routine will also source the file, if specified.
 #'
-#' @param	method		name of the SVM method
-#' @param	recursive		recursive search?
-#' @param	source		source the found wrapper?
-#' @param 	searchPath	 	search the given path for the SVM binaries of all known SVM packages.
-#' @param	verbose			print messages while searching?
-#'
-#' @note		To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
-#' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
-#' @note		This routine expects that a SVM object already exists, and will only modify it.
+#' @param	method		Name of the SVM method
+#' @param	recursive		Recursive search?
+#' @param	source		Source the found wrapper?
+#' @param 	searchPath	 	Search the given path for the SVM binaries of all known SVM packages.
+#' @param	verbose			Print messages while searching?
 #' 
 #' @export
+
 findSVMWrapper <- function (method = NA, searchPath = NA, recursive = TRUE, source = TRUE, verbose = FALSE) {
 
 	checkmate::assertFlag (verbose)

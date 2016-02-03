@@ -8,25 +8,18 @@ findSVMWrapper(method = NA, searchPath = NA, recursive = TRUE,
   source = TRUE, verbose = FALSE)
 }
 \arguments{
-\item{method}{name of the SVM method}
+\item{method}{Name of the SVM method}
 
-\item{searchPath}{search the given path for the SVM binaries of all known SVM packages.}
+\item{searchPath}{Search the given path for the SVM binaries of all known SVM packages.}
 
-\item{recursive}{recursive search?}
+\item{recursive}{Recursive search?}
 
-\item{source}{source the found wrapper?}
+\item{source}{Source the found wrapper?}
 
-\item{verbose}{print messages while searching?}
+\item{verbose}{Print messages while searching?}
 }
 \description{
 Given a search path, it will try to find the corresponding wrapper for the given method.
 This routine will also source the file, if specified.
-}
-\note{
-To make sure that the binary is correct, it will be executed! (see findBinary for more infos)
-
-If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
-
-This routine expects that a SVM object already exists, and will only modify it.
 }
 

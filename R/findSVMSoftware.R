@@ -54,6 +54,7 @@ findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 			return (FALSE)
 		}
 	}
+	
     if (is.null(SVMObject$wrapperPath) == FALSE) {
 		for (dir in dirList) {
 			# call the find software method of the solver
@@ -61,6 +62,16 @@ findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 				cat ("    Scanning directory: ", dir, "\n")
 			}
 			SVMObject = findSoftware (SVMObject, searchPath = dir, verbose = verbose)
+			
+			if (is.null (SVMObject) == TRUE) {
+				warning ("The wrapper did not return any SVM Object. This seems to be an error in the wrapper code.")
+			}
+
+			# additional check if the object is somewhat valid (TODO: can we have a 'isSVMObjectValid(object)'?
+			if (is.null(SVMObject$wrapperPath) == FALSE) {
+				warning ("The wrapper did not return a valid SVM Object. This seems to be an error in the wrapper code.")
+			}
+			
 			if (is.null (SVMObject$trainBinaryPath) == FALSE) {
 				if (verbose == TRUE) {
 					cat ("    Found binaries in", dir, "\n")

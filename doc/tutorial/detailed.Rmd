@@ -163,6 +163,10 @@ This means that the wrapper for your SVM was not found, therefore no object was 
 
 (FIXME actually). The software was not found, so there is no trainBinaryPath in the SVM object.
 '
+## Reading my SVM model (or data file) yields a 0x0 matrix? 
+
+Make sure the model has the correct line endings. On windows you need 0x0d0a, else, if the model/data file has e.g. linux endings (0x0a), these will not be correctly read, that is the whole file will be read as one line, confusing the reader.
+
 
 # Speed
 

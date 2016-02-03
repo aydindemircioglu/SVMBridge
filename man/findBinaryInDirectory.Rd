@@ -2,33 +2,29 @@
 % Please edit documentation in R/findBinaryInDirectory.R
 \name{findBinaryInDirectory}
 \alias{findBinaryInDirectory}
-\title{findBinaryInDirectory.
-	given a file pattern and an std-out-pattern it will try to find a binary matching
-	the file pattern (which contains std-out-pattern as output if called without arguments)
-	in the path given.}
+\title{Find a given binary in given directory.}
 \usage{
 findBinaryInDirectory(binaryName = NULL, dir = NULL, patterns = NULL,
   applyKeyFix = FALSE, verbose = FALSE)
 }
 \arguments{
-\item{binaryName}{search the given path for the SVM binaries recursively.}
+\item{binaryName}{Search name for the SVM binary}
 
-\item{dir}{search the given path for the SVM binaries recursively.}
+\item{dir}{Search path for the SVM binary.}
 
-\item{patterns}{pattern for the binary file}
+\item{patterns}{Pattern for output of the binary file}
 
-\item{applyKeyFix}{apply fix for 'press any key to continue'?}
+\item{applyKeyFix}{Apply fix for 'press any key to continue' (SVMperf)?}
 
-\item{verbose}{print messages while searching?}
+\item{verbose}{Print messages while searching?}
 }
 \value{
 name of the found binary matching the pattern
 }
 \description{
-findBinaryInDirectory.
-	given a file pattern and an std-out-pattern it will try to find a binary matching
-	the file pattern (which contains std-out-pattern as output if called without arguments)
-	in the path given.
+Given a file pattern and an std-out-pattern it will try to find a binary matching
+the file pattern (which contains std-out-pattern as output if called without arguments)
+in the path given.
 }
 \note{
 To make sure that the binary is correct, it will be executed!

@@ -7,13 +7,13 @@
 findAllSVMSoftware(searchPath = NA, verbose = FALSE)
 }
 \arguments{
-\item{searchPath}{search the given path for the SVM binaries of all known SVM packages.}
+\item{searchPath}{Search path for the SVM binaries of all known SVM packages.}
 
-\item{verbose}{print messages while searching?}
+\item{verbose}{Print messages while searching?}
 }
 \description{
 Given a search path, it will try to find the software packages
-for all registered SVM package by calling the 'findSoftware' routine of each known wrapper.
+for all registered SVM packages by calling the 'findSoftware' routine of each known wrapper.
 }
 \note{
 To make sure that the binary is correct, it will be executed! (see findBinary for more infos)

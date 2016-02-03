@@ -8,15 +8,15 @@ addSVMPackage(method = NA, wrapperName = NA, wrapperPath = NA,
   softwarePath = NA, verbose = FALSE)
 }
 \arguments{
-\item{method}{name of solver}
+\item{method}{Name of solver}
 
-\item{wrapperName}{name of the wrapper (as filename). if none given, method_wrapper.R will be used.}
+\item{wrapperName}{Name of the wrapper (as filename). if none given, method_wrapper.R will be used.}
 
-\item{wrapperPath}{file path to the wrapper. if none is given, findSVMWrapper needs to be called}
+\item{wrapperPath}{File path to the wrapper. if none is given, findSVMWrapper needs to be called}
 
-\item{softwarePath}{path where to find the solver (software), if none is given, findSVMSoftware has to be called}
+\item{softwarePath}{Path where to find the solver (software), if none is given, findSVMSoftware has to be called}
 
-\item{verbose}{be verbose?}
+\item{verbose}{Be verbose?}
 }
 \description{
 This function will create an object corresponding to the SVM object.
