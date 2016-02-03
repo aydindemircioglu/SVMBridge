@@ -18,12 +18,11 @@
 #
 
 
-
 detectModeltests = function (solver, verbose) {
 
 	# detect model type
 	modelFile = paste0 ("../data/", solver, ".australian.model")
-	modelName =  detectModelTypeFromFile (modelFile, defaultModel = solver)
+	modelName =  detectModelTypeFromFile (modelFile, defaultModel = solver, verbose = verbose)
 	
 	# some models are the same
 	solverName = solver
