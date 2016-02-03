@@ -6,6 +6,9 @@ find . -name "#*#" -exec rm {} \;
 # copy wrapper
 cp wrapper/*_wrapper.R ./inst/wrapper
 
+# make wrapper available for automatic checking too
+cp -R wrapper ./tests/wrapper
+
 # copy OS-specific tests
 cp -R tests/testWrappers ./inst/tests
 

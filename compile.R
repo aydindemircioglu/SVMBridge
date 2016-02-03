@@ -1,7 +1,7 @@
 #!/usr/bin/Rscript  --vanilla 
 
 # work around
-    system2(command="./cleanup", args="")
+system2(command="./cleanup", args="")
     
 library(methods)
 library(devtools)
