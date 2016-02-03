@@ -68,7 +68,7 @@ findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 			}
 
 			# additional check if the object is somewhat valid (TODO: can we have a 'isSVMObjectValid(object)'?
-			if (is.null(SVMObject$wrapperPath) == FALSE) {
+			if (is.null(SVMObject$wrapperPath) == TRUE) {
 				warning ("The wrapper did not return a valid SVM Object. This seems to be an error in the wrapper code.")
 			}
 			
