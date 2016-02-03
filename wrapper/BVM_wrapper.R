@@ -58,18 +58,15 @@ createTestArguments.BVM = function (x, testDataFile = "", modelFile = "", ...) {
 
 
 
-extractTrainingInfo.BVM = function (x, output) {
-
-    # maybe not the best way to grep the string
+extractTrainingInfo.BVM = function (x, output, verbose) {
     pattern <- "Accuracy = (\\d+\\.?\\d*).*"
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-
     return (err)
 }
 
 
 
-extractTestInfo.BVM = function (x, output) {
+extractTestInfo.BVM = function (x, output, verbose) {
     pattern <- "Accuracy = (\\d+\\.?\\d*).*"
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
     return (err)

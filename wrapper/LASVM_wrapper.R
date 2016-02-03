@@ -70,7 +70,7 @@ createTestArguments.LASVM = function (x,
 
 
 
-extractTrainingInfo.LASVM = function (x, output) {
+extractTrainingInfo.LASVM = function (x, output, verbose) {
 	pattern <- "accuracy= (\\d+\\.?\\d*).*"
 	error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 	return (error)
@@ -78,7 +78,7 @@ extractTrainingInfo.LASVM = function (x, output) {
 
 
 
-extractTestInfo.LASVM = function (x, output) {
+extractTestInfo.LASVM = function (x, output, verbose) {
 	pattern <- "accuracy= (\\d+\\.?\\d*).*"
 	error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 	return (error)

@@ -1,4 +1,3 @@
-
 #
 # SVMBridge
 #		(C) 2015, by Aydin Demircioglu
@@ -133,7 +132,7 @@ createTestArguments.LIBSVM = function (x,
 
 
 
-extractTrainingInfo.LIBSVM = function (x, 	output) {
+extractTrainingInfo.LIBSVM = function (x, output, verbose) {
 		pattern <- ".*Accuracy =\\s*(\\d+\\.?\\d*).*"
 		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 		return (error)
@@ -141,7 +140,7 @@ extractTrainingInfo.LIBSVM = function (x, 	output) {
 
 
 
-extractTestInfo.LIBSVM = function (x, output) {
+extractTestInfo.LIBSVM = function (x, output, verbose) {
 		pattern <- ".*Accuracy =\\s*(\\d+\\.?\\d*).*"
 		error = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 		return (error)
@@ -162,7 +161,6 @@ writeModel.LIBSVM = function (x,model = NA,	modelFile = "./model", verbose = FAL
 
 
 detectModel.LIBSVM = function (x, modelFile = NULL, verbose = FALSE) {
-	print ("USING US")
 	checkmate::checkFlag (verbose)
 	if (is.null (modelFile) == TRUE)
 		return (FALSE)

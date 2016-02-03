@@ -66,7 +66,7 @@ createTestArguments.LLSVM = function (x,
 
 
 
-extractTrainingInfo.LLSVM = function (x, output) {
+extractTrainingInfo.LLSVM = function (x, output, verbose) {
 	pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
 	err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 	return (err)
@@ -74,7 +74,7 @@ extractTrainingInfo.LLSVM = function (x, output) {
 
 
 
-extractTestInfo.LLSVM = function (x, output) {
+extractTestInfo.LLSVM = function (x, output, verbose) {
 	pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
 	err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 	return (err)

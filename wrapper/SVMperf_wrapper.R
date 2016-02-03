@@ -252,14 +252,14 @@ createTestArguments.SVMperf = function (x,
 
 
 
-extractTrainingInfo.SVMperf = function (x, output) {
+extractTrainingInfo.SVMperf = function (x, output, verbose) {
 	pattern <- "Accuracy :\\s*(\\d+\\.?\\d*)"
 	err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 }
 
 
 
-extractTestInfo.SVMperf = function (x, output) {
+extractTestInfo.SVMperf = function (x, output, verbose) {
 	pattern <- "Accuracy :\\s*(\\d+\\.?\\d*)"
 	err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 }

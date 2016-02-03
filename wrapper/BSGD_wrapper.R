@@ -65,7 +65,7 @@ createTestArguments.BSGD = function (x,
 
 
 
-extractTrainingInfo.BSGD = function (x, output) {
+extractTrainingInfo.BSGD = function (x, output, verbose) {
 	pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
 	err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 	return (err)
@@ -73,7 +73,7 @@ extractTrainingInfo.BSGD = function (x, output) {
 
 
 
-extractTestInfo.BSGD = function (x, output) {
+extractTestInfo.BSGD = function (x, output, verbose) {
 	pattern <- ".*Testing error rate: (\\d+\\.?\\d*).*"
 	err = as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
 	return (err)

@@ -59,21 +59,17 @@ createTestArguments.CVM = function (x,
 
 
 
-extractTrainingInfo.CVM = function (x, output) {
-    # maybe not the best way to grep the string
+extractTrainingInfo.CVM = function (x, output, verbose) {
     pattern <- "Accuracy = (\\d+\\.?\\d*).*"
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-
     return (err)
 }
 
 
 
-extractTestInfo.CVM = function (x, output) {
-	# maybe not the best way to grep the string
+extractTestInfo.CVM = function (x, output, verbose) {
     pattern <- "Accuracy = (\\d+\\.?\\d*).*"
     err = 1 - as.numeric(sub(pattern, '\\1', output[grepl(pattern, output)])) / 100
-
     return (err)
 }
 
