@@ -46,13 +46,12 @@ createTrainingArguments.BVM = function (x,
 
 
 
-createTestArguments.BVM = function (x, testDataFile = "", modelFile = "", ...) {
+createTestArguments.BVM = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
     args = c(
         testDataFile,
         modelFile,
-        "/dev/null"                     # outfile, not needed
+        predictionsFile
     )
-
     return (args)
 }
 

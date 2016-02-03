@@ -117,17 +117,13 @@ createTrainingArguments.LIBSVM = function (
 
 
 
-createTestArguments.LIBSVM = function (x,
-	testDataFile = "",
-	modelFile = "",
-	predictionsFile = "",
-	...) {
-		args = c(
-			testDataFile,
-			modelFile,
-			predictionsFile
-		)
-		return (args)
+createTestArguments.LIBSVM = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
+    args = c(
+        testDataFile,
+        modelFile,
+        predictionsFile
+    )
+    return (args)
 }
 
 

@@ -50,20 +50,15 @@ createTrainingArguments.Pegasos = function (x,
 
 
 
-
-createTestArguments.Pegasos = function (x,
-										testDataFile = "",
-                                        modelFile = "",
-                                        predictionOutput = "/dev/null", ...) {
+createTestArguments.Pegasos = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
     args = c(
-        "-v 1",
-#        "-o 1", only works for BSGD for now
-        testDataFile,
-        modelFile,
-        predictionOutput
-    )
+		"-v 1",
+		testDataFile,
+		modelFile,
+		predictionOutput
+	)
 
-    return (args)
+	return (args)
 }
 
 

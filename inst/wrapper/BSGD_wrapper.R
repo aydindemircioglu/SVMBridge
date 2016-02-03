@@ -47,13 +47,8 @@ createTrainingArguments.BSGD = function (x,
 
 
 
-createTestArguments.BSGD = function (x,
-	testDataFile = "",
-	modelFile = "",
-	predictionOutput = "/dev/null",
-	...)
-{
-	args = c(
+createTestArguments.BSGD = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
+    args = c(
 		"-v 1",
 		testDataFile,
 		modelFile,

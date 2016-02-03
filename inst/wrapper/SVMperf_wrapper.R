@@ -234,17 +234,11 @@ createTrainingArguments.SVMperf = function (x,
 
 
 
-createTestArguments.SVMperf = function (x,
-	testDataFile = "",
-	modelFile = "",
-	predictionsFile = "",
-	...)
-{
+createTestArguments.SVMperf = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
 	args = c(
 		testDataFile,
 		modelFile,
-		predictionsFile,
-		"/dev/null"                     # outfile, not needed
+		predictionsFile
 	)
 
 	return (args)
