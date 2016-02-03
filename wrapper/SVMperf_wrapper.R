@@ -385,6 +385,11 @@ writeModel.SVMperf <- function (x, model = NA, modelFile = "./model", verbose = 
 
 detectModel.SVMperf = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
+	
+	if (verbose == TRUE) {
+		cat ("Checking for SVMperf model.\n")
+	}
+	
 	if (is.null (modelFile) == TRUE)
 		return (FALSE)
 

@@ -158,6 +158,11 @@ writeModel.LIBSVM = function (x,model = NA,	modelFile = "./model", verbose = FAL
 
 detectModel.LIBSVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
+	
+	if (verbose == TRUE) {
+		cat ("Checking for LIBSVM model.\n")
+	}
+
 	if (is.null (modelFile) == TRUE)
 		return (FALSE)
 

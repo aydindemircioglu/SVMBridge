@@ -308,6 +308,11 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 
 detectModel.BSGD = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
+	
+	if (verbose == TRUE) {
+		cat ("Checking for BSGD model.\n")
+	}
+
 	if (is.null (modelFile) == TRUE)
 		return (FALSE)
 

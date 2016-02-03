@@ -1,17 +1,21 @@
-#!/usr/bin/Rscript  --vanilla
-
-
-
-
-
-# evalPegasos
-# @param[in]    trainDataFile       file to read training data from
-# @param[in]    testDataFile        file to read test data from
-# @param[in]    cost            cost parameter C
-# @param[in]    gamma           gamma parameter, note: RBF kernel used by pegasos is exp(-0.5 ...)
-# @param[in]    epochs          number of epochs to run pegasos
-# @param[in]    bindir          relativ path to the binaries, defaults to default.
-# @param[in]    modelFile       path to model, defaults to a temporary file (given by R)
+#
+# SVMBridge
+#
+#		(C) 2015, by Aydin Demircioglu
+#
+# SVMBridge is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SVMBridge is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# Please do not use this software to destroy or spy on people, environment or things.
+# All negative use is prohibited.
+#
 
 
 createTrainingArguments.Pegasos = function (x,
@@ -82,7 +86,8 @@ extractTestInfo.Pegasos = function (x, output) {
     return (err)
 }
 
-# dummy for now
+
+
 readModel.Pegasos = function (x, modelFile = "./model", verbose = FALSE)
 {
 	if (verbose == TRUE) {
@@ -164,13 +169,15 @@ readModel.Pegasos = function (x, modelFile = "./model", verbose = FALSE)
 	return (svmatrix)
 }
 
-# dummy for now
+
+
 writeModel.Pegasos = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
 	ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
 	return (ret)
 }
 
-# dummy for now
+
+
 readPredictions.Pegasos = function (x, predictionsFile = "", verbose = FALSE) {
 	ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
 	return (ret)

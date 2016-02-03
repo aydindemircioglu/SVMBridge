@@ -89,6 +89,11 @@ writeModel.BVM = function (x, model = NA, modelFile = "./model", verbose = FALSE
 
 detectModel.BVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
+
+	if (verbose == TRUE) {
+		cat ("Checking for BVM model.\n")
+	}
+	
 	if (is.null (modelFile) == TRUE)
 		return (FALSE)
 

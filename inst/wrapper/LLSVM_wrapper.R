@@ -1,4 +1,3 @@
-
 #
 # SVMBridge
 #
@@ -17,7 +16,6 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
-
 
 
 createTrainingArguments.LLSVM = function (x,
@@ -295,6 +293,11 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 
 detectModel.LLSVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
+	
+	if (verbose == TRUE) {
+		cat ("Checking for LLSVM model.\n")
+	}
+
 	if (is.null (modelFile) == TRUE)
 		return (FALSE)
 

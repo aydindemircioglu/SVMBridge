@@ -34,7 +34,6 @@
 #' to be BVM, the modelType returned will be BVM. It has no effect, if only one or none models are matched.
 #'
 #' @export
-#'
 
 detectModelTypeFromFile = function (modelFile = NULL, defaultModel = "LIBSVM", verbose = FALSE) {
 	checkmate::checkFile (modelFile)
@@ -44,6 +43,10 @@ detectModelTypeFromFile = function (modelFile = NULL, defaultModel = "LIBSVM", v
 	# iterate over all known wrapper
 	detectedModels = c()
 	for (package in getSVMMethodsAsList(verbose = verbose)) {
+		if (verbose == TRUE) {
+			cat ("Checking for model ", package, "\n")
+		}
+		
 		if (detectModel (getSVMObject(package), modelFile = modelFile, verbose = verbose) == TRUE) {
 			if (verbose == TRUE)
 				cat("Detected model ", package, ".\n")

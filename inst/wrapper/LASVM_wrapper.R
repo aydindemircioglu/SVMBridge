@@ -96,6 +96,12 @@ writeModel.LASVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 
 detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
+
+	if (verbose == TRUE) {
+		cat ("Checking for LASVM model.\n")
+	}
+
+	
 	if (is.null (modelFile) == TRUE)
 		return (FALSE)
 

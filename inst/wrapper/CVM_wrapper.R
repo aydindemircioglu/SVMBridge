@@ -86,6 +86,11 @@ writeModel.CVM = function (x, model = NA, modelFile = "./model", verbose = FALSE
 
 detectModel.CVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
+	
+	if (verbose == TRUE) {
+		cat ("Checking for CVM model.\n")
+	}
+
 	if (is.null (modelFile) == TRUE)
 		return (FALSE)
 
