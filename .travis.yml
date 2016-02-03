@@ -14,10 +14,10 @@ branches:
         - master
 warnings_are_errors: true
 r_check_args: "--as-cran --run-donttest"
-r_github_packages:
-    - berndbischl/BBmisc
 r_binary_packages:
+    - BBmisc
     - checkmate
+    - devtools
     - microbenchmark
     - Rcpp
 before_install:
