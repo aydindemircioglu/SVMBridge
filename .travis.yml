@@ -20,7 +20,7 @@ r_binary_packages:
     - checkmate
     - microbenchmark
     - Rcpp
-    before_install:
+before_install:
     - echo "BEFORE INSTALL."
 after_success:
     - git checkout master
