@@ -36,7 +36,7 @@ wrappertests = function (solver, trainDataX, trainDataY, testDataX, testDataY, v
 	# can do now OS specific stuff here
 	print (Sys.info()["sysname"])
 	
-	if (Sys.info()["sysname"] == "MacOS") {
+	if (Sys.info()["sysname"] == "Darwin") {
 		expErrors = list("LIBSVM" = c(20, 12), "LASVM" = c(23, 12), "BSGD" = c(10, 8), "SVMperf" = c(20, 12), 
 								"BVM" = c(19,15),  "CVM" = c(19, 15),  "LLSVM" = c(17, 15))
 	} else {
