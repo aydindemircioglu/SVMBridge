@@ -323,19 +323,29 @@ readPredictions.LLSVM = function (x, predictionsFile = "", verbose = FALSE) {
 
 findSoftware.LLSVM = function (x, searchPath = "./", verbose = FALSE) {
 	if (verbose == TRUE) {
-			cat ("    LLSVM Object: Executing search for software for ", x$method)
-		}
-
-	trainBinaryPattern = "budgetedsvm-train"
-	trainBinaryOutputPattern = list ("budgetedsvm-train .options. train_file .model_file.")
-	testBinaryPattern = "budgetedsvm-predict"
-	testBinaryOutputPattern = list ("budgetedsvm-predict .options. test_file model_file output_file")
+		cat ("    BSGD Object: Executing search for software for ", x$method)
+	}
 
 	# can do now OS specific stuff here
-	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern , dir = searchPath, patterns = trainBinaryOutputPattern, verbose = verbose )
-	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern , dir = searchPath, patterns = testBinaryOutputPattern, verbose = verbose )
+	if(.Platform$OS.type == "unix") {
+		if (verbose == TRUE) {
+			cat ("    Unix binaries.\n")
+		}
+		trainBinaryPattern = "budgetedsvm-train"
+		testBinaryPattern = "budgetedsvm-predict"
+	} else {
+		if (verbose == TRUE) {
+			cat ("    Windows binaries.\n")
+		}
+		trainBinaryPattern = "budgetedsvm-train.exe"
+		testBinaryPattern = "budgetedsvm-predict.exe"
+	}
 
-	return (x)
+	# can do now OS specific stuff here
+	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, dir = searchPath, patterns = list ('budgetedsvm-train .options. train_file .model_file.'), verbose = verbose)
+	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern, dir = searchPath, patterns = list ('budgetedsvm-predict .options. test_file model_file output_file'), verbose = verbose)
+
+	return(x)
 }
 
 

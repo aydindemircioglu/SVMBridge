@@ -355,8 +355,23 @@ findSoftware.BSGD = function (x, searchPath = "./", execute = FALSE, verbose = F
 	}
 
 	# can do now OS specific stuff here
-	x$trainBinaryPath = findBinaryInDirectory ("budgetedsvm-train", dir = searchPath, patterns = list ('budgetedsvm-train .options. train_file .model_file.'), verbose = verbose)
-	x$testBinaryPath = findBinaryInDirectory ("budgetedsvm-predict", dir = searchPath, patterns = list ('budgetedsvm-predict .options. test_file model_file output_file'), verbose = verbose)
+	if(.Platform$OS.type == "unix") {
+		if (verbose == TRUE) {
+			cat ("    Unix binaries.\n")
+		}
+		trainBinaryPattern = "budgetedsvm-train"
+		testBinaryPattern = "budgetedsvm-predict"
+	} else {
+		if (verbose == TRUE) {
+			cat ("    Windows binaries.\n")
+		}
+		trainBinaryPattern = "budgetedsvm-train.exe"
+		testBinaryPattern = "budgetedsvm-predict.exe"
+	}
+
+	# can do now OS specific stuff here
+	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, dir = searchPath, patterns = list ('budgetedsvm-train .options. train_file .model_file.'), verbose = verbose)
+	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern, dir = searchPath, patterns = list ('budgetedsvm-predict .options. test_file model_file output_file'), verbose = verbose)
 
 	return(x)
 }
