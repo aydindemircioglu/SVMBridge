@@ -35,6 +35,7 @@
 # 	Furthermore, many SVM packages derive from libSVM. as such, they
 #	often do not change the prediction binary, so care must be taken (if the 
 #' binary is really not exchangeable).
+#' @note		applyKeyFix is platform dependent.
 #'
 #' @export
 
@@ -65,8 +66,15 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 		if (verbose == TRUE) { 
 			cat ("    Applying key (aka SVMperf) fix.\n") 
 		}
-		# this should work with both platforms (vs /bin/echo, as i tried before)
-		stdout = system3 ("echo", args = c("1", "|", trainBinaryPath), verbose = FALSE)
+		
+		# this is platform dependent
+		if(.Platform$OS.type == "unix") {
+			stdout = system3 ("echo", args = c("1", "|", trainBinaryPath), verbose = FALSE)
+		} else {
+			tmpF = tempfile()
+			writeLines ("1\n2", tmpF)
+			stdout = system3 (trainBinaryPath, args = c("<", tmpF), verbose = FALSE)
+		}
 	} else {
 		stdout = system3 (trainBinaryPath, args = c(), verbose = FALSE)
 	}
