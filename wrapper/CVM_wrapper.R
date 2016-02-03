@@ -45,15 +45,12 @@ createTrainingArguments.CVM = function (x,
 
 
 
-createTestArguments.CVM = function (x,
-					testDataFile = "",
-					modelFile = "", ...) {
+createTestArguments.CVM = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
     args = c(
         testDataFile,
         modelFile,
-        "/dev/null"                     # outfile, not needed
+        predictionsFile
     )
-
     return (args)
 }
 

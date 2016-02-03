@@ -50,11 +50,8 @@ createTrainingArguments.LLSVM = function (x,
 
 
 
-createTestArguments.LLSVM = function (x,
-									testDataFile = "",
-									modelFile = "",
-									predictionOutput = "/dev/null", ...) {
-	args = c(
+createTestArguments.LLSVM = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
+    args = c(
 		"-v 1",
 		testDataFile,
 		modelFile,

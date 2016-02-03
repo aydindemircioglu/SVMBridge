@@ -53,19 +53,13 @@ createTrainingArguments.LASVM = function (x,
 
 
 
-createTestArguments.LASVM = function (x,
-	testDataFile = "",
-	modelFile = "",
-	predictionsFile = "",
-	...)
-{
-	args = c(
-		testDataFile,
-		modelFile,
-		predictionsFile
-	)
-
-	return (args)
+createTestArguments.LASVM = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
+    args = c(
+        testDataFile,
+        modelFile,
+        predictionsFile
+    )
+    return (args)
 }
 
 
