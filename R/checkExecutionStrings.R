@@ -71,7 +71,7 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 		if(.Platform$OS.type == "unix") {
 			stdout = system3 ("echo", args = c("1", "|", trainBinaryPath), verbose = FALSE)
 		} else {		
-			stdout = system3 ("cmd", args = c("/c echo n^> \"%temp%\\answer.tmp\" ^& (", trainBinaryPath, " ^< \"%temp%\\answer.tmp\""), verbose = verbose)
+			stdout = system3 ("cmd", args = c("/c echo n^> \"%temp%\\answer.tmp\" ^& (", trainBinaryPath, " ^< \"%temp%\\answer.tmp\")"), verbose = verbose)
 #			cmd /c echo n^> "%temp%\answer.tmp" ^& (setup.bat ^< "%temp%\answer.tmp") ^& del "%temp%\answer.tmp"
 		}
 	} else {
