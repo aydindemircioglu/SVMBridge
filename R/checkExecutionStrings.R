@@ -73,7 +73,7 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 		} else {
 			tF = tempfile()
 			writeLines (tF, text = "A\nB\nC")
-			stdout = system3 ("type", args = c(tF, " | ", trainBinaryPath), verbose = verbose)
+			stdout = system3 (trainBinaryPath, args = c(" < ", tF), verbose = verbose)
 		}
 	} else {
 		stdout = system3 (trainBinaryPath, args = c(), verbose = FALSE)
