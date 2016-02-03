@@ -2,8 +2,6 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		addSVMPackage.R
-# 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -28,11 +26,11 @@
 #' the search, by specifiying the directories where the wrapper/software lies.
 #' If this is successful, later findSVM.. calls are unneccessary.
 #'
-#' @param 	method		name of solver
-#' @param	wrapperName		name of the wrapper (as filename). if none given, method_wrapper.R will be used.
-#' @param	wrapperPath		file path to the wrapper. if none is given, findSVMWrapper needs to be called
-#' @param	softwarePath		path where to find the solver (software), if none is given, findSVMSoftware has to be called
-#' @param	verbose		be verbose?
+#' @param 	method			Name of solver
+#' @param	wrapperName		Name of the wrapper (as filename). if none given, method_wrapper.R will be used.
+#' @param	wrapperPath			File path to the wrapper. if none is given, findSVMWrapper needs to be called
+#' @param	softwarePath		Path where to find the solver (software), if none is given, findSVMSoftware has to be called
+#' @param	verbose			Be verbose?
 #'
 #' @note	 	first the given train and testBinaryPaths will be directly checked.
 #' if the binary does not exist there, the softwarePath will be added and rechecked
@@ -40,13 +38,9 @@
 #' so one can override the search by specifiying train-/testBinaryPath.
 #' @note		If the wrapper searches for software, it will NOT execute it, existance is enough at this point.
 #' 
-#' @export	addSVMPackage
-addSVMPackage = function (method = NA, 
-	wrapperName = NA,
-	wrapperPath = NA,
-	softwarePath = NA, 
-	verbose = FALSE)
-{
+#' @export
+
+addSVMPackage = function (method = NA, wrapperName = NA, wrapperPath = NA, softwarePath = NA, verbose = FALSE) {
 	checkmate::assertString (method)
 
 	# remove any old object and create a new one by overwriting
@@ -84,7 +78,11 @@ addSVMPackage = function (method = NA,
 					cat ("Found wrapper at", wrapperPath, "\n")
 				source (wrapperPath, local = FALSE)
 				SVMObject$wrapperPath = wrapperPath
-			} 
+			} else {
+				if (verbose == TRUE) {
+					cat ("Not able to find the wrapper. Tried to find the default wrapper. Sorry. \n")
+				}
+			}
 		}
 	} else {
 		# test if we can detect it easily
@@ -127,7 +125,11 @@ addSVMPackage = function (method = NA,
 		} else {
 			warning ("Could not find a wrapper, as such, search path is ignored.")
 		}
-	} 
+	} else {
+		if (verbose == TRUE) {
+			cat ("Not able to find the wrapper. Generated software path is not a string. Sorry.\n")
+		}
+	}
 
 	setSVMObject (method, SVMObject)
 }

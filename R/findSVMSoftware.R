@@ -2,8 +2,6 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		findSVMSoftware.R
-# 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -25,13 +23,14 @@
 #' Given a search path, it will try to find the corresponding software packages
 #' for the given method.
 #'
-#' @param	method	   name of the SVM method
-#' @param   searchPath   search the given path for the SVM binaries of the given SVM method.
-#' @param	verbose		print messages while searching?
+#' @param	method	   	Name of the SVM method
+#' @param   searchPath   Search path for the SVM binaries of the given SVM method.
+#' @param	verbose		Print messages while searching?
 #' 
-#' @note    calls the findSoftware routine of the corresponding wrapper.
+#' @note    Calls the findSoftware routine of the corresponding wrapper.
 #'
-#' @export	findSVMSoftware
+#' @export
+
 findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 
 	checkmate::assertString (method)
@@ -71,6 +70,10 @@ findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 				setSVMObject (method, SVMObject)
 				break
 			}
+		}
+	} else {
+		if (verbose == TRUE) {
+			cat ("No wrapper path was found in method ", method, ". Cannot search for a binary.\n")
 		}
 	}
 		
