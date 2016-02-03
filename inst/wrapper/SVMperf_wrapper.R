@@ -422,9 +422,24 @@ findSoftware.SVMperf = function (x, searchPath = "./", execute = FALSE, verbose 
 	}
 
 	# can do now OS specific stuff here
-	x$trainBinaryPath = findBinaryInDirectory ("svm_perf_learn", applyKeyFix = TRUE,
+	if(.Platform$OS.type == "unix") {
+		if (verbose == TRUE) {
+			cat ("    Unix binaries.\n")
+		}
+		trainBinaryPattern = "svm_perf_learn"
+		testBinaryPattern = "svm_perf_classify"
+	} else {
+		if (verbose == TRUE) {
+			cat ("    Windows binaries.\n")
+		}
+		trainBinaryPattern = "svm_perf_learn.exe"
+		testBinaryPattern = "svm_perf_classify.exe"
+	}
+	
+	# can do now OS specific stuff here
+	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, applyKeyFix = TRUE,
 		dir = searchPath, patterns = list ('ROCArea: Percentage of swapped pos/neg pairs', 'usage: svm_struct_learn .options. example_file model_file'), verbose = verbose)
-	x$testBinaryPath = findBinaryInDirectory ("svm_perf_classify", applyKeyFix = TRUE, dir = searchPath, patterns = list ('usage: svm_struct_classify .options. example_file model_file output_file'), verbose = verbose)
+	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern, applyKeyFix = TRUE, dir = searchPath, patterns = list ('usage: svm_struct_classify .options. example_file model_file output_file'), verbose = verbose)
 
 	return(x)
 }

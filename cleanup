@@ -4,11 +4,17 @@ find . -name \*.so -exec rm {} \;
 find . -name "#*#" -exec rm {} \;
 
 # copy wrapper
-cp wrapper/*_wrapper.R ./inst/wrapper
+rm -rf ./inst/wrapper
+mkdir ./inst/wrapper
+cp wrapper/* ./inst/wrapper
 
 # make wrapper available for automatic checking too
-cp -R wrapper ./tests/wrapper
+rm -rf ./tests/wrapper
+mkdir ./tests/wrapper
+cp -R wrapper/* ./tests/wrapper
 
 # copy OS-specific tests
+rm -rf ./inst/tests
+mkdir ./inst/tests
 cp -R tests/testWrappers ./inst/tests
 

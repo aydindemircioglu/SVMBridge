@@ -142,8 +142,23 @@ findSoftware.LASVM = function (x, searchPath = "./", execute = FALSE, verbose = 
 	}
 
 	# can do now OS specific stuff here
-	x$trainBinaryPath = findBinaryInDirectory ("la_svm", dir = searchPath, patterns = list ('la_svm .options. training_set_file .model_file.'))
-	x$testBinaryPath = findBinaryInDirectory ("la_test", dir = searchPath, patterns = list ('la_test .options. test_set_file model_file output_file'))
+	if(.Platform$OS.type == "unix") {
+		if (verbose == TRUE) {
+			cat ("    Unix binaries.\n")
+		}
+		trainBinaryPattern = "la_svm"
+		testBinaryPattern = "la_test"
+	} else {
+		if (verbose == TRUE) {
+			cat ("    Windows binaries.\n")
+		}
+		trainBinaryPattern = "la_svm.exe"
+		testBinaryPattern = "la_test.exe"
+	}
+
+	# search binary
+	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, dir = searchPath, patterns = list ('la_svm .options. training_set_file .model_file.'))
+	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern, dir = searchPath, patterns = list ('la_test .options. test_set_file model_file output_file'))
 
 	return(x)
 }

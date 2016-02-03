@@ -75,13 +75,13 @@ extractTestInfo.CVM = function (x, output, verbose) {
 
 
 readModel.CVM = function (x, modelFile = './model', verbose = FALSE) {
-	ret = readModel.LIBSVM (modelFile = modelFile, verbose = verbose)
+	ret = readLIBSVMModel (modelFile = modelFile, verbose = verbose)
 	return (ret)
 }
 
 
 writeModel.CVM = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
-	ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
+	ret = writeLIBSVMModel(model = model, modelFile = modelFile, verbose = verbose)
 	return (ret)
 }
 
@@ -120,8 +120,23 @@ findSoftware.CVM = function (x, searchPath = "./", execute = FALSE, verbose = FA
 	}
 
 	# can do now OS specific stuff here
-	x$trainBinaryPath = findBinaryInDirectory ("svm-train", dir = searchPath, patterns = list ('bvm-train .options. training_set_file .model_file.'))
-	x$testBinaryPath = findBinaryInDirectory ("svm-predict", dir = searchPath, patterns = list ('bvm-predict .options. test_file model_file output_file'))
+	if(.Platform$OS.type == "unix") {
+		if (verbose == TRUE) {
+			cat ("    Unix binaries.\n")
+		}
+		trainBinaryPattern = "svm-train"
+		testBinaryPattern = "svm-predict"
+	} else {
+		if (verbose == TRUE) {
+			cat ("    Windows binaries.\n")
+		}
+		trainBinaryPattern = "svm-train.exe"
+		testBinaryPattern = "svm-predict.exe"
+	}
+	
+	# can do now OS specific stuff here
+	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, dir = searchPath, patterns = list ('bvm-train .options. training_set_file .model_file.'))
+	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern , dir = searchPath, patterns = list ('bvm-predict .options. test_file model_file output_file'))
 
 	return(x)
 }

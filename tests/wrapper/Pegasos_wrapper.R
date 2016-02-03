@@ -171,27 +171,50 @@ readModel.Pegasos = function (x, modelFile = "./model", verbose = FALSE)
 
 # dummy for now
 writeModel.Pegasos = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
-		ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
-		return (ret)
-	}
+	ret = writeModel.LIBSVM (model = model, modelFile = modelFile, verbose = verbose)
+	return (ret)
+}
 
 # dummy for now
 readPredictions.Pegasos = function (x, predictionsFile = "", verbose = FALSE) {
-		ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
-		return (ret)
-	}
+	ret = readPredictions.LIBSVM (predictionsFile = predictionsFile, verbose = verbose)
+	return (ret)
+}
+
 
 
 # same method as for BSGD
 findSoftware.Pegasos = function (x, searchPath = "./", verbose = FALSE) {
-		x = findSoftware.BSGD (x, searchPath, verbose)
-		return(x)
+	if (verbose == TRUE) {
+		cat ("    BSGD Object: Executing search for software for ", x$method)
 	}
 
-
-
-	print.Pegasos = function(x) {
-		cat("Solver: ", x$method)
-		cat("    Training Binary at ", x$trainBinaryPath)
-		cat("    Test Binary at ", x$testBinaryPath)
+	# can do now OS specific stuff here
+	if(.Platform$OS.type == "unix") {
+		if (verbose == TRUE) {
+			cat ("    Unix binaries.\n")
+		}
+		trainBinaryPattern = "budgetedsvm-train"
+		testBinaryPattern = "budgetedsvm-predict"
+	} else {
+		if (verbose == TRUE) {
+			cat ("    Windows binaries.\n")
+		}
+		trainBinaryPattern = "budgetedsvm-train.exe"
+		testBinaryPattern = "budgetedsvm-predict.exe"
 	}
+
+	# can do now OS specific stuff here
+	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, dir = searchPath, patterns = list ('budgetedsvm-train .options. train_file .model_file.'), verbose = verbose)
+	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern, dir = searchPath, patterns = list ('budgetedsvm-predict .options. test_file model_file output_file'), verbose = verbose)
+
+	return(x)
+}
+
+
+
+print.Pegasos = function(x) {
+	cat("Solver: ", x$method)
+	cat("    Training Binary at ", x$trainBinaryPath)
+	cat("    Test Binary at ", x$testBinaryPath)
+}
