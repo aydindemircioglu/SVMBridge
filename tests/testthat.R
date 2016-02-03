@@ -3,8 +3,6 @@ library(testthat)
 library(SVMBridge)
 
 test_check("SVMBridge")
-test_dir("testWrappers")
-
 
 #  test("testcovr")
 ## Testing testcovr

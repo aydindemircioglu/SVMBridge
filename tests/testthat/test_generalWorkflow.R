@@ -53,9 +53,10 @@ predictionsFile = tempfile()
 	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
 	#solvers = c("LIBSVM")
 	
-	softwareBaseDir = "/tmp/software"
-#	softwareBaseDir = tempdir()
-	if (file.exists(softwareBaseDir) == FALSE) {
+#	softwareBaseDir = "/tmp/software"
+	softwareBaseDir = tempdir()
+	#if (file.exists(softwareBaseDir) == FALSE) {
+	if (TRUE == TRUE) {
 		for (solver in solvers) {
 			cat ("Downloading and building software ", solver, "\n")
 			softwareDir = downloadSoftware (solver, softwareDir = softwareBaseDir, verbose = verbose)
