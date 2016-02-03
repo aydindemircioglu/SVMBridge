@@ -2,8 +2,6 @@
 # SVMBridge 
 #		(C) 2015, by Aydin Demircioglu
 #
-#		findBinaryInDirectory.R
-# 
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -20,16 +18,17 @@
 
 
 
-#' findBinaryInDirectory.
-#'		given a file pattern and an std-out-pattern it will try to find a binary matching
-#'		the file pattern (which contains std-out-pattern as output if called without arguments)
-#'		in the path given.
+#' Find a given binary in given directory.
 #'
-#' @param	binaryName		search the given path for the SVM binaries recursively.
-#' @param	dir	 	search the given path for the SVM binaries recursively.
-#' @param	applyKeyFix	apply fix for 'press any key to continue'?
-#' @param	patterns		pattern for the binary file
-#' @param	verbose			print messages while searching?
+#' Given a file pattern and an std-out-pattern it will try to find a binary matching
+#' the file pattern (which contains std-out-pattern as output if called without arguments)
+#' in the path given.
+#'
+#' @param	binaryName		Search name for the SVM binary
+#' @param	dir	 	Search path for the SVM binary.
+#' @param	applyKeyFix		Apply fix for 'press any key to continue' (SVMperf)?
+#' @param	patterns		Pattern for output of the binary file
+#' @param	verbose			Print messages while searching?
 #'
 #' @return	name of the found binary matching the pattern
 #'

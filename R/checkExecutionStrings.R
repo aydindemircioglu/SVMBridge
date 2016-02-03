@@ -65,7 +65,8 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 		if (verbose == TRUE) { 
 			cat ("    Applying key (aka SVMperf) fix.\n") 
 		}
-		stdout = system3 ("/bin/echo", args = c("1", "|", trainBinaryPath), verbose = FALSE)
+		# this should work with both platforms (vs /bin/echo, as i tried before)
+		stdout = system3 ("echo", args = c("1", "|", trainBinaryPath), verbose = FALSE)
 	} else {
 		stdout = system3 (trainBinaryPath, args = c(), verbose = FALSE)
 	}
