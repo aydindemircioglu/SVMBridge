@@ -55,7 +55,7 @@ createTestArguments.Pegasos = function (x, testDataFile = NULL, modelFile = NULL
 		"-v 1",
 		testDataFile,
 		modelFile,
-		predictionOutput
+		predictionsFile
 	)
 
 	return (args)

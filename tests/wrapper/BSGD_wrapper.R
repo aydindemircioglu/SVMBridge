@@ -52,7 +52,7 @@ createTestArguments.BSGD = function (x, testDataFile = NULL, modelFile = NULL, p
 		"-v 1",
 		testDataFile,
 		modelFile,
-		predictionOutput
+		predictionsFile
 	)
 
 	return (args)
