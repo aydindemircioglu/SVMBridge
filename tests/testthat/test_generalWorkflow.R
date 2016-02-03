@@ -62,13 +62,13 @@ predictionsFile = tempfile()
 			softwareDir = downloadSoftware (solver, softwareDir = softwareBaseDir, verbose = verbose)
 			cat ("Unlinking ", file.path(softwareDir, ".svn"), "\n")
 			unlink (file.path(softwareDir, ".svn"), recursive = TRUE)
-			addSVMPackage (solver, wrapperPath = "../../wrapper", verbose = verbose)
+			addSVMPackage (solver, wrapperPath = file.path("..", "..", "wrapper"), verbose = verbose)
 		}
 		findAllSVMSoftware (softwareBaseDir, verbose = verbose)
 	} else {
 		cat ("Found existing software directory (", softwareBaseDir, ") using it\n")
 		for (solver in solvers) {
-			addSVMPackage (solver, wrapperPath = "../../wrapper", verbose = verbose)
+			addSVMPackage (solver, wrapperPath = file.path("..", "..", "wrapper"), verbose = verbose)
 		}
 		findAllSVMSoftware (softwareBaseDir, verbose = verbose)
 	}

@@ -73,6 +73,9 @@ addSVMPackage = function (method = NA, wrapperName = NA, wrapperPath = NA, softw
 		} else {
 			# if not, we try to find the default wrapper
 			wrapperPath = file.path (wrapperPath, SVMObject$wrapperName)
+			if (verbose == TRUE) {
+				cat ("  Generated default wrapper path ", wrapperPath, " as given one was no file.\n")
+			}
 			if ((file.exists (wrapperPath) == TRUE) & (dir.exists (wrapperPath) == FALSE)) {
 				if (verbose == TRUE)
 					cat ("Found wrapper at", wrapperPath, "\n")
@@ -127,7 +130,7 @@ addSVMPackage = function (method = NA, wrapperName = NA, wrapperPath = NA, softw
 		}
 	} else {
 		if (verbose == TRUE) {
-			cat ("Not able to find the wrapper. Generated software path is not a string. Sorry.\n")
+			cat ("Not testing for a default binary, as no software path was given.\n")
 		}
 	}
 
