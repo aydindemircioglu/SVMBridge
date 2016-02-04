@@ -27,5 +27,9 @@ the correct binary.
 \note{
 To make sure that the binary is correct, it will be executed!
 binary is really not exchangeable).
+
+applyKeyFix is platform dependent. On non-unix platforms it
+will load thtet whole binary into memory and grep for the strings there.
+This works with our problem child "svmperf".
 }
 
