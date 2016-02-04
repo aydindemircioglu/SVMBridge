@@ -1,3 +1,15 @@
+---
+title: "SVMBridge"
+author: "Aydin Demircioglu"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Wrappers}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
 # Wrappers
 
 **SVMBridge** comes with a couple of wrappers for different SVM packages. Here we list these and provide a few details on how to use them.

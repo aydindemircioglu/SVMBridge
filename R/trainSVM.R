@@ -185,23 +185,25 @@ trainSVM = function(
 	# certain necessities are not preinstalled. 
 	
 	
-	#Unsure if this works on windows systems, trainTime variable would not be present and other stuff.. thus FIXME probably
-# 	if(.Platform$OS.type == "unix") {
-	
-		if (timeOut != -1) {
+	# For now, timeout does not (easily) work on windows, thus we skip timeouts there.
+	if (timeOut != -1) {
+	 	if(.Platform$OS.type == "unix") {
 			timeOutArgs = c(sprintf("%d", timeOut), trainBinaryPath, args)
 			timeOutPath = "/usr/bin/timeout"
 			
-			verbose = TRUE
 			if (verbose == TRUE) 
 				cat("  Applying a hard timeout of ", timeOut, "%f seconds\n")
 			trainTime = microbenchmark::microbenchmark(s <- system3(timeOutPath, timeOutArgs, verbose = verbose), times = 1L)$time / 1e9
+		} else {
+			# non supported platform gets a warning
+			warning ("Timeout specified, but platform does not support timeouts!")
+			trainTime = microbenchmark::microbenchmark(s <- system3(timeOutPath, timeOutArgs, verbose = verbose), times = 1L)$time / 1e9
 		}
-		 else {
-			trainTime = microbenchmark::microbenchmark(s <- system3(trainBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
-		}
-# 	}
-	
+	} else {
+		trainTime = microbenchmark::microbenchmark(s <- system3(trainBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
+	}
+
+
 	if (verbose == TRUE) 
 		cat("Training took ", trainTime, " seconds\n")
 		

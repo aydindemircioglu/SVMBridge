@@ -1,3 +1,5 @@
+^tests/testWrappers
+^tests/wrappers$
 .DS_Store
 ^makeR
 staticdocs
@@ -12,7 +14,6 @@ Makefile
 README.md
 todo.txt
 demo.R 
-doc 
 src/*.o$
 src/*.so$
 testinfo.RData
@@ -24,21 +25,17 @@ testinfo.RData
 ^tmp
 ^webpage
 ^demo\.R$
-^doc$
 .gitignore
 ..Rcheck
 R/..Rcheck
 .git
 cran-comments.md
 compile.R
-compile.R
 extra
 mytest
 .*-Ex.pdf
 .*-Ex.timings
 news20.binary
-test.R
-
 README.md
 ^software$
 ^.*kate-swp$

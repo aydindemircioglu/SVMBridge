@@ -1,3 +1,14 @@
+---
+title: "SVMBridge"
+author: "Aydin Demircioglu"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Windows Quick Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
 # SVMBridge Windows Quick Tutorial
 
 - Download latest R for Windows (32/64 bit) (https://cran.r-project.org/bin/windows/base/)

@@ -4,7 +4,6 @@ find . -name \*.so -exec rm {} \;
 find . -name "#*#" -exec rm {} \;
 
 # copy wrapper
-rm -rf ./inst/wrapper
 mkdir ./inst/wrapper
 cp wrapper/* ./inst/wrapper
 
@@ -14,7 +13,6 @@ mkdir ./tests/wrapper
 cp -R wrapper/* ./tests/wrapper
 
 # copy OS-specific tests
-rm -rf ./inst/tests
 mkdir ./inst/tests
 cp -R tests/testWrappers ./inst/tests
 

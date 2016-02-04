@@ -1,3 +1,15 @@
+---
+title: "SVMBridge"
+author: "Aydin Demircioglu"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In-depth Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
 Writing your own wrapper is also possible, and not too complicated. You must provide several callback functions. The most complex part will be provide functions to read and write the model. As a starter, you might want to look into the wrappers, **SVMBridge** provides.
 
 # SVM Parameter
