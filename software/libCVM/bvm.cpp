@@ -15,6 +15,8 @@
 #define MAX_REFINE_ITER  20		
 #define COMPRESS_THRES   400
 
+#define random rand
+#define srandom srand
 
 double Solver_BVM::_update (double maxDistance2, int maxDistance2Idx)
 {

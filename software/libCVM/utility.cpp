@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#ifndef _MSC_VER
+
+#ifdef WIN32
+#include <time.h>
+#else
 #include <sys/times.h>
 #include <unistd.h>
-#else
-#include <time.h>
 #endif
 
 
@@ -33,7 +34,7 @@ double dotProduct( const double* x1, const double* x2, int length )
 
 double getRunTime()
 {
-#ifdef _MSC_VER
+#ifdef WIN32
   clock_t current = clock();
   return (double)(current) / CLOCKS_PER_SEC;
 #else

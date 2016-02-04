@@ -1,5 +1,5 @@
-#ifndef UTILITY_H_kldfljkflajkfldjksljkfsdaklfdsakl
-#define UTILITY_H_kldfljkflajkfldjksljkfsdaklfdsakl
+#ifndef UTILITY_H
+#define UTILITY_H
 
 #ifdef WIN32
 	#include <crtdbg.h>

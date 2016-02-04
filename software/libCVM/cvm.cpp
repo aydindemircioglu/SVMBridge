@@ -10,7 +10,8 @@
 
 #define CACHE_DELTA 10
 
-
+#define random rand
+#define srandom srand
 //
 // Sparse caching for kernel evaluations
 //
