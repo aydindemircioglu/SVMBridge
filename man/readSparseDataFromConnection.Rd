@@ -4,14 +4,14 @@
 \alias{readSparseDataFromConnection}
 \title{Read spase data from an open connection.}
 \usage{
-readSparseDataFromConnection(con, verbose = FALSE, zeroBased = FALSE)
+readSparseDataFromConnection(con, zeroBased = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{con}{Connection to read from}
 
-\item{verbose}{Be verbose?}
-
 \item{zeroBased}{Do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?}
+
+\item{verbose}{Be verbose?}
 }
 \value{
 L		list containing input data and labels

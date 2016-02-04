@@ -109,8 +109,6 @@ static char* readline(FILE *input)
 
 List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool verbose = false, bool zeroBased = false) {
 	
-	verbose = true;
-	
 	std::setprecision(16);
   
 	try

@@ -28,7 +28,7 @@
 #' @return	L		list containing input data and labels
 #'
 #' @export
-readSparseDataFromConnection = function (con, verbose = FALSE, zeroBased = FALSE) {
+readSparseDataFromConnection = function (con, zeroBased = FALSE, verbose = FALSE) {
     # where are we?
     currentPosition = seek(con)
 

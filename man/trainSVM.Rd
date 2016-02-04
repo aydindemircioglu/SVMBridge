@@ -7,7 +7,7 @@
 trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
   trainDataY = NULL, trainBinaryPath = NULL, extraParameter = "",
   modelFile = NULL, subsamplingRate = NULL, subsamplingMethod = "cutoff",
-  verbose = TRUE, timeOut = -1, readModelFile = FALSE, ...)
+  verbose = FALSE, timeOut = -1, readModelFile = FALSE, ...)
 }
 \arguments{
 \item{method}{name of the SVM method/solver}

@@ -41,7 +41,7 @@
 #'
 #' @export
 
-checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, applyKeyFix = FALSE, verbose = TRUE) {
+checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, applyKeyFix = FALSE, verbose = FALSE) {
 
 	if (verbose == TRUE) { 
 		cat("    Checking if binary has the correct output patterns.\n") 

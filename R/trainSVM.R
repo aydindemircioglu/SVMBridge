@@ -54,7 +54,7 @@ trainSVM = function(
 	modelFile = NULL,
 	subsamplingRate = NULL,
 	subsamplingMethod = "cutoff",
-	verbose = TRUE,
+	verbose = FALSE,
 	timeOut = -1,
 	readModelFile = FALSE,
 	...) {

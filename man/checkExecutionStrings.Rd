@@ -5,7 +5,7 @@
 \title{Check whether a binary's output contains given strings.}
 \usage{
 checkExecutionStrings(trainBinaryPath = NULL, patterns = NULL,
-  applyKeyFix = FALSE, verbose = TRUE)
+  applyKeyFix = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{trainBinaryPath}{Path of binary to check.}

@@ -9,8 +9,7 @@ test_that("reading a LIBSVM model works", {
 	expect_equal (australianModel$modelType, "LIBSVM")
 	expect_equal (australianModel$label, c(1, -1))
 	expect_equal (australianModel$gamma, 1)
-	print (australianModel)
-	print (australianModel$SV)
+
 	expect_equal (australianModel$SV[1,], c(-1.0000000, -0.7618045, -0.1785714, -1.0000000, -0.3846154, -0.5000000, -1.0000000, 1.0000000, 1.0000000, -0.6716418, 1.0000000, 0.000000,  -1.0000000, -1.0000000))
 	expect_equal (australianModel$SV[30,], 1:14/10)
 	a = structure(c(1.23393867049914, 1.19032740745071, 0.802854355014499, 
@@ -40,12 +39,10 @@ test_that("read/write operations for LIBSVM  models work with binary models", {
 
 	modelFile = "../data/LIBSVM.australian.model"
 	australianModel = readLIBSVMModel (modelFile) 
-	print (australianModel)
 	
 	tmp = tempfile()
-	writeLIBSVMModel (australianModel, modelFile = tmp, verbose = TRUE)
+	writeLIBSVMModel (australianModel, modelFile = tmp, verbose = FALSE)
 	australianModelReread = readLIBSVMModel (modelFile = tmp)
-	print (australianModelReread)
 
 	expect_equal(australianModel, australianModelReread)
 })

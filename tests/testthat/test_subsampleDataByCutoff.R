@@ -7,7 +7,7 @@ test_that("subsampling with specified rate does work", {
 	X = data.frame (f1 = runif(nLines), f2 = runif(nLines), f3 = runif(nLines))
 	Y = data.frame (Y = sign (runif(nLines) - 0.5))
 	orgData = tempfile()
-	writeSparseData(orgData, as.matrix(X), as.matrix(Y), verbose = TRUE, zeroBased = FALSE)
+	writeSparseData(orgData, as.matrix(X), as.matrix(Y), verbose = FALSE, zeroBased = FALSE)
 	
 	# now subsample the file
 	for (i in seq(1,100,4)) {
@@ -31,7 +31,7 @@ test_that("subsampling with specified number of lines does work", {
 	X = data.frame (f1 = runif(nLines), f2 = runif(nLines), f3 = runif(nLines))
 	Y = data.frame (Y = sign (runif(nLines) - 0.5))
 	orgData = tempfile()
-	writeSparseData(orgData, as.matrix(X), as.matrix(Y), verbose = TRUE, zeroBased = FALSE)
+	writeSparseData(orgData, as.matrix(X), as.matrix(Y), verbose = FALSE, zeroBased = FALSE)
 	
 	# now subsample the file
 	for (i in seq(2,nLines - 1,42)) {
