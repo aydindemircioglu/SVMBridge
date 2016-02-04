@@ -77,13 +77,15 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 #			stdout = system3 ("cat", args = c(tF, " | ", trainBinaryPath), verbose = verbose) /usr/bin/cat: |: No such file or directory
 			#stdout = system3 (trainBinaryPath, args = c(" < ", tF), verbose = verbose) hang up/kill
 			c = file(trainBinaryPath, "rb")
-			o = readBin(c, character(), n = 100000000) # assume the string is within the first 100mb of the file.
+			stdout = list()
+			stdout$output = readBin(c, character(), n = 100000000) # assume the string is within the first 100mb of the file.
 			close (c)
 		}
 	} else {
 		stdout = system3 (trainBinaryPath, args = c(), verbose = FALSE)
 	}
 
+	
 	matches = 0
 	for (o in patterns) {
 		if (length(suppressWarnings(grep(o, stdout$output))) != 0) {
