@@ -71,13 +71,14 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 		if(.Platform$OS.type == "unix") {
 			stdout = system3 ("echo", args = c("1", "|", trainBinaryPath), verbose = FALSE)
 		} else {
-			tF = tempfile()
-			writeLines (tF, text = "A\nB\nC")
-			stdout = system3 ("type", args = c(tF, " | ", trainBinaryPath), verbose = verbose)
-# 						tF = tempfile()
-# 			writeLines (tF, text = "A\nB\nC")
-# 			stdout = system3 (trainBinaryPath, args = c(" < ", tF), verbose = verbose)
-
+#			tF = tempfile()
+#			writeLines (tF, text = "A\nB\nC")
+#			stdout = system3 ("type", args = c(tF, " | ", trainBinaryPath), verbose = verbose) does not work, 'type' unknown
+#			stdout = system3 ("cat", args = c(tF, " | ", trainBinaryPath), verbose = verbose) /usr/bin/cat: |: No such file or directory
+			#stdout = system3 (trainBinaryPath, args = c(" < ", tF), verbose = verbose) hang up/kill
+			c = file(trainBinaryPath, "rb")
+			o = readBin(c, character(), n = 100000000) # assume the string is within the first 100mb of the file.
+			close (c)
 		}
 	} else {
 		stdout = system3 (trainBinaryPath, args = c(), verbose = FALSE)
@@ -85,7 +86,7 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 
 	matches = 0
 	for (o in patterns) {
-		if (length(grep(o, stdout$output)) != 0) {
+		if (length(suppressWarnings(grep(o, stdout$output))) != 0) {
 			matches = matches + 1
 		}
 	}
