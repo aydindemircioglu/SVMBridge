@@ -13,6 +13,6 @@ mkdir ./tests/wrapper
 cp -R wrapper/* ./tests/wrapper
 
 # copy OS-specific tests
-mkdir ./inst/tests
-cp -R tests/testWrappers ./inst/tests
+#mkdir ./inst/tests
+#cp -R tests/testWrappers ./inst/tests
 

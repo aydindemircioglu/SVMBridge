@@ -46,7 +46,7 @@ wrappertests = function (solver, trainDataX, trainDataY, testDataX, testDataY, v
 		expErrors = list("LIBSVM" = c(20, 12), "LASVM" = c(22, 12), "BSGD" = c(10, 8), "SVMperf" = c(21, 11), 
 									"BVM" = c(18, 16),  "CVM" = c(18, 16),  "LLSVM" = c(21, 11))
 	}
-	expect_equal (trainObj$model$nSV, expErrors[[solver]])
+	testthat::expect_equal (trainObj$model$nSV, expErrors[[solver]])
 	
 	testObj =  testSVM(
 		method = solver,
@@ -66,8 +66,9 @@ wrappertests = function (solver, trainDataX, trainDataY, testDataX, testDataY, v
 		print (testObj)
 	}
 
-	expect_lte (abs(testObj$testError - expErrors[solver]), 0.001)
+	testthat::expect_lte (abs(testObj$testError - expErrors[solver]), 0.001)
 }
+
 
 f = function () {
 	

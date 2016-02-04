@@ -68,9 +68,9 @@ cycletests = function (solver, verbose) {
 		verbose = verbose
 	)  
 
-	expect_null (trainObj$model)
+	testthat::expect_null (trainObj$model)
 	#expect_equal (myTrainObj$model$modelType, solver)
-	expect_equal (myTrainObj$model$gamma, 1)
-	expect_equal (myTestObj$error, testObj$error)
+	testthat::expect_equal (myTrainObj$model$gamma, 1)
+	testthat::expect_equal (myTestObj$error, testObj$error)
 }
 	

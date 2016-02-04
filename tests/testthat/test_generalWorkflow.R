@@ -1,4 +1,25 @@
-#!/usr/bin/Rscript  --vanilla 
+#
+# SVMBridge 
+#
+#		(C) 2015, by Aydin Demircioglu
+# 
+# SVMBridge is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SVMBridge is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# Please do not use this software to destroy or spy on people, environment or things.
+# All negative use is prohibited.
+#
+
+context("General Workflow")
+
+
 
 # This test will try to download each of the SVM software packages
 # that the SVMBridge provides a pre-fabricated wrapper for. 
@@ -7,25 +28,31 @@
 # Finally the software will undergo simple train/testcalls.
 # The results are checked by testthat.
 
-library (SVMBridge)
+
+test_that("general workflow works with binary packages.", {
+	
+	testthat::skip_on_cran()
+	
+	# call without parameters to get an exception
+	source ("cycletests.R")
+	source ("wrappertests.R")
+	source ("detectModeltests.R")
+	source ("downloadSoftware.R")
+	
 
 
-source ("cycletests.R")
-source ("wrappertests.R")
-source ("detectModeltests.R")
-source ("downloadSoftware.R")
+	# VERY VERY IMPORTANT!
+	# else SVM does not work 100p the same, as the data is shuffled.
+	set.seed(42)
 
-# VERY VERY IMPORTANT!
-# else SVM does not work 100p the same, as the data is shuffled.
-set.seed(42)
+	verbose = TRUE
+	cat ("\nVerbose is", verbose, "\n")
 
-verbose = TRUE
-
-modelFile = tempfile()
-predictionsFile = tempfile()
+	modelFile = tempfile()
+	predictionsFile = tempfile()
 
 
-## prepare the data
+	## prepare the data
 
 	# create binary iris 
 	shufflediris = iris[sample(nrow(iris)),]
@@ -43,18 +70,20 @@ predictionsFile = tempfile()
 	writeSparseData(filename = trainDataFile, X = trainDataX, Y = trainDataY)
 	testDataFile = tempfile()
 	writeSparseData(filename = testDataFile, X = testDataX, Y = testDataY)
-	
-## 1. test finding all software first
-	
-	# stupid, stupid: need to clear up old wrappers, else we find LIBSVM and then test may fail.
-#	detach("package:SVMBridge", unload = TRUE)
-#	library(SVMBridge)
+		
+
+	## 1. test finding all software first
+		
+	# stupid, stupid: need to clear up old wrappers, else we find some strange test wrappers and then our tests may fail.
+	cat ("Unloading and Reloading SVMBridge!\n")
+	clearSVMObjects ()
 
 	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
-	#solvers = c("LIBSVM")
-	
-#	softwareBaseDir = "/tmp/software"
 	softwareBaseDir = tempdir()
+	
+	# this stuff is for debugging locally without reloading the packages each time
+	#solvers = c("LIBSVM")
+	#softwareBaseDir = "/tmp/software"
 	#if (file.exists(softwareBaseDir) == FALSE) {
 	if (TRUE == TRUE) {
 		for (solver in solvers) {
@@ -72,35 +101,36 @@ predictionsFile = tempfile()
 		}
 		findAllSVMSoftware (softwareBaseDir, verbose = verbose)
 	}
-	
-	# softwareDir will have the last directory found, e.g. ../BudgetedSVM. we need to go one above.
-	#findAllSVMSoftware (file.path(softwareDir, ".."), verbose = verbose)
 
-	
-##  now do all the thirty different ways of calling trainSVM 
+		
+	##  now do all the thirty different ways of calling trainSVM 
 	
 	for (solver in solvers) {
-		context (paste0(solver, "wrapper"))
+		cat ("Wrapper test for solver", solver)
+#		testthat::context (paste0(solver, "wrapper"))
 		wrappertests (solver, trainDataX, trainDataY, testDataX, testDataY, verbose)
 	}
 	
 	for (solver in solvers) {
-		context (paste0(solver, "cycle"))
+		cat ("Cycle test for solver", solver)
+#		testthat::context (paste0(solver, "cycle"))
 		cycletests (solver, verbose)
 	}
 	
 	for (solver in solvers) {
-		context (paste0(solver, " detect models."))
+		cat ("Model test for solver", solver)
+#		testthat::context (paste0(solver, " detect models."))
 		detectModeltests (solver, verbose)
 	}
 	
 	
-	
-## do a train/test cycle
+		
+	## do a train/test cycle
 	
 	if (verbose == TRUE) {
 		for (solver in solvers) {
 			s = getSVMObject (solver)
 		}
 	}
+})
 	

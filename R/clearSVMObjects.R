@@ -1,8 +1,7 @@
 #
 # SVMBridge 
-#
 #		(C) 2015, by Aydin Demircioglu
-# 
+#
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -18,17 +17,13 @@
 #
 
 
-detectModeltests = function (solver, verbose) {
-	
-	# detect model type
-	modelFile = paste0 ("../data/", solver, ".australian.model")
-	if (verbose == TRUE) {
-		cat ("Will test file ", modelFile, " for solver ", solver, "\n")
-	}
-	modelName =  detectModelTypeFromFile (modelFile, defaultModel = solver, verbose = verbose)
-	
-	# some models are the same
-	solverName = solver
 
-	testthat::expect_equal (modelName, solverName)
+#' Clear all SVM Objects (by removing them from the internal Environment)
+#'
+#' Remove all objects.
+#'
+#' @export
+clearSVMObjects = function () {
+	SVMBridgeEnv$packages = list()
 }
+
