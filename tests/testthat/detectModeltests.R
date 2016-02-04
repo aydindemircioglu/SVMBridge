@@ -19,17 +19,16 @@
 
 
 detectModeltests = function (solver, verbose) {
-
+	
 	# detect model type
 	modelFile = paste0 ("../data/", solver, ".australian.model")
+	if (verbose == TRUE) {
+		cat ("Will test file ", modelFile, " for solver ", solver, "\n")
+	}
 	modelName =  detectModelTypeFromFile (modelFile, defaultModel = solver, verbose = verbose)
 	
 	# some models are the same
 	solverName = solver
-	
-	# we do not need this as we told the detection that the default model is the solver's model. 
-	#if (solver == "LASVM")
-	#	solverName = "LIBSVM"
 
 	testthat::expect_equal (modelName, solverName)
 }

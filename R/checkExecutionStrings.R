@@ -35,6 +35,9 @@
 # 	Furthermore, many SVM packages derive from libSVM. as such, they
 #	often do not change the prediction binary, so care must be taken (if the 
 #' binary is really not exchangeable).
+#' @note		applyKeyFix is platform dependent. On non-unix platforms it
+#' will load thtet whole binary into memory and grep for the strings there.
+#' This works with our problem child "svmperf".
 #'
 #' @export
 
@@ -65,15 +68,24 @@ checkExecutionStrings = function (trainBinaryPath = NULL, patterns = NULL, apply
 		if (verbose == TRUE) { 
 			cat ("    Applying key (aka SVMperf) fix.\n") 
 		}
-		# this should work with both platforms (vs /bin/echo, as i tried before)
-		stdout = system3 ("echo", args = c("1", "|", trainBinaryPath), verbose = FALSE)
+		
+		# this is platform dependent
+		if(.Platform$OS.type == "unix") {
+			stdout = system3 ("echo", args = c("1", "|", trainBinaryPath), verbose = FALSE)
+		} else {
+			c = file(trainBinaryPath, "rb")
+			stdout = list()
+			stdout$output = readBin(c, character(), n = 100000000) # assume the string is within the first 100mb of the file.
+			close (c)
+		}
 	} else {
 		stdout = system3 (trainBinaryPath, args = c(), verbose = FALSE)
 	}
 
+	
 	matches = 0
 	for (o in patterns) {
-		if (length(grep(o, stdout$output)) != 0) {
+		if (length(suppressWarnings(grep(o, stdout$output))) != 0) {
 			matches = matches + 1
 		}
 	}
