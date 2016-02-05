@@ -42,3 +42,4 @@ README.md
 ^.*gcda$
 ^.*gcno$
 ^wrapper/*
+^example/*

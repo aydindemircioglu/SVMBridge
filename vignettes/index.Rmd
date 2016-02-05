@@ -20,4 +20,4 @@ applications.
 2. [In Depth Introduction](detailed.md)
 3. [Wrappers](wrappers.md)
 4. [Helper functions](helpers.md)
-5. [Windows How-To](windowsHowTo.md)
+5. [FAQ](faq.md)

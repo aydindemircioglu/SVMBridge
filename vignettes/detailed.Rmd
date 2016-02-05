@@ -66,6 +66,16 @@ There are actually two ways to search for wrappers and software..
 
 
 
+# Prepackaged wrappers
+
+In case you want to use one of the prepackaged wrappers, you simply can add the wrapper by querying the path of **SVMBridge**
+```splus
+library(SVMBridge)
+ addSVMPackage("LASVM", file.path (path.package("SVMBridge"), "wrapper"))
+ ```
+
+ After that you can add the path of the compiled software.
+
 
 # Writing your own wrapper
 
@@ -154,32 +164,7 @@ Finally, an SVM package is for us the internal object in the SVMBridge, that has
 
 
 
-# FAQ
 
-## Searching for an unknown solver
+**SVMBridge** can also deal with sparse data directly, although, contrary to e1071, the data format currently used are dense matrices.
 
-If you try to find a wrapper that does not exist, FIXME: fix that.
-for now the error later on:
-Class 'try-error'  atomic [1:1] Error in UseMethod("findSoftware") :
-  no applicable method for 'findSoftware' applied to an object of class "c('CSVM_walltime', 'SVMWrapper')"
-
-## FindBinary stalls when called with parameter execute = TRUE
-
-If the binary expects any kind of input, executing the binary will stall. Please make sure that your binary does not expect input upon being called without parameters. If necessary, turn off automatic search and provide **SVMBridge** the direct path to the software. In some cases you might work around this behaviour by explicitly sending an input to the binary, e.g. the SVMperf wrapper will send a single key to the SVMperf binary, which will print out some information and waits for a key when called without any other argument. Every wrapper provided with the **SVMBridge** in the installation directory should not suffer from this.
-
-## Calling findSoftware (or other methods) result in 'no applicable method for 'findSoftware' applied to an object of class...'
-
-This means that the wrapper for your SVM was not found, therefore no object was created, and the findSoftware could not be executed, because it is simply not there. Double check that adding the SVM package works for you, e.g. by enabling verbose mode.
-
-## Something like basename(trainBinaryPath) : a character vector argument expected happened.
-
-(FIXME actually). The software was not found, so there is no trainBinaryPath in the SVM object.
-'
-## Reading my SVM model (or data file) yields a 0x0 matrix? 
-
-Make sure the model has the correct line endings. On windows you need 0x0d0a, else, if the model/data file has e.g. linux endings (0x0a), these will not be correctly read, that is the whole file will be read as one line, confusing the reader.
-
-
-# Speed
-
-It is possible to bypass any extra-I/O and directly communicate with the SVM Package by specifying the training and test data as well as the model and prediction as a file. If SVMBridge gets file pathes, it will not try to reread the written model nor the predictions. Sometimes you do not need the predictions, neither on memory nor on disk. In this case you can pass "/dev/null" as prediction file. This will make the SVM Test write to null, so it will not take any I/O time,  and therefore the SVMBridge will not reread the predictions, as it was already written on disk.
+**Warning:** The findSVMSoftware functionality is made for convenience, not for performance. As all given (sub)directories have to be searched, this can slow down all I/O operations. Restrain from running this function on a high performance cluster, as it might very well slowdown the whole cluster!

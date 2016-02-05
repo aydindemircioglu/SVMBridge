@@ -29,7 +29,7 @@
 #' @param	trainDataY		Vector comprising the labels for the data. This cannot be used at the same time as trainDataFile.
 #' @param	trainBinaryPath		Full path to the training binary to call.
 #' @param	extraParameter		Extra parameters for solver, passed to the createTrainingArguments function of the wrapper.
-#' @param	modelFile		Path to the model file to create. If none specified, a temporary file will be created and read into memory.
+#' @param	modelFile		Path to the model file to create. If none specified, a temporary file will be created.
 #' @param	verbose		Be verbose?
 #' @param	subsamplingRate		Rate to subsample the data. 
 #' @param	subsamplingMethod		Method to subsample the data with.
@@ -56,7 +56,7 @@ trainSVM = function(
 	subsamplingMethod = "cutoff",
 	verbose = FALSE,
 	timeOut = -1,
-	readModelFile = FALSE,
+	readModelFile = TRUE,
 	...) {
 	
 	#expand possible tilde characters in the path and get rid of backslashes
