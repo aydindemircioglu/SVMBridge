@@ -2,7 +2,7 @@ context("Find SVM Wrapper")
 
 
 test_that("trying to find a non existent wrapper returns error code", {
-	addSVMPackage ("oneSVM")
+	addSVMPackage ("oneSVM", verbose = FALSE)
 	expect_warning (findSVMWrapper ("oneSVM", searchPath = "../dummy/empty"), "No wrapper found")
 	
 	# workaround 

@@ -112,6 +112,7 @@ addSVMPackage = function (method = NA, wrapperName = NA, wrapperPath = NA, softw
 				cat ("    Generated default wrapper path ", wrapperPath, " as no wrapper path was given.\n")
 			}
 			
+			wrapperPath = file.path (wrapperPath, SVMObject$wrapperName)
 			if (file.exists (wrapperPath) == TRUE) {
 				if (verbose == TRUE)
 					cat ("    Found prepackaged wrapper at", wrapperPath, "\n")
