@@ -66,7 +66,7 @@ findBinaryInDirectory = function (binaryName = NULL, dir = NULL, patterns = NULL
 		# do we have any patterns to check?
 		if (length(patterns) > 0) {
 			# if yes, we have to execute the thing. if they do not match, we delete the path
-			if (checkExecutionStrings (binaryPath, patterns = patterns, applyKeyFix = applyKeyFix) == FALSE) {
+			if (checkExecutionStrings (binaryPath, patterns = patterns, applyKeyFix = applyKeyFix, verbose = verbose) == FALSE) {
 				binaryPath = NULL
 			} else {
 				# everything is ok, binary path is not deleted

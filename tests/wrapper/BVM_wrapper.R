@@ -37,8 +37,8 @@ createTrainingArguments.BVM = function (x,
         sprintf("-g %.16f", gamma),
         sprintf("-e %.16f", epsilon),
         extraParameter,
-        trainDataFile,
-        modelFile
+        bashEscape(trainDataFile),
+        bashEscape(modelFile)
     )
 
     return (args)
@@ -48,9 +48,9 @@ createTrainingArguments.BVM = function (x,
 
 createTestArguments.BVM = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
     args = c(
-        testDataFile,
-        modelFile,
-        predictionsFile
+        bashEscape(testDataFile),
+        bashEscape(modelFile),
+        bashEscape(predictionsFile)
     )
     return (args)
 }

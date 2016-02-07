@@ -7,7 +7,7 @@
 trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
   trainDataY = NULL, trainBinaryPath = NULL, extraParameter = "",
   modelFile = NULL, subsamplingRate = NULL, subsamplingMethod = "cutoff",
-  verbose = FALSE, timeOut = -1, readModelFile = FALSE, ...)
+  verbose = FALSE, timeOut = -1, readModelFile = TRUE, ...)
 }
 \arguments{
 \item{method}{name of the SVM method/solver}
@@ -22,7 +22,7 @@ trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
 
 \item{extraParameter}{Extra parameters for solver, passed to the createTrainingArguments function of the wrapper.}
 
-\item{modelFile}{Path to the model file to create. If none specified, a temporary file will be created and read into memory.}
+\item{modelFile}{Path to the model file to create. If none specified, a temporary file will be created.}
 
 \item{subsamplingRate}{Rate to subsample the data.}
 

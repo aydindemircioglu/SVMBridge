@@ -2,6 +2,7 @@
 
 export(addSVMPackage)
 export(appendSparseDataToFile)
+export(bashEscape)
 export(checkExecutionStrings)
 export(checkModel)
 export(clearSVMObjects)

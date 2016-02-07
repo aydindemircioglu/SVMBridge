@@ -19,12 +19,12 @@
 
 
 createTrainingArguments.LLSVM = function (x,
-								trainDataFile = "",
-								modelFile = "",
-								extraParameter = "",
-								cost = 1,
-								gamma = 1,
-								rank = 128, ...) {
+	trainDataFile = "",
+	modelFile = "",
+	extraParameter = "",
+	cost = 1,
+	gamma = 1,
+	rank = 128, ...) {
 
 	n = R.utils::countLines(trainDataFile)
 
@@ -39,8 +39,8 @@ createTrainingArguments.LLSVM = function (x,
 		sprintf("-L %.16f", (1.0 / (n * cost))),
 		sprintf("-g %.16f", 2 * gamma),
 		extraParameter,
-		trainDataFile,
-		modelFile
+		bashEscape (trainDataFile),
+		bashEscape (modelFile)
 	)
 
 	return (args)
@@ -51,9 +51,9 @@ createTrainingArguments.LLSVM = function (x,
 createTestArguments.LLSVM = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
     args = c(
 		"-v 1",
-		testDataFile,
-		modelFile,
-		predictionsFile
+		bashEscape (testDataFile),
+		bashEscape (modelFile),
+		bashEscape (predictionsFile)
 	)
 
 	return (args)
@@ -315,7 +315,7 @@ detectModel.LLSVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 
 readPredictions.LLSVM = function (x, predictionsFile = "", verbose = FALSE) {
-	ret = readLIBSVMPredictions (predictionsFile = predictionsFile, verbose = verbose)
+	ret = readLIBSVMPredictions (predictionsFile = bashEscape (predictionsFile), verbose = verbose)
 	return (ret)
 }
 

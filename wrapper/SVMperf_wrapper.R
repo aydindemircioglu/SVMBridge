@@ -96,8 +96,8 @@ createTrainingArguments.SVMperf = function (x,
 			# --r
 			# --s
 			extraParameter,
-			trainDataFile,
-			modelFile
+			bashEscape(trainDataFile),
+			bashEscape(modelFile)
 		)
 	}
 
@@ -125,8 +125,8 @@ createTrainingArguments.SVMperf = function (x,
 			# --r
 			# --s
 			extraParameter,
-			trainDataFile,
-			modelFile
+			bashEscape(trainDataFile),
+			bashEscape(modelFile)
 		)
 	}
 
@@ -154,8 +154,8 @@ createTrainingArguments.SVMperf = function (x,
 			# --r
 			# --s
 			extraParameter,
-			trainDataFile,
-			modelFile
+			bashEscape(trainDataFile),
+			bashEscape(modelFile)
 		)
 	}
 
@@ -187,8 +187,8 @@ createTrainingArguments.SVMperf = function (x,
 			# --r
 			# --s
 			extraParameter,
-			trainDataFile,
-			modelFile
+			bashEscape(trainDataFile),
+			bashEscape(modelFile)
 		)
 	}
 
@@ -216,8 +216,8 @@ createTrainingArguments.SVMperf = function (x,
 			# --r
 			# --s
 			extraParameter,
-			trainDataFile,
-			modelFile
+			bashEscape(trainDataFile),
+			bashEscape(modelFile)
 		)
 	}
 
@@ -237,8 +237,8 @@ createTrainingArguments.SVMperf = function (x,
 createTestArguments.SVMperf = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
 	args = c(
 		testDataFile,
-		modelFile,
-		predictionsFile
+		bashEscape (modelFile),
+		bashEscape (predictionsFile)
 	)
 
 	return (args)

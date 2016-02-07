@@ -57,6 +57,8 @@ addSVMPackage = function (method = NA, wrapperName = NA, wrapperPath = NA, softw
 
 	setSVMObject (method, SVMObject)
 
+	# just to be sure
+	SVMObject$wrapperPath = NULL
 	
 	# 1. check if we are given a wrapper path directly.
 	#		if so, we load it. 
@@ -74,43 +76,56 @@ addSVMPackage = function (method = NA, wrapperName = NA, wrapperPath = NA, softw
 			# if not, we try to find the default wrapper
 			wrapperPath = file.path (wrapperPath, SVMObject$wrapperName)
 			if (verbose == TRUE) {
-				cat ("  Generated default wrapper path ", wrapperPath, " as given one was no file.\n")
+				cat ("     Generated wrapper name via wrapper path ", wrapperPath, " as given one was no file.\n")
 			}
 			if ((file.exists (wrapperPath) == TRUE) & (dir.exists (wrapperPath) == FALSE)) {
 				if (verbose == TRUE)
-					cat ("Found wrapper at", wrapperPath, "\n")
+					cat ("    Found wrapper at", wrapperPath, "\n")
 				source (wrapperPath, local = FALSE)
 				SVMObject$wrapperPath = wrapperPath
 			} else {
 				if (verbose == TRUE) {
-					cat ("Not able to find the wrapper. Tried to find the default wrapper. Sorry. \n")
+					cat ("    Not able to find the wrapper. Tried to find the default wrapper. Sorry. \n")
 				}
 			}
 		}
 	} else {
-		# test if we can detect it easily
+		# if we have not found the wrapper yet, we search at the software path
 		if (checkmate::testString (softwarePath) == TRUE) {
+			if (verbose == TRUE) {
+				cat ("    Searching wrapper at software path.\n")
+			}
+			
 			wrapperPath = file.path (softwarePath, SVMObject$wrapperName)
 			if ((file.exists (wrapperPath) == TRUE) & (dir.exists (wrapperPath) == FALSE)) {
 				if (verbose == TRUE)
-					cat ("Found wrapper at", wrapperPath, "\n")
+					cat ("     Found wrapper at", wrapperPath, "\n")
 				source (wrapperPath, local = FALSE)
 				SVMObject$wrapperPath = wrapperPath
-			} else {
-				# finally, we have no clue.
-				if (verbose == TRUE) {
-					cat ("Not able to find the wrapper. Sorry. \n")
-				}
-			}
-		} else {
-			# we are not given any softwarePath. 
-			# so, what should we do anyway?
+			} 
+		} 
+		
+		# finally search the prepackaged wrappers
+		if (is.null (SVMObject$wrapperPath) == TRUE) {
+			wrapperPath = file.path (path.package("SVMBridge"), "wrapper")
 			if (verbose == TRUE) {
-				cat ("Not able to find the wrapper. Sorry.\n")
+				cat ("    Generated default wrapper path ", wrapperPath, " as no wrapper path was given.\n")
 			}
+			
+			if (file.exists (wrapperPath) == TRUE) {
+				if (verbose == TRUE)
+					cat ("    Found prepackaged wrapper at", wrapperPath, "\n")
+				source (wrapperPath, local = FALSE)
+				SVMObject$wrapperPath = wrapperPath
+			} 
 		}
 	}
 
+	if (is.null (SVMObject$wrapperPath) == TRUE) {
+		if (verbose == TRUE) {
+			cat ("    Not able to find the wrapper. Sorry. \n")
+		}
+	}
 
 	# now, if a software path is given, then we should check it and try to find
 	# the binaries. if that doesnt work, its not our problem.
@@ -126,11 +141,11 @@ addSVMPackage = function (method = NA, wrapperName = NA, wrapperPath = NA, softw
 				SVMObject = findSoftware (SVMObject, searchPath = file.path (softwarePath, "bin"), verbose = verbose)	
 			}
 		} else {
-			warning ("Could not find a wrapper, as such, search path is ignored.")
+			warning ("    No software path is given, so did not search for the software.")
 		}
 	} else {
 		if (verbose == TRUE) {
-			cat ("Not testing for a default binary, as no software path was given.\n")
+			cat ("    Not testing for a default binary, as no software path was given.\n")
 		}
 	}
 
