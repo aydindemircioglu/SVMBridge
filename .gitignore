@@ -22,3 +22,5 @@ inst/doc
 *.model
 *.gcda
 *.gcno
+examples/data/*
+examples/software/*
