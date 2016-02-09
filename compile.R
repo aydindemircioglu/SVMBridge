@@ -33,3 +33,5 @@ cat ("## Building package\n")
 system2(command="R", args="CMD build .")
 cat ("## Checking package for CRAN\n")
 system2(command="R", args="CMD check --as-cran ./SVMBridge_0.1.tar.gz")
+
+ 

@@ -16,3 +16,12 @@ cp -R wrapper/* ./tests/wrapper
 #mkdir ./inst/tests
 #cp -R tests/testWrappers ./inst/tests
 
+# generate static docs
+rm -rf ./staticdocs
+mkdir staticdocs
+cp vignettes/* staticdocs
+rename 's/Rmd/md/' staticdocs/*
+
+for x in staticdocs/*.md; do perl -0777 -pi -e 's/\-\-\-.*?title: "(.*?)"\n.*?\-\-\-//sgim' $x; done
+for x in staticdocs/*.md; do sed  -i -e 's/(\([a-z_]*\)\.md)/(\1.html)/gi' $x; done 
+
