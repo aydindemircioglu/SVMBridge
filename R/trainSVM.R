@@ -88,8 +88,8 @@ trainSVM = function(
 	
 	# general modifications
 	if (verbose == TRUE) {
-		cat("    Path of binary for training is ", trainBinaryPath)
-		cat("    Binary for training is ", trainBinary)
+		cat("    Path of binary for training is ", trainBinaryPath, "\n")
+		cat("    Binary for training is ", trainBinary, "\n")
 	}
 
 	
@@ -131,13 +131,13 @@ trainSVM = function(
 	if (is.null(trainDataX) == FALSE) {
 		trainDataFile = tempfile()
 		if (verbose == TRUE)
-			cat("    Writing given data as ", trainDataFile)
+			cat("    Writing given data as ", trainDataFile, "\n")
 		#e1071::write.matrix.csr(trainDataX, trainDataFile, trainDataY)
 		writeSparseData (filename = trainDataFile, X = trainDataX, Y = trainDataY)
 	} 
 
 	if (verbose == TRUE) 
-		cat("    Train Data is now in ", trainDataFile)
+		cat("    Train Data is now in ", trainDataFile, "\n")
 
 	
 	# at this point we need to have a train data file on disk

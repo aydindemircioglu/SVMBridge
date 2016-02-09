@@ -54,7 +54,7 @@ testSVM = function(
 	...) {
 	
 	if (verbose == TRUE) {
-		cat("Testing SVM.")
+		cat("Testing SVM", method, ".\n")
 	}
 	
 	# sanity checks for parameters
@@ -107,8 +107,8 @@ testSVM = function(
 	
 	# general modifications
 	if (verbose == TRUE) {
-		cat("  Path of binary for testing is ", testBinaryPath)
-		cat("  Binary for testing is ", testBinary)
+		cat("    Path of binary for testing is ", testBinaryPath, "\n")
+		cat("    Binary for testing is ", testBinary, "\n")
 	}
 
 	# take care of data. if testdata or traindata is given,
@@ -128,13 +128,13 @@ testSVM = function(
 	if (is.null(testDataX) == FALSE) {
 		testDataFile = tempfile()
 		if (verbose == TRUE)
-			cat("  Writing given test data as ", testDataFile)
+			cat("    Writing given test data as ", testDataFile, "\n")
 		writeSparseData (filename = testDataFile, X = testDataX, Y = testDataY)
 		#e1071::write.matrix.csr(testDataX, testDataFile, testDataY)
 	} 
 
 	if (verbose == TRUE) 
-		cat("  Test Data is now in ", testDataFile)
+		cat("    Test Data is now in ", testDataFile, "\n")
 
 	results = list()
 
@@ -142,12 +142,12 @@ testSVM = function(
 	if (is.null(model) == FALSE) {
 		modelFile = tempfile()
 		if (verbose == TRUE)
-			cat("  Writing model in memory to disk as ", modelFile)
+			cat("    Writing model in memory to disk as ", modelFile, "\n")
 		
 		writeModel (SVMObject, model = model, modelFile = modelFile, verbose = verbose)
 	} else {
 		if (verbose == TRUE)
-			cat("  Reading model from file ", modelFile)
+			cat("    Reading model from file ", modelFile, "\n")
 	}
 
 	# check if we need to create a temporary file
@@ -163,14 +163,14 @@ testSVM = function(
 		...)
     
     if (verbose == TRUE) {
-		cat("  Generated test arguments ", args)
+		cat("    Generated test arguments ", args, "\n")
 	}
       
 	# probably FIXME because of windows systems
 	testTime = microbenchmark::microbenchmark(s <- system3(testBinaryPath, args, verbose = verbose), times = 1L)$time / 1e9
     
 	if (verbose == TRUE) 
-		cat("Testing took ", testTime, " seconds.");
+		cat("Testing took ", testTime, " seconds.\n");
     
 	results[["testTime"]] = testTime
 	results[["testError"]] = extractTestInfo(SVMObject, output = s$output, verbose = verbose)

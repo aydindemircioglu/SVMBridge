@@ -38,6 +38,7 @@ test_that("general workflow works with binary packages.", {
 	source ("wrappertests.R")
 	source ("detectModeltests.R")
 	source ("downloadSoftware.R")
+	source ("multiClasstests.R")
 	
 
 
@@ -45,7 +46,7 @@ test_that("general workflow works with binary packages.", {
 	# else SVM does not work 100p the same, as the data is shuffled.
 	set.seed(42)
 
-	verbose = TRUE
+	verbose = FALSE
 	cat ("\nVerbose is", verbose, "\n")
 
 	modelFile = tempfile()
@@ -60,6 +61,12 @@ test_that("general workflow works with binary packages.", {
 	trainDataY = data.matrix(as.numeric(shufflediris [1:100, 5]))
 	testDataX = data.matrix(shufflediris [-(1:100),1:4])
 	testDataY = data.matrix(as.numeric(shufflediris [-(1:100), 5]))
+	
+	# multiclass
+	mcTestDataY = testDataY
+	mcTrainDataY = trainDataY
+	
+	# binarize labels
 	trainDataY [trainDataY==3] = 1
 	testDataY [testDataY==3] = 1
 	trainDataY [trainDataY==2] = -1
@@ -82,10 +89,11 @@ test_that("general workflow works with binary packages.", {
 	softwareBaseDir = tempdir()
 	
 	# this stuff is for debugging locally without reloading the packages each time
-	#solvers = c("LIBSVM")
-	#softwareBaseDir = "/tmp/software"
-	#if (file.exists(softwareBaseDir) == FALSE) {
-	if (TRUE == TRUE) {
+	solvers = c("LIBSVM")
+	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
+	softwareBaseDir = "/tmp/software"
+	if (file.exists(softwareBaseDir) == FALSE) {
+	#if (TRUE == TRUE) {
 		for (solver in solvers) {
 			cat ("Downloading and building software ", solver, "\n")
 			softwareDir = downloadSoftware (solver, softwareDir = softwareBaseDir, verbose = verbose)
@@ -106,19 +114,26 @@ test_that("general workflow works with binary packages.", {
 	##  now do all the thirty different ways of calling trainSVM 
 	
 	for (solver in solvers) {
-		cat ("Wrapper test for solver", solver)
+		cat ("\nWrapper test for solver", solver, ": ")
 #		testthat::context (paste0(solver, "wrapper"))
 		wrappertests (solver, trainDataX, trainDataY, testDataX, testDataY, verbose)
 	}
 	
+	mcsolvers = c("LIBSVM", "BSGD", "BVM", "CVM")
+	for (solver in mcsolvers) {
+		cat ("\nMulticlass test for solver", solver, ": ")
+#		testthat::context (paste0(solver, "wrapper"))
+		multiclasstests (solver, trainDataX, mcTrainDataY, testDataX, mcTestDataY, verbose)
+	}
+
 	for (solver in solvers) {
-		cat ("Cycle test for solver", solver)
+		cat ("\nCycle test for solver", solver, ": ")
 #		testthat::context (paste0(solver, "cycle"))
 		cycletests (solver, verbose)
 	}
 	
 	for (solver in solvers) {
-		cat ("Model test for solver", solver)
+		cat ("\nModel test for solver", solver, ": ")
 #		testthat::context (paste0(solver, " detect models."))
 		detectModeltests (solver, verbose)
 	}

@@ -109,6 +109,7 @@ static char* readline(FILE *input)
 
 List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool verbose = false, bool zeroBased = false) {
 	
+//	verbose = true;
 	std::setprecision(16);
   
 	try
@@ -208,10 +209,11 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 				
 				//check if column contains multiple alpha values
 				string idx3 = std::string(idx);
-				
 				test_for_multi = idx3.find(" ");
 				
+				// if its a line like "0 1 2 3 1:2" then idx3 = "1 2 3 1" (sic!), thus test_for_multi > 1 and idx3.size() > 1
 				if ((idx3.size() > 1) & (test_for_multi != -1)){
+					alphacount = 1; // one alpha has been already consumed!
 					int f = 0;
 					//determine count of alpha values (check for unequal counts)
 					for (unsigned int j=0; j < idx3.size(); j++){
@@ -224,7 +226,7 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 						first_index = idx3.substr(f, j);
 					}
 					
-					if(alphacount > max_alphacount)
+					if (alphacount > max_alphacount)
 						max_alphacount = alphacount;
 					
 					//Might not detect unequal count of alpha values of prior columns but it saves time for unequality in subsequent columns
@@ -292,10 +294,7 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 
 		n=l; //set global variable n for function writeSparseData
 		m=max_index; //set global variable m for function writeSparseData
-		//if dataset contains multiple alpha values, max_alphacount gets incremented since the first alpha value didnt get accounted yet FIXME
-		if(max_alphacount > 1)
-			max_alphacount++; 
-			
+		
 		if (verbose == true) 
 			Rcout << "\nCount of Alpha Values: " << max_alphacount << endl;
 		
@@ -311,6 +310,9 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 		{
 			inst_max_index = -1; 
 			readline(fp);
+// 			if (max_alphacount > 1) {
+// 				std::cout << line << "\n";
+// 			}
 			label = strtok(line," \t\n");
 			
 			if(label == NULL) {
@@ -361,6 +363,13 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 						//DEBUG Rcout << "first_index = " << first_index << endl;
 						//cout << "first_index = " << first_index << endl;
 					}
+
+// 					if (max_alphacount > 1) {
+// 						for (unsigned int j = 0; j < k; j++) {
+// 							std::cout << yR(i, j)  << " ";
+// 						}
+// 						std::cout <<"\n";
+// 					}
 					
 					//final check for unequality in alpha values count. 
 					if(alphacount < max_alphacount){

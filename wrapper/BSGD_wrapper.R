@@ -78,7 +78,7 @@ extractTestInfo.BSGD = function (x, output, verbose) {
 
 readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBinaryColumn = FALSE) {
 	if (verbose == TRUE) {
-		cat("Reading BSGD model from ", modelFile)
+		cat("Reading BSGD model from ", modelFile, "\n")
 	}
 
 	# open connection
@@ -216,14 +216,27 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 	model$gamma = gamma
 	model$bias = bias
 	model$modelType = "BSGD"
-	model$nSV	= c(sum(model$alpha[,1] > 0), sum(model$alpha[,1] < 0))
 	model$label = as.numeric(labels)
+
+	if (length(model$label) == 2) {
+		model$nSV	= c(sum(model$alpha[,1] > 0), sum(model$alpha[,1] < 0))
+	} else {
+		# count total number of svs 
+		model$nSV = model$label * 0
+		for (i in 1:nrow(model$alpha)) {
+			for (c in 1:length(model$nSV)) {
+				if (model$alpha[i, c] == 0) {
+					model$nSV[c] = model$nSV[c] + 1
+				}
+			}
+		}
+	}
 
 	# sanity check
 	if (sum(model$nSV) != totalSV) {
 		stop ("Counted number of SV and info given in header do not fit.")
 	}
-
+	
 	# do we need to invert the labels? in this case we invert the coefficients
 	if (invertLabels == TRUE) {
 		if (verbose == TRUE)
@@ -260,7 +273,7 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 	}
 
 	dim = ncol (model$SV)
-	nClasses = 2
+	nClasses = length (model$nSV)
 	nWeights = nrow (model$SV)
 	gamma = model$gamma * 2
 	degree = 1
