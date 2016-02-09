@@ -18,7 +18,8 @@
 #
 
 
-wrappertests = function (solver, trainDataX, trainDataY, testDataX, testDataY, verbose) {
+multiclasstests = function (solver, trainDataX, trainDataY, testDataX, testDataY, verbose) {
+
 	trainObj =  trainSVM(
 		method = solver,
 		trainDataX = trainDataX, 
@@ -29,43 +30,55 @@ wrappertests = function (solver, trainDataX, trainDataY, testDataX, testDataY, v
 		rank = 32,
 		k = 32,
 		budget = 32,
+	#	modelFile = "/tmp/model",
 		readModelFile = TRUE,
 		verbose = verbose
 	)  
 	
 	
 	if (Sys.info()["sysname"] == "Darwin") {
-		expErrors = list("LIBSVM" = c(20, 12), "LASVM" = c(23, 12), "BSGD" = c(10, 8), "SVMperf" = c(20, 12), 
-								"BVM" = c(20,15),  "CVM" = c(20, 15),  "LLSVM" = c(17, 15)) # maybe these things are random :/
+		expErrors = list("LIBSVM" = c(17, 6, 15),  "BSGD" = c(2, 12, 5),
+									"BVM" = c(21, 14, 22),  "CVM" = c(21, 14, 22))
 	} else if (Sys.info()["sysname"] == "Windows") {
-		expErrors = list("LIBSVM" = c(20, 12), "LASVM" = c(22, 11), "BSGD" = c(10, 8), "SVMperf" = c(21, 11), 
-									"BVM" = c(20, 16),  "CVM" = c(20, 16),  "LLSVM" = c(19,13))
-	} else {
-		expErrors = list("LIBSVM" = c(20, 12), "LASVM" = c(22, 12), "BSGD" = c(10, 8), "SVMperf" = c(21, 11), 
-									"BVM" = c(18, 16),  "CVM" = c(18, 16),  "LLSVM" = c(21, 11))
+		expErrors = list("LIBSVM" = c(17, 6, 15),  "BSGD" = c(2, 12, 5),
+									"BVM" = c(21, 14, 22),  "CVM" = c(21, 14, 22))
+	} else { # unix
+		expErrors = list("LIBSVM" = c(17, 6, 15),  "BSGD" = c(2, 12, 5),
+									"BVM" = c(21, 14, 22),  "CVM" = c(21, 14, 22))
 	}
+#	print (trainObj$model$nSV)
+#	print (expErrors[[solver]])
 	testthat::expect_equal (trainObj$model$nSV, expErrors[[solver]])
 	
+#	writeSparseData (file="/tmp/T", X = testDataX, Y = testDataY)
 	testObj =  testSVM(
 		method = solver,
 		testDataX = testDataX,
 		testDataY = testDataY,
 		model = trainObj$model,
+		readPredictions = TRUE,
 		verbose = verbose
 	)  
 
 	if (Sys.info()["sysname"] == "Windows") {
-		expErrors = c("LIBSVM" = 0.06, "LASVM" = 0.06, "BSGD" = 0.04, "SVMperf" = 0.06, "BVM" = 0.04, "CVM" = 0.04, "LLSVM" = 0.92) #LLSVM is no joke.
-	} else {
-		expErrors = c("LIBSVM" = 0.06, "LASVM" = 0.06, "BSGD" = 0.04, "SVMperf" = 0.06, "BVM" = 0.04, "CVM" = 0.04, "LLSVM" = 0.94) #LLSVM is no joke.
+		expErrors = c("LIBSVM" = 0.06, "BSGD" = 0.04, "BVM" = 0.04, "CVM" = 0.04)
+	} else { #unix
+		expErrors = c("LIBSVM" = 0.06, "BSGD" = 0.06, "BVM" = 0.04, "CVM" = 0.04)
 	}
 	
 	if (verbose == TRUE) {
 		print (testObj)
 	}
 
+# 		print (testObj)
+# 	print (testObj$testError )
+# 	print (expErrors[[solver]])
 	testthat::expect_lte (abs(testObj$testError - expErrors[solver]), 0.001)
 }
+
+
+
+
 
 
 f = function () {
