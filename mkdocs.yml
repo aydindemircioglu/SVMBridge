@@ -1,0 +1,11 @@
+site_name: SVMBridge Documentation
+site_url: http://svmbridge.readthedocs.org
+theme: readthedocs
+docs_dir: staticdocs
+repo_url: http://github.com/aydindemircioglu/SVMBridge
+site_description: Documentation for the SVMBridge R Package.
+
+pages:
+- index.md
+- faq.md
+

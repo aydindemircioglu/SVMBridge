@@ -1,70 +1,39 @@
 
 
-# In-depth X
 
-In this section we give a more detailed introduction.
+Writing your own wrapper is also possible, and not too complicated. You must provide several callback functions. The most complex part will be provide functions to read and write the model. As a starter, you might want to look into the wrappers, **SVMBridge** provides.
 
-
-### Data
-
-As LIBSVM writes its data in a 'Sparse Format',
-the **SVMBridge** internally handles the same format.
-You are not forced to use this format, in case your SVM solver uses a different way to read and store data. But it is encouraged to use LIBSVM's sparse format as it became the de-facto standard in the SVM machine learning community.
-To allow reading and storing this LIBSVM sparse format,
- SVMBridge provides two routines readSparseData and writeSparseData.
- The reason we do not use e1071's similar routines is that our routines
- are converting the data directly into a _dense_ R matrix. Furthermore,
- our routines are written completely in C, so they are much faster than
- e1071 (in case the data is not too sparse).
-
-Using the routines for sparse format inside the **SVMBridge** is quite simple.
-
-```
-D = readSparseData (filename = "./sparsedata.dat")
-```
-
-The data will be read into D, which is a list with a matrix X
-corresponding to the data points and a vector Y corresponding to the labels.
-
-Writing a data set is similar:
-```
-writeSparseData (filename = "./sparsedata.dat", X = D$X, Y = D$Y)
-```
+# SVM Parameter
 
 
-### Models
-
-Usually the underlying SVM solvers will create a model on disk after training. You have two parameters in ```trainSVM``` to work with these models: modelFile and readModelFile.
-
-The modelFile parameter will make the trainSVM method to pass this path
-to the underlying wrapper and the SVM solver resp.
- Usually, the SVM solver will write its trained model then to this file.
- If you do not specify and modelFile parameter, then (as several solvers like LIBSVM etc need a path to write their model to) the **SVMBridge** will create a temporary model file.
-
-At times, the model needs to be re-read into memory, e.g. to analyze it.
-The flag 'readModelFile' controls whether the model of the SVMBridge will be read by ```trainSVM``` and appended to the returned SVM Object.
-Notice that large data sets will usually produce large models, thus rereading the model might take some time and may even too large to be read into memory.
-In general, if you are only interested in the subsequent test call and do not need the model for further predictions, setting the readModelFile flag to FALSE is a good idea, so no resources are spend to read the model.
-
-Notice that not specifying  a modelFile and setting readModelFile to FALSE will result in a temporary model file which is not read back, so the trained model will be simply lost. This might only make sense in very rare, special applications.
-In these cases, depending on the platform you are, you might also want to consider passing '/dev/null' as modelFile. The underlying solver will then write its model
-directly to '/dev/null', which is much faster than writing to disk, thereby reducing I/O times.
-
-By default, ```trainSVM``` will use a temporary model file and read the model back into memory.
+Every SVM has some parameter, that usually must be tuned. While LIBSVM has (for RBF kernel) two prominent parameter, the regularization term $C$ and the kernel bandwidth $\gamma$, this might not be true for other methods. For example, Budgeted SVM operates with $\lambda$ instead of $C$, with $\lambda = \frac{1}{2 C}$, and the $\gamma$ is twice the gamma of LIBSVM. Because of this, **SVMBridge** does not have a prebuild set of parameters. Every wrapper is free to use the parameter it needs. This entails that to use a wrapper, you must first know which parameter it uses. You can use the help function to get a description of a wrapper.
 
 
+LIBSVMHelp() { }
 
-### Training
+
+# Training
+
 
 Training can be either performed from data in memory (probably the most useful case), from the file system by using the ```trainSVM``` function.
 Note: In case you specify data from memory and from disc, **SVMBridge** will throw an error, as it will be confused about which source to use.
 
 
-### Testing
+# Testing
 
 Testing is done very similar to training by calling the ```testSVM``` function You have the option to use data from memory, from file system. Furthermore, predictions can be provided. By default, the predictions are written into a temporary file and are discarded after testing.
 Note: In case you specify data from memory and from disc, **SVMBridge** will throw an error, as it will be confused about which source to use.
 
+
+# Models
+
+Usually the underlying SVM solvers will create a model on disk after training. You have two options in ```trainSVM``` to work with these models: modelFile and readModel.
+
+First assume that you provide ```trainSVM``` with a path in the modelFile argument. In that case this path will be passed to the corresponding SVM solver, which (if everything runs without an error) will create a model file at the specified path. The second option for ```trainSVM``` is readModel. If this is set to TRUE, the ```trainSVM``` routine will reread the model back into memory and put it into the resulting trainObject. This will allow you work with the model directly in R, e.g. by reading out the alpha vector of suppor vector coefficients (if the model provides these information). Contrary, if you do not want to work with the model, e.g. as you are only interested in the test results of a subsequent ```testSVM``` call, there is no need to parse the model file, and you might want to set readModel to FALSE. Note that reading a model back into memory is currently very slow and a resource-hog, so only read back the model if this is really necessary.
+
+In the second case, you do not provide a path to ```trainSVM```. In that case ```trainSVM``` has to create a temporary path, as the SVM solver necessarily will need a place to write its model. In this case, the readModel flag work exactly as before. Note that if you set readModel to FALSE, the model will be lost, as it was only written temporarily, but not read back. This might only make sense in very rare, special applications.
+
+Note that in very rare cases you might want to train a SVM, but you are not interested in the model, e.g. you only need the time to train or want to check if the SVM will run without an error. In that case it is a good idea to pass "/dev/null" as modelFile and set readModel to FALSE. This will make the SVM solver to write its model into "/dev/null", effectively discarding it. Similarly, ```trainSVM``` will subsequently ignore the not existing model file.
 
 At testing time, you must provide the trained model. If you pass this as an in-memory model, ```testSVM``` will call the ```readModel``` routine of the SVM package first to dump the model to a temporary file on the filesystem.
 
@@ -84,50 +53,26 @@ skipPredictions == TRUE
 
 # Finding a software package
 
-For convenience, the **SVMBridge** can find a software package for you. This can be helpful in case you want to test several different solvers which are all located in a common directory, e.g. 'software/', but you' do not want to specify the directory directly. This might be the case, if the method you are calling and the path the software is located in differ, e.g. LLSVM is part of the BudgetedSVM
-package, so to test several solvers together with LLSVM one would need to  write the following code
+There are actually two ways to search for wrappers and software..
 
-```
-# train all SVMS on a problem
-solvers = c("LLSVM", "LIBSVM", "SVMperf")
-for (s in solvers) {
-  path = s
-  if (s == "LLSVM")
-    path = "BudgetedSVM"
-  addSVMPackage (s, softwarePath = file.path ("./software", path))
-  # do now testing, training etc
-}
-```
-
-This becomes somewhat easier with findSVMSofware:
-
-```
-# train all SVMS on a problem
-solvers = c("LLSVM", "LIBSVM", "SVMperf")
-for (s in solvers) {
-  addSVMPackage (s)
-  findSVMSoftware (s, "./software")
-  # do now testing, training etc
-}
-```
 
 
 # Prepackaged wrappers
 
-In case you want to use one of the prepackaged wrappers, you simply drop the wrapperPath. The **SVMBridge** will then search the wrapper
- in the installation path of **SVMBridge**:
-
+In case you want to use one of the prepackaged wrappers, you simply can add the wrapper by querying the path of **SVMBridge**
 ```splus
-# will search automatically in the installation path of the SVMBridge
- addSVMPackage("LASVM")
-```
-
-Alternatively, you can specify the installation path of the package by yourself:
-```splus
-addSVMPackage("LASVM" , file.path (path.package("SVMBridge"), "wrapper"))
+library(SVMBridge)
+ addSVMPackage("LASVM", file.path (path.package("SVMBridge"), "wrapper"))
  ```
 
  After that you can add the path of the compiled software.
+
+
+# Writing your own wrapper
+
+The method name will define all function names! This is very important, if you do not abide to this rule, callSVM will not find the corresponding callbacks! Suppose you want to write a wrapper for mySVM. In this case, you will need to create a file exactly called 'mySVM_wrapper.R'. Please note that the filename is case-sensitive. This is also true for all the callback functions.
+
+Your mySVM software must be split into two parts: Training and Testing. This might be the same executable, but be aware, that testing must work without training data. In case your package needs testing data at training time (e.g. if the model only specifies the index of the support vector in the training file instead of copying them into the model), you need to perform quite heavy tricks to get this going. In general, using other packages and skip **SVMBridge** might be a good idea, as **SVMBridge** strictly follows the LIBSVM way of training and testing.
 
 
 ## Adding the wrapper

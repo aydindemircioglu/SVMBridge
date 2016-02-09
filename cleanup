@@ -25,3 +25,4 @@ rename 's/Rmd/md/' staticdocs/*
 for x in staticdocs/*.md; do perl -0777 -pi -e 's/\-\-\-.*?title: "(.*?)"\n.*?\-\-\-//sgim' $x; done
 for x in staticdocs/*.md; do sed  -i -e 's/(\([a-z_]*\)\.md)/(\1.html)/gi' $x; done 
 
+rm -rf site

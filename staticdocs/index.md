@@ -9,6 +9,7 @@ applications.
 
 1. [Introduction](introduction.html)
 2. [In Depth Introduction](detailed.html)
-3. [Wrappers](wrappers.html)
-4. [Helper functions](helpers.html)
-5. [FAQ](faq.html)
+3. [Writing Wrappers](writingwrappers.html)
+4. [Prepackaged Wrappers](prepackagedwrappers.html)
+5. [Helper functions](helpers.html)
+6. [FAQ](faq.html)

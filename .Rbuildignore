@@ -44,3 +44,4 @@ README.md
 ^wrapper/*
 ^example/*
 ^examples/*
+^mkdocs.yml$

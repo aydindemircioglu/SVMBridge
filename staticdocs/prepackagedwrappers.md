@@ -1,0 +1,100 @@
+
+
+
+# Prepackaged Wrappers
+
+**SVMBridge** comes with a couple of wrappers for different SVM packages. Here we list these and provide a few details on how to use them.
+
+### WARNING: Not all features for each solver are supported yet!
+
+|Short name | Full name | Notes | URL |
+|-|-|-|-|
+|BSGD| Budgeted SGD | m | http://www.dabi.temple.edu/budgetedsvm/
+|BVM| Ball Vector Machine | m | http://c2inet.sce.ntu.edu.sg/ivor/cvm.html
+|CVM| Core Vector Machine | m | http://c2inet.sce.ntu.edu.sg/ivor/cvm.html
+|LASVM |  | b | http://leon.bottou.org/projects/lasvm
+|LIBSVM |   | m | https://www.csie.ntu.edu.tw/~cjlin/libsvm/
+|LLSVM| Low-rank linearization SVM | b | http://www.dabi.temple.edu/budgetedsvm/
+|SVMperf|   | b |  https://www.cs.cornell.edu/people/tj/svm_light/svm_perf.html
+
+**Legend**: m = multiclass, b = binary
+
+**Warning:** Currently we do not seek completeness. The **SVMBridge** is a classification-only package, so many options e.g. regarding regression etc. are currently not supported. Some other options, although they can be used with classifications, might be missing too. In case you are missing something, you will need to adapt an existing classifier or simply write your own from scratch. Either way, please share your results with us, so we can include these in future versions of the **SVMBridge**.
+
+
+**Note:** For convenience, all the wrappers are installed along the package and can be accessed by specifying the wrapper folder in the path of the installed **SVMBridge**. See the introduction for examples on how to do this.
+
+**Note:** For convenience, all the source code of the prepackaged SVM solvers are also on our github repository. You can also download the versions we used from there: [SVMBridge github repository](github.com/aydindemircioglu/SVMBridge])
+
+
+## General Comments
+
+
+Though some of the solvers, e.g. LLSVM and BSGD, are part of the very same package and at times share the same models, data set format, parameters and executables, the philosophy of the **SVMBridge** is to have a separate wrapper for each method.
+
+
+### LIBSVM
+
+LIBSVM is practically the de-facto standard SVM solver.
+The wrapper currently supports  classification and RBF kernel only.
+
+
+
+### LASVM
+
+LASVM is very similar to LIBSVM, as both packages use the same parameters and the same model. LASVM has many more options than LIBSVM, as for our purpose we did not need them, for now these are not supported.
+
+
+
+### LLSVM
+
+
+LLSVM is simple way to put the data set into a low dimensional (approximated) feature space and do linear classification there.
+
+Because of this, he models saved by LLSVM are quite non-standard, as the transformation matrices have to be saved instead of a list of support vectors. The prepackaged wrapper includes a simple model
+reader and writer, both of which are written in pure R. Therefore, the performance of this wrapper is rather
+reduced. In case you need faster model readers/writers, you need to handle it by
+yourself.
+
+
+
+### Budgeted SGD
+
+BSGD is a simple stochastic gradient descent solver with an additional constraint on the number of support vectors. BSGD  saves its model in a non-LIBSVM format. The
+prepackaged wrapper includes a simple model
+reader and writer, both of which are written in pure R. Therefore, the performance of this wrapper is rather
+reduced. In case you need faster model readers/writers, you need to handle it by
+yourself.
+
+
+### SVMperf
+
+SVMperf has a great deal of options, so instead of providing all of these as parameter, we decided instead to give the user a choice over several 'configurations'. These are Nystrom, Cholesk, vanilla, CPSP_w3 and CPSP.
+In case you need a different setup, you should adapt the wrapper to your needs.
+Alternatively you may pass your parameters via the 'extraParameters' option
+and (hopefully) override the options set by one of the methods above.
+
+**Note**: Please do not mix up SVMperf with SVMlight or SVMRank.
+
+**Note**: The original binaries, when called without or with wrong options, will wait for a key press. To circumvent this, we grep for identification strings inside the binary file. Therefore, your compiler should not compress the binary.
+
+
+
+### CVM
+
+CVM is an improvement of BVM, and works (technically) very  similar to LIBSVM,
+so the wrapper uses all the read/write model/dataset methods of LIBSVM.
+
+
+**Note**: The source code for BVM cannot be found in the internet anymore.
+Therefore we provide a copy of it in our github repository, see above.
+
+
+### BVM
+
+BVM is a different, geometric way to solve the SVM problem, and works (technically) very  similar to LIBSVM,
+so the wrapper uses all the read/write model/dataset methods of LIBSVM.
+
+
+**Note**: The source code for BVM cannot be found in the internet anymore.
+Therefore we provide a copy of it in our github repository, see above.
