@@ -19,12 +19,11 @@ vignette: >
 | | | | |
 |-|-|-|-|
 |BSGD| Budgeted SGD | m | http://www.dabi.temple.edu/budgetedsvm/
-|BVM| Ball Vector Machine | | http://c2inet.sce.ntu.edu.sg/ivor/cvm.html
-|CVM| Core Vector Machine | | http://c2inet.sce.ntu.edu.sg/ivor/cvm.html
+|BVM| Ball Vector Machine | m | http://c2inet.sce.ntu.edu.sg/ivor/cvm.html
+|CVM| Core Vector Machine | m | http://c2inet.sce.ntu.edu.sg/ivor/cvm.html
 |LASVM |  | b | http://leon.bottou.org/projects/lasvm
 |LIBSVM |   | m | https://www.csie.ntu.edu.tw/~cjlin/libsvm/
 |LLSVM| Low-rank linearization SVM | b | http://www.dabi.temple.edu/budgetedsvm/
-|Pegasos|   |  | http://www.dabi.temple.edu/budgetedsvm/
 |SVMperf|   | b |  https://www.cs.cornell.edu/people/tj/svm_light/svm_perf.html
 
 **Legend**: m = multiclass, b = binary

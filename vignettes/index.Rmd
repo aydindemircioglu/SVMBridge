@@ -18,6 +18,7 @@ applications.
 
 1. [Introduction](introduction.md)
 2. [In Depth Introduction](detailed.md)
-3. [Wrappers](wrappers.md)
-4. [Helper functions](helpers.md)
-5. [FAQ](faq.md)
+3. [Writing Wrappers](writingwrappers.md)
+4. [Prepackaged Wrappers](prepackagedwrappers.md)
+5. [Helper functions](helpers.md)
+6. [FAQ](faq.md)
