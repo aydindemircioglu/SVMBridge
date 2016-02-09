@@ -12,32 +12,46 @@ vignette: >
 
 # Introduction
 
-This introduction gives you a short overview and a  quickstart example of a typical call of an SVM Package with **SVMBridge**to make you familiar with the **SVMBridge**. For much more detailed information see [the next chapter](detailed.Rmd).
+This introduction gives you a short overview and a quickstart example.
+The intend is to make you familiar with the basic concept of the **SVMBridge**.
+For more detailed information, please see [the next chapter](detailed.Rmd).
 
-The SVMBridge allows to execute any SVM binary package directly within R. For this, it needs three parts:
+The SVMBridge is a simple R package that provides a structured way to
+executing any SVM binary package directly within R.
+For this, it needs three parts:
 
-- A 'wrapper'. This is an R source code file that contains directions on how to execute the SVM, read and write models etc.
+- A 'wrapper'. This is an R source code file that contains directions on how
+to execute the SVM, read and write models etc.
 - The SVM binaries. These consist of two executables, one for training, one for testing.
-- Data. Usually one set for training and one for validating/testing.
+- Data. Usually one data set for training and one for validating/testing.
 
-In this tutorial, we aim to use the LIBSVM package for a simple SVM classification. Notice that there are already packages like e1071 which allow direct use of LIBSVM within R. Our approach here differs, as any SVM (for classification) can be wrapped, this comes in handy when e.g. you modify/recompile LIBSVM. In this case a simple recompile is enough, there is no need to modify any R package.
+In this tutorial, we aim to use the LIBSVM package, the probably best known SVM solver, for a simple SVM classification task. Notice that there are already packages like e1071 which allow direct use of LIBSVM within R. Though these approaches are elegant, they do not help in case other SVM packages need to be called. (Please remember that LIBSVM is not the only one way to solve the SVM problem). For example, to use SVMperf within R, usually one would need to modify the corresponding C/C++ sources and repackage them into an R package, which is a considerable amount of work.
 
- As  said, the **SVMBridge** is just an easy way to call a precompiled SVM package, we first need such an SVM package. We settle with the probably best known SVM solver, LIBSVM. Download the source package from the LIBSVM webpage (currently at http://www.csie.ntu.edu.tw/~cjlin/libsvm/), either as zip/tar or directly from github. Put it into any folder you like. We here assume that you have a software directory and unzipped LIBSVM under 'software/LIBSVM'. If you are using windows, the package should contain already precompiled binaries, in this case you can skip the res of this paragraph. If you use any other OS, you need to compile LIBSVM. For this, go to this directory and call 'make' from the command line (Make sure to have all the necessary c++ packages installed). After successful compilation you will have two binary executables: svm-train and svm-predict. Make sure you can execute them by just calling './svm-train' (an extensive help page should be shown).
+The **SVMBridge** provides instead a structured way to call other SVM packages by command line. This has the advantage that only a (often simple) wrapper in R has to be written. No sources have to be changed (in case the SVM solver can readily be called by command line), nor an R package has to be written containing these sources.
 
-The next thing we need is the wrapper (for more details on this and also on how to write your own wrapper, see  [Wrappers](wrappers.md)). The **SVMBridge** comes with several wrappers already, and we will use the LIBSVM wrapper for our purpose. The wrappes can be found in the folder 'wrapper' just below the installation folder of the package.
+To understand the way the **SVMBridge** works, let us now train LIBSVM on a simple data set.  As the **SVMBridge** is just an easy way to call a precompiled SVM package, we first need to obtain LIBSVM. Download the source package from the LIBSVM webpage (currently at http://www.csie.ntu.edu.tw/~cjlin/libsvm/), either as zip/tar or directly from github. We assume here that you put the sources into a directory './software/LIBSVM'.
 
-Before we can use the **SVMBridge**, we need some data. Remember, that the data of a general machine learning problem usually consists of two parts: Training and testing data. The LIBSVM dataset webpage provides many different benchmark data sets (currently at 'http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/'). To keep things simple, we will use the same data set for testing and training. Download the scaled australian data set (currently at 'http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary/australian_scale') and put it into a folder. We assume here that you download it to  'data/australian_scale'.
+If you are using windows, the package should contain already precompiled binaries, in this case you can skip the rest of this paragraph. If you use any other OS, you need to compile LIBSVM. For this, go to the directory and call 'make' from the command line (Make sure to have all the necessary c++ packages installed). After successful compilation you will have two binary executables: svm-train and svm-predict. Make sure you can execute them by just calling './svm-train' (an extensive help page should be shown).
 
-Now,  you can write your first simple R-script:
+The next thing we need is the wrapper (for more details on this and also on how to write your own wrapper, see  [Wrappers](wrappers.md)). The **SVMBridge** comes with several prepackaged wrappers already, and we will use the LIBSVM wrapper for our purpose, so for this tutorial there is nothing to do (The wrappers can be found in the folder 'wrapper' just below the installation folder of the package.)
+
+Before we can use the **SVMBridge**, we need some data. Remember, that data of a general machine learning problem consists of at least two parts: Training and testing data. The LIBSVM dataset webpage provides many different benchmark data sets (currently at 'http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/'). To keep things simple, we will use the same data set for testing and training. Download the scaled australian data set (currently at 'http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary/australian_scale') and put it into a folder. We assume here that you download it to  'data/australian_scale'.
+
+Finally, you should now have the following structure
+
+- /data/australian_scale
+- /software/LIBSVM/ (with all the LIBSVM files)
+
+Now,  you can write your first simple R-script utilizing the **SVMBridge**:
 
 ```splus
 # load the SVMBridge
 library(SVMBridge)
 
-# add the prepackaged wrapper
+# add the wrapper (wrapperPath can be skipped for prepackaged wrappers)
 addSVMPackage("LIBSVM", wrapperPath =  file.path (path.package("SVMBridge"), "wrapper"))
 
-# let SVMBridge find the compiled/downloaded LIBSVM package.
+# let SVMBridge find the binaries for the LIBSVM package.
 found = findSVMSoftware (method = 'LIBSVM', searchPath = "./software/LIBSVM")
 
 # use the SVMBridge to train LIBSVM
