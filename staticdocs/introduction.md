@@ -24,7 +24,7 @@ To understand the way the **SVMBridge** works, let us now train LIBSVM on a simp
 
 If you are using windows, the package should contain already precompiled binaries, in this case you can skip the rest of this paragraph. If you use any other OS, you need to compile LIBSVM. For this, go to the directory and call 'make' from the command line (Make sure to have all the necessary c++ packages installed). After successful compilation you will have two binary executables: svm-train and svm-predict. Make sure you can execute them by just calling './svm-train' (an extensive help page should be shown).
 
-The next thing we need is the wrapper (for more details on this and also on how to write your own wrapper, see  [Wrappers](wrappers.html)). The **SVMBridge** comes with several prepackaged wrappers already, and we will use the LIBSVM wrapper for our purpose, so for this tutorial there is nothing to do (The wrappers can be found in the folder 'wrapper' just below the installation folder of the package.)
+The next thing we need is the wrapper (for more details on this and also on how to write your own wrapper, see  [Wrappers](wrappers.md)). The **SVMBridge** comes with several prepackaged wrappers already, and we will use the LIBSVM wrapper for our purpose, so for this tutorial there is nothing to do (The wrappers can be found in the folder 'wrapper' just below the installation folder of the package.)
 
 Before we can use the **SVMBridge**, we need some data. Remember, that data of a general machine learning problem consists of at least two parts: Training and testing data. The LIBSVM dataset webpage provides many different benchmark data sets (currently at 'http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/'). To keep things simple, we will use the same data set for testing and training. Download the scaled australian data set (currently at 'http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary/australian_scale') and put it into a folder. We assume here that you download it to  'data/australian_scale'.
 
@@ -51,7 +51,7 @@ svmObj =  trainSVM("LIBSVM", trainDataFile = './data/australian_scale', cost = 1
 
 **Note:** In case something goes wrong, you can add the verbose = TRUE flag to the trainSVM function. Sometimes the paths are wrong, i.e. **SVMBridge** cannot find the LIBSVM executable or the data set.
 
-The ```trainSVM``` function will return an object that contains the trained model and some basic information about the training process, e.g. the training time (including I/O). See  [In Depth Introduction](detailed.html) for more information about the returned SVM object.
+The ```trainSVM``` function will return an object that contains the trained model and some basic information about the training process, e.g. the training time (including I/O). See  [In Depth Introduction](detailed.md) for more information about the returned SVM object.
 
 Here we print the training time LIBSVM needed and then go ahead and test the model on the test data (as said, for convenience we use the very same training data set for testing, greatly underestimating the generalization error). To do so, we need to pass the trained SVM model to the testSVM routine:
 

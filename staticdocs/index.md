@@ -7,9 +7,9 @@
 In the following we provide a short introduction to **SVMBridge**. An introductory example serves as a quickstart guide. Note that our focus is on your comprehension of the basic functions and
 applications.
 
-1. [Introduction](introduction.html)
-2. [In Depth Introduction](detailed.html)
-3. [Writing Wrappers](writingwrappers.html)
-4. [Prepackaged Wrappers](prepackagedwrappers.html)
-5. [Helper functions](helpers.html)
-6. [FAQ](faq.html)
+1. [Introduction](introduction.md)
+2. [In Depth Introduction](detailed.md)
+3. [Writing Wrappers](writingwrappers.md)
+4. [Prepackaged Wrappers](prepackagedwrappers.md)
+5. [Helper functions](helpers.md)
+6. [FAQ](faq.md)

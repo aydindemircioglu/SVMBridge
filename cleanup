@@ -23,6 +23,13 @@ cp vignettes/* staticdocs
 rename 's/Rmd/md/' staticdocs/*
 
 for x in staticdocs/*.md; do perl -0777 -pi -e 's/\-\-\-.*?title: "(.*?)"\n.*?\-\-\-//sgim' $x; done
-for x in staticdocs/*.md; do sed  -i -e 's/(\([a-z_]*\)\.md)/(\1.html)/gi' $x; done 
+#for x in staticdocs/*.md; do sed  -i -e 's/(\([a-z_]*\)\.md)/(\1.html)/gi' $x; done 
 
 rm -rf site
+
+# clean mkdocs
+perl -0777 -pi -e 's/pages:(.*)//sgim' mkdocs.yml
+
+# add all vignettes
+echo "pages:" >> mkdocs.yml
+for x in vignettes/*; do y=${x/vignettes\//}; z=${y/Rmd/md}; echo "- "$z >> mkdocs.yml; done
