@@ -36,3 +36,13 @@ Make sure the model has the correct line endings. On windows you need 0x0d0a, el
 ##### Can i reduce the I/O overhead?
 
 It is possible to bypass nearly all I/O overhead and directly communicate with the SVM Package by specifying the training and test data as well as the model and prediction as files on disk. If SVMBridge gets file paths, it will not try to reread the written model nor the predictions. Sometimes you do not need the predictions, neither on memory nor on disk. In this case you can pass "/dev/null" as prediction file (depending on your platform!). This will make the SVM Test write to null, so it will not take any I/O time,  and therefore the SVMBridge will not reread the predictions, as it was already written on disk.
+
+
+##### Can i use sparse data?
+
+Though **SVMBridge** internally prefers dense matrices currently, there should be no problem to setup your own routines to handle sparse data.
+
+
+##### Why i get a call from the IT administrator when i use the **SVMBridge** on our cluster?
+
+Possibly you used the findSVMSoftware functionality too much. This function is made for convenience, not for performance. As all given (sub)directories have to be searched, this can slow down all I/O operations. You should restrain from using  this function on a high performance cluster, as it might very well slowdown the whole cluster. Probably that is the reason for the call you got.

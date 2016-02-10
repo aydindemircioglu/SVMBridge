@@ -4,16 +4,91 @@ author: "Aydin Demircioglu"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{In-depth Tutorial}
+  %\VignetteIndexEntry{Writing Wrappers}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
 
-Writing your own wrapper is also possible, and not too complicated. You must provide several callback functions. The most complex part will be provide functions to read and write the model. As a starter, you might want to look into the wrappers, **SVMBridge** provides.
+# Writing Wrappers
 
-# SVM Parameter
+To write your own wrapper, you simply have to provide an R-file that handles the most important things like reading and writing models, and communicating with the executables. Technically, a wrapper is just an S3 Object. We will talk about the methods below.
 
+
+Notice that if you write your own findSoftware routine for your wrapper, you might need some platform dependent checks, e.g. the LIBSVM binray is simply called "svm-train" on Linux and Mac OSX, but "svm-train.exe" on Windows. You can use the functionality provided by R to check for the platform. An example can be seen in the LIBSVM wrapper code.
+
+
+
+### S3 Object
+
+
+
+
+Writing your own wrapper is also possible, and not too complicated. It is a simple S3 Object. If ou do not know about S3 Object, you might similarly think about providing several callback functions to the **SVMBridge**. The most complex part will be provide functions to read and write the model. As a starter, you might want to look into the wrappers, **SVMBridge** provides.
+
+The following parts have to be written where needed
+
+```splus
+createTrainingArguments = function (x, trainDataFile = NULL, modelFile = NULL, verbose = FALSE, ...) {
+	UseMethod("createTrainingArguments")
+}
+
+
+createTestArguments = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
+	UseMethod("createTestArguments")
+}
+
+
+extractTrainInfo = function (x, output, verbose = FALSE) {
+	UseMethod ("extractTrainInfo")
+}
+
+
+extractTestInfo = function (x, output, verbose = FALSE) {
+	UseMethod ("extractTestInfo")
+}
+
+
+readModel = function (x, modelFile = './model', verbose = FALSE) {
+	UseMethod("readModel")
+}
+
+
+writeModel = function (x, model = NA, modelFile = "./model", verbose = FALSE) {
+	UseMethod("writeModel")
+}
+
+
+detectModel = function (x, modelFile = "./model", verbose = FALSE) {
+	UseMethod("detectModel")
+}
+
+
+readPredictions = function (x, predictionsFile = NULL, verbose = FALSE) {
+	UseMethod ("readPredictions")
+}
+
+
+findSoftware = function (x, searchPath = "./", verbose = FALSE) {
+	UseMethod ("findSoftware")
+}
+```
+
+#### createTrainingArguments
+
+This will only put together the command line arguments needed for training.
+Therefore it takes many options ("...") and returns a simple string.
+As training is done via command line, the data must be available on disk,
+not memory. The ```createTrainingArguments``` method also needs to
+specify where the model will be found after training.
+
+
+#### createTestArguments
+
+This will only put together the command line arguments needed for training.
+
+
+## SVM Parameter
 
 Every SVM has some parameter, that usually must be tuned. While LIBSVM has (for RBF kernel) two prominent parameter, the regularization term $C$ and the kernel bandwidth $\gamma$, this might not be true for other methods. For example, Budgeted SVM operates with $\lambda$ instead of $C$, with $\lambda = \frac{1}{2 C}$, and the $\gamma$ is twice the gamma of LIBSVM. Because of this, **SVMBridge** does not have a prebuild set of parameters. Every wrapper is free to use the parameter it needs. This entails that to use a wrapper, you must first know which parameter it uses. You can use the help function to get a description of a wrapper.
 
@@ -64,17 +139,6 @@ skipPredictions == TRUE
 
 There are actually two ways to search for wrappers and software..
 
-
-
-# Prepackaged wrappers
-
-In case you want to use one of the prepackaged wrappers, you simply can add the wrapper by querying the path of **SVMBridge**
-```splus
-library(SVMBridge)
- addSVMPackage("LASVM", file.path (path.package("SVMBridge"), "wrapper"))
- ```
-
- After that you can add the path of the compiled software.
 
 
 # Writing your own wrapper

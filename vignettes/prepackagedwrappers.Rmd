@@ -41,6 +41,17 @@ vignette: >
 
 Though some of the solvers, e.g. LLSVM and BSGD, are part of the very same package and at times share the same models, data set format, parameters and executables, the philosophy of the **SVMBridge** is to have a separate wrapper for each method.
 
+In case you want to use one of the prepackaged wrappers, you simply can add the wrapper by not specifying the wrapperPath. By default, the **SVMBridge** will
+try to find the wrapper in the path specified, but if this does not work, it will fallback to the path of the prepackaged wrappers. Alternatively, you can specify
+the path by hand:
+
+```splus
+library(SVMBridge)
+ addSVMPackage("LASVM", file.path (path.package("SVMBridge"), "wrapper"))
+ ```
+
+ After that you can add the path of the compiled software.
+
 
 ### LIBSVM
 

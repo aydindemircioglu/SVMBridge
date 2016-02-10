@@ -6,11 +6,3 @@ repo_url: http://github.com/aydindemircioglu/SVMBridge
 site_description: Documentation for the SVMBridge R Package.
 
 pages:
-- detailed.md
-- faq.md
-- helpers.md
-- index.md
-- introduction.md
-- prepackagedwrappers.md
-- wrappers.md
-- writingwrappers.md

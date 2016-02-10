@@ -27,7 +27,6 @@
 #' @param	trainDataFile		Filename to read training data from. This cannot be used at the same time as trainDataX/trainDataY.
 #' @param	trainDataX		Matrix comprising the data. This cannot be used at the same time as trainDataFile.
 #' @param	trainDataY		Vector comprising the labels for the data. This cannot be used at the same time as trainDataFile.
-#' @param	trainBinaryPath		Full path to the training binary to call.
 #' @param	extraParameter		Extra parameters for solver, passed to the createTrainingArguments function of the wrapper.
 #' @param	modelFile		Path to the model file to create. If none specified, a temporary file will be created.
 #' @param	verbose		Be verbose?
@@ -49,7 +48,6 @@ trainSVM = function(
 	trainDataFile = NULL,
 	trainDataX = NULL, 
 	trainDataY = NULL, 
-	trainBinaryPath = NULL,
 	extraParameter = "",
 	modelFile = NULL,
 	subsamplingRate = NULL,

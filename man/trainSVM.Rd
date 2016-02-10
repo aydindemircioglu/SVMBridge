@@ -5,9 +5,9 @@
 \title{Train an SVM.}
 \usage{
 trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
-  trainDataY = NULL, trainBinaryPath = NULL, extraParameter = "",
-  modelFile = NULL, subsamplingRate = NULL, subsamplingMethod = "cutoff",
-  verbose = FALSE, timeOut = -1, readModelFile = TRUE, ...)
+  trainDataY = NULL, extraParameter = "", modelFile = NULL,
+  subsamplingRate = NULL, subsamplingMethod = "cutoff", verbose = FALSE,
+  timeOut = -1, readModelFile = TRUE, ...)
 }
 \arguments{
 \item{method}{name of the SVM method/solver}
@@ -17,8 +17,6 @@ trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
 \item{trainDataX}{Matrix comprising the data. This cannot be used at the same time as trainDataFile.}
 
 \item{trainDataY}{Vector comprising the labels for the data. This cannot be used at the same time as trainDataFile.}
-
-\item{trainBinaryPath}{Full path to the training binary to call.}
 
 \item{extraParameter}{Extra parameters for solver, passed to the createTrainingArguments function of the wrapper.}
 
