@@ -61,25 +61,30 @@ findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 			if (verbose == TRUE) {
 				cat ("    Scanning directory: ", dir, "\n")
 			}
-			SVMObject = findSoftware (SVMObject, searchPath = dir, verbose = verbose)
+			tmpSVMObject = findSoftware (SVMObject, searchPath = dir, verbose = verbose)
 			
-			if (is.null (SVMObject) == TRUE) {
+			if (is.null (tmpSVMObject) == TRUE) {
 				warning ("The wrapper did not return any SVM Object. This seems to be an error in the wrapper code.")
 			}
 
 			# additional check if the object is somewhat valid (TODO: can we have a 'isSVMObjectValid(object)'?
-			if (is.null(SVMObject$wrapperPath) == TRUE) {
+			if (is.null(tmpSVMObject$wrapperPath) == TRUE) {
 				warning ("The wrapper did not return a valid SVM Object. This seems to be an error in the wrapper code.")
 			}
 			
-			if (is.null (SVMObject$trainBinaryPath) == FALSE) {
+			# we need both binaries 
+			if (is.null (tmpSVMObject$trainBinaryPath) == FALSE) {
 				if (verbose == TRUE) {
-					cat ("    Found binaries in", dir, "\n")
-					cat ("       ", SVMObject$trainBinaryPath, "\n")
-					cat ("       ", SVMObject$testBinaryPath, "\n")
+					cat ("    Found train binary in", dir, ": ", SVMObject$trainBinaryPath, "\n")
 				}
-				setSVMObject (method, SVMObject)
-				break
+				SVMObject$trainBinaryPath = tmpSVMObject$trainBinaryPath
+			}
+			
+			if (is.null (tmpSVMObject$testBinaryPath) == FALSE) {
+				if (verbose == TRUE) {
+					cat ("    Found test binary in", dir, ": ", SVMObject$testBinaryPath, "\n")
+				}
+				SVMObject$testBinaryPath = tmpSVMObject$testBinaryPath
 			}
 		}
 	} else {
@@ -88,6 +93,12 @@ findSVMSoftware <- function (method = NA, searchPath = NA, verbose = FALSE) {
 		}
 	}
 		
-	return (is.null (SVMObject$trainBinaryPath) == FALSE)
+	found = (is.null (SVMObject$testBinaryPath) == FALSE) & (is.null (SVMObject$trainBinaryPath) == FALSE)
+	if ((found == TRUE) & (verbose == TRUE)) {
+		cat ("FOUND: Both test and train binaries. for method", method, "\n")
+	}
+	
+	setSVMObject (method, SVMObject)
+	return (found)
 }
 

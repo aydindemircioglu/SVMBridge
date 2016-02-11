@@ -436,9 +436,9 @@ findSoftware.SVMperf = function (x, searchPath = "./", execute = FALSE, verbose 
 	}
 	
 	# can do now OS specific stuff here
-	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, applyKeyFix = TRUE,
+	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, 
 		dir = searchPath, patterns = list ('ROCArea: Percentage of swapped pos/neg pairs', 'usage: svm_struct_learn .options. example_file model_file'), verbose = verbose)
-	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern, applyKeyFix = TRUE, dir = searchPath, patterns = list ('usage: svm_struct_classify .options. example_file model_file output_file'), verbose = verbose)
+	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern, dir = searchPath, patterns = list ('usage: svm_struct_classify .options. example_file model_file output_file'), verbose = verbose)
 
 	return(x)
 }

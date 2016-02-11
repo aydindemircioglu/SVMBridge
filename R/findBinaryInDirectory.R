@@ -26,7 +26,6 @@
 #'
 #' @param	binaryName		Search name for the SVM binary
 #' @param	dir	 	Search path for the SVM binary.
-#' @param	applyKeyFix		Apply fix for 'press any key to continue' (SVMperf)?
 #' @param	patterns		Pattern for output of the binary file
 #' @param	verbose			Print messages while searching?
 #'
@@ -41,7 +40,7 @@
 #' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
 #' @export
 
-findBinaryInDirectory = function (binaryName = NULL, dir = NULL, patterns = NULL, applyKeyFix = FALSE, verbose = FALSE) {
+findBinaryInDirectory = function (binaryName = NULL, dir = NULL, patterns = NULL, verbose = FALSE) {
 
 	# check all the parameters
 	checkmate::assertString (binaryName)
@@ -65,8 +64,8 @@ findBinaryInDirectory = function (binaryName = NULL, dir = NULL, patterns = NULL
 
 		# do we have any patterns to check?
 		if (length(patterns) > 0) {
-			# if yes, we have to execute the thing. if they do not match, we delete the path
-			if (checkExecutionStrings (binaryPath, patterns = patterns, applyKeyFix = applyKeyFix, verbose = verbose) == FALSE) {
+			# if yes, we have to execute the thing. if they do not match, we delete the path (removed applyKeyFix = applyKeyFix, )
+			if (checkExecutionStrings (binaryPath, patterns = patterns, verbose = verbose) == FALSE) {
 				binaryPath = NULL
 			} else {
 				# everything is ok, binary path is not deleted

@@ -89,11 +89,11 @@ test_that("general workflow works with binary packages.", {
 	softwareBaseDir = tempdir()
 	
 	# this stuff is for debugging locally without reloading the packages each time
-	solvers = c("LIBSVM")
-	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
-	softwareBaseDir = "/tmp/software"
-	if (file.exists(softwareBaseDir) == FALSE) {
-	#if (TRUE == TRUE) {
+#	solvers = c("LIBSVM")
+	#solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
+#	softwareBaseDir = "/tmp/software"
+#	if (file.exists(softwareBaseDir) == FALSE) {
+	if (TRUE == TRUE) {
 		for (solver in solvers) {
 			cat ("Downloading and building software ", solver, "\n")
 			softwareDir = downloadSoftware (solver, softwareDir = softwareBaseDir, verbose = verbose)

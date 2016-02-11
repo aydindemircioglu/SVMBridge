@@ -17,21 +17,22 @@
 #
  
 
-#' system3
+#' System call substitute to allow for more verbose output 
 #'
-#' @param     binPath		binary to execute
-#' @param     args		arguments for binary
-#' @param     verbose		verbose output? (including executed command line)
+#' @param 	binPath		binary to execute
+#' @param	args		arguments for binary
+#' @param	verbose		verbose output? (including executed command line)
+#' @param	...		parameters for the underlying system2 call
 #'
 #' @return	s		
 #'
-system3 <- function (binPath, args, verbose = FALSE) 
+system3 <- function (binPath, args, verbose = FALSE, ...) 
 { 
 	if (verbose == TRUE) {
 		BBmisc::messagef ("----- Arguments:")
 		BBmisc::messagef ("%s %s", binPath, paste(args, collapse=" "))
 	}
-	s = BBmisc::system3(binPath, args, stop.on.exit.code = FALSE, stderr = TRUE, stdout = TRUE)
+	s = BBmisc::system3(binPath, args, stop.on.exit.code = FALSE, stderr = TRUE, stdout = TRUE, ...)
 	if (verbose == TRUE) {
 		BBmisc::messagef ("----- Output:")
 		BBmisc::messagef ("%s %s", binPath, paste(s$output, collapse="\n"))

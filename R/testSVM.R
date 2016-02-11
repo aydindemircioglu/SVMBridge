@@ -173,7 +173,19 @@ testSVM = function(
 		cat("Testing took ", testTime, " seconds.\n");
     
 	results[["testTime"]] = testTime
-	results[["testError"]] = extractTestInfo(SVMObject, output = s$output, verbose = verbose)
+	
+	# what do we get back? a scaler=testError or a whole object?
+	tmpObj = extractTestInfo(SVMObject, output = s$output, verbose = verbose)
+	if (checkmate::testScalar (tmpObj) == TRUE) {
+		results[["testError"]] = tmpObj
+	} else {
+		if (checkmate::testList(tmpObj) == TRUE) {
+			results = append (results, tmpObj)
+		} else {
+			# its neither a scalar nor a list, what is it? a bird? an airplan? superman??
+			warning ("Return type of extractTestInfo is neither a scalar nor a list! Is the wrapper faulty?")
+		}
+	}
 		
 		
 	# if user did not specify prediction file, we will read them back

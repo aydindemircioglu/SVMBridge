@@ -2,9 +2,9 @@
 % Please edit documentation in R/system3.R
 \name{system3}
 \alias{system3}
-\title{system3}
+\title{System call substitute to allow for more verbose output}
 \usage{
-system3(binPath, args, verbose = FALSE)
+system3(binPath, args, verbose = FALSE, ...)
 }
 \arguments{
 \item{binPath}{binary to execute}
@@ -12,11 +12,13 @@ system3(binPath, args, verbose = FALSE)
 \item{args}{arguments for binary}
 
 \item{verbose}{verbose output? (including executed command line)}
+
+\item{...}{parameters for the underlying system2 call}
 }
 \value{
 s
 }
 \description{
-system3
+System call substitute to allow for more verbose output
 }
 

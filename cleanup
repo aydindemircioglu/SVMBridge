@@ -32,4 +32,6 @@ perl -0777 -pi -e 's/pages:(.*)//sgim' mkdocs.yml
 
 # add all vignettes
 echo "pages:" >> mkdocs.yml
-for x in vignettes/*; do y=${x/vignettes\//}; z=${y/Rmd/md}; echo "- "$z >> mkdocs.yml; done
+#for x in vignettes/*; do y=${x/vignettes\//}; z=${y/Rmd/md}; echo "- "$z >> mkdocs.yml; done
+for x in `ls staticdocs/`; do echo "- "$x >> mkdocs.yml; done
+

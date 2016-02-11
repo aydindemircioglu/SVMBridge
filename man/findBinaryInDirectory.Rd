@@ -5,7 +5,7 @@
 \title{Find a given binary in given directory.}
 \usage{
 findBinaryInDirectory(binaryName = NULL, dir = NULL, patterns = NULL,
-  applyKeyFix = FALSE, verbose = FALSE)
+  verbose = FALSE)
 }
 \arguments{
 \item{binaryName}{Search name for the SVM binary}
@@ -13,8 +13,6 @@ findBinaryInDirectory(binaryName = NULL, dir = NULL, patterns = NULL,
 \item{dir}{Search path for the SVM binary.}
 
 \item{patterns}{Pattern for output of the binary file}
-
-\item{applyKeyFix}{Apply fix for 'press any key to continue' (SVMperf)?}
 
 \item{verbose}{Print messages while searching?}
 }

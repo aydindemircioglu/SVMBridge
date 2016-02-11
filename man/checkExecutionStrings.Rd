@@ -5,14 +5,12 @@
 \title{Check whether a binary's output contains given strings.}
 \usage{
 checkExecutionStrings(trainBinaryPath = NULL, patterns = NULL,
-  applyKeyFix = FALSE, verbose = FALSE)
+  verbose = FALSE)
 }
 \arguments{
 \item{trainBinaryPath}{Path of binary to check.}
 
 \item{patterns}{List of patterns to check for. Checking is done via grep.}
-
-\item{applyKeyFix}{Send a dummy key ('1') to the binary? This is necessary if the binary waits for a key prompt.}
 
 \item{verbose}{Be verbose?}
 }
@@ -28,8 +26,13 @@ the correct binary.
 To make sure that the binary is correct, it will be executed!
 binary is really not exchangeable).
 
-applyKeyFix is platform dependent. On non-unix platforms it
-will load thtet whole binary into memory and grep for the strings there.
-This works with our problem child "svmperf".
+Our problem child, svmperf, waits for an key. therefore a 
+flag applyKeyFix was handed before to simulate a keypress. but this 
+seemed to be platform dependent. On non-unix platforms this simply 
+did not work out. Instead now this function will load the whole binary 
+into memory and grep for the strings there. But by reading docs-- rtfm--
+it became clear that system2 has an 'input' parameter that just sends
+the simulated key to the binary-- this must be platform independent.
+so we remove applyKeyFix for the user, and later from code too.
 }
 
