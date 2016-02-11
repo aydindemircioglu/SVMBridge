@@ -1,0 +1,336 @@
+\documentclass[article, shortnames]{jss}
+
+% TODO:
+% \proglang{C++}/R -> prolang{.}
+% SVMBridge -> pkg{.}
+
+
+\usepackage{amsmath, amssymb}
+\usepackage{mathtools}
+
+\newcommand{\sign}{\mathop{\mathrm{sign}}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Order}{\mathcal{O}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% almost as usual
+\author{Ayd\i n Demircio\u{g}lu\\Ruhr-Universit\"at Bochum \And 
+Hanna Houphouet\\Ruhr-Universit\"at Bochum \And 
+        Daniel Horn\\TU Dortmund \AND
+        Tobias Glasmachers\\Ruhr-Universit\"at Bochum \And 
+        Bernd Bischl\\TU M\"unchen \And 
+        Claus Weihs\\TU Dortmund}
+\title{\pkg{SVMBridge}: Using SVM Solvers from R}
+
+%% for pretty printing and a nice hypersummary also set:
+\Plainauthor{Ayd\i n Demircio\u{g}lu, Daniel Horn} %% comma-separated
+\Plaintitle{SVMBridge: Using SVM Solvers from R} %% without formatting
+\Shorttitle{\pkg{SVMBridge}: Using SVM Solvers from R} %% a short title (if necessary)
+
+%% an abstract and keywords
+\Abstract{
+  Most SVM Solver do not come with a wrapper in  \proglang{R}.
+  In case the SVM Solver is written in \proglang{C++}, it can be linked to
+  a package via  Rcpp. Although possible, this entails a lot of work to do,
+  and is not possible, if the SVM Solver is written in other languages.
+  Alternatively, one can call the SVM Solver from within \proglang{R} by a system command.
+  SVMBridge eases this calls by providing a framework and ready wrappers
+  for several SVM Solvers like LASVM, SVMperf, LLSVM and BVM/CVM.  
+}
+\Keywords{support vector machines, command line}
+\Plainkeywords{support vector machines, command line} %% without formatting
+%% at least one keyword must be supplied
+
+%% publication information
+%% NOTE: Typically, this can be left commented and will be filled out by the technical editor
+%% \Volume{50}
+%% \Issue{9}
+%% \Month{June}
+%% \Year{2012}
+%% \Submitdate{2012-06-04}
+%% \Acceptdate{2012-06-04}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+  Ayd\i n Demircio\u{g}lu, Hanna Houphouet, Tobias Glasmachers\\
+  Institut f\"ur Neuroinformatik\\
+  Ruhr-Universit\"at Bochum\\
+  44790 Bochum\\
+  Germany\\
+  E-mail: \email{\{aydin.demircioglu, hanna.houphouet, tobias.glasmachers\}@ini.rub.de}\\
+  URL: \url{http://www.ini.rub.de}\\
+  \\
+  
+  Daniel Horn, Claus Weihs\\
+  Fakult\"at Statistik\\
+  Technische Universit\"at Dortmund\\
+  44221 Dortmund\\
+  Germany \\ 
+  E-mail: \email{\{dhorn, bischl, weihs\}@statistik.tu-dortmund.de} \\
+  URL: \url{https://www.statistik.tu-dortmund.de/computationalstats.html}\\
+\\
+
+  Bernd Bischl\\
+Institut f\"ur Statistik \\
+Ludwig-Maximilians-Universit\"at M\"unchen\\
+80539 M\"unchen\\
+  Germany \\
+E-mail: \email{bernd.bischl@stat.uni-muenchen.de}\\
+URL: \url{http://www.statistik.lmu.de/~bischl}
+}
+
+%% It is also possible to add a telephone and fax number
+%% before the e-mail in the following format:
+%% Telephone: +43/512/507-7103
+%% Fax: +43/512/507-2851
+
+%% for those who use Sweave please include the following line (with % symbols):
+%% need no \usepackage{Sweave.sty}
+
+
+
+
+%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%% include your article here, just as usual
+%% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
+
+%% Note: If there is markup in \(sub)section, then it has to be escape as above.
+
+\section{Introduction}
+
+
+
+\subsection{Support Vector Machines}
+
+
+
+Kernelized Support Vector Machines (SVM) \cite{cortes1995support}
+are binary classifiers that use a kernel $k$ to allow for non-linear
+classification decisions
+$x \mapsto \sign( \langle w, \phi(x) \rangle + b)$, where $\phi$ is the
+(non-linear) feature map corresponding to the kernel
+$k(x, x') = \langle \phi(x), \phi(x') \rangle$ in the reproducing kernel
+Hilbert space $\mathcal{H}$.
+We use the RBF kernel $k(x,x') = e^{-\gamma || x-x' ||^2}$, since it
+yields excellent performance and enjoys a universal approximation
+property.
+The SVM training problem is given by
+\begin{equation}
+\min_{w \in \mathcal{H}, b \in \R} \quad \frac{1}{2} ||w||^2 + C \cdot \sum_{i=1}^n \max \Big( 0, 1 - y_i \big( \langle w, \varphi(x_i) \rangle_{\mathcal{H}} + b \big) \Big),
+\label{primalproblem}
+\end{equation}
+where $\big\{(x_1, y_1), \dots, (x_n, y_n)\big\}$ are the labeled
+training points and $C > 0$ is a regularization parameter that controls
+the complexity of the predictive model.
+
+
+The problem, although convex, can be solved by different means,
+e.g. LIBSVM employs a dual
+decomposition method, while  BSGD is a primal stochastic
+gradient descent solver. 
+
+
+
+\subsection[SVM packages in R]{SVM packages in \proglang{R}}
+
+In general, nearly all SVM solvers come as binary packages,
+often written in C. Therefore it is not possible to use them 
+directly from within \proglang{R}. Only a few SVM libraries are readily available,
+includ LIBSVM inside the well-known packages like \pkg{kernlab} (via \code{ksvm()})~\citep{kernlab}, 
+and \pkg{e1071} (via \code{svm()})~\citep{dimitriadou2008misc}
+as well as other less known ones, e.g. \pkg{SwarmSVM}~\citep{SwarmSVM} 
+and \pkg{lasvmR}~\citep{lasvmR}.
+All of these link existing \proglang{C++} sources directly from within \proglang{R} and need
+more or less extensive wrappers to allow the user direct access to
+the options of the underlying SVM solver.
+
+Other SVM solvers, like the BudgetedSVM package~\citep{djuric2014budgetedsvm}, 
+which contains BSGD and LLSVM, or SVMperf~\citep{joachims2009sparse}, cannot 
+be called directly from  \proglang{R}.
+Instead, a system command has to be issued.
+To ease this calls, the \pkg{SVMBridge} package has been developed.
+
+
+
+\section{The SVMBridge Package}
+
+The \pkg{SVMBridge} provides a framework to incorporate 
+SVM solvers by means of direct calls (via \code{system2()} commands).
+This is different to \pkg{e1071} and \pkg{kernlab}, which link (and
+thus copy) existing \proglang{C++} code directly inside the package.
+\pkg{SVMBridge} works thus differently: Each SVM solver must provide
+its own socalled {\it Wrapper}. This is a piece of R code that contains
+code e.g. to allow the proper calling of the system binary of a SVM solver
+as well as handling the corresponding models. Such wrapper can be
+registered in the SVMBridge and henceforth can be used opaquely.
+
+
+
+
+
+\section{General worflow}
+
+To use the SVMBridge, one usually perform the following steps:
+Make the external wrapper incl. software binaries known to the SVMBridge, 
+load the data, train a model, use the model for prediction.
+
+
+
+\subsection{Wrappers}
+
+A wrapper is a S3 object: It must provide routines
+for assembling the command line call for training as well as testing,
+reading and writing the model and a few general routines like searching
+the binaries and printing.
+We provided default wrappers for LIBSVM, LASVM, CVM/BVM,
+SVMperf, BSGD and LLSVM. 
+
+Make the SVMBridge aware of a new wrapper is
+simply done by calling \code{addSVMPackage()}.
+The SVMBridge comes with an easy mechanism to search 
+the corresponding binaries (specified in the wrapper) to ease
+the usage. To use this, one can instead call \code{findSVMSoftware}.
+
+
+
+\subsection{Data}
+
+Most SVM solver work with the LIBSVM sparse data format.
+This format saves the labels together with all non-zero indicies of every data point, e.g.
+$(0, 0, 0, 0.2 , 0, 1.4)^T$  belonging to class $3$, will be encoded as \texttt{'3 4:0.2 6:1.4'}.
+
+Although reading these files into \proglang{R} is possible via e.g. the 
+\pkg{e1071} package, most only provide pure \proglang{R} solutions,
+and therefore suffer from suboptimal performance.
+The SVMBridge package provides a simple sparse data format 
+reading and writing, which are implemented in \proglang{C++} and
+therefore can be nearly two orders of magnitudes faster than
+the corresponding e1071 routines.
+
+
+\subsection{Models}
+
+Internally models contain support vectors and their coefficients.
+
+
+\subsection{Training an SVM model}
+
+Multiclass is supported, where possible.
+Note that several SVM packages only support binary problems.
+In these cases, training a one-vs-all machine is rather easy, if the
+data is loaded into \proglang{R} first. 
+
+
+Reading a model is possible via the \code{readModelFromFile ()} function.
+This will try to detect the format of the file by calling the 
+\code{isModelFile} routine of each known wrapper.
+Unluckily, several SVM solver use similar model formats, so that
+a direct detection is not possible, e.g. CVM/BVM follow the LIBSVM
+format, but add a comment (with '\#')about the running time to the
+bottom of the model file. Apart from this change, there is no difference.
+From a practical viewpoint we extended the LIBSVM model reader
+to cope with this extra line, so that there is no need for an extra CVM/BVM reader.
+This means that reading a CVM model will make the SVMBridge to detect a LIBSVM
+model (if the LIBSVM wrapper is loaded).
+In these cases, if multiple models claims ownership, a "default" model can be provided,
+which will take precedence over other models. Without a default,
+the model will be random.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+R> model = trainSVM (method = "LIBSVM", cost = 1.0, gamma = 2.0,
+	trainDataFile = "./data.sparse", epsilon = 0.042, modelFile = modelFile)
+\end{CodeInput}
+\end{CodeChunk}
+
+The training data can be passed on via a variable in memory or by specifying the path 
+of the data set file. 
+Note that there are two sets of variables: Those who belong to the SVMBridge,
+like the trainDataFile variable or verbose flag, and those that are passed further
+to the underlying SVM wrapper.
+Not all options that are provided by the underlying SVM solver
+are supported by the wrappers. As our focus lies on binary classification, because of time constraints 
+we opted  to support only these options, e.g. we dropped the one-class SVDD in LIBSVM.
+In case there is need for other options, it is 
+easy to enhance the wrappers.
+There is furthermore the subsampling option, which can be used for larger data sets.
+
+
+\subsection{Testing a model}
+
+%Predicting from a trained model is rather easy, as there are usually not many options.
+Testing (or doing predictions) needs a trained SVM model as well as test data to work on.
+As with training, testSVM will accept data and models either from memory or from a file.
+%The same is true for the data to predict.  Again notice that data and models in memory 
+%must be written to disk prior to calling the prediction binary.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+R> testObj = testSVM (model, testDataFile = './australian_scale', 
+	readPredictions = TRUE)
+\end{CodeInput}
+\end{CodeChunk}
+
+The returned object will contain meta information like testing times as well as the predictions.
+
+
+\subsection{Other Considerations}
+
+Although the SVMBridge was meant to be cross-platform, this goal
+is hard to achieve. From a users perspective, it can be used on all three
+major platforms (Linux, MacOS, Windows). The tests should
+be executed to make sure the package works as intended.
+
+We sum up the points to keep in mind when performance is of high priority:
+Do not use the automatism to find the binaries, specify the paths by hand.
+Do not load the data into memory, specify the path of the data when training instead.
+Do not re-read the model into memory, let it on disk.
+
+
+
+\section{Creating a Wrapper}
+
+Adding your own SVM solver to the SVMBridge boils down to
+writing a S3 class with several routines. In the inst folder you will find
+a template that you can fill with your own code. Here we will go
+through the details of adding the software package ...
+
+The flow is as follows: The SVMBridge will call 
+createTrainingArguments method of any wrapper. The wrapper
+will return a string that contains all parameters that need to be
+passed to the binary of the underlying SVM solver. Note that
+this includes the model, prediction and training files.
+
+
+
+\section{Conclusion}
+
+We provided a simple framework, \pkg{SVMBridge}, to attach binary SVM solvers easily to the \proglang{R} landscape.
+The \pkg{SVMBridge} does this by an easily extensible wrappers that manage the exchange of data and models
+via command line.
+%By providing such a wrapper, linking any SVM solver to \proglang{R} becomes much easier.
+
+
+
+\section*{Acknowledgments}
+
+We acknowledge support by the Mercator  \proglang{R}.search Center  \proglang{R}.hr,
+under grant Pr-2013-0015 \textit{Support-Vektor-Maschinen f{\"u}r extrem gro{\ss}e Datenmengen} and
+partial support by the German  \proglang{R}.search Foundation (DFG) within the Collaborative  \proglang{R}.search Centers SFB 823
+\textit{Statistical modelling of nonlinear dynamic processes}, Project C2.
+
+
+\bibliography{collected}
+
+\end{document}

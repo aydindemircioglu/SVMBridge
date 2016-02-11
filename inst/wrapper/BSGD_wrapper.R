@@ -219,7 +219,9 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 	model$label = as.numeric(labels)
 
 	if (length(model$label) == 2) {
-		model$nSV	= c(sum(model$alpha[,1] > 0), sum(model$alpha[,1] < 0))
+		# this is stupid. the model can contain a NON-SUPPORTVECTOR with all alpha=0. probably because
+		# using double and saving single. :/
+		model$nSV	= c(sum(model$alpha[,1] >= 0), sum(model$alpha[,1] < 0))
 	} else {
 		# count total number of svs 
 		model$nSV = model$label * 0

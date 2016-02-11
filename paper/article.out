@@ -1,0 +1,13 @@
+\BOOKMARK [1][-]{Section.0.Introduction.1}{Introduction}{}% 1
+\BOOKMARK [2][-]{Subsection.1.0.Support Vector Machines.2}{Support Vector Machines}{Section.0.Introduction.1}% 2
+\BOOKMARK [2][-]{Subsection.1.1.SVM packages in R.2}{SVM packages in R}{Section.0.Introduction.1}% 3
+\BOOKMARK [1][-]{Section.1.The SVMBridge Package.1}{The SVMBridge Package}{}% 4
+\BOOKMARK [1][-]{Section.2.General worflow.1}{General worflow}{}% 5
+\BOOKMARK [2][-]{Subsection.3.0.Wrappers.2}{Wrappers}{Section.2.General worflow.1}% 6
+\BOOKMARK [2][-]{Subsection.3.1.Data.2}{Data}{Section.2.General worflow.1}% 7
+\BOOKMARK [2][-]{Subsection.3.2.Models.2}{Models}{Section.2.General worflow.1}% 8
+\BOOKMARK [2][-]{Subsection.3.3.Training an SVM model.2}{Training an SVM model}{Section.2.General worflow.1}% 9
+\BOOKMARK [2][-]{Subsection.3.4.Testing a model.2}{Testing a model}{Section.2.General worflow.1}% 10
+\BOOKMARK [2][-]{Subsection.3.5.Other Considerations.2}{Other Considerations}{Section.2.General worflow.1}% 11
+\BOOKMARK [1][-]{Section.3.Creating a Wrapper.1}{Creating a Wrapper}{}% 12
+\BOOKMARK [1][-]{Section.4.Conclusion.1}{Conclusion}{}% 13
