@@ -16,8 +16,9 @@ trainSVM(method = NULL, trainDataFile = NULL, trainDataX = NULL,
 
 \item{trainDataX}{Matrix comprising the data. This cannot be used at the same time as trainDataFile.}
 
-\item{trainDataY}{Vector comprising the labels for the data. This cannot be used at the same time as trainDataFile.
-c@param    extraParameter        Extra parameters for solver, passed to the createTrainingArguments function of the wrapper.}
+\item{trainDataY}{Vector comprising the labels for the data. This cannot be used at the same time as trainDataFile.}
+
+\item{extraParameter}{Extra parameters for solver, passed to the createTrainingArguments function of the wrapper.}
 
 \item{modelFile}{Path to the model file to create. If none specified, a temporary file will be created.}
 
