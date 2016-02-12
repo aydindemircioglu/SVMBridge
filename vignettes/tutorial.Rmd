@@ -62,13 +62,13 @@ In absense of a wrapperPath, the **SVMBridge** will then search the wrapper
 
 ```splus
 # will search automatically in the installation path of the SVMBridge
- addSVMPackage("LASVM")
+addSVMPackage("LASVM")
 ```
 
 Alternatively, you can specify the installation path of the package by yourself:
 ```splus
 addSVMPackage("LASVM" , wrapperPath = file.path (path.package("SVMBridge"), "wrapper"))
- ```
+```
 
 See [Wrappers](wrappers.Rmd) for more information about wrapper.
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/findSVMWrapper.R
 \name{findSVMWrapper}
 \alias{findSVMWrapper}
-\title{findSVMWrapper}
+\title{Find a given SVM Wrapper inside a search path.}
 \usage{
 findSVMWrapper(method = NA, searchPath = NA, recursive = TRUE,
   source = TRUE, verbose = FALSE)
