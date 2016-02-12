@@ -47,10 +47,10 @@ the path by hand:
 
 ```splus
 library(SVMBridge)
- addSVMPackage("LASVM", file.path (path.package("SVMBridge"), "wrapper"))
- ```
+addSVMPackage("LASVM", file.path (path.package("SVMBridge"), "wrapper"))
+```
 
- After that you can add the path of the compiled software.
+After that you can add the path of the compiled software.
 
 
 ### LIBSVM

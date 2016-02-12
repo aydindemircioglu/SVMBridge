@@ -17,19 +17,14 @@ In this section we talk about some advanced things.
 ### Implementing your own data format
 
 To implement your own data format, recall that you have two ways to provide data
-to your SVM software. The first is by specifiying a path to a data file on the filesystem.
-In this case, SVMBridge will not explicitly work with the data, so you are free to use any
- format, as long as your SVM software can handle this. The second way is to pass data as
+to your SVM software.  The first way is to pass data as
  a matrix to the SVMBridge. Here, SVMBridge needs to dump the given data first. By
- default, the SVMBridge will write the data in the LIBSVM Sparse Format. You are
- free to overwrite this behaviour, by rewriting the convertData function of the
- SVM Wrapper Object.
-
-
-Let us give an easy example.
-
-LABELS..
-MULTICLASS..
+ default, the SVMBridge will write the data in the LIBSVM Sparse Format.
+ The second is by specifying a path to a data file on the filesystem.
+ In this case, SVMBridge will not explicitly work with the data, so you are free to use any
+  format, as long as your SVM software can handle this.
+ (In later versions we might add convertData function to the
+ SVM Wrapper Object)
 
 
 
