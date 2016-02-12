@@ -17,7 +17,7 @@
 #
 
 
-#' findSVMWrapper
+#' Find a given SVM Wrapper inside a search path.
 #'	
 #' Given a search path, it will try to find the corresponding wrapper for the given method.
 #' This routine will also source the file, if specified.
@@ -37,7 +37,7 @@ findSVMWrapper <- function (method = NA, searchPath = NA, recursive = TRUE, sour
 	checkmate::assertString (searchPath)
 	
 	if (verbose == TRUE) {
-		cat("    -Finding wrapper for ", method, "\n")
+		cat("Finding wrapper for ", method, "\n")
 	}
 	
 	# look for tilde characters and expand them
@@ -46,7 +46,7 @@ findSVMWrapper <- function (method = NA, searchPath = NA, recursive = TRUE, sour
 	# get the SVM object
 	SVMObject = getSVMObject (method)
 	if (checkmate::testNull (SVMObject) == TRUE) {
-		stop ("Cannot find SVM Obejct for method ", method, ". Please create it first.")
+		stop ("Cannot find SVM Object for method ", method, ". Please create it first.")
 	}
 	checkmate::assertString (SVMObject$wrapperName)
 
@@ -57,7 +57,7 @@ findSVMWrapper <- function (method = NA, searchPath = NA, recursive = TRUE, sour
 		cat("    Looking for a wrapper with regex ", pattern, "\n")
 	}
 	
-	files <- list.files (searchPath, pattern = pattern, recursive = recursive)
+	files = list.files (searchPath, pattern = pattern, recursive = recursive)
 	if (length(files) > 1) {
 		warning ("Found multiple wrappers. Taking the first one: ", files[1])
 	}
@@ -69,7 +69,7 @@ findSVMWrapper <- function (method = NA, searchPath = NA, recursive = TRUE, sour
 	
 	wrapperPath = file.path (searchPath, files[1])
 	if (verbose == TRUE) { 
-		cat ("    -Found wrapper at ", wrapperPath, "\n") 
+		cat ("    Found wrapper at ", wrapperPath, "\n") 
 	}
 
 	if (source == TRUE) {
