@@ -133,12 +133,20 @@ a heavy toll on your general file I/O, so be cautious.
 
 ## <a name="Data"></a>Data
 
-As LIBSVM writes its data in a 'Sparse Format',
-the **SVMBridge** internally handles the same format.
+In general, as any data is passed forward to the underlying binary
+of the software package, the **SVMBridge** does not really care
+about the format of the data. Nonetheless, practically all major
+SVM packages use the "Sparse Format" (also called LIBSVM or SVMlight
+sparse format), so
+the **SVMBridge** internally chooses the  same format when it has to
+write data from memory to disk.
+This is true for both, training and test data.
+
 You are not forced to use this format, in case your SVM solver uses a
 different way to read and store data. But it is encouraged to use
 LIBSVM's sparse format where possible as it became the de-facto
 standard in the SVM machine learning community.
+
 To allow reading and storing this LIBSVM sparse format,
  SVMBridge provides two routines ```readSparseData``` and ```writeSparseData```.
  The reason we do not use e1071's similar routines is that our routines
@@ -334,7 +342,7 @@ as ```testObj$predictions```.
 Predicting is a special form of Testing, thus all the comments on Testing hold also for predicting. The only difference is that prediction does not need any kind of labels, while testing does need that (for computing the accurcy on the test set). Technically, the difference between ```testSVM``` and ```predictSVM``` is that the later does not need any labels. Instead, when ```predictSVM``` is called, dummy labels are created and then ```testSVM``` is called. Therfore, the returned object is just a SVM test result object, though the testError is now removed, as it does not contain anything meaningful.
 
 **Note:** When calling ```predictSVM``` with unlabeled data on disk, dummy labels have to be added to the data. Thus, the data has to read into memory, modified and written back. This prodcedure is therefore not cheap, but costs some I/O times. If speed is necessary, it might be a good option to label the data upfront, e.g. when creating the test data file, if applicable.
-  
+
 
 
 

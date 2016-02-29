@@ -16,17 +16,18 @@ vignette: >
 
 ### WARNING: Not all features for each solver are supported yet!
 
-|Short name | Full name | Notes | URL |
+|Short name | Full name | Notes | Data Formats | URL |
 |-|-|-|-|
-|BSGD| Budgeted SGD | m | http://www.dabi.temple.edu/budgetedsvm/
-|BVM| Ball Vector Machine | m | http://c2inet.sce.ntu.edu.sg/ivor/cvm.html
-|CVM| Core Vector Machine | m | http://c2inet.sce.ntu.edu.sg/ivor/cvm.html
-|LASVM |  | b | http://leon.bottou.org/projects/lasvm
-|LIBSVM |   | m | https://www.csie.ntu.edu.tw/~cjlin/libsvm/
-|LLSVM| Low-rank linearization SVM | b | http://www.dabi.temple.edu/budgetedsvm/
-|SVMperf|   | b |  https://www.cs.cornell.edu/people/tj/svm_light/svm_perf.html
+|BSGD| Budgeted SGD | m | S | http://www.dabi.temple.edu/budgetedsvm/
+|BVM| Ball Vector Machine | m | S | http://c2inet.sce.ntu.edu.sg/ivor/cvm.html
+|CVM| Core Vector Machine | m | S | http://c2inet.sce.ntu.edu.sg/ivor/cvm.html
+|LASVM |  | b | S,p,b | http://leon.bottou.org/projects/lasvm
+|LIBSVM |   | m | S | https://www.csie.ntu.edu.tw/~cjlin/libsvm/
+|LLSVM| Low-rank linearization SVM | b | S |  http://www.dabi.temple.edu/budgetedsvm/
+|SVMperf|   | b |  S | https://www.cs.cornell.edu/people/tj/svm_light/svm_perf.html
 
-**Legend**: m = multiclass, b = binary
+**Legend**: m = multiclass, b = binary --
+S = LIBSVM sparse  format, p = split files, b = binary files
 
 **Warning:** Currently we do not seek completeness. The **SVMBridge** is a classification-only package, so many options e.g. regarding regression etc. are currently not supported. Some other options, although they can be used with classifications, might be missing too. In case you are missing something, you will need to adapt an existing classifier or simply write your own from scratch. Either way, please share your results with us, so we can include these in future versions of the **SVMBridge**.
 
