@@ -20,7 +20,13 @@ In this tutorial, we aim to use the LIBSVM package, the probably best known SVM 
 
 The **SVMBridge** provides instead a structured way to call other SVM packages by command line. This has the advantage that only a (often simple) wrapper in R has to be written. No sources have to be changed (in case the SVM solver can readily be called by command line), nor an R package has to be written containing these sources.
 
-To understand the way the **SVMBridge** works, let us now train LIBSVM on a simple data set.  As the **SVMBridge** is just an easy way to call a precompiled SVM package, we first need to obtain LIBSVM. Download the source package from the LIBSVM webpage (currently at http://www.csie.ntu.edu.tw/~cjlin/libsvm/), either as zip/tar or directly from github. We assume here that you put the sources into a directory './software/LIBSVM'.
+To understand the way the **SVMBridge** works, let us now train LIBSVM on a simple data set.  As the **SVMBridge** is just an easy way to call a precompiled SVM package, we first need to obtain LIBSVM. Download the source package from the LIBSVM webpage (currently at http://www.csie.ntu.edu.tw/~cjlin/libsvm/), either as zip/tar or directly from github. We assume here that you put the sources into a directory './software/LIBSVM'. You can conveniently do this directly from R:
+
+```splus
+dir.create ("data")
+download.file("https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary/australian_scale",
+     "data/australian_scale")
+```
 
 If you are using windows, the package should contain already precompiled binaries, in this case you can skip the rest of this paragraph. If you use any other OS, you need to compile LIBSVM. For this, go to the directory and call 'make' from the command line (Make sure to have all the necessary c++ packages installed). After successful compilation you will have two binary executables: svm-train and svm-predict. Make sure you can execute them by just calling './svm-train' (an extensive help page should be shown).
 

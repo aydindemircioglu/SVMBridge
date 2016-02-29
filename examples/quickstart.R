@@ -1,6 +1,17 @@
 
+# this tutorial assumes that the compiled LIBSVM software can be found in ./software/LIBSVM.
+# it will create a ./data directory and place the australian data set into it.
+
+
 # load the SVMBridge 
 library(SVMBridge)
+
+# download australian data set from LIBSVM data webseite
+dir.create ("data")
+download.file("https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary/australian_scale",
+     "data/australian_scale")
+
+
 
 # add the prepackaged wrapper 
 addSVMPackage("LIBSVM", wrapperPath =  file.path (path.package("SVMBridge"), "wrapper"))
