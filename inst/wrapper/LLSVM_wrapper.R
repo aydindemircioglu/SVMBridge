@@ -213,17 +213,19 @@ readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE) {
 	model$totalSV = nrow(supportvectors)
 	model$label = as.numeric(unlist(strsplit(order, " ")))
 
-	# do we need to invert the labels? in this case we invert the coefficients
-	if (invertLabels == TRUE) {
-		if (verbose == TRUE)
-			cat(" Inverting Labels.")
-
-		# invert alphas
-		model$alpha = -model$alpha
-
-		# this is also needed..
-		model$bias = -bias
-	}
+# 	# do we need to invert the labels? in this case we invert the coefficients
+# 	if (invertLabels == TRUE) {
+# 		if (verbose == TRUE)
+# 			cat(" Inverting Labels.")
+# 
+# 		# invert alphas
+# 		model$alpha = -model$alpha
+# 
+# 		# this is also needed..
+# 		model$bias = -bias
+# 
+# 		model$label = c(-1, 1)
+# 	}
 
 	# close connection
 	close(con)
@@ -254,7 +256,26 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 	gamma = model$gamma * 2
 	degree = 1
 	coef = 1
+# 
+# 	# labels
+# 	invertLabels = FALSE
+# 	if (model$label[1] == 1) {
+# 		invertLabels = TRUE
+# 	}
+# 	
+# 	# do we need to invert the labels? in this case we invert the coefficients
+# 	if (invertLabels == TRUE) {
+# 		if (verbose == TRUE)
+# 			cat(" Inverting Labels.")
+# 
+# 		# invert alphas
+# 		model$alpha = -model$alpha
+# 
+# 		# this is also needed..
+# 		model$bias = -model$bias
+# 	}
 
+	
 	# write header
 	modelFileHandle <- file(modelFile, open = "w+")
 	writeLines(paste ("ALGORITHM: 3", sep = ""), modelFileHandle )
@@ -269,11 +290,12 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 	writeLines(paste ("KERNEL_COEF_PARAM:", coef, sep = " "), modelFileHandle )
 	writeLines(paste ("MODEL:", sep = ""), modelFileHandle )
 
+	
 	for (r in 1:nrow(model$SV)) {
 		wline = paste0 (model$w[r])
 		aline = ""
-		for (c in 1:ncol(model$a)) {
-			aline = paste0 (aline, -model$a[r,c], " ")
+		for (c in 1:ncol(model$alpha)) {
+			aline = paste0 (aline, model$alpha[r,c], " ")
 		}
 		sline = ""
 		for (c in 1:ncol(model$SV)) {
@@ -315,7 +337,7 @@ detectModel.LLSVM = function (x, modelFile = NULL, verbose = FALSE) {
 
 
 readPredictions.LLSVM = function (x, predictionsFile = "", verbose = FALSE) {
-	ret = readLIBSVMPredictions (predictionsFile = bashEscape (predictionsFile), verbose = verbose)
+	ret = readLIBSVMPredictions (predictionsFile = predictionsFile, verbose = verbose)
 	return (ret)
 }
 

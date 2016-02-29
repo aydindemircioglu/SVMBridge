@@ -1,0 +1,14 @@
+
+# copy wrapper
+mkdir ./inst/wrapper
+cp wrapper/* ./inst/wrapper
+
+# make wrapper available for automatic checking too
+rm -rf ./tests/wrapper
+mkdir ./tests/wrapper
+cp -R wrapper/* ./tests/wrapper
+
+# copy OS-specific tests
+#mkdir ./inst/tests
+#cp -R tests/testWrappers ./inst/tests
+

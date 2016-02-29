@@ -35,6 +35,10 @@
 #
 #' @export
 readLIBSVMPredictions = function (predictionsFile = "", verbose = FALSE) {
+	if (verbose == TRUE) {
+		cat ("Reading LIBSVM predictions from ", predictionsFile, "\n")
+	}
+	
 	con  = file (predictionsFile, open = "r")
 
 	predictions = c()

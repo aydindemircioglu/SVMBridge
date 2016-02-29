@@ -192,12 +192,24 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 			inst_max_index = -1;
 			double i = strtod(p,&endptr);
 			
-			if(p == NULL) // empty line
+			// empty line 
+			if(p == NULL) {
+				if (verbose == TRUE) 
+					Rcout << "Warning: empty line.\n";  
 				break;
+			}
 			
-			if(endptr == p || *endptr != '\0')
-				break;
-
+			if(endptr == p || *endptr != '\0') {
+				// might be that we have a file without any alphas.
+				string idxp = std::string(p);
+				if (idxp.find(":") != -1) {
+					max_alphacount = 0;
+				} else {
+					break;
+				}
+			}
+			
+			
 			while(1)
 			{
 				index = 0;
@@ -246,7 +258,7 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 					idx = idx2;
 					alphacount = 0;
 					//cout << "Fehlertracking: " << "idx = " << idx << endl;
-				}
+				} 
 				
 				errno = 0;
 				index = (int) strtol(idx,&endptr,10); 
@@ -310,33 +322,43 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 		{
 			inst_max_index = -1; 
 			readline(fp);
-// 			if (max_alphacount > 1) {
-// 				std::cout << line << "\n";
-// 			}
-			label = strtok(line," \t\n");
 			
-			if(label == NULL) {
-				s << "Error: label = 0 " ;
-				::Rf_error(s.str().c_str());
-				return R_NilValue;
-			}
+			//if datasets contains multiple alpha values, this is the first one, else this is the class label
+			// we also have to check whether there is a label at all or not
+			if (max_alphacount > 0) {
+				label = strtok(line," \t\n");
 			
-			//if datasets contains multiple alpha values, this is the first one, else this is the class label FIXME
-			yR(i,0) = strtod(label, &endptr);
-			//cout << "label " << label << endl;
-			//cout << "endptr " << *endptr << endl;
-			if(endptr == label || *endptr != '\0'){
+				if(label == NULL) {
+					s << "Error: label = 0 " ;
+					::Rf_error(s.str().c_str());
+					return R_NilValue;
+				}
+
+				yR(i,0) = strtod(label, &endptr);
+
+				if (endptr == label || *endptr != '\0'){
 					s << "Error in endptr " ;
 					::Rf_error(s.str().c_str());
 					return R_NilValue;
 				}
-			
+			} 
+		
+			// stupid helper for the no-label case
+			bool hStart = 0;
 			while(1)
 			{
 				std::setprecision(16);
-				idx = strtok(NULL,":");
-				val = strtok(NULL," \t");
+				if ((max_alphacount == 0) && (hStart == 0)) {
+					idx = strtok(line,":");
+					val = strtok(NULL," \t");
+					hStart = 1;
+				} else {
+					idx = strtok(NULL,":");
+					val = strtok(NULL," \t");
+				} 
+				
 				alphacount = 1; //correction since max_alphacount got incremented
+				
 				if(val == NULL) //No further informations in this line.. end of line
 					break;
 				
@@ -388,7 +410,7 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 					idx2[sizeof(idx2)-1] = 0;
 					idx = idx2;
 					//cout << "fixed idx = " << idx << endl;
-				}
+				} 
 				
 				errno = 0;
 				index = (int) strtol(idx,&endptr,10); //errno may be updated in this step
@@ -402,9 +424,7 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 					inst_max_index = index;
 
 				errno = 0;
-				//cout << "Fehlertracking val2 = " << rds << endl;
 				xR(i, index - correction) = strtod(val,&endptr); //errno may be updated in this step
-				//cout  << "Fehlertracking: index = " << index << endl;
 				
 				if(endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr))){
 					s << "Error in endptr ";
@@ -412,13 +432,19 @@ List readSparseData (std::string filename, unsigned long  skipBytes = 0, bool ve
 					return R_NilValue;
 				}
 			}
+			
 			if(inst_max_index > max_index)
 				max_index = inst_max_index;
 		}
 		
 		fclose(fp);
 		free(line);
+		
 		Rcpp::List rl = Rcpp::List::create (Rcpp::Named ("X", xR), Rcpp::Named("Y", yR) );
+		if (max_alphacount == 0) {
+			rl = Rcpp::List::create (Rcpp::Named ("X", xR), Rcpp::Named("Y", R_NilValue) );
+		}
+		
 		return (rl);
 	}	
 	

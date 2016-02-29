@@ -94,3 +94,12 @@ test_that(" Read/Write operations do work on datasets with non binary labels", {
 
 
 
+test_that(" Reading file without labels does work", {
+	S1 = readSparseData (filename = "../data/australian.nolabels")
+	S2 = readSparseData (filename = "../data/australian.test")
+	expect_equal(S1$X, S2$X)
+	expect_equal(S1$Y, NULL)
+})
+
+
+

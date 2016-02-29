@@ -35,11 +35,12 @@ test_that("general workflow works with binary packages.", {
 	
 	# call without parameters to get an exception
 	source ("cycletests.R")
-	source ("wrappertests.R")
 	source ("detectModeltests.R")
 	source ("downloadSoftware.R")
 	source ("multiClasstests.R")
-	
+	source ("predicttests.R")
+	source ("wrappertests.R")
+
 
 
 	# VERY VERY IMPORTANT!
@@ -77,7 +78,7 @@ test_that("general workflow works with binary packages.", {
 	writeSparseData(filename = trainDataFile, X = trainDataX, Y = trainDataY)
 	testDataFile = tempfile()
 	writeSparseData(filename = testDataFile, X = testDataX, Y = testDataY)
-		
+	
 
 	## 1. test finding all software first
 		
@@ -87,10 +88,12 @@ test_that("general workflow works with binary packages.", {
 
 	solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
 	softwareBaseDir = tempdir()
-	
-	# this stuff is for debugging locally without reloading the packages each time
+
+	# debugging: only use a subset of solvers
 #	solvers = c("LIBSVM")
 	#solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
+	
+	# this stuff is for debugging locally without reloading the packages each time
 #	softwareBaseDir = "/tmp/software"
 #	if (file.exists(softwareBaseDir) == FALSE) {
 	if (TRUE == TRUE) {
@@ -117,6 +120,11 @@ test_that("general workflow works with binary packages.", {
 		cat ("\nWrapper test for solver", solver, ": ")
 #		testthat::context (paste0(solver, "wrapper"))
 		wrappertests (solver, trainDataX, trainDataY, testDataX, testDataY, verbose)
+	}
+
+	for (solver in solvers) {
+		cat ("\nTest predictions for solver", solver, ": ")
+		predicttests (solver, trainDataX, trainDataY, testDataX, testDataY, verbose)
 	}
 	
 	mcsolvers = c("LIBSVM", "BSGD", "BVM", "CVM")

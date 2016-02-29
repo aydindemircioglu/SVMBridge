@@ -22,7 +22,8 @@ We talk about all  parts needed to successfully use the package: Data, Models, W
 5. [Models](#Models)
 6. [Training](#Training)
 7. [Testing](#Testing)
-8. [Vocabulary](#Vocabulary)
+8. [Predicting](#Predicting)
+9. [Vocabulary](#Vocabulary)
 
 
 ## <a name="GeneralWorkflow"></a>General Workflow
@@ -33,7 +34,7 @@ In general, the workflow is as follows:
 - Specify the path to the SVM solver, or let the SVMBridge search for the package.
 - Load or create data in memory or on disk.
 - Call ```trainSVM``` to train the SVM solver on your given data. It will produce a model.
-- Call ```testSVM``` to make prediction on new data.
+- Call ```predictSVM``` to make prediction on new data.
 
 
 
@@ -277,7 +278,12 @@ Train time contains the time needed for the whole training process, measured wit
 
 ## <a name="Testing"></a>Testing
 
-Testing is done very similar to training by calling the ```testSVM``` function
+Testing is done very similar to training by calling the ```testSVM``` or the ```predictSVM``` function, depending on whether one wants to predict or test.
+
+**Note** that practically all supported SVM packages do not provide a
+method for  prediction, but only for testing. The difference between both is that testing assumes that the given test data contains the correct labels (i.e. is in normal  LIBSVM sparse data format), so the accuracy on the test set can be computed.  Prediction on the other hand does not need any labels. Both are supported in the SVMBridge, here we use the ```testSVM```.
+
+
 Similarly, there is the option to use test data from memory or from file system.
 As above, in case you specify data from memory and from disc at the same time,
 the **SVMBridge** will throw an error, as it will be confused about which source to use.
@@ -319,6 +325,16 @@ which correspond to  the error on the test data file and the execution time.
 If specifiied, the predictions be read and  stored in the SVM test return object
 as ```testObj$predictions```.
 
+
+
+
+
+## <a name="Predicting"></a>Predicting
+
+Predicting is a special form of Testing, thus all the comments on Testing hold also for predicting. The only difference is that prediction does not need any kind of labels, while testing does need that (for computing the accurcy on the test set). Technically, the difference between ```testSVM``` and ```predictSVM``` is that the later does not need any labels. Instead, when ```predictSVM``` is called, dummy labels are created and then ```testSVM``` is called. Therfore, the returned object is just a SVM test result object, though the testError is now removed, as it does not contain anything meaningful.
+
+**Note:** When calling ```predictSVM``` with unlabeled data on disk, dummy labels have to be added to the data. Thus, the data has to read into memory, modified and written back. This prodcedure is therefore not cheap, but costs some I/O times. If speed is necessary, it might be a good option to label the data upfront, e.g. when creating the test data file, if applicable.
+  
 
 
 

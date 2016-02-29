@@ -3,18 +3,10 @@ find . -name \*.o -exec rm {} \;
 find . -name \*.so -exec rm {} \;
 find . -name "#*#" -exec rm {} \;
 
+
 # copy wrapper
-mkdir ./inst/wrapper
-cp wrapper/* ./inst/wrapper
+./copywrapper
 
-# make wrapper available for automatic checking too
-rm -rf ./tests/wrapper
-mkdir ./tests/wrapper
-cp -R wrapper/* ./tests/wrapper
-
-# copy OS-specific tests
-#mkdir ./inst/tests
-#cp -R tests/testWrappers ./inst/tests
 
 # generate static docs
 rm -rf ./staticdocs

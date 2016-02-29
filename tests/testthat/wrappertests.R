@@ -55,9 +55,9 @@ wrappertests = function (solver, trainDataX, trainDataY, testDataX, testDataY, v
 	)  
 
 	if (Sys.info()["sysname"] == "Windows") {
-		expErrors = c("LIBSVM" = 0.06, "LASVM" = 0.06, "BSGD" = 0.04, "SVMperf" = 0.06, "BVM" = 0.04, "CVM" = 0.04, "LLSVM" = 0.92) #LLSVM is no joke.
+		expErrors = c("LIBSVM" = 0.06, "LASVM" = 0.06, "BSGD" = 0.04, "SVMperf" = 0.06, "BVM" = 0.04, "CVM" = 0.04, "LLSVM" = 0.08)  
 	} else {
-		expErrors = c("LIBSVM" = 0.06, "LASVM" = 0.06, "BSGD" = 0.04, "SVMperf" = 0.06, "BVM" = 0.04, "CVM" = 0.04, "LLSVM" = 0.94) #LLSVM is no joke.
+		expErrors = c("LIBSVM" = 0.06, "LASVM" = 0.06, "BSGD" = 0.04, "SVMperf" = 0.06, "BVM" = 0.04, "CVM" = 0.04, "LLSVM" = 0.06)  
 	}
 	
 	if (verbose == TRUE) {
