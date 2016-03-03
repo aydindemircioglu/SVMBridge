@@ -493,7 +493,6 @@ List writeSparseData (std::string filename, NumericMatrix X, NumericMatrix Y, bo
 		std::fstream fs;
 		if (append == true) {
 			fs.open(filename.c_str(), std::fstream::in | std::fstream::out |std::fstream::app);
-//			fs.seekg(skipBytes);
 		} else {
 			fs.open (filename.c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
 		}
@@ -510,18 +509,15 @@ List writeSparseData (std::string filename, NumericMatrix X, NumericMatrix Y, bo
 		
 		
 		if (Y.nrow() != n) {
-			Rcout << "Error!\n";
-			// FIXME throw error
+			Rcout << "Error: Dimensions of data X and labels Y do not match! Could be a type problem, too, both must be numeric.\n";
 		}
 		
-		for(int i=0;i<n;i++) 
-		{
+		for(int i=0;i<n;i++)  {
 			for(int r=0;r<y_width;r++){
 				fs << std::setprecision(16) << Y(i,r) << " ";
 			}
 			
-			for(int j=0;j<m;j++)
-			{
+			for(int j=0;j<m;j++) {
 				if(X(i,j) != 0)
 					fs << j + correction << ":" << std::setprecision(16) << X(i,j) << " ";
 			}
@@ -529,8 +525,7 @@ List writeSparseData (std::string filename, NumericMatrix X, NumericMatrix Y, bo
 		}
 		fs.close();
 	}
-	catch(int e)
-	{
+	catch(int e) {
 		stringstream s;
 		s << "Unknown Error: " << e << "\n";
 		::Rf_error(s.str().c_str());
