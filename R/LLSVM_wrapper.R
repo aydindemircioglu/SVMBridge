@@ -39,8 +39,8 @@ createTrainingArguments.LLSVM = function (x,
 		sprintf("-L %.16f", (1.0 / (n * cost))),
 		sprintf("-g %.16f", 2 * gamma),
 		extraParameter,
-		bashEscape (trainDataFile),
-		bashEscape (modelFile)
+	    shQuote (trainDataFile),
+	    shQuote (modelFile)
 	)
 
 	return (args)
@@ -51,9 +51,9 @@ createTrainingArguments.LLSVM = function (x,
 createTestArguments.LLSVM = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
     args = c(
 		"-v 1",
-		bashEscape (testDataFile),
-		bashEscape (modelFile),
-		bashEscape (predictionsFile)
+	    shQuote (testDataFile),
+	    shQuote (modelFile),
+	    shQuote (predictionsFile)
 	)
 
 	return (args)

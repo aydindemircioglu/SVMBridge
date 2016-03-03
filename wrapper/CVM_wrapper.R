@@ -19,15 +19,16 @@
 
 
 createTrainingArguments.CVM = function (x,
-						trainDataFile = "",
-						modelFile = "",
-						extraParameter = "",
-						primalTime = 10,
-						wallTime = 8*60,
-						kernelCacheSize = 1024,
-						cost = 1,
-						gamma = 1,
-						epsilon = 0.001, ...) {
+    trainDataFile = "",
+    modelFile = "",
+    extraParameter = "",
+    primalTime = 10,
+    wallTime = 8*60,
+    kernelCacheSize = 1024,
+    cost = 1,
+    gamma = 1,
+    epsilon = 0.001, ...)
+{
     args = c(
         "-s 6",                         # CVM = 6, BVM = 9
         "-t 2",
@@ -36,8 +37,8 @@ createTrainingArguments.CVM = function (x,
         sprintf("-g %.16f", gamma),
         sprintf("-e %.16f", epsilon),
         extraParameter,
-        bashEscape (trainDataFile),
-        bashEscape (modelFile)
+        shQuote (trainDataFile),
+        shQuote (modelFile)
     )
 
     return (args)
@@ -47,9 +48,9 @@ createTrainingArguments.CVM = function (x,
 
 createTestArguments.CVM = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
     args = c(
-        bashEscape (testDataFile),
-        bashEscape (modelFile),
-        bashEscape (predictionsFile)
+        shQuote (testDataFile),
+        shQuote (modelFile),
+        shQuote (predictionsFile)
     )
     return (args)
 }

@@ -25,6 +25,10 @@ createTrainingArguments = function (x, trainDataFile = NULL, modelFile = NULL, v
 
 This function will transform given parameters into a string that will be used as arguments when executing the corresponding SVM train binary. It will return the string.
 
+**Note**: Please note that as the training arguments is passed as a string, it  might need proper escaping. This can be done by using shQutoes, as you can see in the prepackaged
+wrappers
+
+
 
 ##### createTestArguments
 
@@ -35,6 +39,10 @@ createTestArguments = function (x, testDataFile = NULL, modelFile = NULL, predic
 ```
 
 This function will transform given parameters into a string that will be used as arguments when executing the corresponding SVM test binary. It will return the string.
+
+**Note**: Please note that as the training arguments is passed as a string, it  might need proper escaping. This can be done by using shQutoes, as you can see in the prepackaged
+wrappers
+
 
 
 ##### extractTrainInfo
@@ -123,8 +131,8 @@ return them as a list.
 ```
 findSoftware = function (x, searchPath = "./", verbose = FALSE) {
 	x$trainBinaryPath = ...
-  x$testBinaryPath = ...
-  return (x)
+    x$testBinaryPath = ...
+    return (x)
 }
 ```
 

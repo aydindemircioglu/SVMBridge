@@ -39,8 +39,8 @@ createTrainingArguments.BSGD = function (x,
 		sprintf("-e %.16f", epochs ),
 		sprintf("-g %.16f", 2 * gamma),
 		extraParameter,
-		trainDataFile,
-		modelFile
+		shQuote (trainDataFile),
+		shQuote (modelFile)
 	)
 	return (args)
 }
@@ -50,8 +50,8 @@ createTrainingArguments.BSGD = function (x,
 createTestArguments.BSGD = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
     args = c(
 		"-v 1",
-		testDataFile,
-		modelFile,
+		shQuote (testDataFile),
+		shQuote (modelFile),
 		predictionsFile
 	)
 

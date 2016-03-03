@@ -5,6 +5,5 @@
 
 - **expandTilde**: This will expand a path containing a tilde (=home directory on Unix-like OSs) into a full path, e.g. '~/R' might expand to '/home/user/R' on Unix or '/Users/user/R' on Windows.
 
-- **bashExpand**: This will try to escape a filename by adding quotes and other things to it, so a wrapper can assemble its command line easily.
 
 

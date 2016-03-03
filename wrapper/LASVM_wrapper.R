@@ -44,8 +44,8 @@ createTrainingArguments.LASVM = function (x,
 		sprintf("-e %.16f", epsilon),
 		sprintf("-p %.16f", epochs),
 		extraParameter,
-		trainDataFile,
-		modelFile
+		shQuote (trainDataFile),
+		shQuote (modelFile)
 	)
 
 	return (args)
@@ -55,8 +55,8 @@ createTrainingArguments.LASVM = function (x,
 
 createTestArguments.LASVM = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
     args = c(
-        testDataFile,
-        modelFile,
+        shQuote (testDataFile),
+        shQuote (modelFile),
         predictionsFile
     )
     return (args)

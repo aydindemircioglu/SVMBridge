@@ -109,8 +109,8 @@ createTrainingArguments.LIBSVM = function (
 			sprintf("-g %.16f", gamma),        # gamma
 			sprintf("-e %.16f", epsilon),      # epsilon tolerance
 			extraParameter,
-			trainDataFile,
-			modelFile
+			shQuote (trainDataFile),
+			shQuote (modelFile)
 		)
 		return (args)
 }
@@ -119,8 +119,8 @@ createTrainingArguments.LIBSVM = function (
 
 createTestArguments.LIBSVM = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
     args = c(
-        testDataFile,
-        modelFile,
+        shQuote (testDataFile),
+        shQuote (modelFile),
         predictionsFile
     )
     return (args)

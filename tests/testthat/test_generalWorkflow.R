@@ -33,7 +33,7 @@ test_that("general workflow works with binary packages.", {
 	
 	testthat::skip_on_cran()
 	
-	# call without parameters to get an exception
+	source ("bashEscapetests.R")
 	source ("cycletests.R")
 	source ("detectModeltests.R")
 	source ("downloadSoftware.R")
@@ -118,9 +118,15 @@ test_that("general workflow works with binary packages.", {
 	
 	for (solver in solvers) {
 		cat("\nWrapper test for solver", solver, ": ")
-		
 		wrappertests (solver, trainDataX, trainDataY, testDataX, testDataY, verbose)
 	}
+	
+	
+	for (solver in solvers) {
+		cat ("\nBash escape for solver", solver, ": ")
+		bashEscapetests (solver, trainDataX, trainDataY, testDataX, testDataY, verbose)
+	}
+	
 
 	for (solver in solvers) {
 		cat ("\nTest predictions for solver", solver, ": ")
@@ -145,6 +151,7 @@ test_that("general workflow works with binary packages.", {
 #		testthat::context (paste0(solver, " detect models."))
 		detectModeltests (solver, verbose)
 	}
+	
 	
 	
 		
