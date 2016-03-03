@@ -27,27 +27,36 @@
 SVMBridgeEnv = new.env(parent = emptyenv())
 
 
- .onLoad <- function(libname, pkgname) {
-  op <- options()
-  op.devtools <- list(
-    devtools.path = "~/R-dev",
-    devtools.install.args = "",
-    devtools.name = "Aydin Demircioglu",
-    devtools.desc.author = '"Aydin Demircioglu <aydin.demircioglu@ini.rub.de> [aut, cre]"',
-    devtools.desc.license = "LGPL-3",
-    devtools.desc.suggests = NULL,
-    devtools.desc = list()
-  )
-  toset <- !(names(op.devtools) %in% names(op))
-  
-  if(any(toset)) 
-	options(op.devtools[toset])
+.onLoad <- function(libname, pkgname) {
+    op <- options()
+    op.devtools <- list(
+        devtools.path = "~/R-dev",
+        devtools.install.args = "",
+        devtools.name = "Aydin Demircioglu",
+        devtools.desc.author = '"Aydin Demircioglu <aydin.demircioglu@ini.rub.de> [aut, cre]"',
+        devtools.desc.license = "GPL-3",
+        devtools.desc.suggests = NULL,
+        devtools.desc = list()
+    )
+    toset <- !(names(op.devtools) %in% names(op))
 
-  invisible()
+    if(any(toset)) 
+        options(op.devtools[toset])
+
+    invisible()
 }
 
 
 .onAttach <- function (libname, pkgname) {
-	packageStartupMessage("SVMBridge v0.1 loaded.")
+    packageStartupMessage("SVMBridge v0.1 loaded.")
+    
+    addSVMPackage ("BSGD")
+    addSVMPackage ("BVM")
+    addSVMPackage ("CVM")
+    addSVMPackage ("LASVM")
+    addSVMPackage ("LIBSVM")
+    addSVMPackage ("LLSVM")
+    addSVMPackage ("Pegasos")
+    addSVMPackage ("SVMperf")
 }
 

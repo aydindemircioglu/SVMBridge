@@ -76,7 +76,7 @@ addSVMPackage = function (method = NA, wrapperName = NA, wrapperPath = NA, softw
 			# if not, we try to find the default wrapper
 			wrapperPath = file.path (wrapperPath, SVMObject$wrapperName)
 			if (verbose == TRUE) {
-				cat ("     Generated wrapper name via wrapper path ", wrapperPath, " as given one was no file.\n")
+				cat ("    Generated wrapper name via wrapper path ", wrapperPath, " as given one was no file.\n")
 			}
 			if ((file.exists (wrapperPath) == TRUE) & (dir.exists (wrapperPath) == FALSE)) {
 				if (verbose == TRUE)
@@ -85,7 +85,7 @@ addSVMPackage = function (method = NA, wrapperName = NA, wrapperPath = NA, softw
 				SVMObject$wrapperPath = wrapperPath
 			} else {
 				if (verbose == TRUE) {
-					cat ("    Not able to find the wrapper. Tried to find the default wrapper. Sorry. \n")
+					cat ("    Not able to find the wrapper. Really tried to find the wrapper. Sorry. \n")
 				}
 			}
 		}
@@ -105,23 +105,24 @@ addSVMPackage = function (method = NA, wrapperName = NA, wrapperPath = NA, softw
 			} 
 		} 
 		
-		# finally search the prepackaged wrappers
-		if (is.null (SVMObject$wrapperPath) == TRUE) {
-			wrapperPath = file.path (path.package("SVMBridge"), "wrapper")
-			if (verbose == TRUE) {
-				cat ("    Generated default wrapper path ", wrapperPath, " as no wrapper path was given.\n")
-			}
-			
-			wrapperPath = file.path (wrapperPath, SVMObject$wrapperName)
-			if (file.exists (wrapperPath) == TRUE) {
-				if (verbose == TRUE)
-					cat ("    Found prepackaged wrapper at", wrapperPath, "\n")
-				source (wrapperPath, local = FALSE)
-				SVMObject$wrapperPath = wrapperPath
-			} 
-		}
 	}
 
+    # finally search the prepackaged wrappers, if nothing else goes
+    if (is.null (SVMObject$wrapperPath) == TRUE) {
+        wrapperPath = file.path (path.package("SVMBridge"), "wrapper")
+        if (verbose == TRUE) {
+            cat ("    Generated default wrapper path ", wrapperPath, " as no wrapper path was given.\n")
+        }
+        
+        wrapperPath = file.path (wrapperPath, SVMObject$wrapperName)
+        if (file.exists (wrapperPath) == TRUE) {
+            if (verbose == TRUE)
+                cat ("    Found prepackaged wrapper at", wrapperPath, "\n")
+            source (wrapperPath, local = FALSE)
+            SVMObject$wrapperPath = wrapperPath
+        } 
+    }
+	
 	if (is.null (SVMObject$wrapperPath) == TRUE) {
 		if (verbose == TRUE) {
 			cat ("    Not able to find the wrapper. Sorry. \n")

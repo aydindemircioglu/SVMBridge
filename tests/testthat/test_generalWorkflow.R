@@ -102,13 +102,13 @@ test_that("general workflow works with binary packages.", {
 			softwareDir = downloadSoftware (solver, softwareDir = softwareBaseDir, verbose = verbose)
 			cat ("Unlinking ", file.path(softwareDir, ".svn"), "\n")
 			unlink (file.path(softwareDir, ".svn"), recursive = TRUE)
-			addSVMPackage (solver, wrapperPath = file.path("..", "wrapper"), verbose = verbose)
+			addSVMPackage (solver, wrapperPath = file.path("..", "R"),  verbose = verbose) 
 		}
 		findAllSVMSoftware (softwareBaseDir, verbose = verbose)
 	} else {
 		cat ("Found existing software directory (", softwareBaseDir, ") using it\n")
 		for (solver in solvers) {
-			addSVMPackage (solver, wrapperPath = file.path("..", "wrapper"), verbose = verbose)
+			addSVMPackage (solver, wrapperPath = file.path("..", "R"),  verbose = verbose) 
 		}
 		findAllSVMSoftware (softwareBaseDir, verbose = verbose)
 	}
@@ -117,8 +117,8 @@ test_that("general workflow works with binary packages.", {
 	##  now do all the thirty different ways of calling trainSVM 
 	
 	for (solver in solvers) {
-		cat ("\nWrapper test for solver", solver, ": ")
-#		testthat::context (paste0(solver, "wrapper"))
+		cat("\nWrapper test for solver", solver, ": ")
+		
 		wrappertests (solver, trainDataX, trainDataY, testDataX, testDataY, verbose)
 	}
 
