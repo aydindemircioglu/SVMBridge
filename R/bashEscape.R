@@ -23,8 +23,6 @@
 #' @return		Escaped string.
 #'
 #' @note		For now, only double quotes are added.
-#'
-#' @export
 
 bashEscape = function (s) {
 	y = paste0('"', s, '"')

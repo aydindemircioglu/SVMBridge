@@ -2,7 +2,7 @@
 % Please edit documentation in R/writeModelToFile.R
 \name{writeModelToFile}
 \alias{writeModelToFile}
-\title{Write a given moel to a file.}
+\title{Write a given model to a file.}
 \usage{
 writeModelToFile(model = NULL, modelFile = NULL, verbose = FALSE)
 }
@@ -17,6 +17,6 @@ writeModelToFile(model = NULL, modelFile = NULL, verbose = FALSE)
 nothing
 }
 \description{
-Write a given moel to a file.
+Write a given model to a file.
 }
 

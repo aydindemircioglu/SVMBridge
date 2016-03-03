@@ -1,5 +1,5 @@
 #
-# SVMBridge 
+# SVMBridge
 #		(C) 2015, by Aydin Demircioglu
 #
 # SVMBridge is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@
 #					but it might be hopeless. With luck, the found binary will be left untouched,
 #					and thus work, if not, you must set the path by hand.
 #' @note		If multiple binaries are found, the last one will be taken. Overwrite by hand, if necessary.
-#' @export
 
 findBinaryInDirectory = function (binaryName = NULL, dir = NULL, patterns = NULL, verbose = FALSE) {
 
@@ -74,10 +73,9 @@ findBinaryInDirectory = function (binaryName = NULL, dir = NULL, patterns = NULL
 			# everything is ok, binary path is not deleted
 		}
     } else {
-		# no binary. so we return 
+		# no binary. so we return
 		binaryPath = NULL
 	}
-	
+
     return (binaryPath)
 }
-

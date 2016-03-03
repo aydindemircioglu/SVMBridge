@@ -2,14 +2,14 @@
 % Please edit documentation in R/readSparseDataFromConnection.R
 \name{readSparseDataFromConnection}
 \alias{readSparseDataFromConnection}
-\title{Read spase data from an open connection.}
+\title{Read sparse data from an open connection.}
 \usage{
 readSparseDataFromConnection(con, zeroBased = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{con}{Connection to read from}
 
-\item{zeroBased}{Do the indices in the file start with 0, e.g. -1 0:2 1:4 ...?}
+\item{zeroBased}{Do the indicies in the file start with 0, e.g. -1 0:2 1:4 ...?}
 
 \item{verbose}{Be verbose?}
 }
@@ -17,6 +17,6 @@ readSparseDataFromConnection(con, zeroBased = FALSE, verbose = FALSE)
 L		list containing input data and labels
 }
 \description{
-Read spase data from an open connection.
+Read sparse data from an open connection.
 }
 

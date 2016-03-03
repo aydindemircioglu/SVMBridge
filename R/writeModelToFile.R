@@ -1,5 +1,5 @@
 #
-# SVMBridge 
+# SVMBridge
 #		(C) 2015, by Aydin Demircioglu
 #
 # SVMBridge is free software: you can redistribtrainSVMute it and/or modify
@@ -15,9 +15,9 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
- 
 
-#' Write a given moel to a file.
+
+#' Write a given model to a file.
 #'
 #' @param	model		Model to write
 #' @param	modelFile		Path to file to write model to
@@ -41,10 +41,9 @@ writeModelToFile = function (model = NULL, modelFile = NULL, verbose = FALSE) {
 	SVMObject = getSVMObject (model$modelType)
 	if (checkmate::testClass (SVMObject, "SVMWrapper") == FALSE) {
 		stop ("Could not find the SVM Wrapper corresponding to model ", model$modelType, ". Please make sure it is loaded first.\n")
-	}	
+	}
 
 	# write model
 	model = writeModel (SVMObject, model = model, modelFile = modelFile, verbose = verbose)
 	return (TRUE)
-}	
-	
+}

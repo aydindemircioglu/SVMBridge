@@ -1,5 +1,5 @@
 #
-# SVMBridge 
+# SVMBridge
 #		(C) 2015, by Aydin Demircioglu
 #
 # SVMBridge is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
 # Please do not use this software to destroy or spy on people, environment or things.
 # All negative use is prohibited.
 #
- 
 
-#' System call substitute to allow for more verbose output 
+
+#' System call substitute to allow for more verbose output
 #'
 #' @param 	binPath		binary to execute
 #' @param	args		arguments for binary
 #' @param	verbose		verbose output? (including executed command line)
 #' @param	...		parameters for the underlying system2 call
 #'
-#' @return	s		
-#'
-system3 <- function (binPath, args, verbose = FALSE, ...) 
-{ 
+#' @return	s
+
+system3 <- function (binPath, args, verbose = FALSE, ...)
+{
 	if (verbose == TRUE) {
 		BBmisc::messagef ("----- Arguments:")
 		BBmisc::messagef ("%s %s", binPath, paste(args, collapse=" "))

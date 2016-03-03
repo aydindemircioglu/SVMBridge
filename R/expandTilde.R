@@ -1,9 +1,9 @@
 #
-# SVMBridge 
+# SVMBridge
 #		(C) 2015, by Aydin Demircioglu
 #
 #		expandTilde.R
-# 
+#
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -18,15 +18,14 @@
 # All negative use is prohibited.
 #
 
- 
-#' Expand path with tilde 
-#'	
+
+#' Expand path with tilde
+#'
 #' Given a path, try to expand the path in a crossplatform independent way.
 #'
 #' @param 	path		path to expand
 #' @param	verbose			print messages while searching?
-#'
-#' @export
+
 expandTilde <- function(path = NULL, verbose = FALSE){
 	# look for tilde characters and expand them
 	if(grepl("~", path) == TRUE){
@@ -39,11 +38,10 @@ expandTilde <- function(path = NULL, verbose = FALSE){
 		else
 			path = path.expand(path)
 		path = gsub("[\\]", "/", path)
-		
+
 		if(verbose == TRUE){
 			cat("    Expanded path: %s", path)
 		}
 	}
 	return (path)
 }
-

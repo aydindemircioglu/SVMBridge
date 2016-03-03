@@ -1,9 +1,9 @@
 #
-# SVMBridge 
+# SVMBridge
 #		(C) 2015, by Aydin Demircioglu
 #
 #		readLIBSVMPredictions
-# 
+#
 # SVMBridge is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
@@ -20,7 +20,7 @@
 
 
 # TODO:
-# Read predictions from a file 
+# Read predictions from a file
 #
 
 
@@ -30,28 +30,27 @@
 #'
 #' @param	predictionsFile		file to read predictions from
 #' @param	verbose		be verbose?
-#' 
+#'
 #' @return		array consisting of predictions
 #
-#' @export
+
 readLIBSVMPredictions = function (predictionsFile = "", verbose = FALSE) {
 	if (verbose == TRUE) {
 		cat ("Reading LIBSVM predictions from ", predictionsFile, "\n")
 	}
-	
+
 	con  = file (predictionsFile, open = "r")
 
 	predictions = c()
 	while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
 		predictions = c(predictions, as.numeric(oneLine))
 	}
-	
+
 	if (verbose == TRUE) {
 		print(predictions)
 	}
-			
+
 	close (con)
-	
+
 	return (predictions)
 }
-

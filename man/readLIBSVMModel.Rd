@@ -12,7 +12,7 @@ readLIBSVMModel(modelFile = "./model", verbose = FALSE)
 \item{verbose}{be verbose?}
 }
 \value{
-model object, if
+model object
 }
 \description{
 This will simply read a model in LIBSVM format. As this is the base of many

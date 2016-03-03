@@ -1,5 +1,5 @@
 #
-# SVMBridge 
+# SVMBridge
 #		(C) 2015, by Aydin Demircioglu
 #
 # SVMBridge is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 
 
 #' General class for any SVM wrapper.
-#' 
+#'
 #' This will create an object of class SVMWrapper for a given name.
-# 
+#
 #' @param 	method		name of the class/object to create
 #'
 #' @note	This function will first remove all member functions to make sure
@@ -33,17 +33,17 @@ createSVMWrapper = function(method) {
 	# remove first all old stuff lying around
 	# TODO: one must be able to do this better, but how? can anyone fix this :/
 	suppressWarnings( rm (envir = globalenv(), list = c(
-		paste0("checkModel", ".", method), 
-		paste0("createTestArguments", ".", method), 
-		paste0("createTrainingArguments", ".", method), 
-		paste0("computeOptimizationValues", ".", method), 
-		paste0("detectModel", ".", method), 
-		paste0("extractTestInfo", ".", method), 
-		paste0("extractTrainingInfo", ".", method), 
-		paste0("findSoftware", ".", method), 
-		paste0("print", ".", method), 
-		paste0("readModel", ".", method), 
-		paste0("readPredictions", ".", method), 
+		paste0("checkModel", ".", method),
+		paste0("createTestArguments", ".", method),
+		paste0("createTrainingArguments", ".", method),
+		paste0("computeOptimizationValues", ".", method),
+		paste0("detectModel", ".", method),
+		paste0("extractTestInfo", ".", method),
+		paste0("extractTrainingInfo", ".", method),
+		paste0("findSoftware", ".", method),
+		paste0("print", ".", method),
+		paste0("readModel", ".", method),
+		paste0("readPredictions", ".", method),
 		paste0("writeModel", ".", method) )))
 
 	# create S3 Object
@@ -92,9 +92,7 @@ readPredictions = function (x, predictionsFile = NULL, verbose = FALSE) {
 	UseMethod ("readPredictions")
 }
 
-	
+
 findSoftware = function (x, searchPath = "./", verbose = FALSE) {
 	UseMethod ("findSoftware")
 }
-
-
