@@ -19,6 +19,24 @@
 
 
 
+createSVMWrapper.BSGD = function() {
+  createSVMWrapperInternal(
+    name = "BSGD",
+    par.set = ParamHelpers::makeParamSet(
+      ParamHelpers::makeDiscreteLearnerParam(id = "kernel", default = "radial", values = c("radial")),
+      ParamHelpers::makeNumericLearnerParam(id = "budget",  default = 128, lower = 1),
+      ParamHelpers::makeNumericLearnerParam(id = "cost",  default = 1, lower = 0),
+      ParamHelpers::makeNumericLearnerParam(id = "epochs",  default = 1, lower = 1),
+      ParamHelpers::makeNumericLearnerParam(id = "gamma", default = 1, lower = 0, requires = quote(kernel!="linear")),
+      ParamHelpers::makeNumericLearnerParam(id = "tolerance", default = 0.001, lower = 0)
+    ),
+    properties = c("twoclass", "multiclass"),
+    note = "Budgeted Stochastic Gradient Descent"
+  )
+}
+
+
+
 createTrainingArguments.BSGD = function (x,
 	trainDataFile = "",
 	modelFile = "",
@@ -223,7 +241,7 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 		# using double and saving single. :/
 		model$nSV	= c(sum(model$alpha[,1] >= 0), sum(model$alpha[,1] < 0))
 	} else {
-		# count total number of svs 
+		# count total number of svs
 		model$nSV = model$label * 0
 		for (i in 1:nrow(model$alpha)) {
 			for (c in 1:length(model$nSV)) {
@@ -238,7 +256,7 @@ readModel.BSGD = function (x, modelFile = "./model", verbose = FALSE, singleBina
 	if (sum(model$nSV) != totalSV) {
 		stop ("Counted number of SV and info given in header do not fit.")
 	}
-	
+
 	# do we need to invert the labels? in this case we invert the coefficients
 	if (invertLabels == TRUE) {
 		if (verbose == TRUE)
@@ -323,7 +341,7 @@ writeModel.BSGD = function (x, model = NA, modelFile = "./model", verbose = FALS
 
 detectModel.BSGD = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
-	
+
 	if (verbose == TRUE) {
 		cat ("Checking for BSGD model.\n")
 	}

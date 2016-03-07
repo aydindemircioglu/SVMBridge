@@ -17,16 +17,34 @@
 #
 
 
+
+createSVMWrapper.LASVM = function() {
+  SVMBridge::createSVMWrapperInternal(
+    name = "LASVM",
+    par.set = ParamHelpers::makeParamSet(
+      ParamHelpers::makeDiscreteLearnerParam(id = "kernel", default = "radial", values = c("radial")),
+      ParamHelpers::makeNumericLearnerParam(id = "budget",  default = 128, lower = 1),
+      ParamHelpers::makeNumericLearnerParam(id = "cost",  default = 1, lower = 0),
+      ParamHelpers::makeNumericLearnerParam(id = "epochs",  default = 1, lower = 1),
+      ParamHelpers::makeNumericLearnerParam(id = "gamma", default = 1, lower = 0, requires = quote(kernel!="linear")),
+      ParamHelpers::makeNumericLearnerParam(id = "tolerance", default = 0.001, lower = 0)
+    ),
+    properties = c("twoclass"),
+    note = ""
+  )
+}
+
+
 createTrainingArguments.LASVM = function (x,
-	trainDataFile = "",
-      modelFile = "",
-      extraParameter = "",
-      kernelCacheSize = 1024,
-	cost = 1,
-      useBias = FALSE,
-      gamma = 1,
-      epochs = 1,
-      epsilon = 0.001,
+		trainDataFile = "",
+    modelFile = "",
+    extraParameter = "",
+    kernelCacheSize = 1024,
+		cost = 1,
+    useBias = FALSE,
+    gamma = 1,
+    epochs = 1,
+    epsilon = 0.001,
       ...)
 {
 	# count training examples
@@ -101,7 +119,7 @@ detectModel.LASVM = function (x, modelFile = NULL, verbose = FALSE) {
 		cat ("Checking for LASVM model.\n")
 	}
 
-	
+
 	if (is.null (modelFile) == TRUE)
 		return (FALSE)
 
@@ -170,4 +188,3 @@ print.LASVM = function(x) {
 	cat("    Training Binary at ", x$trainBinaryPath)
 	cat("    Test Binary at ", x$testBinaryPath)
 }
-

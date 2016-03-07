@@ -1,5 +1,17 @@
 # dummy wrapper
 
+
+createSVMWrapper.oneSVM = function() {
+  createSVMWrapperInternal(
+    name = "oneSVM",
+    par.set = ParamHelpers::makeParamSet(
+      ParamHelpers::makeNumericLearnerParam(id = "budget",  default = 128, lower = 1)
+    ),
+    properties = c("twoclass", "multiclass"),
+    note = ""
+  )
+}
+
 createTrainingArguments.oneSVM = function (x, ...) {
 	cat ("Creating Training Arguments for oneSVM was called.\n")
 	args = c("oneSVM Training Arguments")

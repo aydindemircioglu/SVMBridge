@@ -17,24 +17,6 @@
 #
 
 
-
-createSVMWrapper.LIBSVM = function() {
-  createSVMWrapperInternal(
-    name = "LIBSVM",
-    par.set = ParamHelpers::makeParamSet(
-      ParamHelpers::makeDiscreteLearnerParam(id = "kernel", default = "radial", values = c("radial")),
-      ParamHelpers::makeNumericLearnerParam(id = "budget",  default = 128, lower = 1),
-      ParamHelpers::makeNumericLearnerParam(id = "cost",  default = 1, lower = 0),
-      ParamHelpers::makeNumericLearnerParam(id = "epochs",  default = 1, lower = 1),
-      ParamHelpers::makeNumericLearnerParam(id = "gamma", default = 1, lower = 0, requires = quote(kernel!="linear")),
-      ParamHelpers::makeNumericLearnerParam(id = "tolerance", default = 0.001, lower = 0)
-    ),
-    properties = c("twoclass", "multiclass"),
-    note = ""
-  )
-}
-
-
 createTrainingArguments.LIBSVM = function (
 	x,
 	...,
@@ -43,37 +25,76 @@ createTrainingArguments.LIBSVM = function (
 	extraParameter = "",
 	kernelCacheSize = 1024,
 	cost = 1,
+	svmType = "-1",
 	useBias = FALSE,
 	gamma = 1,
 	epsilon = 0.001,
+	degree = -1,
+	coef0 = -1,
+	nu = -1,
+	shrinking = -1,
+	probabilityEstimates = -1,
+	weight = -1,
+	n = -1,
+	kernelType = "rbf",
 	quietMode = FALSE)
 {
-		svmTypeParameter = "-s 0"
-		kernelTypeparameter = "-t 2"
+		svmTypeParameter = ""
+		if (svmType == "CSVC" || svmType == "C-SVC")
+			svmTypeParameter = "-s 0"
+		if (svmType == "nuSVC" || svmType == "nu-SVC")
+			svmTypeParameter = "-s 1"
+		if (svmType == "one-class SVM" || svmType == "oneClassSVM")
+			svmTypeParameter = "-s 2"
+
+		kernelTypeParameter = ""
+		if(kernelType == "linear")
+			kernelTypeparameter = "-t 0"
+		if(kernelType == "polynomial")
+			kernelTypeparameter = "-t 1"
+		if(kernelType == "radial basis function" || kernelType == "RBF" || kernelType == "rbf")
+			kernelTypeparameter = "-t 2"
+		if(kernelType == "sigmoid")
+			kernelTypeparameter = "-t 3"
+		if(kernelType == "precomputed kernel" || kernelType == "precomputed")
+			kernelTypeparameter = "-t 4"
 
 		degreeParameter = ""
+		if (degree != -1) {
+			degreeParameter = sprintf("-d %d", degree)
+		}
 
 		gammaParameter = ""
 		if (gamma != 1)
 			gammaParameter = sprintf("-g %.16f", gamma)
 
 		coef0Parameter = ""
+		if (coef0 != -1)
+			coef0Parameter = sprintf("-r %d", coef0)
 
 		costParameter = ""
 		if (cost != 1)
 			costParameter = sprintf("-c %.16f", cost)
 
 		nuParameter = ""
+		if(nu != -1)
+			nuParameter = sprintf("-n %f", nu)
 
 		epsilonParameter = ""
 		if(epsilon != 0.001)
 			epsilonParameter = sprintf("-p %.16f", epsilon)
 
 		shrinkingParameter = ""
+		if(shrinking != -1)
+			shrinkingParameter = sprintf("-h %d", shrinking)
 
 		probabilityEstimatesparameter = ""
+		if(probabilityEstimates != -1)
+			probabilityEstimatesparameter = sprintf("-b %d", probabilityEstimates)
 
 		weightParameter = ""
+		if(weight != -1)
+			weightParameter = sprintf("-wi %d", weight)
 
 		quietModeparameter = ""
 		if(quietMode != FALSE)
@@ -88,8 +109,8 @@ createTrainingArguments.LIBSVM = function (
 			sprintf("-g %.16f", gamma),        # gamma
 			sprintf("-e %.16f", epsilon),      # epsilon tolerance
 			extraParameter,
-			shQuote (trainDataFile),
-			shQuote (modelFile)
+			trainDataFile,
+			modelFile
 		)
 		return (args)
 }
@@ -98,8 +119,8 @@ createTrainingArguments.LIBSVM = function (
 
 createTestArguments.LIBSVM = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
     args = c(
-        shQuote (testDataFile),
-        shQuote (modelFile),
+        testDataFile,
+        modelFile,
         predictionsFile
     )
     return (args)
@@ -137,7 +158,7 @@ writeModel.LIBSVM = function (x,model = NA,	modelFile = "./model", verbose = FAL
 
 detectModel.LIBSVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
-
+	
 	if (verbose == TRUE) {
 		cat ("Checking for LIBSVM model.\n")
 	}
@@ -213,3 +234,4 @@ print.LIBSVM = function(x) {
 	cat("    Training Binary at ", x$trainBinaryPath, "\n")
 	cat("    Test Binary at ", x$testBinaryPath, "\n")
 }
+

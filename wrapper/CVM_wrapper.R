@@ -18,12 +18,28 @@
 #
 
 
+
+createSVMWrapper.CVM = function() {
+  createSVMWrapperInternal(
+    name = "CVM",
+    par.set = ParamHelpers::makeParamSet(
+      ParamHelpers::makeDiscreteLearnerParam(id = "kernel", default = "radial", values = c("radial")),
+      ParamHelpers::makeNumericLearnerParam(id = "budget",  default = 128, lower = 1),
+      ParamHelpers::makeNumericLearnerParam(id = "cost",  default = 1, lower = 0),
+      ParamHelpers::makeNumericLearnerParam(id = "epochs",  default = 1, lower = 1),
+      ParamHelpers::makeNumericLearnerParam(id = "gamma", default = 1, lower = 0, requires = quote(kernel!="linear")),
+      ParamHelpers::makeNumericLearnerParam(id = "tolerance", default = 0.001, lower = 0)
+    ),
+    properties = c("twoclass", "multiclass"),
+    note = "Core Vector Machine"
+  )
+}
+
+
 createTrainingArguments.CVM = function (x,
     trainDataFile = "",
     modelFile = "",
     extraParameter = "",
-    primalTime = 10,
-    wallTime = 8*60,
     kernelCacheSize = 1024,
     cost = 1,
     gamma = 1,
@@ -87,7 +103,7 @@ writeModel.CVM = function (x, model = NA, modelFile = "./model", verbose = FALSE
 
 detectModel.CVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
-	
+
 	if (verbose == TRUE) {
 		cat ("Checking for CVM model.\n")
 	}
@@ -136,7 +152,7 @@ findSoftware.CVM = function (x, searchPath = "./", execute = FALSE, verbose = FA
 		trainBinaryPattern = "svm-train.exe"
 		testBinaryPattern = "svm-predict.exe"
 	}
-	
+
 	# can do now OS specific stuff here
 	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, dir = searchPath, patterns = list ('bvm-train .options. training_set_file .model_file.'))
 	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern , dir = searchPath, patterns = list ('bvm-predict .options. test_file model_file output_file'))
@@ -151,4 +167,3 @@ print.CVM = function(x) {
 	cat("    Training Binary at ", x$trainBinaryPath)
 	cat("    Test Binary at ", x$testBinaryPath)
 }
-

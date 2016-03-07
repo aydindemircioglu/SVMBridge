@@ -4,8 +4,6 @@ context("Adding SVM Packages")
 test_that("empty method produces an error", {
 	# call without parameters to get an exception
 	expect_error(addSVMPackage(), "May not be NA")
-	
-	# 
 }	)
 	
 

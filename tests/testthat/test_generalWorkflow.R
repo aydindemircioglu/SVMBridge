@@ -94,9 +94,9 @@ test_that("general workflow works with binary packages.", {
 	#solvers = c("LIBSVM", "LASVM", "BSGD", "SVMperf", "BVM", "CVM", "LLSVM")
 	
 	# this stuff is for debugging locally without reloading the packages each time
-#	softwareBaseDir = "/tmp/software"
-#	if (file.exists(softwareBaseDir) == FALSE) {
-	if (TRUE == TRUE) {
+	softwareBaseDir = "/tmp/software"
+	if (file.exists(softwareBaseDir) == FALSE) {
+#	if (TRUE == TRUE) {
 		for (solver in solvers) {
 			cat ("Downloading and building software ", solver, "\n")
 			softwareDir = downloadSoftware (solver, softwareDir = softwareBaseDir, verbose = verbose)

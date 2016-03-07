@@ -1,5 +1,17 @@
 # dummy wrapper
 
+
+createSVMWrapper.threeSVM = function() {
+  createSVMWrapperInternal(
+    name = "threeSVM",
+    par.set = ParamHelpers::makeParamSet(
+      ParamHelpers::makeNumericLearnerParam(id = "budget",  default = 128, lower = 1)
+    ),
+    properties = c("twoclass", "multiclass"),
+    note = ""
+  )
+}
+
 createTrainingArguments.threeSVM = function (x, ...) {
 	cat ("Creating Training Arguments for threeSVM was called.\n")
 	args = c("threeSVM Training Arguments")

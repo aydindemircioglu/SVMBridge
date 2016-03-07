@@ -20,7 +20,7 @@ addSVMPackage(method = NA, wrapperName = NA, wrapperPath = NA,
 }
 \description{
 This function will create an object corresponding to the SVM object.
-By using the findSVMSoftware/findSVMWrapper functions., one can add 
+By using the findSVMSoftware/findSVMWrapper functions., one can add
 search for the corresponding wrappe and the software.
 To avoid lengthy searches,  this function can be used to directly 'shortcut'
 the search, by specifiying the directories where the wrapper/software lies.

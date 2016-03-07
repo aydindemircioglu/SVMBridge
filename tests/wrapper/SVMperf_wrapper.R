@@ -18,24 +18,6 @@
 
 
 
-createSVMWrapper.SVMperf = function() {
-  createSVMWrapperInternal(
-    name = "SVMperf",
-		par.set = ParamHelpers::makeParamSet(
-      ParamHelpers::makeDiscreteLearnerParam(id = "kernel", default = "radial", values = c("radial")),
-      ParamHelpers::makeNumericLearnerParam(id = "budget",  default = 128, lower = 1),
-      ParamHelpers::makeNumericLearnerParam(id = "cost",  default = 1, lower = 0),
-      ParamHelpers::makeNumericLearnerParam(id = "epochs",  default = 1, lower = 1),
-      ParamHelpers::makeNumericLearnerParam(id = "gamma", default = 1, lower = 0, requires = quote(kernel!="linear")),
-      ParamHelpers::makeNumericLearnerParam(id = "tolerance", default = 0.001, lower = 0)
-    ),
-    properties = c("twoclass", "multiclass"),
-    note = ""
-  )
-}
-
-
-
 createTrainingArguments.SVMperf = function (x,
 	trainDataFile = "",
 	modelFile = "",
@@ -114,8 +96,8 @@ createTrainingArguments.SVMperf = function (x,
 			# --r
 			# --s
 			extraParameter,
-		    shQuote(trainDataFile),
-		    shQuote(modelFile)
+			bashEscape(trainDataFile),
+			bashEscape(modelFile)
 		)
 	}
 
@@ -143,8 +125,8 @@ createTrainingArguments.SVMperf = function (x,
 			# --r
 			# --s
 			extraParameter,
-		    shQuote(trainDataFile),
-		    shQuote(modelFile)
+			bashEscape(trainDataFile),
+			bashEscape(modelFile)
 		)
 	}
 
@@ -172,8 +154,8 @@ createTrainingArguments.SVMperf = function (x,
 			# --r
 			# --s
 			extraParameter,
-		    shQuote(trainDataFile),
-		    shQuote(modelFile)
+			bashEscape(trainDataFile),
+			bashEscape(modelFile)
 		)
 	}
 
@@ -205,8 +187,8 @@ createTrainingArguments.SVMperf = function (x,
 			# --r
 			# --s
 			extraParameter,
-		    shQuote(trainDataFile),
-		    shQuote(modelFile)
+			bashEscape(trainDataFile),
+			bashEscape(modelFile)
 		)
 	}
 
@@ -234,8 +216,8 @@ createTrainingArguments.SVMperf = function (x,
 			# --r
 			# --s
 			extraParameter,
-		    shQuote(trainDataFile),
-		    shQuote(modelFile)
+			bashEscape(trainDataFile),
+			bashEscape(modelFile)
 		)
 	}
 
@@ -254,9 +236,9 @@ createTrainingArguments.SVMperf = function (x,
 
 createTestArguments.SVMperf = function (x, testDataFile = NULL, modelFile = NULL, predictionsFile = NULL, verbose = FALSE, ...) {
 	args = c(
-		shQuote (testDataFile),
-	    shQuote (modelFile),
-	    shQuote (predictionsFile)
+		testDataFile,
+		bashEscape (modelFile),
+		bashEscape (predictionsFile)
 	)
 
 	return (args)
@@ -403,11 +385,11 @@ writeModel.SVMperf <- function (x, model = NA, modelFile = "./model", verbose = 
 
 detectModel.SVMperf = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
-
+	
 	if (verbose == TRUE) {
 		cat ("Checking for SVMperf model.\n")
 	}
-
+	
 	if (is.null (modelFile) == TRUE)
 		return (FALSE)
 
@@ -452,9 +434,9 @@ findSoftware.SVMperf = function (x, searchPath = "./", execute = FALSE, verbose 
 		trainBinaryPattern = "svm_perf_learn.exe"
 		testBinaryPattern = "svm_perf_classify.exe"
 	}
-
+	
 	# can do now OS specific stuff here
-	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern,
+	x$trainBinaryPath = findBinaryInDirectory (trainBinaryPattern, 
 		dir = searchPath, patterns = list ('ROCArea: Percentage of swapped pos/neg pairs', 'usage: svm_struct_learn .options. example_file model_file'), verbose = verbose)
 	x$testBinaryPath = findBinaryInDirectory (testBinaryPattern, dir = searchPath, patterns = list ('usage: svm_struct_classify .options. example_file model_file output_file'), verbose = verbose)
 
@@ -468,3 +450,4 @@ print.SVMperf  = function(x) {
 	cat("       Training Binary at ", x$trainBinaryPath, "\n")
 	cat("       Test Binary at ", x$testBinaryPath, "\n")
 }
+

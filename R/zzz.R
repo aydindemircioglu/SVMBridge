@@ -56,7 +56,6 @@ SVMBridgeEnv = new.env(parent = emptyenv())
     addSVMPackage ("LASVM")
     addSVMPackage ("LIBSVM")
     addSVMPackage ("LLSVM")
-    addSVMPackage ("Pegasos")
     addSVMPackage ("SVMperf")
 }
 

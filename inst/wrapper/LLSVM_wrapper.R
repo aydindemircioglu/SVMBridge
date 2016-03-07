@@ -18,6 +18,24 @@
 #
 
 
+
+createSVMWrapper.LLSVM = function() {
+  createSVMWrapperInternal(
+    name = "LLSVM",
+    par.set = ParamHelpers::makeParamSet(
+      ParamHelpers::makeDiscreteLearnerParam(id = "kernel", default = "radial", values = c("radial")),
+      ParamHelpers::makeNumericLearnerParam(id = "budget",  default = 128, lower = 1),
+      ParamHelpers::makeNumericLearnerParam(id = "cost",  default = 1, lower = 0),
+      ParamHelpers::makeNumericLearnerParam(id = "epochs",  default = 1, lower = 1),
+      ParamHelpers::makeNumericLearnerParam(id = "gamma", default = 1, lower = 0, requires = quote(kernel!="linear")),
+      ParamHelpers::makeNumericLearnerParam(id = "tolerance", default = 0.001, lower = 0)
+    ),
+    properties = c("twoclass"),
+    note = "Linearly Localized SVM"
+  )
+}
+
+
 createTrainingArguments.LLSVM = function (x,
 	trainDataFile = "",
 	modelFile = "",
@@ -217,13 +235,13 @@ readModel.LLSVM = function (x, modelFile = "./model", verbose = FALSE) {
 # 	if (invertLabels == TRUE) {
 # 		if (verbose == TRUE)
 # 			cat(" Inverting Labels.")
-# 
+#
 # 		# invert alphas
 # 		model$alpha = -model$alpha
-# 
+#
 # 		# this is also needed..
 # 		model$bias = -bias
-# 
+#
 # 		model$label = c(-1, 1)
 # 	}
 
@@ -256,26 +274,26 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 	gamma = model$gamma * 2
 	degree = 1
 	coef = 1
-# 
+#
 # 	# labels
 # 	invertLabels = FALSE
 # 	if (model$label[1] == 1) {
 # 		invertLabels = TRUE
 # 	}
-# 	
+#
 # 	# do we need to invert the labels? in this case we invert the coefficients
 # 	if (invertLabels == TRUE) {
 # 		if (verbose == TRUE)
 # 			cat(" Inverting Labels.")
-# 
+#
 # 		# invert alphas
 # 		model$alpha = -model$alpha
-# 
+#
 # 		# this is also needed..
 # 		model$bias = -model$bias
 # 	}
 
-	
+
 	# write header
 	modelFileHandle <- file(modelFile, open = "w+")
 	writeLines(paste ("ALGORITHM: 3", sep = ""), modelFileHandle )
@@ -290,7 +308,7 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 	writeLines(paste ("KERNEL_COEF_PARAM:", coef, sep = " "), modelFileHandle )
 	writeLines(paste ("MODEL:", sep = ""), modelFileHandle )
 
-	
+
 	for (r in 1:nrow(model$SV)) {
 		wline = paste0 (model$w[r])
 		aline = ""
@@ -315,7 +333,7 @@ writeModel.LLSVM = function (x, model = NA, modelFile = "./model", verbose = FAL
 
 detectModel.LLSVM = function (x, modelFile = NULL, verbose = FALSE) {
 	checkmate::checkFlag (verbose)
-	
+
 	if (verbose == TRUE) {
 		cat ("Checking for LLSVM model.\n")
 	}
@@ -377,4 +395,3 @@ print.LLSVM = function(x) {
 	cat("    Training Binary at ", x$trainBinaryPath)
 	cat("    Test Binary at ", x$testBinaryPath)
 }
-
